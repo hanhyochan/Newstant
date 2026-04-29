@@ -2,9 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { Badge } from "./badge";
 import { Button } from "./button";
-import { Card } from "./card";
 import { Chip } from "./chip";
-import { DataTable } from "./data-table";
 import { Select } from "./select";
 import { Tabs } from "./tab";
 import { Textarea } from "./textarea";
@@ -84,20 +82,6 @@ export const AllComponents: Story = {
           <Badge variant="gray_line_outline">Gray line</Badge>
           <Badge size="medium">Medium</Badge>
         </div>
-      </Section>
-
-      <Section title="Card">
-        <Card style={{ width: "var(--size-320)" }} variant="gray_line_outline">
-          <div className="ds_stack">
-            <Badge>Pattern</Badge>
-            <h3 className="type-title_2">Card pattern</h3>
-            <p className="type-body_2">Radius, border, shadow, and spacing from the system.</p>
-          </div>
-        </Card>
-      </Section>
-
-      <Section title="Table">
-        <DataTable />
       </Section>
     </div>
   ),

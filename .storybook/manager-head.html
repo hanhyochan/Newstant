@@ -1,0 +1,29 @@
+<script>
+  (() => {
+    const legacyStoryRedirects = {
+      "design-system-components-card--default":
+        "design-system-components-overview--all-components",
+      "design-system-components-table--default":
+        "design-system-components-overview--all-components",
+    };
+
+    const redirectLegacyStory = () => {
+      const params = new URLSearchParams(window.location.search);
+      const storyPath = params.get("path");
+      const legacyStoryId = storyPath?.match(/^\/story\/([^/]+)$/)?.[1];
+      const nextStoryId = legacyStoryId
+        ? legacyStoryRedirects[legacyStoryId]
+        : undefined;
+
+      if (!nextStoryId) {
+        return;
+      }
+
+      params.set("path", `/story/${nextStoryId}`);
+      window.location.replace(`${window.location.pathname}?${params.toString()}`);
+    };
+
+    redirectLegacyStory();
+    window.addEventListener("popstate", redirectLegacyStory);
+  })();
+</script>

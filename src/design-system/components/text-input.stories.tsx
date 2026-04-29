@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { TextInput } from "./text-input";
 
+const sizes = ["small", "medium", "large", "xlarge"] as const;
+const radii = ["square", "rounded", "full"] as const;
+const variants = ["filled", "outline"] as const;
+
 const meta: Meta<typeof TextInput> = {
   title: "Design System/Components/Text Input",
   component: TextInput,
@@ -19,21 +23,17 @@ const meta: Meta<typeof TextInput> = {
   argTypes: {
     active: { control: "boolean" },
     inputSize: { table: { disable: true } },
-    radius: { control: "select", options: ["square", "rounded", "full"] },
+    radius: { control: "select", options: radii },
     shape: { table: { disable: true } },
-    size: { control: "select", options: ["small", "medium", "large", "xlarge"] },
+    size: { control: "select", options: sizes },
     state: { control: "select", options: ["default", "complete", "error", "view"] },
-    variant: { control: "select", options: ["filled", "outline"] },
+    variant: { control: "select", options: variants },
   },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-
-const sizes = ["small", "medium", "large", "xlarge"] as const;
-const radii = ["square", "rounded", "full"] as const;
-const variants = ["filled", "outline"] as const;
 
 export const Playground: Story = {
   render: (args) => (
@@ -56,57 +56,51 @@ export const States: Story = {
   ),
 };
 
-export const AllOptions: Story = {
+export const Variants: Story = {
   render: () => (
-    <div className="ds_stack" style={{ width: "var(--size-640)" }}>
-      <section className="ds_stack">
-        <strong className="type-label_1">Variants</strong>
-        {variants.map((variant) => (
-          <TextInput
-            key={variant}
-            placeholder={variant}
-            radius="rounded"
-            size="medium"
-            variant={variant}
-          />
-        ))}
-      </section>
-
-      <section className="ds_stack">
-        <strong className="type-label_1">Sizes</strong>
-        {sizes.map((size) => (
-          <TextInput
-            key={size}
-            placeholder={size}
-            radius="rounded"
-            size={size}
-            variant="outline"
-          />
-        ))}
-      </section>
-
-      <section className="ds_stack">
-        <strong className="type-label_1">Radius</strong>
-        {radii.map((radius) => (
-          <TextInput
-            key={radius}
-            placeholder={radius}
-            radius={radius}
-            size="medium"
-            variant="outline"
-          />
-        ))}
-      </section>
-
-      <section className="ds_stack">
-        <strong className="type-label_1">States</strong>
-        <TextInput placeholder="Default" />
-        <TextInput active placeholder="Active" />
-        <TextInput placeholder="Complete" state="complete" />
-        <TextInput placeholder="Error" state="error" />
-        <TextInput placeholder="Disabled" disabled />
-        <TextInput defaultValue="Read only" state="view" />
-      </section>
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      {variants.map((variant) => (
+        <TextInput
+          key={variant}
+          placeholder={variant}
+          radius="rounded"
+          size="medium"
+          variant={variant}
+        />
+      ))}
     </div>
   ),
 };
+
+export const Sizes: Story = {
+  render: () => (
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      {sizes.map((size) => (
+        <TextInput
+          key={size}
+          placeholder={size}
+          radius="rounded"
+          size={size}
+          variant="outline"
+        />
+      ))}
+    </div>
+  ),
+};
+
+export const Radius: Story = {
+  render: () => (
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      {radii.map((radius) => (
+        <TextInput
+          key={radius}
+          placeholder={radius}
+          radius={radius}
+          size="medium"
+          variant="outline"
+        />
+      ))}
+    </div>
+  ),
+};
+

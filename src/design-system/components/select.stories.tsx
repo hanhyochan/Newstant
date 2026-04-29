@@ -8,6 +8,10 @@ const options = [
   { label: "Saved", value: "saved" },
 ];
 
+const sizes = ["small", "medium", "large"] as const;
+const radii = ["square", "rounded", "full"] as const;
+const variants = ["filled", "outline"] as const;
+
 const meta: Meta<typeof Select> = {
   title: "Design System/Components/Select",
   component: Select,
@@ -24,21 +28,17 @@ const meta: Meta<typeof Select> = {
   argTypes: {
     active: { control: "boolean" },
     options: { control: false },
-    radius: { control: "select", options: ["square", "rounded", "full"] },
+    radius: { control: "select", options: radii },
     selectSize: { table: { disable: true } },
     shape: { table: { disable: true } },
-    size: { control: "select", options: ["small", "medium", "large"] },
-    variant: { control: "select", options: ["filled", "outline"] },
+    size: { control: "select", options: sizes },
+    variant: { control: "select", options: variants },
   },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-
-const sizes = ["small", "medium", "large"] as const;
-const radii = ["square", "rounded", "full"] as const;
-const variants = ["filled", "outline"] as const;
 
 export const Playground: Story = {
   render: (args) => (
@@ -48,61 +48,61 @@ export const Playground: Story = {
   ),
 };
 
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    options,
-  },
-};
-
-export const AllOptions: Story = {
+export const States: Story = {
   render: () => (
-    <div className="ds_stack" style={{ width: "var(--size-640)" }}>
-      <section className="ds_stack">
-        <strong className="type-label_1">Variants</strong>
-        {variants.map((variant) => (
-          <Select
-            key={variant}
-            options={options}
-            radius="rounded"
-            size="medium"
-            variant={variant}
-          />
-        ))}
-      </section>
-
-      <section className="ds_stack">
-        <strong className="type-label_1">Sizes</strong>
-        {sizes.map((size) => (
-          <Select
-            key={size}
-            options={options}
-            radius="rounded"
-            size={size}
-            variant="outline"
-          />
-        ))}
-      </section>
-
-      <section className="ds_stack">
-        <strong className="type-label_1">Radius</strong>
-        {radii.map((radius) => (
-          <Select
-            key={radius}
-            options={options}
-            radius={radius}
-            size="medium"
-            variant="outline"
-          />
-        ))}
-      </section>
-
-      <section className="ds_stack">
-        <strong className="type-label_1">States</strong>
-        <Select options={options} />
-        <Select active options={options} />
-        <Select disabled options={options} />
-      </section>
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      <Select options={options} />
+      <Select active options={options} />
+      <Select disabled options={options} />
     </div>
   ),
 };
+
+export const Variants: Story = {
+  render: () => (
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      {variants.map((variant) => (
+        <Select
+          key={variant}
+          options={options}
+          radius="rounded"
+          size="medium"
+          variant={variant}
+        />
+      ))}
+    </div>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      {sizes.map((size) => (
+        <Select
+          key={size}
+          options={options}
+          radius="rounded"
+          size={size}
+          variant="outline"
+        />
+      ))}
+    </div>
+  ),
+};
+
+export const Radius: Story = {
+  render: () => (
+    <div className="ds_stack" style={{ width: "var(--size-320)" }}>
+      {radii.map((radius) => (
+        <Select
+          key={radius}
+          options={options}
+          radius={radius}
+          size="medium"
+          variant="outline"
+        />
+      ))}
+    </div>
+  ),
+};
+
