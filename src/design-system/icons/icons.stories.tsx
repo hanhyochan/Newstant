@@ -53,7 +53,7 @@ const svgAssets: SvgAsset[] = svgContext
         };
     });
 
-const meta = {
+const meta: Meta<GalleryArgs> = {
     title: 'Design System/Icons',
     parameters: {
         layout: 'fullscreen',
@@ -71,11 +71,11 @@ const meta = {
         },
     },
     render: (args: GalleryArgs) => <IconsGallery {...args} />,
-} satisfies Meta<GalleryArgs>;
+};
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Gallery: Story = {};
 
