@@ -343,57 +343,22 @@
     --opacity-100: 100%;
 
     /* custom brand colors */
-    /* brand color: artskorealab / yellow */
-    --color-artskorealab-yellow-0: #000000;
-    --color-artskorealab-yellow-10: #333300;
-    --color-artskorealab-yellow-20: #666600;
-    --color-artskorealab-yellow-30: #999900;
-    --color-artskorealab-yellow-40: #cccc00;
-    --color-artskorealab-yellow-50: #ffff00;
-    --color-artskorealab-yellow-60: #ffff33;
-    --color-artskorealab-yellow-70: #ffff66;
-    --color-artskorealab-yellow-80: #ffff99;
-    --color-artskorealab-yellow-90: #ffffcc;
-    --color-artskorealab-yellow-100: #ffffff;
+    --color-brand-0: #000000;
+    --color-brand-10: #16082d;
+    --color-brand-20: #291451;
+    --color-brand-30: #4a2588;
+    --color-brand-40: #7f57cb;
+    --color-brand-50: #ba96ff;
+    --color-brand-60: #c8abff;
+    --color-brand-70: #d6c0ff;
+    --color-brand-80: #e3d5ff;
+    --color-brand-90: #f1eaff;
+    --color-brand-95: #f8f5ff;
+    --color-brand-99: #fefcff;
+    --color-brand-100: #ffffff;
 
-    /* brand color: artskorealab / cyan */
-    --color-artskorealab-cyan-0: #000000;
-    --color-artskorealab-cyan-10: #00292a;
-    --color-artskorealab-cyan-20: #005255;
-    --color-artskorealab-cyan-30: #007c7f;
-    --color-artskorealab-cyan-40: #00a5aa;
-    --color-artskorealab-cyan-50: #00ced4;
-    --color-artskorealab-cyan-60: #33d8dd;
-    --color-artskorealab-cyan-70: #66e2e5;
-    --color-artskorealab-cyan-80: #99ebee;
-    --color-artskorealab-cyan-90: #ccf5f6;
-    --color-artskorealab-cyan-100: #ffffff;
-
-    /* brand color: artskorealab / purple */
-    --color-artskorealab-purple-0: #000000;
-    --color-artskorealab-purple-10: #2a1d33;
-    --color-artskorealab-purple-20: #543a66;
-    --color-artskorealab-purple-30: #7f5699;
-    --color-artskorealab-purple-40: #a973cc;
-    --color-artskorealab-purple-50: #d390ff;
-    --color-artskorealab-purple-60: #dca6ff;
-    --color-artskorealab-purple-70: #e5bcff;
-    --color-artskorealab-purple-80: #edd3ff;
-    --color-artskorealab-purple-90: #f6e9ff;
-    --color-artskorealab-purple-100: #ffffff;
-
-    /* brand color: virtualdream / red */
-    --color-virtualdream-red-0: #000000;
-    --color-virtualdream-red-10: #2a0707;
-    --color-virtualdream-red-20: #540e0e;
-    --color-virtualdream-red-30: #7f1515;
-    --color-virtualdream-red-40: #a91a1a;
-    --color-virtualdream-red-50: #d31c1c;
-    --color-virtualdream-red-60: #dc4747;
-    --color-virtualdream-red-70: #e57373;
-    --color-virtualdream-red-80: #ee9e9e;
-    --color-virtualdream-red-90: #f6caca;
-    --color-virtualdream-red-100: #ffffff;
+    --color-accent-background-brand: var(--color-brand-50);
+    --color-accent-foreground-brand: var(--color-brand-40);
 }
 
 :root {
