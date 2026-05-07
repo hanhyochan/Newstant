@@ -462,24 +462,6 @@ function AllNewsMeta() {
   );
 }
 
-function AllNewsStatusBar() {
-  return (
-    <div className="newsroll_all_status" aria-hidden="true">
-      <span>9:09</span>
-      <span className="newsroll_all_status_icons">
-        <span className="newsroll_all_signal">
-          <i />
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className="newsroll_all_wifi" />
-        <span className="newsroll_all_battery" />
-      </span>
-    </div>
-  );
-}
-
 function AllNewsMoreButton({ tone = "light" }: { tone?: "dark" | "light" }) {
   return (
     <button className={`newsroll_all_more newsroll_all_more_${tone}`} type="button">
@@ -528,7 +510,6 @@ function AllNewsView({ onOpenSearch }: { onOpenSearch: () => void }) {
   return (
     <section className="newsroll_all_news" aria-label="전체뉴스">
       <div className="newsroll_all_top">
-        <AllNewsStatusBar />
         <NewsToolbar onOpenSearch={onOpenSearch} />
 
         <div className="newsroll_all_breaking_label">
@@ -599,85 +580,213 @@ function AllNewsView({ onOpenSearch }: { onOpenSearch: () => void }) {
   );
 }
 
-function PolicyView() {
-  return (
-    <NewsPageShell title="국가정책">
-      <section className="newsroll_policy_hero" aria-label="맞춤 정책 요약">
-        <span>콩콩이님을 위한</span>
-        <strong>11,343개</strong>
-        <span>국가정책 정보가 있습니다.</span>
-      </section>
+const policyListItems = Array.from({ length: 6 }, (_, index) => ({
+  title: index % 2 === 0 ? "양산시 청년 자격증 응시료 지원" : "청년동아리 활동비 지원사업",
+  tags: index % 2 === 0 ? ["일자리", "취업", "보조금"] : ["복지문화", "문화활동", "바우처"],
+}));
 
-      <div className="newsroll_policy_filters" aria-label="정책 필터">
-        <button className="is_active" type="button">전체</button>
-        <button type="button">청년</button>
-        <button type="button">주거</button>
-        <button type="button">일자리</button>
+function PolicyStatusBar() {
+  return (
+    <div className="newsroll_policy_status" aria-hidden="true">
+      <span>9:09</span>
+      <span className="newsroll_policy_status_icons">
+        <span className="newsroll_policy_signal">
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="newsroll_policy_wifi" />
+        <span className="newsroll_policy_battery" />
+      </span>
+    </div>
+  );
+}
+
+function PolicyListItem({ item }: { item: (typeof policyListItems)[number] }) {
+  return (
+    <article className="newsroll_policy_list_item">
+      <div className="newsroll_policy_list_tags">
+        {item.tags.map((tag, index) => (
+          <span className={index === 2 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
+            {tag}
+          </span>
+        ))}
+      </div>
+      <h2>{item.title}</h2>
+      <div className="newsroll_policy_dates">
+        <span>
+          <strong>등록</strong> 2026년 12월 31일
+        </span>
+        <span>
+          <strong>수정</strong> 2026년 12월 31일
+        </span>
+      </div>
+      <div className="newsroll_policy_stats" aria-label="조회수와 댓글">
+        <span>
+          <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
+          132
+        </span>
+        <span>
+          <i className="newsroll_all_stat_icon_comment" aria-hidden="true" />
+          132
+        </span>
+      </div>
+    </article>
+  );
+}
+
+function PolicyView({ onOpenSearch }: { onOpenSearch: () => void }) {
+  return (
+    <section className="newsroll_policy_screen" aria-label="국가정책">
+      <div className="newsroll_policy_top">
+        <PolicyStatusBar />
+        <NewsToolbar onOpenSearch={onOpenSearch} />
+
+        <section className="newsroll_policy_hero" aria-label="맞춤 정책 요약">
+          <span>콩콩이님을 위한</span>
+          <strong>
+            11,343<span>개</span>
+          </strong>
+          <span>국가정책 정보가 있습니다.</span>
+        </section>
       </div>
 
-      {policyCards.map((policy) => (
-        <button className="newsroll_policy_card" key={policy.title} type="button">
-          <span>{policy.agency}</span>
-          <strong>{policy.title}</strong>
-          <p>{policy.description}</p>
-          <div className="newsroll_policy_tags">
-            <span>신청 가능</span>
-            <span>맞춤 추천</span>
+      <div className="newsroll_policy_sheet">
+        <div className="newsroll_policy_age_tabs" aria-label="연령 필터">
+          {["전체", "미성년", "청년", "중장년", "노년"].map((label, index) => (
+            <button className={index === 0 ? "is_active" : undefined} key={label} type="button">
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <button className="newsroll_policy_sort" type="button">
+          인기순 <span aria-hidden="true" />
+        </button>
+
+        <div className="newsroll_policy_list">
+          {policyListItems.map((item, index) => (
+            <PolicyListItem item={item} key={`${item.title}-${index}`} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+const myRecentNews = Array.from({ length: 4 }, (_, index) => ({
+  image: articleImage,
+  time: "1시간 전",
+  title: index % 2 === 0 ? "용인 수지, 강남·분당 가격 동조화로..." : "용인 수지, 강남·분당 가격 동조화로...",
+}));
+
+const myCategoryGroups = [
+  {
+    items: ["정치", "경제", "사회", "문화", "국제", "지역", "스포츠", "IT과학"],
+    title: "나의 관심 카테고리 설정",
+    active: new Set(["정치", "사회", "지역", "스포츠"]),
+  },
+  {
+    items: ["미성년", "청년", "중장년", "노년"],
+    title: "나의 연령대 설정",
+    active: new Set(["청년"]),
+  },
+  {
+    items: ["중앙일보", "국민일보", "중앙일보"],
+    title: "관심 언론사 설정",
+    active: new Set(["국민일보"]),
+  },
+];
+
+function MyPageView({ onOpenSearch }: { onOpenSearch: () => void }) {
+  return (
+    <section className="newsroll_my_screen" aria-label="마이페이지">
+      <div className="newsroll_my_top">
+        <PolicyStatusBar />
+        <NewsToolbar onOpenSearch={onOpenSearch} />
+        <h1>마이페이지</h1>
+      </div>
+
+      <div className="newsroll_my_sheet">
+        <section className="newsroll_my_profile" aria-label="프로필">
+          <strong>콩콩이님</strong>
+          <button type="button">개인정보 수정</button>
+        </section>
+
+        <div className="newsroll_my_summary" aria-label="활동 통계">
+          <button type="button">
+            <span className="newsroll_my_summary_icon newsroll_my_summary_bookmark" aria-hidden="true" />
+            <span>북마크</span>
+            <strong>56</strong>
+          </button>
+          <button type="button">
+            <span className="newsroll_my_summary_icon newsroll_my_summary_vote" aria-hidden="true" />
+            <span>투표</span>
+            <strong>54</strong>
+          </button>
+          <button type="button">
+            <span className="newsroll_my_summary_icon newsroll_my_summary_comment" aria-hidden="true" />
+            <span>댓글</span>
+            <strong>15</strong>
+          </button>
+        </div>
+
+        <section className="newsroll_my_recent" aria-label="최근 본 뉴스">
+          <h2>최근 본 뉴스</h2>
+          <div className="newsroll_my_recent_scroller">
+            {myRecentNews.map((item, index) => (
+              <button className="newsroll_my_recent_item" key={`${item.title}-${index}`} type="button">
+                <img alt="" src={item.image} />
+                <strong>{item.title}</strong>
+                <span>{item.time}</span>
+              </button>
+            ))}
           </div>
-        </button>
-      ))}
-    </NewsPageShell>
-  );
-}
+          <button className="newsroll_my_full_button" type="button">전체 보기</button>
+        </section>
 
-function MyPageView() {
-  return (
-    <NewsPageShell title="마이페이지">
-      <section className="newsroll_profile" aria-label="프로필">
-        <span className="newsroll_avatar" aria-hidden="true">콩</span>
-        <strong>콩콩이님</strong>
-        <button type="button">프로필 수정</button>
-      </section>
+        {myCategoryGroups.map((group) => (
+          <section className="newsroll_my_chip_group" key={group.title} aria-label={group.title}>
+            <h2>{group.title}</h2>
+            <div>
+              {group.items.map((item, index) => (
+                <button
+                  className={group.active.has(item) ? "is_active" : undefined}
+                  key={`${group.title}-${item}-${index}`}
+                  type="button"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
 
-      <div className="newsroll_my_stats" aria-label="활동 통계">
-        <button type="button">
-          <span>북마크</span>
-          <strong>56</strong>
-        </button>
-        <button type="button">
-          <span>투표</span>
-          <strong>54</strong>
-        </button>
-        <button type="button">
-          <span>댓글</span>
-          <strong>15</strong>
-        </button>
+        <section className="newsroll_my_setting_group" aria-label="알림 설정">
+          <h2>알림 설정</h2>
+          {["속보", "내 댓글에 좋아요, 답글", "공지사항"].map((label) => (
+            <button className="newsroll_my_setting_row" key={label} type="button">
+              <span>{label}</span>
+              <span className="newsroll_my_switch is_on" aria-hidden="true" />
+            </button>
+          ))}
+          <button className="newsroll_my_setting_row" type="button">
+            <span>뉴스 보기 타입</span>
+            <span className="newsroll_my_chevron" aria-hidden="true" />
+          </button>
+        </section>
+
+        <section className="newsroll_my_setting_group newsroll_my_display_group" aria-label="디스플레이 설정">
+          <h2>디스플레이 설정</h2>
+          <button className="newsroll_my_setting_row" type="button">
+            <span>다크모드</span>
+            <span className="newsroll_my_switch" aria-hidden="true" />
+          </button>
+        </section>
       </div>
-
-      <section className="newsroll_settings_group" aria-label="최근 본 뉴스">
-        <h2>최근 본 뉴스</h2>
-        <button className="newsroll_recent_card" type="button">
-          <img alt={articles[0].imageAlt} src={articles[0].image} />
-          <span>{articles[0].title}</span>
-          <em>{articles[0].source}</em>
-        </button>
-      </section>
-
-      <section className="newsroll_settings_group" aria-label="설정">
-        <h2>설정</h2>
-        <button className="newsroll_setting_row" type="button">
-          <span>뉴스 보기 타입</span>
-          <span>릴스형</span>
-        </button>
-        <button className="newsroll_setting_row" type="button">
-          <span>알림 설정</span>
-          <span className="newsroll_switch is_on" aria-hidden="true" />
-        </button>
-      </section>
-    </NewsPageShell>
+    </section>
   );
 }
-
 function InfoView() {
   return (
     <NewsPageShell title="인포메이션">
@@ -718,11 +827,11 @@ function ActiveView({
   }
 
   if (view === "policy") {
-    return <PolicyView />;
+    return <PolicyView onOpenSearch={onOpenSearch} />;
   }
 
   if (view === "my") {
-    return <MyPageView />;
+    return <MyPageView onOpenSearch={onOpenSearch} />;
   }
 
   if (view === "info") {
