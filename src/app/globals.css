@@ -1,6 +1,7 @@
 @theme {
   --font-sans:
-    "Pretendard Variable", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    var(--font-pretendard), "Pretendard Variable", "Apple SD Gothic Neo",
+    "Malgun Gothic", sans-serif;
 }
 
 @layer base {
@@ -1029,6 +1030,7 @@ body {
   margin: 0;
   color: var(--color-label-strong);
   font-family: var(--font-sans);
+  font-synthesis: none;
   line-height: var(--line-height-32);
 }
 
