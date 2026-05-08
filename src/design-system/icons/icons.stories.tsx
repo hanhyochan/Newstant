@@ -98,7 +98,7 @@ function IconsGallery({ size, showLabels }: GalleryArgs) {
                 background: 'radial-gradient(circle at top, #ffffff 0%, #ffffff 45%)',
                 color: '#111111',
                 padding: '32px 24px 48px',
-                fontFamily: '"Pretendard", "Noto Sans KR", sans-serif',
+                fontFamily: '"Pretendard Variable", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
             }}
         >
             <div style={{ maxWidth: 1440, margin: '0 auto' }}>

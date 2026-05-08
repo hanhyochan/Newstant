@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type KeyboardEvent } from "react";
 
-import { Button } from "@/design-system/components";
+import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
 type IconName =
   | "alarm"
@@ -25,6 +25,8 @@ type IconName =
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
+type InfoTab = "notice" | "faq" | "inquiry";
+type ReactionType = "like" | "dislike" | "neutral";
 
 type Article = {
   category: string;
@@ -107,19 +109,6 @@ const navItems: { icon: IconName; label: string; tab: Tab }[] = [
   { icon: "question", label: "인포메이션", tab: "info" },
 ];
 
-const policyCards = [
-  {
-    agency: "양산시",
-    description: "미취업 청년의 자격증 응시료를 지원해 구직 부담을 낮추는 정책입니다.",
-    title: "청년 자격증 응시료 지원",
-  },
-  {
-    agency: "서울시",
-    description: "청년 동아리의 프로젝트 운영비와 모임 공간을 함께 지원합니다.",
-    title: "청년동아리 활동비 지원사업",
-  },
-];
-
 const noticeItems = [
   {
     date: "2026.12.31",
@@ -130,6 +119,30 @@ const noticeItems = [
     title: "개인정보 처리방침 개정 안내",
   },
 ];
+
+const infoTabs: { id: InfoTab; label: string }[] = [
+  { id: "notice", label: "공지사항" },
+  { id: "faq", label: "FAQ" },
+  { id: "inquiry", label: "1:1 문의" },
+];
+
+const faqItems = [
+  {
+    answer: "하단 네비게이션에서 전체 뉴스, 국가정책, 마이페이지, 인포메이션 화면으로 이동할 수 있습니다.",
+    question: "NewsRoll 화면은 어떻게 이동하나요?",
+  },
+  {
+    answer: "관심 카테고리와 언론사 설정을 기준으로 주요 소식과 알림을 개인화해 보여줍니다.",
+    question: "맞춤 뉴스는 어떤 기준으로 추천되나요?",
+  },
+  {
+    answer: "마이페이지의 설정 영역에서 알림 수신 여부와 뉴스 보기 타입을 변경할 수 있습니다.",
+    question: "알림 설정은 어디서 바꿀 수 있나요?",
+  },
+];
+
+const inquiryTypes = ["서비스 이용", "뉴스 제보", "계정 문의", "오류 신고"];
+const inquiryOptions = inquiryTypes.map((type) => ({ label: type, value: type }));
 
 const searchSuggestions = [
   "예시텍스트",
@@ -254,6 +267,12 @@ function Poll({ poll }: { poll: Article["poll"] }) {
 }
 
 function ArticleCard({ article, featured = false }: { article: Article; featured?: boolean }) {
+  const [selectedReaction, setSelectedReaction] = useState<ReactionType | null>(null);
+
+  const toggleReaction = (reaction: ReactionType) => {
+    setSelectedReaction((currentReaction) => (currentReaction === reaction ? null : reaction));
+  };
+
   return (
     <article className="newsroll_article_card">
       <div className="newsroll_article_heading">
@@ -297,19 +316,34 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
       </Button>
 
       <div className="newsroll_reaction_controls" aria-label="반응 선택">
-        <button className="newsroll_reaction_control newsroll_reaction_like" type="button">
+        <button
+          aria-pressed={selectedReaction === "like"}
+          className="newsroll_reaction_control newsroll_reaction_like"
+          onClick={() => toggleReaction("like")}
+          type="button"
+        >
           <Icon name="thumbUp" />
           <span>
             좋아요 <strong>16</strong>
           </span>
         </button>
-        <button className="newsroll_reaction_control newsroll_reaction_dislike" type="button">
+        <button
+          aria-pressed={selectedReaction === "dislike"}
+          className="newsroll_reaction_control newsroll_reaction_dislike"
+          onClick={() => toggleReaction("dislike")}
+          type="button"
+        >
           <Icon name="thumbDown" />
           <span>
             싫어요 <strong>12</strong>
           </span>
         </button>
-        <button className="newsroll_reaction_control" type="button">
+        <button
+          aria-pressed={selectedReaction === "neutral"}
+          className="newsroll_reaction_control"
+          onClick={() => toggleReaction("neutral")}
+          type="button"
+        >
           <Icon name="dots" />
           <span>
             글쎄요 <strong>5</strong>
@@ -431,15 +465,6 @@ function SearchView({ onClose }: { onClose: () => void }) {
           </li>
         ))}
       </ol>
-    </section>
-  );
-}
-
-function NewsPageShell({ children, title }: { children: ReactNode; title: string }) {
-  return (
-    <section className="newsroll_page" aria-label={title}>
-      <h1 className="newsroll_page_title">{title}</h1>
-      {children}
     </section>
   );
 }
@@ -787,25 +812,150 @@ function MyPageView({ onOpenSearch }: { onOpenSearch: () => void }) {
     </section>
   );
 }
-function InfoView() {
+function InfoNoticePanel() {
   return (
-    <NewsPageShell title="인포메이션">
-      <div className="newsroll_info_tabs" role="tablist" aria-label="인포메이션 메뉴">
-        <button className="is_active" role="tab" type="button">공지사항</button>
-        <button role="tab" type="button">FAQ</button>
-        <button role="tab" type="button">1:1 문의</button>
+    <section className="newsroll_info_list" aria-label="공지사항">
+      {noticeItems.map((notice) => (
+        <button className="newsroll_info_notice_item" key={notice.title} type="button">
+          <span>{notice.date}</span>
+          <strong>{notice.title}</strong>
+          <p>더 나은 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다.</p>
+        </button>
+      ))}
+    </section>
+  );
+}
+
+function InfoFaqPanel() {
+  return (
+    <section className="newsroll_info_list" aria-label="FAQ">
+      {faqItems.map((item, index) => (
+        <details className="newsroll_info_faq_item" key={item.question} open={index === 0}>
+          <summary>
+            <span>Q</span>
+            <strong>{item.question}</strong>
+          </summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </section>
+  );
+}
+
+function InfoInquiryPanel() {
+  return (
+    <form
+      className="newsroll_info_inquiry"
+      aria-label="1:1 문의"
+      onSubmit={(event) => event.preventDefault()}
+    >
+      <label>
+        <span>문의 유형</span>
+        <Select
+          aria-label="문의 유형"
+          defaultValue={inquiryTypes[0]}
+          options={inquiryOptions}
+          radius="rounded"
+          selectSize="large"
+        />
+      </label>
+      <div className="newsroll_info_field">
+        <span>제목</span>
+        <TextInput
+          aria-label="문의 제목"
+          inputSize="large"
+          placeholder="문의 제목을 입력해주세요."
+          radius="rounded"
+          type="text"
+        />
+      </div>
+      <div className="newsroll_info_field">
+        <span>내용</span>
+        <Textarea
+          aria-label="문의 내용"
+          placeholder="문의 내용을 자세히 작성해주세요."
+          radius="rounded"
+          rows={7}
+          textareaSize="large"
+        />
+      </div>
+      <Button className="newsroll_info_submit" radius="rounded" size="large" type="submit">
+        문의하기
+      </Button>
+    </form>
+  );
+}
+
+function InfoView({ onOpenSearch }: { onOpenSearch: () => void }) {
+  const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("notice");
+  const activeInfoTabIndex = infoTabs.findIndex((tab) => tab.id === activeInfoTab);
+
+  function handleInfoTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const lastIndex = infoTabs.length - 1;
+    const nextIndexByKey: Record<string, number> = {
+      ArrowDown: activeInfoTabIndex === lastIndex ? 0 : activeInfoTabIndex + 1,
+      ArrowLeft: activeInfoTabIndex === 0 ? lastIndex : activeInfoTabIndex - 1,
+      ArrowRight: activeInfoTabIndex === lastIndex ? 0 : activeInfoTabIndex + 1,
+      ArrowUp: activeInfoTabIndex === 0 ? lastIndex : activeInfoTabIndex - 1,
+      End: lastIndex,
+      Home: 0,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) {
+      return;
+    }
+
+    event.preventDefault();
+    setActiveInfoTab(infoTabs[nextIndex].id);
+  }
+
+  return (
+    <section className="newsroll_info_screen" aria-label="인포메이션">
+      <div className="newsroll_info_top">
+        <PolicyStatusBar />
+        <NewsToolbar onOpenSearch={onOpenSearch} />
+        <h1>인포메이션</h1>
       </div>
 
-      <section className="newsroll_notice_list" aria-label="공지사항">
-        {noticeItems.map((notice) => (
-          <article key={notice.title}>
-            <strong>{notice.title}</strong>
-            <span>{notice.date}</span>
-            <p>더 나은 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다.</p>
-          </article>
-        ))}
-      </section>
-    </NewsPageShell>
+      <div className="newsroll_info_sheet">
+        <div
+          className="newsroll_info_tabs"
+          role="tablist"
+          aria-label="인포메이션 메뉴"
+          onKeyDown={handleInfoTabKeyDown}
+        >
+          {infoTabs.map((tab) => {
+            const selected = activeInfoTab === tab.id;
+
+            return (
+              <button
+                aria-controls={`newsroll_info_panel_${tab.id}`}
+                aria-selected={selected}
+                className={selected ? "is_active" : undefined}
+                id={`newsroll_info_tab_${tab.id}`}
+                key={tab.id}
+                onClick={() => setActiveInfoTab(tab.id)}
+                role="tab"
+                type="button"
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div
+          aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
+          id={`newsroll_info_panel_${activeInfoTab}`}
+          role="tabpanel"
+        >
+          {activeInfoTab === "notice" ? <InfoNoticePanel /> : null}
+          {activeInfoTab === "faq" ? <InfoFaqPanel /> : null}
+          {activeInfoTab === "inquiry" ? <InfoInquiryPanel /> : null}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -835,7 +985,7 @@ function ActiveView({
   }
 
   if (view === "info") {
-    return <InfoView />;
+    return <InfoView onOpenSearch={onOpenSearch} />;
   }
 
   return <HomeView onOpenSearch={onOpenSearch} />;
