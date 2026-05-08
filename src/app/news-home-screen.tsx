@@ -6,6 +6,8 @@ import { Button, Select, TextInput, Textarea } from "@/design-system/components"
 
 type IconName =
   | "alarm"
+  | "bookmark"
+  | "chevronRight"
   | "earth"
   | "fourSquare"
   | "home"
@@ -14,13 +16,17 @@ type IconName =
   | "menu"
   | "question"
   | "search"
+  | "share"
   | "user";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
 type InfoTab = "notice" | "faq" | "inquiry";
+type HomeViewMode = "reels" | "block";
 
 type HomeArticle = {
+  category: string;
+  date: string;
   image: string;
   imageAlt: string;
   title: string;
@@ -29,10 +35,14 @@ type HomeArticle = {
 const articleImage = "/images/news-apartment.png";
 
 const homeArticle: HomeArticle = {
+  category: "정치",
+  date: "2026년 12월 31일 08:30",
   image: articleImage,
   imageAlt: "아파트 단지 전경",
   title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
 };
+
+const homeBreakingTitle = "정청래, ‘필버 중단’ 국민의 힘에 “대구/경북 통합 찬반 당론 먼저 정하라”";
 
 const navItems: { icon: IconName; label: string; tab: Tab }[] = [
   { icon: "home", label: "메인화면", tab: "home" },
@@ -213,7 +223,106 @@ function HomeBlockItem() {
   );
 }
 
-function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
+function HomeViewToggle({
+  mode,
+  onModeChange,
+}: {
+  mode: HomeViewMode;
+  onModeChange: (mode: HomeViewMode) => void;
+}) {
+  return (
+    <div className="newsroll_view_toggle" role="tablist" aria-label="뉴스 보기 방식">
+      <button
+        aria-label="릴스형"
+        aria-selected={mode === "reels"}
+        className={`newsroll_toggle_button${mode === "reels" ? " newsroll_toggle_active" : ""}`}
+        onClick={() => onModeChange("reels")}
+        role="tab"
+        type="button"
+      >
+        <Icon name="list" />
+      </button>
+      <button
+        aria-label="블록형"
+        aria-selected={mode === "block"}
+        className={`newsroll_toggle_button${mode === "block" ? " newsroll_toggle_active" : ""}`}
+        onClick={() => onModeChange("block")}
+        role="tab"
+        type="button"
+      >
+        <Icon name="fourSquare" />
+      </button>
+    </div>
+  );
+}
+
+function HomeReelsView({
+  mode,
+  onModeChange,
+  onOpenSearch,
+}: {
+  mode: HomeViewMode;
+  onModeChange: (mode: HomeViewMode) => void;
+  onOpenSearch: () => void;
+}) {
+  return (
+    <>
+      <header className="newsroll_header newsroll_home_reels_header">
+        <NewsToolbar onOpenSearch={onOpenSearch} />
+
+        <section className="newsroll_home_intro" aria-label="새 소식 요약">
+          <p>
+            반갑습니다 <strong>콩콩이</strong>님!
+          </p>
+          <div className="newsroll_home_metric">
+            <strong>11,343</strong>
+            <span>개</span>
+          </div>
+          <p className="newsroll_home_metric_caption">새로운 소식이 있습니다.</p>
+        </section>
+
+        <div className="newsroll_home_reels_toggle_row">
+          <HomeViewToggle mode={mode} onModeChange={onModeChange} />
+        </div>
+
+        <button className="newsroll_home_breaking_card" type="button">
+          <span className="newsroll_home_breaking_icon">
+            <Icon name="alarm" />
+          </span>
+          <span>{homeBreakingTitle}</span>
+          <Icon name="chevronRight" />
+        </button>
+      </header>
+
+      <section className="newsroll_home_reels_sheet" aria-label="뉴스 릴스">
+        <article className="newsroll_home_reels_card">
+          <span className="newsroll_home_reels_chip">{homeArticle.category}</span>
+          <h1>{homeArticle.title}</h1>
+          <time dateTime="2026-12-31T08:30:00">{homeArticle.date}</time>
+          <div className="newsroll_home_reels_actions" aria-label="기사 도구">
+            <button aria-label="공유" className="newsroll_icon_button" type="button">
+              <Icon name="share" />
+            </button>
+            <button aria-label="북마크" className="newsroll_icon_button" type="button">
+              <Icon name="bookmark" />
+            </button>
+          </div>
+          <img alt={homeArticle.imageAlt} src={homeArticle.image} />
+        </article>
+      </section>
+    </>
+  );
+}
+
+function HomeBlockView({
+  mode,
+  onModeChange,
+  onOpenSearch,
+}: {
+  mode: HomeViewMode;
+  onModeChange: (mode: HomeViewMode) => void;
+  onOpenSearch: () => void;
+}) {
   return (
     <>
       <header className="newsroll_header">
@@ -221,26 +330,7 @@ function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
         <NewsToolbar onOpenSearch={onOpenSearch} />
 
         <div className="newsroll_home_actions">
-          <div className="newsroll_view_toggle" role="tablist" aria-label="뉴스 보기 방식">
-            <button
-              aria-label="릴스형"
-              aria-selected="true"
-              className="newsroll_toggle_button newsroll_toggle_active"
-              role="tab"
-              type="button"
-            >
-              <Icon name="list" />
-            </button>
-            <button
-              aria-label="블록형"
-              aria-selected="false"
-              className="newsroll_toggle_button"
-              role="tab"
-              type="button"
-            >
-              <Icon name="fourSquare" />
-            </button>
-          </div>
+          <HomeViewToggle mode={mode} onModeChange={onModeChange} />
 
           <button className="newsroll_home_alarm" type="button" aria-label="알림">
             <Icon name="alarm" />
@@ -254,6 +344,16 @@ function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
         ))}
       </section>
     </>
+  );
+}
+
+function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
+  const [homeViewMode, setHomeViewMode] = useState<HomeViewMode>("reels");
+
+  return homeViewMode === "reels" ? (
+    <HomeReelsView mode={homeViewMode} onModeChange={setHomeViewMode} onOpenSearch={onOpenSearch} />
+  ) : (
+    <HomeBlockView mode={homeViewMode} onModeChange={setHomeViewMode} onOpenSearch={onOpenSearch} />
   );
 }
 
