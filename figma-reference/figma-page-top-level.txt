@@ -1,0 +1,8 @@
+| Name | Node ID | Dimensions | Direct parent |
+|---|---:|---:|---|
+| Group 35 | `519:292` | `966 × 541` | `기획` |
+| 맞춤형 뉴스 릴스형 | `600:122` | `360 × 2071` | `기획` |
+| 맞춤형 뉴스 릴스형 | `945:628` | `360 × 1991` | `기획` |
+| 전체 뉴스 | `1360:3356` | `360 × 1743` | `기획` |
+
+The root metadata response I received did not visibly include `인포메이션`, `FAQ`, `1:1 문의`, or `메인화면`.

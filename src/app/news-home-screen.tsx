@@ -6,10 +6,6 @@ import { Button, Select, TextInput, Textarea } from "@/design-system/components"
 
 type IconName =
   | "alarm"
-  | "bookmark"
-  | "chat"
-  | "chevronRight"
-  | "dots"
   | "earth"
   | "fourSquare"
   | "home"
@@ -18,88 +14,25 @@ type IconName =
   | "menu"
   | "question"
   | "search"
-  | "share"
-  | "thumbDown"
-  | "thumbUp"
   | "user";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
 type InfoTab = "notice" | "faq" | "inquiry";
-type ReactionType = "like" | "dislike" | "neutral";
 
-type Article = {
-  category: string;
-  categoryTone: "politics" | "society" | "culture" | "tech";
-  date: string;
+type HomeArticle = {
   image: string;
   imageAlt: string;
-  lead: string;
-  poll: {
-    options: string[];
-    prompt: string;
-    total: number;
-  };
-  source: string;
   title: string;
 };
 
 const articleImage = "/images/news-apartment.png";
 
-const articles: Article[] = [
-  {
-    category: "정치",
-    categoryTone: "politics",
-    date: "2026년 12월 31일 08:30",
-    image: articleImage,
-    imageAlt: "아파트 단지 전경",
-    lead:
-      "최근 국내 부동산 시장이 다시 한번 변곡점에 서고 있다. 상반기 동안 이어졌던 거래 회복 흐름이 둔화되며, 시장 전반에 신중한 분위기가 확산되는 모습이다. 특히 수도권과 일부 광역시를 중심으로 매수 심리가 빠르게 식고 있다.\n\n한국부동산연구원이 발표한 자료에 따르면, 기준금리 유지에도 불구하고 주택담보대출 심사 강화와 보유세 부담이 실수요자와 투자자 모두에게 압박으로 작용하고 있다. 이에 따라 신규 분양 시장에서는 청약 경쟁률이 하락하고, 기존 주택 거래량 역시 전년 대비 감소세를 보이고 있다.\n\n전문가들은 당분간 가격 급등이나 급락보다는 지역별 양극화가 심화될 가능성에 주목한다.",
-    poll: {
-      options: [
-        "어쩌구 저쩌구해서 어케 해야한다.",
-        "어쩌구 저쩌구해서 어케 해야한다.",
-        "어쩌구 저쩌구해서 어케 해야한다.",
-      ],
-      prompt: "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
-      total: 100,
-    },
-    source: "국민일보",
-    title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
-  },
-  {
-    category: "사회",
-    categoryTone: "society",
-    date: "2026년 12월 31일 09:10",
-    image: articleImage,
-    imageAlt: "아파트 단지 전경",
-    lead:
-      "출근 시간대 교통 혼잡을 줄이기 위한 인력 배치 실험이 주요 환승 거점에서 확대된다. 지자체는 이동량 데이터를 기반으로 배차 간격을 조정하고, 혼잡도가 높은 노선에는 임시 차량을 추가 투입할 계획이다.",
-    poll: {
-      options: ["그렇다", "아니다"],
-      prompt: "출근길 혼잡 완화에 인력 배치가 효과적일까요?",
-      total: 100,
-    },
-    source: "중앙일보",
-    title: "수도권 출근길 혼잡 완화 실험, 주요 환승역으로 확대",
-  },
-  {
-    category: "IT과학",
-    categoryTone: "tech",
-    date: "2026년 12월 31일 10:20",
-    image: articleImage,
-    imageAlt: "아파트 단지 전경",
-    lead:
-      "국내 생성형 AI 서비스들이 기사 요약과 개인 맞춤 알림 기능을 강화하고 있다. 사용자는 관심 키워드와 선호 매체를 설정해 필요한 소식만 빠르게 받아볼 수 있다.",
-    poll: {
-      options: ["요약이 충분하다", "원문 확인이 중요하다"],
-      prompt: "뉴스 서비스에서 AI 요약을 얼마나 신뢰하시나요?",
-      total: 100,
-    },
-    source: "테크뉴스",
-    title: "AI 뉴스 요약 경쟁 본격화, 개인 맞춤 알림이 승부처로",
-  },
-];
+const homeArticle: HomeArticle = {
+  image: articleImage,
+  imageAlt: "아파트 단지 전경",
+  title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
+};
 
 const navItems: { icon: IconName; label: string; tab: Tab }[] = [
   { icon: "home", label: "메인화면", tab: "home" },
@@ -128,16 +61,36 @@ const infoTabs: { id: InfoTab; label: string }[] = [
 
 const faqItems = [
   {
-    answer: "하단 네비게이션에서 전체 뉴스, 국가정책, 마이페이지, 인포메이션 화면으로 이동할 수 있습니다.",
-    question: "NewsRoll 화면은 어떻게 이동하나요?",
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
   },
   {
-    answer: "관심 카테고리와 언론사 설정을 기준으로 주요 소식과 알림을 개인화해 보여줍니다.",
-    question: "맞춤 뉴스는 어떤 기준으로 추천되나요?",
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
   },
   {
-    answer: "마이페이지의 설정 영역에서 알림 수신 여부와 뉴스 보기 타입을 변경할 수 있습니다.",
-    question: "알림 설정은 어디서 바꿀 수 있나요?",
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
+  },
+  {
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
+  },
+  {
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
+  },
+  {
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
+  },
+  {
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
+  },
+  {
+    answer: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+    question: "어쩌구 저쩌구 궁금합니다?",
   },
 ];
 
@@ -228,139 +181,6 @@ function Icon({ name }: { name: IconName }) {
   return <span aria-hidden="true" className={`newsroll_icon newsroll_icon_${name}`} />;
 }
 
-function ReactionSummary() {
-  return (
-    <div aria-label="기사 반응" className="newsroll_reaction_summary">
-      <span className="newsroll_reaction_item newsroll_reaction_like">
-        <Icon name="thumbUp" />
-        <span>16</span>
-      </span>
-      <span className="newsroll_reaction_item newsroll_reaction_dislike">
-        <Icon name="thumbDown" />
-        <span>12</span>
-      </span>
-      <span className="newsroll_reaction_item">
-        <Icon name="dots" />
-        <span>5</span>
-      </span>
-    </div>
-  );
-}
-
-function Poll({ poll }: { poll: Article["poll"] }) {
-  return (
-    <section className="newsroll_poll" aria-label="기사 투표">
-      <div className="newsroll_poll_title">{poll.prompt}</div>
-      <div className="newsroll_poll_options">
-        {poll.options.map((option, index) => (
-          <button className="newsroll_poll_option" key={`${option}-${index}`} type="button">
-            <span>{option}</span>
-            <span className="newsroll_vote_dot" aria-hidden="true" />
-          </button>
-        ))}
-      </div>
-      <div className="newsroll_poll_total">
-        <strong>{poll.total}명</strong>이 참여했어요.
-      </div>
-    </section>
-  );
-}
-
-function ArticleCard({ article, featured = false }: { article: Article; featured?: boolean }) {
-  const [selectedReaction, setSelectedReaction] = useState<ReactionType | null>(null);
-
-  const toggleReaction = (reaction: ReactionType) => {
-    setSelectedReaction((currentReaction) => (currentReaction === reaction ? null : reaction));
-  };
-
-  return (
-    <article className="newsroll_article_card">
-      <div className="newsroll_article_heading">
-        <span className={`newsroll_category_chip newsroll_category_${article.categoryTone}`}>
-          {article.category}
-        </span>
-        <div className="newsroll_article_title" role="heading" aria-level={featured ? 1 : 2}>
-          {article.title}
-        </div>
-        <div className="newsroll_article_date">{article.date}</div>
-      </div>
-
-      <div className="newsroll_article_actions" aria-label="기사 도구">
-        <button aria-label="공유" className="newsroll_icon_button" type="button">
-          <Icon name="share" />
-        </button>
-        <button aria-label="북마크" className="newsroll_icon_button" type="button">
-          <Icon name="bookmark" />
-        </button>
-      </div>
-
-      <div className="newsroll_article_media">
-        <img alt={article.imageAlt} src={article.image} />
-        <span>사진출처: 0000언론마케팅</span>
-      </div>
-
-      <div className="newsroll_article_body">{article.lead}</div>
-      <ReactionSummary />
-
-      <div className="newsroll_source_row">
-        <span className="newsroll_source_mark" aria-hidden="true">
-          N
-        </span>
-        <span>{article.source}</span>
-        <span className="newsroll_source_divider" aria-hidden="true" />
-        <span>홍길동 기자</span>
-      </div>
-
-      <Button className="newsroll_original_button" radius="rounded" size="medium" variant="outline">
-        기사 원문 보기
-      </Button>
-
-      <div className="newsroll_reaction_controls" aria-label="반응 선택">
-        <button
-          aria-pressed={selectedReaction === "like"}
-          className="newsroll_reaction_control newsroll_reaction_like"
-          onClick={() => toggleReaction("like")}
-          type="button"
-        >
-          <Icon name="thumbUp" />
-          <span>
-            좋아요 <strong>16</strong>
-          </span>
-        </button>
-        <button
-          aria-pressed={selectedReaction === "dislike"}
-          className="newsroll_reaction_control newsroll_reaction_dislike"
-          onClick={() => toggleReaction("dislike")}
-          type="button"
-        >
-          <Icon name="thumbDown" />
-          <span>
-            싫어요 <strong>12</strong>
-          </span>
-        </button>
-        <button
-          aria-pressed={selectedReaction === "neutral"}
-          className="newsroll_reaction_control"
-          onClick={() => toggleReaction("neutral")}
-          type="button"
-        >
-          <Icon name="dots" />
-          <span>
-            글쎄요 <strong>5</strong>
-          </span>
-        </button>
-      </div>
-
-      <Poll poll={article.poll} />
-
-      <Button className="newsroll_comment_button" radius="rounded" size="medium" variant="filled">
-        <Icon name="chat" />
-        댓글 반응보기
-      </Button>
-    </article>
-  );
-}
-
 function NewsToolbar({ onOpenSearch }: { onOpenSearch: () => void }) {
   return (
     <div className="newsroll_toolbar" aria-label="상단 도구">
@@ -383,25 +203,24 @@ function NewsToolbar({ onOpenSearch }: { onOpenSearch: () => void }) {
   );
 }
 
+function HomeBlockItem() {
+  return (
+    <article className="newsroll_home_block_item">
+      <strong>{homeArticle.title}</strong>
+      <span>1시간 전</span>
+      <img alt={homeArticle.imageAlt} src={homeArticle.image} />
+    </article>
+  );
+}
+
 function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
   return (
     <>
-        <header className="newsroll_header">
-          <NewsToolbar onOpenSearch={onOpenSearch} />
+      <header className="newsroll_header">
+        <PolicyStatusBar />
+        <NewsToolbar onOpenSearch={onOpenSearch} />
 
-          <section className="newsroll_intro" aria-label="새 소식 요약">
-            <div className="newsroll_greeting">
-              반갑습니다 <strong>콩콩이</strong>님!
-            </div>
-            <div className="newsroll_metric">
-              <div className="newsroll_metric_line">
-                <strong>11,343</strong>
-                <span>개</span>
-              </div>
-              <div>새로운 소식이 있습니다.</div>
-            </div>
-          </section>
-
+        <div className="newsroll_home_actions">
           <div className="newsroll_view_toggle" role="tablist" aria-label="뉴스 보기 방식">
             <button
               aria-label="릴스형"
@@ -423,20 +242,17 @@ function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
             </button>
           </div>
 
-          <button className="newsroll_breaking_card" type="button">
-            <span className="newsroll_breaking_icon">
-              <Icon name="alarm" />
-            </span>
-            <span>정청래, ‘필버 중단’ 국민의 힘에 “대구/경북 통합 찬반 당론 먼저 정하라”</span>
-            <Icon name="chevronRight" />
+          <button className="newsroll_home_alarm" type="button" aria-label="알림">
+            <Icon name="alarm" />
           </button>
-        </header>
+        </div>
+      </header>
 
-        <section className="newsroll_feed" aria-label="뉴스 릴스">
-          {articles.map((article, index) => (
-            <ArticleCard article={article} featured={index === 0} key={article.title} />
-          ))}
-        </section>
+      <section className="newsroll_home_sheet" aria-label="메인 뉴스">
+        {Array.from({ length: 8 }, (_, index) => (
+          <HomeBlockItem key={index} />
+        ))}
+      </section>
     </>
   );
 }
@@ -535,6 +351,7 @@ function AllNewsView({ onOpenSearch }: { onOpenSearch: () => void }) {
   return (
     <section className="newsroll_all_news" aria-label="전체뉴스">
       <div className="newsroll_all_top">
+        <PolicyStatusBar />
         <NewsToolbar onOpenSearch={onOpenSearch} />
 
         <div className="newsroll_all_breaking_label">
@@ -830,10 +647,10 @@ function InfoFaqPanel() {
   return (
     <section className="newsroll_info_list" aria-label="FAQ">
       {faqItems.map((item, index) => (
-        <details className="newsroll_info_faq_item" key={item.question} open={index === 0}>
+        <details className="newsroll_info_faq_item" key={`${item.question}-${index}`} open={index === 0}>
           <summary>
-            <span>Q</span>
-            <strong>{item.question}</strong>
+            <strong>Q. {item.question}</strong>
+            <span className="newsroll_info_faq_chevron" aria-hidden="true" />
           </summary>
           <p>{item.answer}</p>
         </details>
@@ -887,8 +704,9 @@ function InfoInquiryPanel() {
 }
 
 function InfoView({ onOpenSearch }: { onOpenSearch: () => void }) {
-  const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("notice");
+  const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("faq");
   const activeInfoTabIndex = infoTabs.findIndex((tab) => tab.id === activeInfoTab);
+  const activeInfoTabLabel = infoTabs[activeInfoTabIndex]?.label ?? "FAQ";
 
   function handleInfoTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const lastIndex = infoTabs.length - 1;
@@ -915,7 +733,7 @@ function InfoView({ onOpenSearch }: { onOpenSearch: () => void }) {
       <div className="newsroll_info_top">
         <PolicyStatusBar />
         <NewsToolbar onOpenSearch={onOpenSearch} />
-        <h1>인포메이션</h1>
+        <h1>{activeInfoTabLabel}</h1>
       </div>
 
       <div className="newsroll_info_sheet">

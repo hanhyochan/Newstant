@@ -1,0 +1,14 @@
+All 8 IDs exist in `EIjIDPalrEAUke1pG1ipXJ`.
+
+| Node ID | Node name | Dimensions | Immediate child names / IDs | Matching visible text labels |
+|---|---|---:|---|---|
+| `1371:1271` | `인포메이션에 FAQ` | `360 × 964` | `Frame 91` (`1371:1272`), `Display Shape` (`1371:1314`, hidden), `Group 36` (`1371:1319`), `Frame 40` (`1371:1343`), `FAQ` (`1371:1352`) | `공지사항`, `FAQ`, `1:1 문의` |
+| `1371:1200` | `공지사항` | `49 × 14` | none | `공지사항` |
+| `1371:1300` | `Q. 어쩌구 저쩌구 궁금합니다?` | `205 × 26` | none | none |
+| `1371:1400` | `Path` | `4.0078 × 3.9452` | none | none |
+| `1371:1505` | `Frame 92` | `360 × 1433` | `Frame 76` (`1371:1506`), `Group 76` (`1371:1519`), `Frame 1505` (`1371:1526`), `Frame 91` (`1371:1532`), `Frame 114` (`1371:1535`), `Frame 82` (`1371:1555`), `Frame 86` (`1371:1556`), `Frame 88` (`1371:1571`) | none |
+| `1371:1577` | `Frame 93` | `360 × 1415` | `Frame 76` (`1371:1578`), `Group 76` (`1371:1591`), `Frame 1506` (`1371:1598`), `Frame 91` (`1371:1606`), `Frame 82` (`1371:1609`), `Frame 114` (`1371:1610`), `Frame 86` (`1371:1630`), `Frame 88` (`1371:1645`) | none |
+| `1371:1651` | `Frame 94` | `360 × 1433` | `Frame 76` (`1371:1652`), `Group 76` (`1371:1665`), `Frame 1506` (`1371:1672`), `Frame 91` (`1371:1680`), `Frame 114` (`1371:1683`), `Frame 82` (`1371:1703`), `Frame 86` (`1371:1704`), `Frame 88` (`1371:1719`) | none |
+| `1371:1729` | `Frame 1529` | `328 × 200` | `반갑습니다 콩콩이님!` (`1371:1730`), `11,343개 새로운 소식이 있습니다.` (`1371:1731`), `Group 116` (`1371:1732`) | none |
+
+If you want, I can also flatten the child trees for just the FAQ-related nodes into a more readable outline.

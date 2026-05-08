@@ -1,0 +1,100 @@
+**Common frame**
+- Mobile artboard width: `360px`; full-bleed dark purple background: `#1A004C`
+- Shared top system/status area: `40px` tall image strip across `360px`
+- Shared header icons/text: white foreground, small accent dot in orange (`#FF8A00`) on the top-right cluster
+
+**Node `1371:4325`**
+- Main white content card: `360 x` full-width, positioned at `top: 145.04px`, `radius: 20px`
+- Card padding: `32px` top, `16px` sides, `24px` bottom
+- Internal layout: vertical stack with `gap: 28px`
+- News grid row: `328px` wide container, two columns, `gap: 16px`
+- Each news cell: `156px` wide, vertical stack, `gap: 8px`
+- Thumbnail: `156 x 117px`, `radius: 12px`, shadow `0 1px 2px rgba(0,0,0,0.05)`
+- Title text: `18px`, `SemiBold`, `line-height: 26px`, black
+- Time text: `13px`, `Regular`, `line-height: 13px`, color `#8F8F8F`
+- Top-right floating controls:
+  - Group pill: `89.068 x 48px`, translucent white fill `rgba(255,255,255,0.3)`, `radius: 100000px`
+  - Active inner button: `40 x 40.033px`, white fill, `radius: 24px`
+  - List icon inside: about `18 x 17.217px`
+  - Bell button: `48 x 48px`, lavender fill, circular
+- Bottom nav:
+  - Bar: `360 x 60px`, white fill, top border `1px solid #E0E0E0`
+  - Inner icon strip: `287 x 20px`
+  - Active state shown: home icon highlighted in light purple; other nav icons inactive in black
+
+**Node `1371:3`**
+- Purple notice stack container: `328px` wide, `gap: 2px`
+- Notice cards:
+  - Fill: `#BA96FF`
+  - Radius: `20px`
+  - Padding: `16px`
+  - Text: `16px`, `Medium`, `line-height: 24px`, black
+  - First and third cards: `71px` tall; middle card auto-height in the screenshot
+- “더보기” button:
+  - Size: `328 x 52px`
+  - Fill: `rgba(255,255,255,0.3)`
+  - Radius: `10px`
+  - Padding: `16px`
+  - Gap between label and arrow: `10px`
+  - Label: `16px`, `SemiBold`, white
+  - Arrow icon: about `5 x 7.071px`, rotated `-45deg`
+- Latest news section card:
+  - White fill, `radius: 20px`
+  - Shadow: `3px 3px 4px rgba(0,0,0,0.12)`
+  - Padding: `32px` top, `16px` sides, `28px` bottom
+  - Section gaps: `28px` between blocks
+- Section title “최신 뉴스 10”:
+  - `18px`, `Medium`, color `#424242`
+  - “10” part is `Bold`
+- Category chip:
+  - Size: `60 x 32px`
+  - Radius: `1000px`
+  - Inactive fill: `#E0E0E0`
+  - Text: `14px`, `Regular`, black
+- News hero card:
+  - Image: `300 x 328px`
+  - Radius: `10px`
+- Headline text:
+  - Main headline styles used: `18px` or `20px`, `SemiBold`, `line-height: 26px`, black
+  - 20px variant has `tracking: -0.4px`
+- Meta row:
+  - Time: `13px`, `Regular`, `line-height: 13px`, `#8F8F8F`
+  - Count text: same `13px` style, gray
+- Stats icons:
+  - Left icon: about `22 x 15px`
+  - Right icon: about `18 x 16.15px`
+- Publisher pills:
+  - Height: `50px`
+  - Radius: `1000px`
+  - Active: black fill, white `14px Bold`
+  - Inactive: white fill, `1px solid #E0E0E0`, black `14px Regular`
+  - Logo/avatar icons: `28 x 28px`
+- Bottom separators between article rows:
+  - Full-width divider rendered as a thin line, light gray, with `328px` visible width
+
+**Node `1371:1271`**
+- FAQ panel:
+  - White fill
+  - `radius: 20px` on the top corners
+  - Positioned at `top: 145.04px`
+  - Padding: `32px` top, `16px` sides
+  - Vertical gaps: `28px`
+- Tabs:
+  - Each pill: `32px` tall, `radius: 1000px`
+  - Inactive: white fill, `1px solid #E0E0E0`, `14px Regular`, black
+  - Active FAQ tab: black fill, `14px Bold`, white
+- Question rows:
+  - Width: `328px`
+  - Question text: `18px`, `SemiBold`, `line-height: 26px`, black
+  - Tracking: `-0.36px`
+  - Chevron icon box: `11.314 x 11.314px`
+  - Chevron graphic: `8 x 8px`
+  - Open state: rotated `135deg`
+  - Closed state: rotated `45deg`
+- Answer block:
+  - Left padding: `24px`
+  - Text: `16px`, `Medium`, `line-height: 24px`, color `#424242`
+- Dividers:
+  - Between FAQ rows: thin light-gray separators spanning `328px`
+- Top page label:
+  - “FAQ” label at the top-left of the content area: `18px`, `Medium`, white
