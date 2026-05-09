@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 
 import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
@@ -8,6 +8,8 @@ type IconName =
   | "alarm"
   | "bookmark"
   | "chevronRight"
+  | "chat"
+  | "dots"
   | "earth"
   | "fourSquare"
   | "home"
@@ -17,19 +19,45 @@ type IconName =
   | "question"
   | "search"
   | "share"
+  | "thumbDown"
+  | "thumbUp"
   | "user";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
 type InfoTab = "notice" | "faq" | "inquiry";
 type HomeViewMode = "reels" | "block";
+type Reaction = "like" | "dislike" | "neutral" | null;
+type ReactionValue = Exclude<Reaction, null>;
+type CommentReactionValue = "like" | "dislike";
+type CommentSortOrder = "latest" | "popular";
+type SortOrder = "popular" | "latest";
+type PollKind = "stacked" | "binary";
 
 type HomeArticle = {
   category: string;
   date: string;
   image: string;
   imageAlt: string;
+  pollKind?: PollKind;
   title: string;
+};
+
+type PillTabItem<T extends string> = {
+  id: T;
+  label: string;
+};
+
+type CommentItem = {
+  author: string;
+  body: string;
+  choice: string;
+  date: string;
+  dislikes: number;
+  id: number;
+  isMine?: boolean;
+  likes: number;
+  replies: number;
 };
 
 const articleImage = "/images/news-apartment.png";
@@ -116,6 +144,76 @@ const searchSuggestions = [
   "예시텍스트",
 ];
 
+const articleBody = `최근 국내 부동산 시장이 다시 한번 변곡점에 서고 있다. 상반기 동안 이어졌던 거래 회복 흐름이 둔화되며, 시장 전반에 신중한 분위기가 확산되는 모습이다.
+
+특히 수도권과 일부 광역시를 중심으로 매수 심리가 빠르게 식고 있다. 한국부동산연구원이 발표한 자료에 따르면, 기준금리 유지에도 불구하고 주택담보대출 심사 강화와 보유세 부담이 실수요자와 투자자 모두에게 압박으로 작용하고 있다.
+
+전문가들은 당분간 가격 급등이나 급락보다는 지역별 양극화가 심화될 가능성에 주목한다. 정책 변화와 금리 방향성이 명확해지기 전까지는 관망세가 이어질 것이며, 안정적인 실거주 중심의 시장 재편이 예상된다.`;
+
+const pollOptions = [
+  "어쩌구 저쩌구해서 어케 해야한다.",
+  "상황을 더 지켜본 뒤 판단해야 한다.",
+  "정책 지원을 먼저 확대해야 한다.",
+];
+
+const binaryPollOptions = ["그렇다", "아니다"];
+
+const homeReelArticles: HomeArticle[] = [
+  { ...homeArticle, pollKind: "stacked" },
+  { ...homeArticle, pollKind: "binary" },
+];
+
+const reactionItems: { count: number; icon: IconName; label: string; value: ReactionValue }[] = [
+  { count: 16, icon: "thumbUp", label: "좋아요", value: "like" },
+  { count: 12, icon: "thumbDown", label: "싫어요", value: "dislike" },
+  { count: 5, icon: "dots", label: "글쎄요", value: "neutral" },
+];
+
+const commentAgeStats = [
+  { age: "10대", value: 24 },
+  { age: "20대", value: 36 },
+  { age: "30대", value: 64 },
+  { age: "40대", value: 36 },
+  { age: "50대", value: 25 },
+  { age: "60대↑", value: 16 },
+];
+
+const commentBodies = [
+  "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트...",
+  "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트...",
+  "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트...",
+];
+
+const commentTemplates: Omit<CommentItem, "choice">[] = [
+  {
+    author: "콩콩이",
+    body: commentBodies[0],
+    date: "2026.12.31 08:30",
+    dislikes: 16,
+    id: 1,
+    likes: 16,
+    replies: 13,
+  },
+  {
+    author: "콩콩이",
+    body: commentBodies[1],
+    date: "2026.12.31 08:30",
+    dislikes: 16,
+    id: 2,
+    likes: 16,
+    replies: 13,
+  },
+  {
+    author: "콩콩이",
+    body: commentBodies[2],
+    date: "2026.12.31 08:30",
+    dislikes: 16,
+    id: 3,
+    likes: 16,
+    replies: 13,
+  },
+];
+
 const allNewsAssets = {
   comment: "https://www.figma.com/api/mcp/asset/3f35cfa2-0bc7-4d2a-9328-60390c1622a1",
   eye: "https://www.figma.com/api/mcp/asset/7c832f0b-f9d8-4bdc-a3df-8602d289353e",
@@ -132,69 +230,157 @@ const allNewsBreaking = [
   "정청래, ‘필버 중단’ 국민의 힘에 “대구/경북 통합 찬반 당론 먼저 정하라”",
   "류지현호, 대만에 4-5 충격패... WVC ‘빨간불’",
   "대통령, 9일 중동 상황 경제/물가 비상 경제점검회의 주재",
+  "여야, 민생 법안 처리 일정 두고 원내대표 회동",
+  "정부, 수도권 주택 공급 추가 대책 이번 주 발표",
 ];
 
 const allNewsLatest = [
-  {
-    category: "정치",
-    image: allNewsAssets.latest,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
-  {
-    category: "정치",
-    image: allNewsAssets.latest,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
+  { category: "정치", image: allNewsAssets.latest, title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'" },
+  { category: "경제", image: allNewsAssets.relayOne, title: "수도권 아파트 거래량 회복세, 실수요 중심으로 재편" },
+  { category: "사회", image: allNewsAssets.relayTwo, title: "청년 주거 지원 확대 논의, 지자체별 신청 조건 달라" },
+  { category: "국제", image: allNewsAssets.relayThree, title: "중동 긴장 재고조에 원유·물가 변동성 확대 우려" },
+  { category: "문화", image: allNewsAssets.relayFour, title: "지역 축제 방문객 증가, 골목상권 매출도 동반 상승" },
 ];
 
-const allNewsPresses = ["중앙일보", "국민일보", "국민일보"];
+const allNewsPresses = ["중앙일보", "국민일보", "한겨레"];
 
-const allNewsHeadlines = Array.from({ length: 4 }, (_, index) => ({
-  image: allNewsAssets.thumbnail,
-  title: index === 0 ? "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입" : "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
-}));
+const allNewsHeadlinesByPress: Record<string, { image: string; title: string }[]> = {
+  국민일보: Array.from({ length: 8 }, (_, index) => ({
+    image: [allNewsAssets.thumbnail, allNewsAssets.relayOne, allNewsAssets.relayTwo][index % 3],
+    title:
+      index % 2 === 0
+        ? "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입"
+        : "대출 규제 강화 이후 실수요자 관망세 뚜렷",
+  })),
+  중앙일보: Array.from({ length: 8 }, (_, index) => ({
+    image: [allNewsAssets.latest, allNewsAssets.relayThree, allNewsAssets.relayFour][index % 3],
+    title:
+      index % 2 === 0
+        ? "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정"
+        : "여야, 예산안 세부 쟁점 두고 막판 협상",
+  })),
+  한겨레: Array.from({ length: 8 }, (_, index) => ({
+    image: [allNewsAssets.relayFive, allNewsAssets.relayTwo, allNewsAssets.thumbnail][index % 3],
+    title:
+      index % 2 === 0
+        ? "청년 주거 정책, 신청 문턱 낮춰야 한다는 지적"
+        : "지역 의료 공백 해소 위한 공공지원 논의 확대",
+  })),
+};
 
 const allNewsRelayCategories = ["정치", "경제", "사회", "문화", "국제"];
 
-const allNewsRelay = [
-  {
-    image: allNewsAssets.relayOne,
-    title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
-  },
-  {
-    image: allNewsAssets.relayTwo,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
-  {
-    image: allNewsAssets.relayThree,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
-  {
-    image: allNewsAssets.relayFour,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
-  {
-    image: allNewsAssets.relayFive,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
-  {
-    image: allNewsAssets.relayOne,
-    title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
-  },
-  {
-    image: allNewsAssets.relayTwo,
-    title: "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정 '50%가 긍정'",
-  },
-];
+const allNewsRelayByCategory: Record<string, { image: string; title: string }[]> = Object.fromEntries(
+  allNewsRelayCategories.map((category, categoryIndex) => [
+    category,
+    Array.from({ length: 7 }, (_, index) => ({
+      image:
+        [
+          allNewsAssets.relayOne,
+          allNewsAssets.relayTwo,
+          allNewsAssets.relayThree,
+          allNewsAssets.relayFour,
+          allNewsAssets.relayFive,
+        ][(index + categoryIndex) % 5],
+      title:
+        category === "정치"
+          ? index % 2 === 0
+            ? "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입"
+            : "여야, 민생 법안 처리 두고 본회의 일정 조율"
+          : `${category} 주요 이슈 ${index + 1}, 오늘의 흐름을 한눈에 정리`,
+    })),
+  ]),
+);
 
 function Icon({ name }: { name: IconName }) {
   return <span aria-hidden="true" className={`newsroll_icon newsroll_icon_${name}`} />;
 }
 
-function NewsToolbar({ onOpenSearch }: { onOpenSearch: () => void }) {
+function PillTabMenu<T extends string>({
+  ariaLabel,
+  className,
+  getPanelId,
+  getTabId,
+  items,
+  onChange,
+  value,
+}: {
+  ariaLabel: string;
+  className: string;
+  getPanelId?: (id: T) => string;
+  getTabId?: (id: T) => string;
+  items: PillTabItem<T>[];
+  onChange: (id: T) => void;
+  value: T;
+}) {
+  const activeIndex = Math.max(
+    0,
+    items.findIndex((item) => item.id === value),
+  );
+
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const lastIndex = items.length - 1;
+    const nextIndexByKey: Record<string, number> = {
+      ArrowDown: activeIndex === lastIndex ? 0 : activeIndex + 1,
+      ArrowLeft: activeIndex === 0 ? lastIndex : activeIndex - 1,
+      ArrowRight: activeIndex === lastIndex ? 0 : activeIndex + 1,
+      ArrowUp: activeIndex === 0 ? lastIndex : activeIndex - 1,
+      End: lastIndex,
+      Home: 0,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) {
+      return;
+    }
+
+    event.preventDefault();
+    onChange(items[nextIndex].id);
+  }
+
+  return (
+    <div className={className} role="tablist" aria-label={ariaLabel} onKeyDown={handleKeyDown}>
+      {items.map((item) => {
+        const selected = value === item.id;
+
+        return (
+          <button
+            aria-controls={getPanelId?.(item.id)}
+            aria-selected={selected}
+            className={selected ? "is_active" : undefined}
+            id={getTabId?.(item.id)}
+            key={item.id}
+            onClick={() => onChange(item.id)}
+            role="tab"
+            tabIndex={selected ? 0 : -1}
+            type="button"
+          >
+            {item.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function NewsToolbar({
+  isTextLarge,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
   return (
     <div className="newsroll_toolbar" aria-label="상단 도구">
-      <button className="newsroll_text_size_button" type="button">
+      <button
+        aria-label="글자 크기"
+        aria-pressed={isTextLarge}
+        className="newsroll_text_size_button"
+        onClick={onToggleTextSize}
+        type="button"
+      >
         <span>가</span>
         <strong>가</strong>
       </button>
@@ -213,13 +399,28 @@ function NewsToolbar({ onOpenSearch }: { onOpenSearch: () => void }) {
   );
 }
 
-function HomeBlockItem() {
+function HomeIntro() {
   return (
-    <article className="newsroll_home_block_item">
+    <section className="newsroll_home_intro" aria-label="새 소식 요약">
+      <p>
+        반갑습니다 <strong>콩콩이</strong>님!
+      </p>
+      <div className="newsroll_home_metric">
+        <strong>11,343</strong>
+        <span>개</span>
+      </div>
+      <p className="newsroll_home_metric_caption">새로운 소식이 있습니다.</p>
+    </section>
+  );
+}
+
+function HomeBlockItem({ onClick }: { onClick: () => void }) {
+  return (
+    <button className="newsroll_home_block_item" onClick={onClick} type="button">
       <strong>{homeArticle.title}</strong>
       <span>1시간 전</span>
       <img alt={homeArticle.imageAlt} src={homeArticle.image} />
-    </article>
+    </button>
   );
 }
 
@@ -256,108 +457,610 @@ function HomeViewToggle({
   );
 }
 
-function HomeReelsView({
+function HomeMainHeader({
+  isTextLarge,
   mode,
   onModeChange,
   onOpenSearch,
+  onToggleTextSize,
 }: {
+  isTextLarge: boolean;
   mode: HomeViewMode;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenSearch: () => void;
+  onToggleTextSize: () => void;
 }) {
+  const [isAlarmOn, setIsAlarmOn] = useState(false);
+  const [isBreakingExpanded, setIsBreakingExpanded] = useState(false);
+
   return (
-    <>
-      <header className="newsroll_header newsroll_home_reels_header">
-        <NewsToolbar onOpenSearch={onOpenSearch} />
+    <header className="newsroll_header newsroll_home_reels_header newsroll_home_main_header">
+      <NewsToolbar
+        isTextLarge={isTextLarge}
+        onOpenSearch={onOpenSearch}
+        onToggleTextSize={onToggleTextSize}
+      />
 
-        <section className="newsroll_home_intro" aria-label="새 소식 요약">
-          <p>
-            반갑습니다 <strong>콩콩이</strong>님!
-          </p>
-          <div className="newsroll_home_metric">
-            <strong>11,343</strong>
-            <span>개</span>
-          </div>
-          <p className="newsroll_home_metric_caption">새로운 소식이 있습니다.</p>
-        </section>
+      <HomeIntro />
 
-        <div className="newsroll_home_reels_toggle_row">
-          <HomeViewToggle mode={mode} onModeChange={onModeChange} />
-        </div>
+      <div className="newsroll_home_actions">
+        <HomeViewToggle mode={mode} onModeChange={onModeChange} />
 
-        <button className="newsroll_home_breaking_card" type="button">
-          <span className="newsroll_home_breaking_icon">
-            <Icon name="alarm" />
-          </span>
-          <span>{homeBreakingTitle}</span>
-          <Icon name="chevronRight" />
+        <button
+          aria-label="알림"
+          aria-pressed={isAlarmOn}
+          className="newsroll_home_alarm"
+          onClick={() => setIsAlarmOn((current) => !current)}
+          type="button"
+        >
+          <Icon name="alarm" />
         </button>
-      </header>
+      </div>
 
-      <section className="newsroll_home_reels_sheet" aria-label="뉴스 릴스">
-        <article className="newsroll_home_reels_card">
-          <span className="newsroll_home_reels_chip">{homeArticle.category}</span>
-          <h1>{homeArticle.title}</h1>
-          <time dateTime="2026-12-31T08:30:00">{homeArticle.date}</time>
-          <div className="newsroll_home_reels_actions" aria-label="기사 도구">
-            <button aria-label="공유" className="newsroll_icon_button" type="button">
-              <Icon name="share" />
-            </button>
-            <button aria-label="북마크" className="newsroll_icon_button" type="button">
-              <Icon name="bookmark" />
-            </button>
-          </div>
-          <img alt={homeArticle.imageAlt} src={homeArticle.image} />
-        </article>
-      </section>
-    </>
+      <button
+        aria-expanded={isBreakingExpanded}
+        className="newsroll_home_breaking_card"
+        onClick={() => setIsBreakingExpanded((current) => !current)}
+        type="button"
+      >
+        <span className="newsroll_home_breaking_icon">
+          <Icon name="alarm" />
+        </span>
+        <span>{homeBreakingTitle}</span>
+        <Icon name="chevronRight" />
+      </button>
+      {isBreakingExpanded ? (
+        <div className="newsroll_home_breaking_detail" role="status">
+          관련 속보 3건
+        </div>
+      ) : null}
+    </header>
   );
 }
 
-function HomeBlockView({
+function ReactionControls({
+  className = "",
+  reaction,
+  onReactionChange,
+}: {
+  className?: string;
+  reaction: Reaction;
+  onReactionChange: (reaction: Reaction) => void;
+}) {
+  return (
+    <div className={`newsroll_reaction_controls ${className}`.trim()} aria-label="기사 평가">
+      {reactionItems.map((item) => (
+        <button
+          aria-pressed={reaction === item.value}
+          className={`newsroll_reaction_control newsroll_reaction_control_${item.value}`}
+          key={item.value}
+          onClick={() => onReactionChange(reaction === item.value ? null : item.value)}
+          type="button"
+        >
+          <Icon name={item.icon} />
+          <strong>
+            {item.label} {item.count}
+          </strong>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function MiniReactionBar({
+  reaction,
+  show,
+  onReactionChange,
+}: {
+  reaction: Reaction;
+  show: boolean;
+  onReactionChange: (reaction: Reaction) => void;
+}) {
+  if (!show) {
+    return null;
+  }
+
+  return (
+    <div className="newsroll_reaction_mini_bar" aria-label="빠른 기사 평가">
+      {reactionItems.map((item) => (
+        <button
+          aria-label={item.label}
+          aria-pressed={reaction === item.value}
+          className={`newsroll_reaction_mini_button newsroll_reaction_control_${item.value}`}
+          key={item.value}
+          onClick={() => onReactionChange(reaction === item.value ? null : item.value)}
+          type="button"
+        >
+          <Icon name={item.icon} />
+          <span>{item.count}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function getVotePercentages(voteCounts: number[]) {
+  const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
+
+  if (totalVotes === 0) {
+    return voteCounts.map(() => 0);
+  }
+
+  const rawPercentages = voteCounts.map((count) => (count / totalVotes) * 100);
+  const percentages = rawPercentages.map(Math.floor);
+  let remainder = 100 - percentages.reduce((sum, percent) => sum + percent, 0);
+  const remainderOrder = rawPercentages
+    .map((percent, index) => ({ index, remainder: percent - Math.floor(percent) }))
+    .sort((a, b) => b.remainder - a.remainder);
+
+  for (let index = 0; index < remainder; index += 1) {
+    percentages[remainderOrder[index % remainderOrder.length].index] += 1;
+  }
+
+  return percentages;
+}
+
+function PollSection({ kind }: { kind: PollKind }) {
+  const [selectedPoll, setSelectedPoll] = useState<number | null>(null);
+  const options = kind === "binary" ? binaryPollOptions : pollOptions;
+  const [voteCounts, setVoteCounts] = useState(() => options.map(() => 0));
+  const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
+  const percentages = getVotePercentages(voteCounts);
+  const hasVoted = totalVotes > 0;
+
+  function vote(index: number) {
+    setSelectedPoll(index);
+    setVoteCounts((currentCounts) =>
+      currentCounts.map((count, countIndex) => (countIndex === index ? count + 1 : count)),
+    );
+  }
+
+  return (
+    <section className={`newsroll_poll newsroll_poll_${kind}`} aria-label="의견 투표">
+      <h2 className="newsroll_poll_title">예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?</h2>
+      <div className="newsroll_poll_options">
+        {options.map((option, index) => {
+          const percent = percentages[index];
+          const isBinary = kind === "binary";
+          const fillStyle = isBinary ? { blockSize: `${percent}%` } : { inlineSize: `${percent}%` };
+
+          return (
+            <button
+              aria-pressed={selectedPoll === index}
+              className="newsroll_poll_option"
+              key={option}
+              onClick={() => vote(index)}
+              type="button"
+            >
+              {hasVoted ? (
+                <span
+                  className="newsroll_poll_result_fill"
+                  style={fillStyle}
+                  aria-hidden="true"
+                />
+              ) : null}
+              {!hasVoted && isBinary ? (
+                <img
+                  alt=""
+                  className="newsroll_poll_binary_icon"
+                  src={index === 0 ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"}
+                />
+              ) : null}
+              {hasVoted && isBinary ? <strong className="newsroll_poll_percent">{percent}%</strong> : null}
+              <span className="newsroll_poll_option_label">{option}</span>
+              {hasVoted && !isBinary ? <strong className="newsroll_poll_percent">{percent}%</strong> : null}
+            </button>
+          );
+        })}
+      </div>
+      <p className="newsroll_poll_total">
+        <strong>{totalVotes}명</strong>이 참여했어요.
+      </p>
+    </section>
+  );
+}
+
+function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
+  const pollChoices = pollKind === "binary" ? binaryPollOptions : pollOptions;
+  const commentTabs = [
+    { id: "all", label: "전체" },
+    ...pollChoices.map((choice) => ({ id: choice, label: choice })),
+  ];
+  const defaultComments = commentTemplates.map((comment, index) => ({
+    ...comment,
+    choice: pollChoices[index % pollChoices.length],
+  }));
+  const [activeChoice, setActiveChoice] = useState(commentTabs[0].id);
+  const [commentDraft, setCommentDraft] = useState("");
+  const [commentMenuId, setCommentMenuId] = useState<number | null>(null);
+  const [commentReactions, setCommentReactions] = useState<Record<number, CommentReactionValue | null>>({});
+  const [expandedReplyId, setExpandedReplyId] = useState<number | null>(null);
+  const [myCommentsOnly, setMyCommentsOnly] = useState(false);
+  const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
+  const [userComments, setUserComments] = useState<CommentItem[]>([]);
+  const allComments = [...userComments, ...defaultComments];
+  const visibleComments = allComments
+    .filter((comment) => (myCommentsOnly ? comment.isMine : true))
+    .filter((comment) => (activeChoice === "all" ? true : comment.choice === activeChoice))
+    .sort((a, b) => {
+      if (sortOrder === "latest") {
+        return b.id - a.id;
+      }
+
+      return b.likes + b.replies - (a.likes + a.replies);
+    });
+
+  function submitComment() {
+    const body = commentDraft.trim();
+
+    if (!body) {
+      return;
+    }
+
+    setUserComments((currentComments) => [
+      {
+        author: "나",
+        body,
+        choice: activeChoice === "all" ? pollChoices[0] : activeChoice,
+        date: "방금 전",
+        dislikes: 0,
+        id: Date.now(),
+        isMine: true,
+        likes: 0,
+        replies: 0,
+      },
+      ...currentComments,
+    ]);
+    setCommentDraft("");
+  }
+
+  function toggleCommentReaction(commentId: number, reaction: CommentReactionValue) {
+    setCommentReactions((currentReactions) => ({
+      ...currentReactions,
+      [commentId]: currentReactions[commentId] === reaction ? null : reaction,
+    }));
+  }
+
+  return (
+    <section className="newsroll_comment_panel" aria-label="댓글 반응">
+      <form
+        className="newsroll_comment_composer"
+        onSubmit={(event) => {
+          event.preventDefault();
+          submitComment();
+        }}
+      >
+        <input
+          aria-label="댓글 입력"
+          onChange={(event) => setCommentDraft(event.target.value)}
+          placeholder="홍길동님은 어떻게 생각하시나요?"
+          type="text"
+          value={commentDraft}
+        />
+        <button aria-label="댓글 등록" type="submit">
+          <span aria-hidden="true" />
+        </button>
+      </form>
+
+      <div className="newsroll_comment_summary">
+        <span>댓글 {allComments.length}</span>
+        <button
+          aria-pressed={myCommentsOnly}
+          onClick={() => setMyCommentsOnly((current) => !current)}
+          type="button"
+        >
+          나의 댓글
+        </button>
+      </div>
+
+      <section className="newsroll_comment_age" aria-label="연령대별 댓글">
+        <strong>
+          <span>30대</span> 댓글이 가장 많이 달렸어요!
+        </strong>
+        <div className="newsroll_comment_age_chart" aria-hidden="true">
+          {commentAgeStats.map((item) => (
+            <span className={item.age === "30대" ? "is_peak" : undefined} key={item.age}>
+              <i style={{ blockSize: `${item.value}px` }} />
+              <em>{item.age}</em>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="newsroll_comment_by_vote" aria-label="투표 선택지별 댓글">
+        <h3>투표 선택지 별</h3>
+        <PillTabMenu
+          ariaLabel="투표 선택지별 댓글 필터"
+          className="newsroll_comment_tabs"
+          items={commentTabs}
+          onChange={setActiveChoice}
+          value={activeChoice}
+        />
+      </section>
+
+      <button
+        aria-label={`정렬: ${sortOrder === "popular" ? "인기순" : "최신순"}`}
+        className="newsroll_comment_sort"
+        onClick={() => setSortOrder((current) => (current === "popular" ? "latest" : "popular"))}
+        type="button"
+      >
+        {sortOrder === "popular" ? "인기순" : "최신순"}
+        <span aria-hidden="true" />
+      </button>
+
+      <div className="newsroll_comment_list">
+        {visibleComments.length > 0 ? (
+          visibleComments.map((comment) => {
+            const selectedReaction = commentReactions[comment.id] ?? null;
+            const likeCount = comment.likes + (selectedReaction === "like" ? 1 : 0);
+            const dislikeCount = comment.dislikes + (selectedReaction === "dislike" ? 1 : 0);
+
+            return (
+              <article className="newsroll_comment_item" key={comment.id}>
+                <header>
+                  <strong>{comment.author}</strong>
+                  <time>{comment.date}</time>
+                  <button
+                    aria-expanded={commentMenuId === comment.id}
+                    aria-label="댓글 더보기"
+                    onClick={() => setCommentMenuId((current) => (current === comment.id ? null : comment.id))}
+                    type="button"
+                  >
+                    ...
+                  </button>
+                </header>
+                {commentMenuId === comment.id ? (
+                  <div className="newsroll_comment_menu" role="status">
+                    댓글 옵션이 열렸습니다.
+                  </div>
+                ) : null}
+                <span className="newsroll_comment_choice">{comment.choice}</span>
+                <p>{comment.body}</p>
+                <footer>
+                  <button
+                    aria-expanded={expandedReplyId === comment.id}
+                    onClick={() => setExpandedReplyId((current) => (current === comment.id ? null : comment.id))}
+                    type="button"
+                  >
+                    답글달기 {comment.replies}
+                  </button>
+                  <span>
+                    <button
+                      aria-label="댓글 좋아요"
+                      aria-pressed={selectedReaction === "like"}
+                      className="newsroll_comment_reaction_like"
+                      onClick={() => toggleCommentReaction(comment.id, "like")}
+                      type="button"
+                    >
+                      <Icon name="thumbUp" />
+                      {likeCount}
+                    </button>
+                    <button
+                      aria-label="댓글 싫어요"
+                      aria-pressed={selectedReaction === "dislike"}
+                      className="newsroll_comment_reaction_dislike"
+                      onClick={() => toggleCommentReaction(comment.id, "dislike")}
+                      type="button"
+                    >
+                      <Icon name="thumbDown" />
+                      {dislikeCount}
+                    </button>
+                  </span>
+                </footer>
+                {expandedReplyId === comment.id ? <p className="newsroll_comment_reply_hint">답글 입력 영역이 열렸습니다.</p> : null}
+              </article>
+            );
+          })
+        ) : (
+          <p className="newsroll_comment_empty">표시할 댓글이 없습니다.</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function HomeReelCard({ article, index }: { article: HomeArticle; index: number }) {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
+  const [isOriginalOpen, setIsOriginalOpen] = useState(false);
+  const [isShared, setIsShared] = useState(false);
+  const [reaction, setReaction] = useState<Reaction>(null);
+  const [showMiniReactionBar, setShowMiniReactionBar] = useState(true);
+  const reactionControlsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = reactionControlsRef.current;
+
+    if (!node || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowMiniReactionBar(!entry.isIntersecting);
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <article className="newsroll_home_reel_card">
+      <span className="newsroll_home_reels_chip">{article.category}</span>
+      <h1>{article.title}</h1>
+      <time dateTime="2026-12-31T08:30:00">{article.date}</time>
+      <div className="newsroll_home_reels_actions" aria-label="기사 도구">
+        <button
+          aria-label="공유"
+          aria-pressed={isShared}
+          className="newsroll_icon_button"
+          onClick={() => setIsShared((current) => !current)}
+          type="button"
+        >
+          <Icon name="share" />
+        </button>
+        <button
+          aria-label="북마크"
+          aria-pressed={isBookmarked}
+          className="newsroll_icon_button"
+          onClick={() => setIsBookmarked((current) => !current)}
+          type="button"
+        >
+          <Icon name="bookmark" />
+        </button>
+      </div>
+      <img alt={article.imageAlt} src={article.image} />
+      <p className="newsroll_article_body">{articleBody}</p>
+
+      <MiniReactionBar reaction={reaction} show={showMiniReactionBar} onReactionChange={setReaction} />
+
+      <div className="newsroll_source_row">
+        <span className="newsroll_source_mark" aria-hidden="true">
+          {index % 2 === 0 ? "국" : "중"}
+        </span>
+        <span className="newsroll_source_divider" aria-hidden="true" />
+        <span>{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
+        <span>홍길동 기자</span>
+      </div>
+
+      <button
+        aria-expanded={isOriginalOpen}
+        className="newsroll_original_button"
+        onClick={() => setIsOriginalOpen((current) => !current)}
+        type="button"
+      >
+        {isOriginalOpen ? "기사 원문 접기" : "기사 원문 보기"}
+      </button>
+      {isOriginalOpen ? <p className="newsroll_original_hint">국민일보 원문으로 이동할 준비가 됐습니다.</p> : null}
+
+      <div ref={reactionControlsRef}>
+        <ReactionControls reaction={reaction} onReactionChange={setReaction} />
+      </div>
+
+      <PollSection kind={article.pollKind ?? "stacked"} />
+
+      <button
+        aria-expanded={isCommentPanelOpen}
+        className="newsroll_comment_button"
+        onClick={() => setIsCommentPanelOpen((current) => !current)}
+        type="button"
+      >
+        <Icon name="chat" />
+        댓글 반응보기
+      </button>
+      {isCommentPanelOpen ? <CommentReactionPanel pollKind={article.pollKind ?? "stacked"} /> : null}
+    </article>
+  );
+}
+
+function HomeReelsView({
+  isTextLarge,
   mode,
   onModeChange,
   onOpenSearch,
+  onToggleTextSize,
 }: {
+  isTextLarge: boolean;
   mode: HomeViewMode;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenSearch: () => void;
+  onToggleTextSize: () => void;
 }) {
   return (
     <>
-      <header className="newsroll_header">
-        <PolicyStatusBar />
-        <NewsToolbar onOpenSearch={onOpenSearch} />
+      <HomeMainHeader
+        isTextLarge={isTextLarge}
+        mode={mode}
+        onModeChange={onModeChange}
+        onOpenSearch={onOpenSearch}
+        onToggleTextSize={onToggleTextSize}
+      />
 
-        <div className="newsroll_home_actions">
-          <HomeViewToggle mode={mode} onModeChange={onModeChange} />
-
-          <button className="newsroll_home_alarm" type="button" aria-label="알림">
-            <Icon name="alarm" />
-          </button>
-        </div>
-      </header>
-
-      <section className="newsroll_home_sheet" aria-label="메인 뉴스">
-        {Array.from({ length: 8 }, (_, index) => (
-          <HomeBlockItem key={index} />
+      <section className="newsroll_home_reels_feed" aria-label="뉴스 릴스">
+        {homeReelArticles.map((article, index) => (
+          <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
         ))}
       </section>
     </>
   );
 }
 
-function HomeView({ onOpenSearch }: { onOpenSearch: () => void }) {
+function HomeBlockView({
+  isTextLarge,
+  mode,
+  onModeChange,
+  onOpenSearch,
+  onToggleTextSize,
+  onOpenDetail,
+}: {
+  isTextLarge: boolean;
+  mode: HomeViewMode;
+  onModeChange: (mode: HomeViewMode) => void;
+  onOpenDetail: () => void;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
+  return (
+    <>
+      <HomeMainHeader
+        isTextLarge={isTextLarge}
+        mode={mode}
+        onModeChange={onModeChange}
+        onOpenSearch={onOpenSearch}
+        onToggleTextSize={onToggleTextSize}
+      />
+
+      <section className="newsroll_home_sheet newsroll_home_block_sheet" aria-label="메인 뉴스">
+        {Array.from({ length: 12 }, (_, index) => (
+          <HomeBlockItem key={index} onClick={onOpenDetail} />
+        ))}
+      </section>
+    </>
+  );
+}
+
+function HomeView({
+  isTextLarge,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
   const [homeViewMode, setHomeViewMode] = useState<HomeViewMode>("reels");
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  if (detailOpen) {
+    return <AllNewsArticleDetail onBack={() => setDetailOpen(false)} onOpenSearch={onOpenSearch} />;
+  }
 
   return homeViewMode === "reels" ? (
-    <HomeReelsView mode={homeViewMode} onModeChange={setHomeViewMode} onOpenSearch={onOpenSearch} />
+    <HomeReelsView
+      isTextLarge={isTextLarge}
+      mode={homeViewMode}
+      onModeChange={setHomeViewMode}
+      onOpenSearch={onOpenSearch}
+      onToggleTextSize={onToggleTextSize}
+    />
   ) : (
-    <HomeBlockView mode={homeViewMode} onModeChange={setHomeViewMode} onOpenSearch={onOpenSearch} />
+    <HomeBlockView
+      isTextLarge={isTextLarge}
+      mode={homeViewMode}
+      onModeChange={setHomeViewMode}
+      onOpenDetail={() => setDetailOpen(true)}
+      onOpenSearch={onOpenSearch}
+      onToggleTextSize={onToggleTextSize}
+    />
   );
 }
 
 function SearchView({ onClose }: { onClose: () => void }) {
+  const [query, setQuery] = useState("");
+
   return (
     <section className="newsroll_search_page" aria-label="검색">
       <div className="newsroll_search_top">
@@ -368,14 +1071,19 @@ function SearchView({ onClose }: { onClose: () => void }) {
 
       <label className="newsroll_search_field">
         <span className="sr_only">검색어</span>
-        <input placeholder="홍길동님은 어떻게 생각하시나요?" type="search" />
+        <input
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="홍길동님은 어떻게 생각하시나요?"
+          type="search"
+          value={query}
+        />
         <Icon name="search" />
       </label>
 
       <ol className="newsroll_search_suggestion_list" aria-label="추천 검색어">
         {searchSuggestions.map((suggestion, index) => (
           <li key={`${suggestion}-${index}`}>
-            <button type="button">
+            <button onClick={() => setQuery(suggestion)} type="button">
               {index + 1}. {suggestion}
             </button>
           </li>
@@ -403,18 +1111,39 @@ function AllNewsMeta() {
   );
 }
 
-function AllNewsMoreButton({ tone = "light" }: { tone?: "dark" | "light" }) {
+function AllNewsMoreButton({
+  expanded = false,
+  onClick,
+  tone = "light",
+}: {
+  expanded?: boolean;
+  onClick?: () => void;
+  tone?: "dark" | "light";
+}) {
   return (
-    <button className={`newsroll_all_more newsroll_all_more_${tone}`} type="button">
-      <span>더보기</span>
+    <button
+      aria-expanded={expanded}
+      className={`newsroll_all_more newsroll_all_more_${tone}`}
+      onClick={onClick}
+      type="button"
+    >
+      <span>{expanded ? "접기" : "더보기"}</span>
       <span className="newsroll_all_more_chevron" aria-hidden="true" />
     </button>
   );
 }
 
-function AllNewsLatestCard({ item }: { item: (typeof allNewsLatest)[number] }) {
+function AllNewsLatestCard({
+  item,
+  onClick,
+  selected,
+}: {
+  item: (typeof allNewsLatest)[number];
+  onClick: () => void;
+  selected: boolean;
+}) {
   return (
-    <button className="newsroll_all_latest_card" type="button">
+    <button aria-pressed={selected} className="newsroll_all_latest_card" onClick={onClick} type="button">
       <span className="newsroll_all_chip">{item.category}</span>
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
       <div className="newsroll_all_latest_body">
@@ -425,9 +1154,17 @@ function AllNewsLatestCard({ item }: { item: (typeof allNewsLatest)[number] }) {
   );
 }
 
-function AllNewsHeadlineItem({ item }: { item: (typeof allNewsHeadlines)[number] }) {
+function AllNewsHeadlineItem({
+  item,
+  onClick,
+  selected,
+}: {
+  item: (typeof allNewsHeadlinesByPress)[string][number];
+  onClick: () => void;
+  selected: boolean;
+}) {
   return (
-    <button className="newsroll_all_headline_item" type="button">
+    <button aria-pressed={selected} className="newsroll_all_headline_item" onClick={onClick} type="button">
       <div className="newsroll_all_headline_body">
         <strong>{item.title}</strong>
         <AllNewsMeta />
@@ -437,9 +1174,19 @@ function AllNewsHeadlineItem({ item }: { item: (typeof allNewsHeadlines)[number]
   );
 }
 
-function AllNewsRelayItem({ item, featured = false }: { featured?: boolean; item: (typeof allNewsRelay)[number] }) {
+function AllNewsRelayItem({
+  item,
+  featured = false,
+  onClick,
+  selected,
+}: {
+  featured?: boolean;
+  item: (typeof allNewsRelayByCategory)[string][number];
+  onClick: () => void;
+  selected: boolean;
+}) {
   return (
-    <button className="newsroll_all_relay_item" type="button">
+    <button aria-pressed={selected} className="newsroll_all_relay_item" onClick={onClick} type="button">
       <strong className={featured ? "newsroll_all_relay_title_large" : undefined}>{item.title}</strong>
       <AllNewsMeta />
       <img alt="" src={item.image} />
@@ -447,12 +1194,142 @@ function AllNewsRelayItem({ item, featured = false }: { featured?: boolean; item
   );
 }
 
-function AllNewsView({ onOpenSearch }: { onOpenSearch: () => void }) {
+function AllNewsArticleDetail({
+  onBack,
+  onOpenSearch,
+}: {
+  onBack: () => void;
+  onOpenSearch: () => void;
+}) {
+  const [isAlarmOn, setIsAlarmOn] = useState(false);
+
+  return (
+    <section className="newsroll_all_detail" aria-label="뉴스 상세">
+      <header className="newsroll_all_detail_top">
+        <PolicyStatusBar />
+        <div className="newsroll_all_detail_toolbar">
+          <button aria-label="전체뉴스로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
+            <span aria-hidden="true" />
+          </button>
+          <NewsToolbar isTextLarge={false} onOpenSearch={onOpenSearch} onToggleTextSize={() => undefined} />
+          <button
+            aria-label="알림"
+            aria-pressed={isAlarmOn}
+            className="newsroll_home_alarm"
+            onClick={() => setIsAlarmOn((current) => !current)}
+            type="button"
+          >
+            <Icon name="alarm" />
+          </button>
+        </div>
+      </header>
+      <div className="newsroll_all_detail_body">
+        <HomeReelCard article={homeArticle} index={0} />
+      </div>
+    </section>
+  );
+}
+
+function AllNewsView({
+  isTextLarge,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
+  const [activePress, setActivePress] = useState(allNewsPresses[0]);
+  const [activeRelayCategory, setActiveRelayCategory] = useState(allNewsRelayCategories[0]);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const latestScrollerRef = useRef<HTMLDivElement>(null);
+  const latestDragActiveRef = useRef(false);
+  const latestDidDragRef = useRef(false);
+  const latestDragStartRef = useRef({ scrollLeft: 0, x: 0 });
+  const [isLatestDragging, setIsLatestDragging] = useState(false);
+  const [selectedBreakingIndex, setSelectedBreakingIndex] = useState<number | null>(null);
+  const [selectedHeadlineIndex, setSelectedHeadlineIndex] = useState<number | null>(null);
+  const [selectedLatestIndex, setSelectedLatestIndex] = useState<number | null>(null);
+  const [selectedRelayIndex, setSelectedRelayIndex] = useState<number | null>(null);
+  const [showAllHeadlines, setShowAllHeadlines] = useState(false);
+  const [showAllBreaking, setShowAllBreaking] = useState(false);
+  const relayItems = allNewsRelayByCategory[activeRelayCategory] ?? [];
+  const pressHeadlines = allNewsHeadlinesByPress[activePress] ?? [];
+  const headlineItems = showAllHeadlines ? pressHeadlines : pressHeadlines.slice(0, 4);
+
+  function openDetail() {
+    setDetailOpen(true);
+  }
+
+  function handleLatestPointerDown(event: PointerEvent<HTMLDivElement>) {
+    const node = latestScrollerRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    latestDragActiveRef.current = true;
+    latestDidDragRef.current = false;
+    setIsLatestDragging(true);
+    latestDragStartRef.current = { scrollLeft: node.scrollLeft, x: event.clientX };
+    node.setPointerCapture(event.pointerId);
+  }
+
+  function handleLatestPointerMove(event: PointerEvent<HTMLDivElement>) {
+    const node = latestScrollerRef.current;
+
+    if (!node || !latestDragActiveRef.current) {
+      return;
+    }
+
+    const delta = event.clientX - latestDragStartRef.current.x;
+
+    if (Math.abs(delta) > 8) {
+      latestDidDragRef.current = true;
+    }
+
+    node.scrollLeft = latestDragStartRef.current.scrollLeft - delta;
+  }
+
+  function stopLatestDrag(event: PointerEvent<HTMLDivElement>) {
+    const node = latestScrollerRef.current;
+
+    latestDragActiveRef.current = false;
+    setIsLatestDragging(false);
+
+    if (node?.hasPointerCapture(event.pointerId)) {
+      node.releasePointerCapture(event.pointerId);
+    }
+
+    if (!node || !latestDidDragRef.current) {
+      return;
+    }
+
+    const firstCard = node.querySelector<HTMLElement>(".newsroll_all_latest_card");
+    const cardStep = firstCard
+      ? firstCard.offsetWidth + Number.parseFloat(getComputedStyle(node).columnGap || getComputedStyle(node).gap || "0")
+      : 1;
+    const targetIndex = Math.round(node.scrollLeft / cardStep);
+
+    node.scrollTo({
+      behavior: "smooth",
+      left: targetIndex * cardStep,
+    });
+  }
+
+  if (detailOpen) {
+    return <AllNewsArticleDetail onBack={() => setDetailOpen(false)} onOpenSearch={onOpenSearch} />;
+  }
+
   return (
     <section className="newsroll_all_news" aria-label="전체뉴스">
       <div className="newsroll_all_top">
         <PolicyStatusBar />
-        <NewsToolbar onOpenSearch={onOpenSearch} />
+        <NewsToolbar
+          isTextLarge={isTextLarge}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
 
         <div className="newsroll_all_breaking_label">
           <Icon name="alarm" />
@@ -460,14 +1337,23 @@ function AllNewsView({ onOpenSearch }: { onOpenSearch: () => void }) {
         </div>
 
         <div className="newsroll_all_breaking_stack">
-          {allNewsBreaking.map((item) => (
-            <button className="newsroll_all_breaking_card" key={item} type="button">
+          {(showAllBreaking ? allNewsBreaking : allNewsBreaking.slice(0, 3)).map((item, index) => (
+            <button
+              aria-pressed={selectedBreakingIndex === index}
+              className="newsroll_all_breaking_card"
+              key={item}
+              onClick={() => {
+                setSelectedBreakingIndex((current) => (current === index ? null : index));
+                openDetail();
+              }}
+              type="button"
+            >
               {item}
             </button>
           ))}
         </div>
 
-        <AllNewsMoreButton tone="dark" />
+        <AllNewsMoreButton expanded={showAllBreaking} onClick={() => setShowAllBreaking((current) => !current)} tone="dark" />
       </div>
 
       <div className="newsroll_all_sections">
@@ -475,45 +1361,82 @@ function AllNewsView({ onOpenSearch }: { onOpenSearch: () => void }) {
           <h1 className="newsroll_all_section_title">
             최신 뉴스 <strong>10</strong>
           </h1>
-          <div className="newsroll_all_latest_scroller">
+          <div
+            className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
+            onPointerCancel={stopLatestDrag}
+            onPointerDown={handleLatestPointerDown}
+            onPointerLeave={stopLatestDrag}
+            onPointerMove={handleLatestPointerMove}
+            onPointerUp={stopLatestDrag}
+            ref={latestScrollerRef}
+          >
             {allNewsLatest.map((item, index) => (
-              <AllNewsLatestCard item={item} key={`${item.title}-${index}`} />
+              <AllNewsLatestCard
+                item={item}
+                key={`${item.title}-${index}`}
+                onClick={() => {
+                  if (latestDidDragRef.current) {
+                    return;
+                  }
+
+                  setSelectedLatestIndex((current) => (current === index ? null : index));
+                  openDetail();
+                }}
+                selected={selectedLatestIndex === index}
+              />
             ))}
           </div>
         </section>
 
         <section className="newsroll_all_panel newsroll_all_press_panel" aria-label="언론사별 헤드라인">
           <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
-          <div className="newsroll_all_press_tabs">
-            {allNewsPresses.map((press, index) => (
-              <button className={index === 0 ? "is_active" : undefined} key={`${press}-${index}`} type="button">
-                <span className="newsroll_all_press_logo" aria-hidden="true">
-                  {press.slice(0, 1)}
-                </span>
-                <span>{press}</span>
-              </button>
-            ))}
-          </div>
+          <PillTabMenu
+            ariaLabel="언론사 선택"
+            className="newsroll_all_press_tabs"
+            items={allNewsPresses.map((press) => ({ id: press, label: press }))}
+            onChange={(press) => {
+              setActivePress(press);
+              setSelectedHeadlineIndex(null);
+            }}
+            value={activePress}
+          />
           <div className="newsroll_all_headline_list">
-            {allNewsHeadlines.map((item, index) => (
-              <AllNewsHeadlineItem item={item} key={`${item.title}-${index}`} />
+            {headlineItems.map((item, index) => (
+              <AllNewsHeadlineItem
+                item={{ ...item, title: activePress === "중앙일보" ? item.title : "'APEC, 국익에 도움됐다' 74%… 국힘 지지층도 인정" }}
+                key={`${item.title}-${index}`}
+                onClick={() => {
+                  setSelectedHeadlineIndex((current) => (current === index ? null : index));
+                  openDetail();
+                }}
+                selected={selectedHeadlineIndex === index}
+              />
             ))}
           </div>
-          <AllNewsMoreButton />
+          <AllNewsMoreButton expanded={showAllHeadlines} onClick={() => setShowAllHeadlines((current) => !current)} />
         </section>
 
         <section className="newsroll_all_panel newsroll_all_relay_panel" aria-label="릴레이 뉴스">
           <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
-          <div className="newsroll_all_category_tabs">
-            {allNewsRelayCategories.map((category, index) => (
-              <button className={index === 0 ? "is_active" : undefined} key={category} type="button">
-                {category}
-              </button>
-            ))}
-          </div>
+          <PillTabMenu
+            ariaLabel="릴레이 뉴스 카테고리"
+            className="newsroll_all_category_tabs"
+            items={allNewsRelayCategories.map((category) => ({ id: category, label: category }))}
+            onChange={setActiveRelayCategory}
+            value={activeRelayCategory}
+          />
           <div className="newsroll_all_relay_list">
-            {allNewsRelay.map((item, index) => (
-              <AllNewsRelayItem featured={index === 0 || index === 5} item={item} key={`${item.title}-${index}`} />
+            {relayItems.map((item, index) => (
+              <AllNewsRelayItem
+                featured={index === 0 || index === 5}
+                item={item}
+                key={`${item.title}-${index}`}
+                onClick={() => {
+                  setSelectedRelayIndex((current) => (current === index ? null : index));
+                  openDetail();
+                }}
+                selected={selectedRelayIndex === index}
+              />
             ))}
           </div>
         </section>
@@ -526,6 +1449,11 @@ const policyListItems = Array.from({ length: 6 }, (_, index) => ({
   title: index % 2 === 0 ? "양산시 청년 자격증 응시료 지원" : "청년동아리 활동비 지원사업",
   tags: index % 2 === 0 ? ["일자리", "취업", "보조금"] : ["복지문화", "문화활동", "바우처"],
 }));
+const policyAgeTabs = ["전체", "미성년", "청년", "중장년", "노년"];
+const policySortLabels: Record<SortOrder, string> = {
+  latest: "최신순",
+  popular: "인기순",
+};
 
 function PolicyStatusBar() {
   return (
@@ -545,9 +1473,22 @@ function PolicyStatusBar() {
   );
 }
 
-function PolicyListItem({ item }: { item: (typeof policyListItems)[number] }) {
+function PolicyListItem({
+  isSelected,
+  item,
+  onSelect,
+}: {
+  isSelected: boolean;
+  item: (typeof policyListItems)[number];
+  onSelect: () => void;
+}) {
   return (
-    <article className="newsroll_policy_list_item">
+    <button
+      aria-pressed={isSelected}
+      className={`newsroll_policy_list_item${isSelected ? " is_selected" : ""}`}
+      onClick={onSelect}
+      type="button"
+    >
       <div className="newsroll_policy_list_tags">
         {item.tags.map((tag, index) => (
           <span className={index === 2 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
@@ -574,16 +1515,34 @@ function PolicyListItem({ item }: { item: (typeof policyListItems)[number] }) {
           132
         </span>
       </div>
-    </article>
+    </button>
   );
 }
 
-function PolicyView({ onOpenSearch }: { onOpenSearch: () => void }) {
+function PolicyView({
+  isTextLarge,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
+  const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
+  const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
+  const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
+  const visiblePolicyItems =
+    sortOrder === "latest" ? [...policyListItems].reverse() : policyListItems;
+
   return (
     <section className="newsroll_policy_screen" aria-label="국가정책">
       <div className="newsroll_policy_top">
         <PolicyStatusBar />
-        <NewsToolbar onOpenSearch={onOpenSearch} />
+        <NewsToolbar
+          isTextLarge={isTextLarge}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
 
         <section className="newsroll_policy_hero" aria-label="맞춤 정책 요약">
           <span>콩콩이님을 위한</span>
@@ -595,21 +1554,31 @@ function PolicyView({ onOpenSearch }: { onOpenSearch: () => void }) {
       </div>
 
       <div className="newsroll_policy_sheet">
-        <div className="newsroll_policy_age_tabs" aria-label="연령 필터">
-          {["전체", "미성년", "청년", "중장년", "노년"].map((label, index) => (
-            <button className={index === 0 ? "is_active" : undefined} key={label} type="button">
-              {label}
-            </button>
-          ))}
-        </div>
+        <PillTabMenu
+          ariaLabel="연령 필터"
+          className="newsroll_policy_age_tabs"
+          items={policyAgeTabs.map((label) => ({ id: label, label }))}
+          onChange={setActiveAge}
+          value={activeAge}
+        />
 
-        <button className="newsroll_policy_sort" type="button">
-          인기순 <span aria-hidden="true" />
+        <button
+          aria-label={`정렬: ${policySortLabels[sortOrder]}`}
+          className="newsroll_policy_sort"
+          onClick={() => setSortOrder((current) => (current === "popular" ? "latest" : "popular"))}
+          type="button"
+        >
+          {policySortLabels[sortOrder]} <span aria-hidden="true" />
         </button>
 
         <div className="newsroll_policy_list">
-          {policyListItems.map((item, index) => (
-            <PolicyListItem item={item} key={`${item.title}-${index}`} />
+          {visiblePolicyItems.map((item, index) => (
+            <PolicyListItem
+              isSelected={selectedPolicyIndex === index}
+              item={item}
+              key={`${activeAge}-${sortOrder}-${item.title}-${index}`}
+              onSelect={() => setSelectedPolicyIndex(index)}
+            />
           ))}
         </div>
       </div>
@@ -640,33 +1609,100 @@ const myCategoryGroups = [
   },
 ];
 
-function MyPageView({ onOpenSearch }: { onOpenSearch: () => void }) {
+function MyPageView({
+  isTextLarge,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
+  const [activeSummary, setActiveSummary] = useState<"bookmark" | "vote" | "comment" | null>(null);
+  const [activeChipGroups, setActiveChipGroups] = useState(() =>
+    myCategoryGroups.map((group) => new Set(group.active)),
+  );
+  const [isRecentExpanded, setIsRecentExpanded] = useState(false);
+  const [isProfileEditing, setIsProfileEditing] = useState(false);
+  const [notificationSettings, setNotificationSettings] = useState<Record<string, boolean>>({
+    "내 댓글에 좋아요, 답글": true,
+    공지사항: true,
+    속보: true,
+  });
+  const [preferredNewsType, setPreferredNewsType] = useState<HomeViewMode>("reels");
+  const [selectedRecentIndex, setSelectedRecentIndex] = useState<number | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const recentItems = isRecentExpanded ? [...myRecentNews, ...myRecentNews] : myRecentNews;
+
+  function toggleChip(groupIndex: number, item: string) {
+    setActiveChipGroups((currentGroups) =>
+      currentGroups.map((group, index) => {
+        if (index !== groupIndex) {
+          return group;
+        }
+
+        const next = new Set(group);
+
+        if (next.has(item)) {
+          next.delete(item);
+        } else {
+          next.add(item);
+        }
+
+        return next;
+      }),
+    );
+  }
+
   return (
     <section className="newsroll_my_screen" aria-label="마이페이지">
       <div className="newsroll_my_top">
         <PolicyStatusBar />
-        <NewsToolbar onOpenSearch={onOpenSearch} />
+        <NewsToolbar
+          isTextLarge={isTextLarge}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
         <h1>마이페이지</h1>
       </div>
 
       <div className="newsroll_my_sheet">
         <section className="newsroll_my_profile" aria-label="프로필">
           <strong>콩콩이님</strong>
-          <button type="button">개인정보 수정</button>
+          <button
+            aria-pressed={isProfileEditing}
+            onClick={() => setIsProfileEditing((current) => !current)}
+            type="button"
+          >
+            {isProfileEditing ? "수정 닫기" : "개인정보 수정"}
+          </button>
+          {isProfileEditing ? <p className="newsroll_my_profile_hint">닉네임과 알림 정보를 수정할 수 있어요.</p> : null}
         </section>
 
         <div className="newsroll_my_summary" aria-label="활동 통계">
-          <button type="button">
+          <button
+            aria-pressed={activeSummary === "bookmark"}
+            onClick={() => setActiveSummary((current) => (current === "bookmark" ? null : "bookmark"))}
+            type="button"
+          >
             <span className="newsroll_my_summary_icon newsroll_my_summary_bookmark" aria-hidden="true" />
             <span>북마크</span>
             <strong>56</strong>
           </button>
-          <button type="button">
+          <button
+            aria-pressed={activeSummary === "vote"}
+            onClick={() => setActiveSummary((current) => (current === "vote" ? null : "vote"))}
+            type="button"
+          >
             <span className="newsroll_my_summary_icon newsroll_my_summary_vote" aria-hidden="true" />
             <span>투표</span>
             <strong>54</strong>
           </button>
-          <button type="button">
+          <button
+            aria-pressed={activeSummary === "comment"}
+            onClick={() => setActiveSummary((current) => (current === "comment" ? null : "comment"))}
+            type="button"
+          >
             <span className="newsroll_my_summary_icon newsroll_my_summary_comment" aria-hidden="true" />
             <span>댓글</span>
             <strong>15</strong>
@@ -676,25 +1712,40 @@ function MyPageView({ onOpenSearch }: { onOpenSearch: () => void }) {
         <section className="newsroll_my_recent" aria-label="최근 본 뉴스">
           <h2>최근 본 뉴스</h2>
           <div className="newsroll_my_recent_scroller">
-            {myRecentNews.map((item, index) => (
-              <button className="newsroll_my_recent_item" key={`${item.title}-${index}`} type="button">
+            {recentItems.map((item, index) => (
+              <button
+                aria-pressed={selectedRecentIndex === index}
+                className="newsroll_my_recent_item"
+                key={`${item.title}-${index}`}
+                onClick={() => setSelectedRecentIndex((current) => (current === index ? null : index))}
+                type="button"
+              >
                 <img alt="" src={item.image} />
                 <strong>{item.title}</strong>
                 <span>{item.time}</span>
               </button>
             ))}
           </div>
-          <button className="newsroll_my_full_button" type="button">전체 보기</button>
+          <button
+            aria-expanded={isRecentExpanded}
+            className="newsroll_my_full_button"
+            onClick={() => setIsRecentExpanded((current) => !current)}
+            type="button"
+          >
+            {isRecentExpanded ? "접기" : "전체 보기"}
+          </button>
         </section>
 
-        {myCategoryGroups.map((group) => (
+        {myCategoryGroups.map((group, groupIndex) => (
           <section className="newsroll_my_chip_group" key={group.title} aria-label={group.title}>
             <h2>{group.title}</h2>
             <div>
               {group.items.map((item, index) => (
                 <button
-                  className={group.active.has(item) ? "is_active" : undefined}
+                  aria-pressed={activeChipGroups[groupIndex].has(item)}
+                  className={activeChipGroups[groupIndex].has(item) ? "is_active" : undefined}
                   key={`${group.title}-${item}-${index}`}
+                  onClick={() => toggleChip(groupIndex, item)}
                   type="button"
                 >
                   {item}
@@ -707,22 +1758,44 @@ function MyPageView({ onOpenSearch }: { onOpenSearch: () => void }) {
         <section className="newsroll_my_setting_group" aria-label="알림 설정">
           <h2>알림 설정</h2>
           {["속보", "내 댓글에 좋아요, 답글", "공지사항"].map((label) => (
-            <button className="newsroll_my_setting_row" key={label} type="button">
+            <button
+              aria-pressed={notificationSettings[label]}
+              className="newsroll_my_setting_row"
+              key={label}
+              onClick={() =>
+                setNotificationSettings((current) => ({
+                  ...current,
+                  [label]: !current[label],
+                }))
+              }
+              type="button"
+            >
               <span>{label}</span>
-              <span className="newsroll_my_switch is_on" aria-hidden="true" />
+              <span className={`newsroll_my_switch${notificationSettings[label] ? " is_on" : ""}`} aria-hidden="true" />
             </button>
           ))}
-          <button className="newsroll_my_setting_row" type="button">
+          <button
+            aria-pressed={preferredNewsType === "block"}
+            className="newsroll_my_setting_row"
+            onClick={() => setPreferredNewsType((current) => (current === "reels" ? "block" : "reels"))}
+            type="button"
+          >
             <span>뉴스 보기 타입</span>
+            <strong>{preferredNewsType === "reels" ? "릴스형" : "블록형"}</strong>
             <span className="newsroll_my_chevron" aria-hidden="true" />
           </button>
         </section>
 
         <section className="newsroll_my_setting_group newsroll_my_display_group" aria-label="디스플레이 설정">
           <h2>디스플레이 설정</h2>
-          <button className="newsroll_my_setting_row" type="button">
+          <button
+            aria-pressed={isDarkMode}
+            className="newsroll_my_setting_row"
+            onClick={() => setIsDarkMode((current) => !current)}
+            type="button"
+          >
             <span>다크모드</span>
-            <span className="newsroll_my_switch" aria-hidden="true" />
+            <span className={`newsroll_my_switch${isDarkMode ? " is_on" : ""}`} aria-hidden="true" />
           </button>
         </section>
       </div>
@@ -730,13 +1803,25 @@ function MyPageView({ onOpenSearch }: { onOpenSearch: () => void }) {
   );
 }
 function InfoNoticePanel() {
+  const [activeNoticeIndex, setActiveNoticeIndex] = useState<number | null>(null);
+
   return (
     <section className="newsroll_info_list" aria-label="공지사항">
-      {noticeItems.map((notice) => (
-        <button className="newsroll_info_notice_item" key={notice.title} type="button">
+      {noticeItems.map((notice, index) => (
+        <button
+          aria-pressed={activeNoticeIndex === index}
+          className="newsroll_info_notice_item"
+          key={notice.title}
+          onClick={() => setActiveNoticeIndex((current) => (current === index ? null : index))}
+          type="button"
+        >
           <span>{notice.date}</span>
           <strong>{notice.title}</strong>
-          <p>더 나은 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다.</p>
+          <p>
+            {activeNoticeIndex === index
+              ? "선택한 공지의 상세 내용을 확인 중입니다."
+              : "더 나은 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다."}
+          </p>
         </button>
       ))}
     </section>
@@ -744,10 +1829,31 @@ function InfoNoticePanel() {
 }
 
 function InfoFaqPanel() {
+  const [openFaqIndexes, setOpenFaqIndexes] = useState(() => new Set([0]));
+
   return (
     <section className="newsroll_info_list" aria-label="FAQ">
       {faqItems.map((item, index) => (
-        <details className="newsroll_info_faq_item" key={`${item.question}-${index}`} open={index === 0}>
+        <details
+          className="newsroll_info_faq_item"
+          key={`${item.question}-${index}`}
+          onToggle={(event) => {
+            const isOpen = event.currentTarget.open;
+
+            setOpenFaqIndexes((current) => {
+              const next = new Set(current);
+
+              if (isOpen) {
+                next.add(index);
+              } else {
+                next.delete(index);
+              }
+
+              return next;
+            });
+          }}
+          open={openFaqIndexes.has(index)}
+        >
           <summary>
             <strong>Q. {item.question}</strong>
             <span className="newsroll_info_faq_chevron" aria-hidden="true" />
@@ -803,65 +1909,40 @@ function InfoInquiryPanel() {
   );
 }
 
-function InfoView({ onOpenSearch }: { onOpenSearch: () => void }) {
+function InfoView({
+  isTextLarge,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
   const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("faq");
-  const activeInfoTabIndex = infoTabs.findIndex((tab) => tab.id === activeInfoTab);
-  const activeInfoTabLabel = infoTabs[activeInfoTabIndex]?.label ?? "FAQ";
-
-  function handleInfoTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const lastIndex = infoTabs.length - 1;
-    const nextIndexByKey: Record<string, number> = {
-      ArrowDown: activeInfoTabIndex === lastIndex ? 0 : activeInfoTabIndex + 1,
-      ArrowLeft: activeInfoTabIndex === 0 ? lastIndex : activeInfoTabIndex - 1,
-      ArrowRight: activeInfoTabIndex === lastIndex ? 0 : activeInfoTabIndex + 1,
-      ArrowUp: activeInfoTabIndex === 0 ? lastIndex : activeInfoTabIndex - 1,
-      End: lastIndex,
-      Home: 0,
-    };
-    const nextIndex = nextIndexByKey[event.key];
-
-    if (nextIndex === undefined) {
-      return;
-    }
-
-    event.preventDefault();
-    setActiveInfoTab(infoTabs[nextIndex].id);
-  }
+  const activeInfoTabLabel = infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "FAQ";
 
   return (
     <section className="newsroll_info_screen" aria-label="인포메이션">
       <div className="newsroll_info_top">
         <PolicyStatusBar />
-        <NewsToolbar onOpenSearch={onOpenSearch} />
+        <NewsToolbar
+          isTextLarge={isTextLarge}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
         <h1>{activeInfoTabLabel}</h1>
       </div>
 
       <div className="newsroll_info_sheet">
-        <div
+        <PillTabMenu
+          ariaLabel="인포메이션 메뉴"
           className="newsroll_info_tabs"
-          role="tablist"
-          aria-label="인포메이션 메뉴"
-          onKeyDown={handleInfoTabKeyDown}
-        >
-          {infoTabs.map((tab) => {
-            const selected = activeInfoTab === tab.id;
-
-            return (
-              <button
-                aria-controls={`newsroll_info_panel_${tab.id}`}
-                aria-selected={selected}
-                className={selected ? "is_active" : undefined}
-                id={`newsroll_info_tab_${tab.id}`}
-                key={tab.id}
-                onClick={() => setActiveInfoTab(tab.id)}
-                role="tab"
-                type="button"
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+          getPanelId={(id) => `newsroll_info_panel_${id}`}
+          getTabId={(id) => `newsroll_info_tab_${id}`}
+          items={infoTabs}
+          onChange={setActiveInfoTab}
+          value={activeInfoTab}
+        />
 
         <div
           aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
@@ -878,12 +1959,16 @@ function InfoView({ onOpenSearch }: { onOpenSearch: () => void }) {
 }
 
 function ActiveView({
+  isTextLarge,
   onCloseSearch,
   onOpenSearch,
+  onToggleTextSize,
   view,
 }: {
+  isTextLarge: boolean;
   onCloseSearch: () => void;
   onOpenSearch: () => void;
+  onToggleTextSize: () => void;
   view: View;
 }) {
   if (view === "search") {
@@ -891,33 +1976,49 @@ function ActiveView({
   }
 
   if (view === "all") {
-    return <AllNewsView onOpenSearch={onOpenSearch} />;
+    return <AllNewsView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
   }
 
   if (view === "policy") {
-    return <PolicyView onOpenSearch={onOpenSearch} />;
+    return <PolicyView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
   }
 
   if (view === "my") {
-    return <MyPageView onOpenSearch={onOpenSearch} />;
+    return <MyPageView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
   }
 
   if (view === "info") {
-    return <InfoView onOpenSearch={onOpenSearch} />;
+    return <InfoView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
   }
 
-  return <HomeView onOpenSearch={onOpenSearch} />;
+  return <HomeView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
 }
 
 export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("home");
+  const [searchBackView, setSearchBackView] = useState<Tab>("home");
+  const [isTextLarge, setIsTextLarge] = useState(false);
+
+  function openSearch() {
+    if (activeView !== "search") {
+      setSearchBackView(activeView);
+    }
+
+    setActiveView("search");
+  }
 
   return (
-    <main className={`newsroll_screen${activeView === "all" ? " newsroll_screen_all" : ""}`}>
+    <main
+      className={`newsroll_screen${activeView === "all" ? " newsroll_screen_all" : ""}${
+        isTextLarge ? " newsroll_text_large" : ""
+      }`}
+    >
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
-          onCloseSearch={() => setActiveView("home")}
-          onOpenSearch={() => setActiveView("search")}
+          isTextLarge={isTextLarge}
+          onCloseSearch={() => setActiveView(searchBackView)}
+          onOpenSearch={openSearch}
+          onToggleTextSize={() => setIsTextLarge((current) => !current)}
           view={activeView}
         />
       </div>
