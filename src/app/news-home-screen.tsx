@@ -43,6 +43,20 @@ type HomeArticle = {
   title: string;
 };
 
+type PolicyDetailItem = {
+  label: string;
+  value: string;
+};
+
+type PolicyItem = {
+  details: PolicyDetailItem[];
+  registeredAt: string;
+  summary: string;
+  tags: string[];
+  title: string;
+  updatedAt: string;
+};
+
 type PillTabItem<T extends string> = {
   id: T;
   label: string;
@@ -1206,7 +1220,6 @@ function AllNewsArticleDetail({
   return (
     <section className="newsroll_all_detail" aria-label="뉴스 상세">
       <header className="newsroll_all_detail_top">
-        <PolicyStatusBar />
         <div className="newsroll_all_detail_toolbar">
           <button aria-label="전체뉴스로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
             <span aria-hidden="true" />
@@ -1324,7 +1337,6 @@ function AllNewsView({
   return (
     <section className="newsroll_all_news" aria-label="전체뉴스">
       <div className="newsroll_all_top">
-        <PolicyStatusBar />
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -1445,33 +1457,131 @@ function AllNewsView({
   );
 }
 
-const policyListItems = Array.from({ length: 6 }, (_, index) => ({
-  title: index % 2 === 0 ? "양산시 청년 자격증 응시료 지원" : "청년동아리 활동비 지원사업",
-  tags: index % 2 === 0 ? ["일자리", "취업", "보조금"] : ["복지문화", "문화활동", "바우처"],
-}));
 const policyAgeTabs = ["전체", "미성년", "청년", "중장년", "노년"];
+const basePolicyDetails: PolicyDetailItem[] = [
+  { label: "지원 대상 연령", value: "19세 ~ 45세" },
+  { label: "지원 내용", value: "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원)." },
+  { label: "지원 기관", value: "경상남도 하동군 지역활력추진단" },
+  { label: "사업 기간", value: "2026-01 ~ 2026-12" },
+  { label: "신청 기간", value: "2025-10-01 ~ 2025-10-10" },
+  { label: "신청 방법", value: "양산시 청년 정보 플랫폼 청년카까 온라인 신청." },
+  { label: "선발 방식", value: "지원 자격 충족자 대상 선착순 선정 후 개별 통보." },
+  { label: "제출 서류", value: "사업자등록 사실 여부 증명서, 시험 응시 확인 서류, 응시료 결제 영수증, 통장 사본 등." },
+];
+const policyItemsByAge: Record<string, PolicyItem[]> = {
+  전체: [
+    {
+      title: "청년동아리 활동비 지원사업",
+      tags: ["복지문화", "문화활동", "바우처"],
+      summary: "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
+      registeredAt: "2026년 12월 31일",
+      updatedAt: "2026년 12월 31일",
+      details: basePolicyDetails,
+    },
+    {
+      title: "양산시 청년 자격증 응시료 지원",
+      tags: ["일자리", "취업", "보조금"],
+      summary: "취업 준비 청년의 자격증 응시료 부담을 낮추기 위한 지역 지원 정책.",
+      registeredAt: "2026년 12월 31일",
+      updatedAt: "2026년 12월 31일",
+      details: basePolicyDetails,
+    },
+  ],
+  미성년: [
+    {
+      title: "청소년 문화예술 체험 바우처",
+      tags: ["복지문화", "청소년", "바우처"],
+      summary: "미성년 청소년의 문화예술 관람과 체험 활동 비용을 지원하는 사업.",
+      registeredAt: "2026년 12월 20일",
+      updatedAt: "2026년 12월 28일",
+      details: [
+        { label: "지원 대상 연령", value: "13세 ~ 18세" },
+        ...basePolicyDetails.slice(1),
+      ],
+    },
+    {
+      title: "방과후 학습 돌봄 지원",
+      tags: ["교육", "돌봄", "지원금"],
+      summary: "방과후 학습과 돌봄이 필요한 청소년 가구에 프로그램 이용료를 지원.",
+      registeredAt: "2026년 12월 18일",
+      updatedAt: "2026년 12월 29일",
+      details: [
+        { label: "지원 대상 연령", value: "8세 ~ 18세" },
+        ...basePolicyDetails.slice(1),
+      ],
+    },
+  ],
+  청년: [
+    {
+      title: "청년동아리 활동비 지원사업",
+      tags: ["복지문화", "문화활동", "바우처"],
+      summary: "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
+      registeredAt: "2026년 12월 31일",
+      updatedAt: "2026년 12월 31일",
+      details: basePolicyDetails,
+    },
+    {
+      title: "청년 주거 지원 확대 논의",
+      tags: ["주거", "청년", "보조금"],
+      summary: "청년 주거비 부담을 낮추기 위해 지자체별 신청 조건을 정비하는 정책.",
+      registeredAt: "2026년 12월 27일",
+      updatedAt: "2026년 12월 30일",
+      details: basePolicyDetails,
+    },
+  ],
+  중장년: [
+    {
+      title: "중장년 재취업 역량 강화 과정",
+      tags: ["일자리", "교육", "재취업"],
+      summary: "경력 전환을 준비하는 중장년층에게 직무 교육과 상담을 제공.",
+      registeredAt: "2026년 12월 24일",
+      updatedAt: "2026년 12월 30일",
+      details: [
+        { label: "지원 대상 연령", value: "40세 ~ 64세" },
+        ...basePolicyDetails.slice(1),
+      ],
+    },
+    {
+      title: "소상공인 전환 컨설팅 지원",
+      tags: ["경제", "창업", "컨설팅"],
+      summary: "업종 전환과 매장 운영 개선이 필요한 중장년 소상공인 대상 컨설팅 지원.",
+      registeredAt: "2026년 12월 21일",
+      updatedAt: "2026년 12월 29일",
+      details: [
+        { label: "지원 대상 연령", value: "35세 ~ 64세" },
+        ...basePolicyDetails.slice(1),
+      ],
+    },
+  ],
+  노년: [
+    {
+      title: "노년층 디지털 생활 교육",
+      tags: ["교육", "복지", "디지털"],
+      summary: "스마트폰, 공공앱, 금융앱 사용에 어려움을 겪는 노년층을 위한 교육.",
+      registeredAt: "2026년 12월 22일",
+      updatedAt: "2026년 12월 30일",
+      details: [
+        { label: "지원 대상 연령", value: "65세 이상" },
+        ...basePolicyDetails.slice(1),
+      ],
+    },
+    {
+      title: "어르신 건강 돌봄 방문 서비스",
+      tags: ["건강", "복지", "방문지원"],
+      summary: "거동이 불편한 노년층에게 정기 건강 확인과 생활 상담을 제공.",
+      registeredAt: "2026년 12월 19일",
+      updatedAt: "2026년 12월 28일",
+      details: [
+        { label: "지원 대상 연령", value: "70세 이상" },
+        ...basePolicyDetails.slice(1),
+      ],
+    },
+  ],
+};
 const policySortLabels: Record<SortOrder, string> = {
   latest: "최신순",
   popular: "인기순",
 };
-
-function PolicyStatusBar() {
-  return (
-    <div className="newsroll_policy_status" aria-hidden="true">
-      <span>9:09</span>
-      <span className="newsroll_policy_status_icons">
-        <span className="newsroll_policy_signal">
-          <i />
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className="newsroll_policy_wifi" />
-        <span className="newsroll_policy_battery" />
-      </span>
-    </div>
-  );
-}
 
 function PolicyListItem({
   isSelected,
@@ -1479,7 +1589,7 @@ function PolicyListItem({
   onSelect,
 }: {
   isSelected: boolean;
-  item: (typeof policyListItems)[number];
+  item: PolicyItem;
   onSelect: () => void;
 }) {
   return (
@@ -1499,10 +1609,10 @@ function PolicyListItem({
       <h2>{item.title}</h2>
       <div className="newsroll_policy_dates">
         <span>
-          <strong>등록</strong> 2026년 12월 31일
+          <strong>등록</strong> {item.registeredAt}
         </span>
         <span>
-          <strong>수정</strong> 2026년 12월 31일
+          <strong>수정</strong> {item.updatedAt}
         </span>
       </div>
       <div className="newsroll_policy_stats" aria-label="조회수와 댓글">
@@ -1519,6 +1629,108 @@ function PolicyListItem({
   );
 }
 
+function PolicyDetailView({
+  isTextLarge,
+  item,
+  onBack,
+  onOpenSearch,
+  onToggleTextSize,
+}: {
+  isTextLarge: boolean;
+  item: PolicyItem;
+  onBack: () => void;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
+}) {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isShared, setIsShared] = useState(false);
+
+  return (
+    <section className="newsroll_policy_detail" aria-label="국가정책 상세">
+      <header className="newsroll_policy_detail_top">
+        <NewsToolbar
+          isTextLarge={isTextLarge}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
+        <button aria-label="국가정책 목록으로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
+          <span aria-hidden="true" />
+        </button>
+      </header>
+
+      <article className="newsroll_policy_detail_sheet">
+        <div className="newsroll_policy_detail_tags">
+          {item.tags.map((tag, index) => (
+            <span className={index === item.tags.length - 1 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <h1>{item.title}</h1>
+        <p className="newsroll_policy_detail_summary">{item.summary}</p>
+
+        <div className="newsroll_policy_detail_dates">
+          <span>
+            <strong>등록</strong> {item.registeredAt}
+          </span>
+          <span>
+            <strong>수정</strong> {item.updatedAt}
+          </span>
+        </div>
+
+        <div className="newsroll_policy_detail_actions" aria-label="정책 도구">
+          <button
+            aria-label="공유"
+            aria-pressed={isShared}
+            className="newsroll_icon_button"
+            onClick={() => setIsShared((current) => !current)}
+            type="button"
+          >
+            <Icon name="share" />
+          </button>
+          <button
+            aria-label="북마크"
+            aria-pressed={isBookmarked}
+            className="newsroll_icon_button"
+            onClick={() => setIsBookmarked((current) => !current)}
+            type="button"
+          >
+            <Icon name="bookmark" />
+          </button>
+        </div>
+
+        <dl className="newsroll_policy_detail_list">
+          {item.details.map((detail) => (
+            <div key={`${item.title}-${detail.label}`}>
+              <dt>{detail.label}</dt>
+              <dd>{detail.value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {isExpanded ? (
+          <div className="newsroll_policy_detail_more">
+            <strong>상세 안내</strong>
+            <p>신청 전 모집 공고와 제출 서류를 다시 확인하고, 접수 기간 안에 온라인 신청을 완료해주세요.</p>
+          </div>
+        ) : null}
+
+        <button
+          aria-expanded={isExpanded}
+          className="newsroll_policy_detail_more_button"
+          onClick={() => setIsExpanded((current) => !current)}
+          type="button"
+        >
+          <span aria-hidden="true">{isExpanded ? "-" : "+"}</span>
+          {isExpanded ? "접기" : "상세보기"}
+        </button>
+      </article>
+    </section>
+  );
+}
+
 function PolicyView({
   isTextLarge,
   onOpenSearch,
@@ -1529,15 +1741,28 @@ function PolicyView({
   onToggleTextSize: () => void;
 }) {
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
+  const [detailItem, setDetailItem] = useState<PolicyItem | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
+  const policyItems = policyItemsByAge[activeAge] ?? policyItemsByAge.전체;
   const visiblePolicyItems =
-    sortOrder === "latest" ? [...policyListItems].reverse() : policyListItems;
+    sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
+
+  if (detailItem) {
+    return (
+      <PolicyDetailView
+        isTextLarge={isTextLarge}
+        item={detailItem}
+        onBack={() => setDetailItem(null)}
+        onOpenSearch={onOpenSearch}
+        onToggleTextSize={onToggleTextSize}
+      />
+    );
+  }
 
   return (
     <section className="newsroll_policy_screen" aria-label="국가정책">
       <div className="newsroll_policy_top">
-        <PolicyStatusBar />
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -1558,7 +1783,10 @@ function PolicyView({
           ariaLabel="연령 필터"
           className="newsroll_policy_age_tabs"
           items={policyAgeTabs.map((label) => ({ id: label, label }))}
-          onChange={setActiveAge}
+          onChange={(nextAge) => {
+            setActiveAge(nextAge);
+            setSelectedPolicyIndex(0);
+          }}
           value={activeAge}
         />
 
@@ -1577,7 +1805,10 @@ function PolicyView({
               isSelected={selectedPolicyIndex === index}
               item={item}
               key={`${activeAge}-${sortOrder}-${item.title}-${index}`}
-              onSelect={() => setSelectedPolicyIndex(index)}
+              onSelect={() => {
+                setSelectedPolicyIndex(index);
+                setDetailItem(item);
+              }}
             />
           ))}
         </div>
@@ -1657,7 +1888,6 @@ function MyPageView({
   return (
     <section className="newsroll_my_screen" aria-label="마이페이지">
       <div className="newsroll_my_top">
-        <PolicyStatusBar />
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -1924,7 +2154,6 @@ function InfoView({
   return (
     <section className="newsroll_info_screen" aria-label="인포메이션">
       <div className="newsroll_info_top">
-        <PolicyStatusBar />
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}

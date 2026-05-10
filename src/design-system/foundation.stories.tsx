@@ -463,6 +463,7 @@ function groupColorTokens(tokens: Token[]) {
       "pink",
     ]),
     brand: orderGroups(brand, [
+      "newsroll-purple",
       "artskorealab-yellow",
       "artskorealab-cyan",
       "artskorealab-purple",
@@ -508,6 +509,7 @@ function getColorGroupName(tokenName: string) {
     "artskorealab-yellow",
     "artskorealab-cyan",
     "artskorealab-purple",
+    "newsroll-purple",
     "virtualdream-red",
   ];
   const matchedGroup = knownGroups.find((group) =>
@@ -523,6 +525,7 @@ function getColorGroupName(tokenName: string) {
 
 function getColorGroupCategory(groupName: string) {
   const brandGroups = [
+    "newsroll-purple",
     "artskorealab-yellow",
     "artskorealab-cyan",
     "artskorealab-purple",
