@@ -128,8 +128,6 @@ function SpacingTokens() {
       all: spacingTokens,
       paddingHorizontal: getOrderedTokens(spacingTokens, "--spacing-padding-horizontal-"),
       paddingVertical: getOrderedTokens(spacingTokens, "--spacing-padding-vertical-"),
-      marginHorizontal: getOrderedTokens(spacingTokens, "--spacing-margin-horizontal-"),
-      marginVertical: getOrderedTokens(spacingTokens, "--spacing-margin-vertical-"),
       gapHorizontal: getOrderedTokens(spacingTokens, "--spacing-gap-horizontal-"),
       gapVertical: getOrderedTokens(spacingTokens, "--spacing-gap-vertical-"),
     };
@@ -140,8 +138,6 @@ function SpacingTokens() {
       <PageHeader title="Spacing" tokens={spacingGroups.all} />
       <TokenSection title="Padding Horizontal" tokens={spacingGroups.paddingHorizontal} />
       <TokenSection title="Padding Vertical" tokens={spacingGroups.paddingVertical} />
-      <TokenSection title="Margin Horizontal" tokens={spacingGroups.marginHorizontal} />
-      <TokenSection title="Margin Vertical" tokens={spacingGroups.marginVertical} />
       <TokenSection title="Gap Horizontal" tokens={spacingGroups.gapHorizontal} />
       <TokenSection title="Gap Vertical" tokens={spacingGroups.gapVertical} />
     </div>
@@ -257,7 +253,6 @@ function TypographyStyleRow({
         className={item.className}
         data-type-style={item.className}
         style={{
-          margin: 0,
           whiteSpace: "pre-line",
         }}
       >

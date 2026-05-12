@@ -101,12 +101,12 @@ function IconsGallery({ size, showLabels }: GalleryArgs) {
                 fontFamily: '"Pretendard Variable", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
             }}
         >
-            <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-                <div style={{ marginBottom: 28 }}>
-                    <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700 }}>Icon Gallery</h1>
+            <div style={{ maxWidth: 1440, paddingInline: 'calc((100% - min(100%, 1440px)) / 2)' }}>
+                <div style={{ paddingBottom: 28 }}>
+                    <h1 style={{ fontSize: 28, fontWeight: 700 }}>Icon Gallery</h1>
                     <p
                         style={{
-                            margin: '10px 0 0',
+                            paddingTop: 10,
                             color: '#5f5648',
                             lineHeight: 1.6,
                             fontSize: 14,
@@ -128,7 +128,6 @@ function IconsGallery({ size, showLabels }: GalleryArgs) {
                         <figure
                             key={icon.fileName}
                             style={{
-                                margin: 0,
                                 minHeight: 120,
                                 borderRadius: 18,
                                 padding: '18px 14px 16px',

@@ -419,11 +419,12 @@ function HomeIntro() {
       <p>
         반갑습니다 <strong>콩콩이</strong>님!
       </p>
-      <div className="newsroll_home_metric">
-        <strong>11,343</strong>
-        <span>개</span>
-      </div>
-      <p className="newsroll_home_metric_caption">새로운 소식이 있습니다.</p>
+      <p className="newsroll_home_metric">
+        <strong>
+          11,343<span className="newsroll_home_metric_unit">개</span>
+        </strong>
+        <span className="newsroll_home_metric_caption">새로운 소식이 있습니다.</span>
+      </p>
     </section>
   );
 }
@@ -484,7 +485,6 @@ function HomeMainHeader({
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
-  const [isAlarmOn, setIsAlarmOn] = useState(false);
   const [isBreakingExpanded, setIsBreakingExpanded] = useState(false);
 
   return (
@@ -496,20 +496,7 @@ function HomeMainHeader({
       />
 
       <HomeIntro />
-
-      <div className="newsroll_home_actions">
-        <HomeViewToggle mode={mode} onModeChange={onModeChange} />
-
-        <button
-          aria-label="알림"
-          aria-pressed={isAlarmOn}
-          className="newsroll_home_alarm"
-          onClick={() => setIsAlarmOn((current) => !current)}
-          type="button"
-        >
-          <Icon name="alarm" />
-        </button>
-      </div>
+      <HomeViewToggle mode={mode} onModeChange={onModeChange} />
 
       <button
         aria-expanded={isBreakingExpanded}
@@ -931,14 +918,14 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
 
       <MiniReactionBar reaction={reaction} show={showMiniReactionBar} onReactionChange={setReaction} />
 
-      <div className="newsroll_source_row">
+      <p className="newsroll_source_row">
         <span className="newsroll_source_mark" aria-hidden="true">
           {index % 2 === 0 ? "국" : "중"}
         </span>
         <span className="newsroll_source_divider" aria-hidden="true" />
         <span>{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
         <span>홍길동 기자</span>
-      </div>
+      </p>
 
       <button
         aria-expanded={isOriginalOpen}
@@ -1109,7 +1096,7 @@ function SearchView({ onClose }: { onClose: () => void }) {
 
 function AllNewsMeta() {
   return (
-    <div className="newsroll_all_meta">
+    <p className="newsroll_all_meta">
       <span>1시간 전</span>
       <span className="newsroll_all_stats" aria-label="조회수와 반응">
         <span>
@@ -1121,7 +1108,7 @@ function AllNewsMeta() {
           132
         </span>
       </span>
-    </div>
+    </p>
   );
 }
 
@@ -1160,10 +1147,10 @@ function AllNewsLatestCard({
     <button aria-pressed={selected} className="newsroll_all_latest_card" onClick={onClick} type="button">
       <span className="newsroll_all_chip">{item.category}</span>
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
-      <div className="newsroll_all_latest_body">
+      <span className="newsroll_all_latest_body">
         <strong>{item.title}</strong>
         <AllNewsMeta />
-      </div>
+      </span>
     </button>
   );
 }
@@ -1179,10 +1166,10 @@ function AllNewsHeadlineItem({
 }) {
   return (
     <button aria-pressed={selected} className="newsroll_all_headline_item" onClick={onClick} type="button">
-      <div className="newsroll_all_headline_body">
+      <span className="newsroll_all_headline_body">
         <strong>{item.title}</strong>
         <AllNewsMeta />
-      </div>
+      </span>
       <img alt="" className="newsroll_all_headline_image" src={item.image} />
     </button>
   );
