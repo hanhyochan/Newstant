@@ -537,11 +537,11 @@
             );
         }
 
-        .newsroll_all_top .newsroll_toolbar [aria-label='硫붾돱'] {
+        .newsroll_all_top .newsroll_toolbar [aria-label='메뉴'] {
             position: relative;
         }
 
-        .newsroll_all_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+        .newsroll_all_top .newsroll_toolbar [aria-label='메뉴']::before {
             content: '';
             position: absolute;
             top: 2px;
@@ -3109,11 +3109,11 @@
         gap: var(--spacing-gap-horizontal-16);
     }
 
-    .newsroll_all_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
-    .newsroll_all_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 2px;
@@ -3538,7 +3538,7 @@
         justify-content: end;
     }
 
-    .newsroll_all_detail_toolbar .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_all_detail_toolbar .newsroll_toolbar [aria-label='메뉴'] {
         display: inline-flex;
     }
 
@@ -3735,11 +3735,11 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_policy_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_policy_top .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
-    .newsroll_policy_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+    .newsroll_policy_top .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 7px;
@@ -3964,11 +3964,11 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_policy_detail_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_policy_detail_top .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
-    .newsroll_policy_detail_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+    .newsroll_policy_detail_top .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 7px;
@@ -4170,11 +4170,11 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_my_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
-    .newsroll_my_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 7px;
@@ -4432,7 +4432,7 @@
         justify-content: end;
     }
 
-    .newsroll_my_time_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_my_time_top .newsroll_toolbar [aria-label='메뉴'] {
         display: inline-flex;
     }
 
@@ -4509,7 +4509,7 @@
         justify-content: end;
     }
 
-    .newsroll_my_activity_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_my_activity_top .newsroll_toolbar [aria-label='메뉴'] {
         display: inline-flex;
     }
 
@@ -4784,11 +4784,11 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_info_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
-    .newsroll_info_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 7px;
@@ -5065,17 +5065,17 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_header .newsroll_toolbar [aria-label='硫붾돱'],
-    .newsroll_all_top .newsroll_toolbar [aria-label='硫붾돱'],
-    .newsroll_info_top .newsroll_toolbar [aria-label='硫붾돱'],
-    .newsroll_my_top .newsroll_toolbar [aria-label='硫붾돱'] {
+    .newsroll_header .newsroll_toolbar [aria-label='메뉴'],
+    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴'],
+    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴'],
+    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
-    .newsroll_header .newsroll_toolbar [aria-label='硫붾돱']::before,
-    .newsroll_all_top .newsroll_toolbar [aria-label='硫붾돱']::before,
-    .newsroll_info_top .newsroll_toolbar [aria-label='硫붾돱']::before,
-    .newsroll_my_top .newsroll_toolbar [aria-label='硫붾돱']::before {
+    .newsroll_header .newsroll_toolbar [aria-label='메뉴']::before,
+    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴']::before,
+    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴']::before,
+    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 7px;
@@ -5089,6 +5089,16 @@
     .newsroll_home_reels_header {
         min-height: 407px;
         color: var(--color-common-100);
+    }
+
+    .newsroll_home_header_group {
+        display: grid;
+        gap: var(--spacing-gap-vertical-24);
+    }
+
+    .newsroll_home_header_stack {
+        display: grid;
+        gap: var(--spacing-gap-vertical-40);
     }
 
     .newsroll_home_intro {
@@ -5109,7 +5119,7 @@
 
     .newsroll_home_metric {
         display: grid;
-        gap: var(--spacing-gap-vertical-24);
+        gap: 0;
         color: var(--color-common-100);
     }
 
@@ -5141,7 +5151,6 @@
         display: flex;
         align-items: center;
         gap: var(--spacing-gap-horizontal-12);
-        padding-top: var(--spacing-padding-vertical-40);
         padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
@@ -5299,7 +5308,7 @@
         grid-template-columns: repeat(auto-fit, minmax(min(156px, 100%), 1fr));
         align-content: start;
         gap: 28px var(--spacing-gap-horizontal-16);
-        padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
+        padding: var(--spacing-padding-vertical-40) var(--spacing-padding-horizontal-16)
             calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
         border-radius: var(--radius-20) var(--radius-20) 0 0;
         color: var(--color-label-strong);
@@ -5743,7 +5752,7 @@
     }
 
     .newsroll_home_main_header {
-        gap: var(--spacing-gap-vertical-24);
+        gap: 0;
     }
 
     .newsroll_home_alarm[aria-pressed='true'] {
@@ -5792,7 +5801,7 @@
         position: relative;
         display: grid;
         gap: var(--spacing-gap-vertical-16);
-        padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
+        padding: var(--spacing-padding-vertical-40) var(--spacing-padding-horizontal-16)
             var(--spacing-padding-vertical-24);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);

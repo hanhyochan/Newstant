@@ -489,32 +489,36 @@ function HomeMainHeader({
 
   return (
     <header className="newsroll_header newsroll_home_reels_header newsroll_home_main_header">
-      <NewsToolbar
-        isTextLarge={isTextLarge}
-        onOpenSearch={onOpenSearch}
-        onToggleTextSize={onToggleTextSize}
-      />
+      <div className="newsroll_home_header_stack">
+        <div className="newsroll_home_header_group">
+          <NewsToolbar
+            isTextLarge={isTextLarge}
+            onOpenSearch={onOpenSearch}
+            onToggleTextSize={onToggleTextSize}
+          />
 
-      <HomeIntro />
-      <HomeViewToggle mode={mode} onModeChange={onModeChange} />
-
-      <button
-        aria-expanded={isBreakingExpanded}
-        className="newsroll_home_breaking_card"
-        onClick={() => setIsBreakingExpanded((current) => !current)}
-        type="button"
-      >
-        <span className="newsroll_home_breaking_icon">
-          <Icon name="alarm" />
-        </span>
-        <span>{homeBreakingTitle}</span>
-        <Icon name="chevronRight" />
-      </button>
-      {isBreakingExpanded ? (
-        <div className="newsroll_home_breaking_detail" role="status">
-          관련 속보 3건
+          <HomeIntro />
+          <HomeViewToggle mode={mode} onModeChange={onModeChange} />
         </div>
-      ) : null}
+
+        <button
+          aria-expanded={isBreakingExpanded}
+          className="newsroll_home_breaking_card"
+          onClick={() => setIsBreakingExpanded((current) => !current)}
+          type="button"
+        >
+          <span className="newsroll_home_breaking_icon">
+            <Icon name="alarm" />
+          </span>
+          <span>{homeBreakingTitle}</span>
+          <Icon name="chevronRight" />
+        </button>
+        {isBreakingExpanded ? (
+          <div className="newsroll_home_breaking_detail" role="status">
+            관련 속보 3건
+          </div>
+        ) : null}
+      </div>
     </header>
   );
 }
