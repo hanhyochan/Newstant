@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type Ref } from "react";
 
 import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
@@ -413,22 +413,6 @@ function NewsToolbar({
   );
 }
 
-function HomeIntro() {
-  return (
-    <section className="newsroll_home_intro" aria-label="새 소식 요약">
-      <p>
-        반갑습니다 <strong>콩콩이</strong>님!
-      </p>
-      <p className="newsroll_home_metric">
-        <strong>
-          11,343<span className="newsroll_home_metric_unit">개</span>
-        </strong>
-        <span className="newsroll_home_metric_caption">새로운 소식이 있습니다.</span>
-      </p>
-    </section>
-  );
-}
-
 function HomeBlockItem({ onClick }: { onClick: () => void }) {
   return (
     <button className="newsroll_home_block_item" onClick={onClick} type="button">
@@ -488,19 +472,29 @@ function HomeMainHeader({
   const [isBreakingExpanded, setIsBreakingExpanded] = useState(false);
 
   return (
-    <header className="newsroll_header newsroll_home_reels_header newsroll_home_main_header">
-      <div className="newsroll_home_header_stack">
-        <div className="newsroll_home_header_group">
-          <NewsToolbar
-            isTextLarge={isTextLarge}
-            onOpenSearch={onOpenSearch}
-            onToggleTextSize={onToggleTextSize}
-          />
+    <>
+      <header className="newsroll_header newsroll_home_main_toolbar">
+        <NewsToolbar
+          isTextLarge={isTextLarge}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
+      </header>
 
-          <HomeIntro />
-          <HomeViewToggle mode={mode} onModeChange={onModeChange} />
-        </div>
+      <section className="newsroll_home_header_group" aria-label="홈 요약">
+        <p className="newsroll_home_greeting">
+          반갑습니다 <strong>콩콩이</strong>님!
+        </p>
+        <p className="newsroll_home_metric">
+          <strong>
+            11,343<span className="newsroll_home_metric_unit">개</span>
+          </strong>
+          <span className="newsroll_home_metric_caption">새로운 소식이 있습니다.</span>
+        </p>
+        <HomeViewToggle mode={mode} onModeChange={onModeChange} />
+      </section>
 
+      <div className="newsroll_home_breaking_group">
         <button
           aria-expanded={isBreakingExpanded}
           className="newsroll_home_breaking_card"
@@ -519,7 +513,7 @@ function HomeMainHeader({
           </div>
         ) : null}
       </div>
-    </header>
+    </>
   );
 }
 
@@ -527,13 +521,15 @@ function ReactionControls({
   className = "",
   reaction,
   onReactionChange,
+  rootRef,
 }: {
   className?: string;
   reaction: Reaction;
   onReactionChange: (reaction: Reaction) => void;
+  rootRef?: Ref<HTMLDivElement>;
 }) {
   return (
-    <div className={`newsroll_reaction_controls ${className}`.trim()} aria-label="기사 평가">
+    <div ref={rootRef} className={`newsroll_reaction_controls ${className}`.trim()} aria-label="기사 평가">
       {reactionItems.map((item) => (
         <button
           aria-pressed={reaction === item.value}
@@ -941,9 +937,7 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
       </button>
       {isOriginalOpen ? <p className="newsroll_original_hint">국민일보 원문으로 이동할 준비가 됐습니다.</p> : null}
 
-      <div ref={reactionControlsRef}>
-        <ReactionControls reaction={reaction} onReactionChange={setReaction} />
-      </div>
+      <ReactionControls rootRef={reactionControlsRef} reaction={reaction} onReactionChange={setReaction} />
 
       <PollSection kind={article.pollKind ?? "stacked"} />
 
@@ -975,7 +969,7 @@ function HomeReelsView({
   onToggleTextSize: () => void;
 }) {
   return (
-    <>
+    <div className="newsroll_home_container">
       <HomeMainHeader
         isTextLarge={isTextLarge}
         mode={mode}
@@ -989,7 +983,7 @@ function HomeReelsView({
           <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
         ))}
       </section>
-    </>
+    </div>
   );
 }
 
@@ -1009,7 +1003,7 @@ function HomeBlockView({
   onToggleTextSize: () => void;
 }) {
   return (
-    <>
+    <div className="newsroll_home_container">
       <HomeMainHeader
         isTextLarge={isTextLarge}
         mode={mode}
@@ -1023,7 +1017,7 @@ function HomeBlockView({
           <HomeBlockItem key={index} onClick={onOpenDetail} />
         ))}
       </section>
-    </>
+    </div>
   );
 }
 

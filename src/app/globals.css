@@ -5086,34 +5086,41 @@
         background: var(--color-orange-50);
     }
 
-    .newsroll_home_reels_header {
-        min-height: 407px;
-        color: var(--color-common-100);
+    .newsroll_home_container {
+        display: grid;
+        gap: var(--spacing-gap-vertical-40);
+        background: var(--newsroll-color-app-purple);
+    }
+
+    .newsroll_home_main_toolbar,
+    .newsroll_home_header_group,
+    .newsroll_home_breaking_group {
+        padding: 0 var(--spacing-padding-horizontal-16);
+    }
+
+    .newsroll_home_main_toolbar {
+        min-height: auto;
     }
 
     .newsroll_home_header_group {
         display: grid;
         gap: var(--spacing-gap-vertical-24);
+        color: var(--color-common-100);
     }
 
-    .newsroll_home_header_stack {
+    .newsroll_home_breaking_group {
         display: grid;
-        gap: var(--spacing-gap-vertical-40);
+        gap: var(--spacing-gap-vertical-16);
     }
 
-    .newsroll_home_intro {
-        display: grid;
-        gap: var(--spacing-gap-vertical-24);
-    }
-
-    .newsroll_home_intro p {
+    .newsroll_home_greeting {
         color: var(--color-common-100);
         font-size: var(--font-size-18);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-24);
     }
 
-    .newsroll_home_intro p strong {
+    .newsroll_home_greeting strong {
         font-weight: var(--font-weight-700);
     }
 
@@ -5139,10 +5146,6 @@
         font-size: var(--font-size-24);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-32);
-    }
-
-    .newsroll_home_reels_toggle_row {
-        padding-top: var(--spacing-padding-vertical-16);
     }
 
     .newsroll_home_breaking_card {
@@ -5190,19 +5193,6 @@
         flex: 0 0 auto;
     }
 
-    .newsroll_home_reels_sheet {
-        min-height: calc(100dvh - 442px);
-        padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
-            calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
-        border-radius: var(--radius-20) var(--radius-20) 0 0;
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
-    .newsroll_home_reels_card {
-        display: grid;
-    }
-
     .newsroll_home_reels_chip {
         width: 60px;
         min-height: var(--spacing-padding-vertical-32);
@@ -5217,23 +5207,6 @@
         line-height: var(--line-height-16);
     }
 
-    .newsroll_home_reels_card h1 {
-        padding: calc(var(--spacing-padding-vertical-16) + var(--spacing-padding-vertical-4)) 0 0;
-        color: var(--color-label-strong);
-        font-size: var(--font-size-20);
-        font-weight: var(--font-weight-600);
-        line-height: 26px;
-        letter-spacing: 0;
-    }
-
-    .newsroll_home_reels_card time {
-        padding-top: var(--spacing-padding-vertical-16);
-        color: var(--newsroll-color-text-muted);
-        font-size: var(--font-size-13);
-        font-weight: var(--font-weight-400);
-        line-height: 13px;
-    }
-
     .newsroll_home_reels_actions {
         display: flex;
         justify-content: flex-end;
@@ -5245,14 +5218,6 @@
     .newsroll_home_reels_actions .newsroll_icon_button {
         width: var(--spacing-padding-horizontal-24);
         height: var(--spacing-padding-vertical-24);
-    }
-
-    .newsroll_home_reels_card > img {
-        width: 100%;
-        aspect-ratio: 328 / 246;
-        padding-top: calc(var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4));
-        border-radius: var(--radius-8);
-        object-fit: cover;
     }
 
     .newsroll_view_toggle {
@@ -5745,14 +5710,6 @@
 
     .newsroll_text_size_button[aria-pressed='true'] {
         color: var(--newsroll-color-accent-purple);
-    }
-
-    .newsroll_home_block_header {
-        min-height: 407px;
-    }
-
-    .newsroll_home_main_header {
-        gap: 0;
     }
 
     .newsroll_home_alarm[aria-pressed='true'] {
@@ -6487,7 +6444,6 @@
         background: var(--color-neutral-95);
     }
 
-    .newsroll_home_reels_sheet,
     .newsroll_home_sheet,
     .newsroll_all_news,
     .newsroll_policy_screen,
