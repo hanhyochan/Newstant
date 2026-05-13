@@ -868,7 +868,6 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
           <img className="newsroll_source_mark" src="/icons/icon_user.svg" alt="" width={32} height={32} />
           <span className="newsroll_source_name">{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
         </div>
-        <span className="newsroll_source_divider" aria-hidden="true" />
         <span className="newsroll_source_reporter">홍길동 기자</span>
       </div>
 

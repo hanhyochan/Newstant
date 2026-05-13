@@ -239,7 +239,7 @@ function TypographyStyleRow({
       }}
     >
       <div className="ds_inline_stack">
-        <Chip chipSize="small" variant="gray_line_outline">
+        <Chip chipSize="small" variant="filled">
           {item.label}
         </Chip>
         <code className="type-caption_1">{item.className}</code>

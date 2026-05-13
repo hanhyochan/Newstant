@@ -23,10 +23,10 @@ export function Chip({
   disabled,
   radius = "full",
   size,
-  variant = "gray_line_outline",
+  variant = "filled",
   ...props
 }: ChipProps) {
-  const resolvedSize = size ?? chipSize ?? "medium";
+  const resolvedSize = size ?? chipSize ?? "small";
 
   return (
     <button

@@ -43,7 +43,7 @@ export function Button({
   shadow = false,
   shape,
   size = "medium",
-  variant = "filled",
+  variant = "outline",
   ...props
 }: ButtonProps) {
   const resolvedRadius = radius ?? shape ?? "rounded";

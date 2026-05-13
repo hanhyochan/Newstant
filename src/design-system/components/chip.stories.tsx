@@ -16,8 +16,8 @@ const meta: Meta<typeof Chip> = {
     active: false,
     children: "Chip",
     radius: "full",
-    size: "medium",
-    variant: "gray_line_outline",
+    size: "small",
+    variant: "filled",
   },
   argTypes: {
     active: { control: "boolean" },
