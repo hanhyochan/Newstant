@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type Ref } from "react";
+import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 
 import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
@@ -521,15 +521,13 @@ function ReactionControls({
   className = "",
   reaction,
   onReactionChange,
-  rootRef,
 }: {
   className?: string;
   reaction: Reaction;
   onReactionChange: (reaction: Reaction) => void;
-  rootRef?: Ref<HTMLDivElement>;
 }) {
   return (
-    <div ref={rootRef} className={`newsroll_reaction_controls ${className}`.trim()} aria-label="기사 평가">
+    <div className={`newsroll_reaction_controls ${className}`.trim()} aria-label="기사 평가">
       {reactionItems.map((item) => (
         <button
           aria-pressed={reaction === item.value}
@@ -542,38 +540,6 @@ function ReactionControls({
           <strong>
             {item.label} {item.count}
           </strong>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function MiniReactionBar({
-  reaction,
-  show,
-  onReactionChange,
-}: {
-  reaction: Reaction;
-  show: boolean;
-  onReactionChange: (reaction: Reaction) => void;
-}) {
-  if (!show) {
-    return null;
-  }
-
-  return (
-    <div className="newsroll_reaction_mini_bar" aria-label="빠른 기사 평가">
-      {reactionItems.map((item) => (
-        <button
-          aria-label={item.label}
-          aria-pressed={reaction === item.value}
-          className={`newsroll_reaction_mini_button newsroll_reaction_control_${item.value}`}
-          key={item.value}
-          onClick={() => onReactionChange(reaction === item.value ? null : item.value)}
-          type="button"
-        >
-          <Icon name={item.icon} />
-          <span>{item.count}</span>
         </button>
       ))}
     </div>
@@ -866,33 +832,14 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
   const [isOriginalOpen, setIsOriginalOpen] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
-  const [showMiniReactionBar, setShowMiniReactionBar] = useState(true);
-  const reactionControlsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const node = reactionControlsRef.current;
-
-    if (!node || typeof IntersectionObserver === "undefined") {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowMiniReactionBar(!entry.isIntersecting);
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(node);
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <article className="newsroll_home_reel_card">
-      <span className="newsroll_home_reels_chip">{article.category}</span>
-      <h1>{article.title}</h1>
-      <time dateTime="2026-12-31T08:30:00">{article.date}</time>
+      <div className="newsroll_home_reel_summary">
+        <span className="newsroll_home_reels_chip">{article.category}</span>
+        <h1>{article.title}</h1>
+        <time dateTime="2026-12-31T08:30:00">{article.date}</time>
+      </div>
       <div className="newsroll_home_reels_actions" aria-label="기사 도구">
         <button
           aria-label="공유"
@@ -916,16 +863,14 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
       <img alt={article.imageAlt} src={article.image} />
       <p className="newsroll_article_body">{articleBody}</p>
 
-      <MiniReactionBar reaction={reaction} show={showMiniReactionBar} onReactionChange={setReaction} />
-
-      <p className="newsroll_source_row">
-        <span className="newsroll_source_mark" aria-hidden="true">
-          {index % 2 === 0 ? "국" : "중"}
-        </span>
+      <div className="newsroll_source_row">
+        <div className="newsroll_source_media">
+          <img className="newsroll_source_mark" src="/icons/icon_user.svg" alt="" width={32} height={32} />
+          <span className="newsroll_source_name">{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
+        </div>
         <span className="newsroll_source_divider" aria-hidden="true" />
-        <span>{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
-        <span>홍길동 기자</span>
-      </p>
+        <span className="newsroll_source_reporter">홍길동 기자</span>
+      </div>
 
       <button
         aria-expanded={isOriginalOpen}
@@ -937,7 +882,7 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
       </button>
       {isOriginalOpen ? <p className="newsroll_original_hint">국민일보 원문으로 이동할 준비가 됐습니다.</p> : null}
 
-      <ReactionControls rootRef={reactionControlsRef} reaction={reaction} onReactionChange={setReaction} />
+      <ReactionControls reaction={reaction} onReactionChange={setReaction} />
 
       <PollSection kind={article.pollKind ?? "stacked"} />
 
