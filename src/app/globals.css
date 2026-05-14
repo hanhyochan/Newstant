@@ -1532,6 +1532,10 @@
         border: 0;
     }
 
+    .newsroll_text_size_button.btn_filled {
+        background: transparent;
+    }
+
     .btn_outline {
         border: var(--border-1) solid var(--color-newsroll-purple-50);
         color: var(--color-newsroll-purple-50);
