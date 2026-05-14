@@ -913,15 +913,17 @@ function HomeReelsView({
   onToggleTextSize: () => void;
 }) {
   return (
-    <div className="container_home">
-      <HomeMainHeader
-        isTextLarge={isTextLarge}
-        mode={mode}
-        onModeChange={onModeChange}
-        onOpenBreakingNews={onOpenBreakingNews}
-        onOpenSearch={onOpenSearch}
-        onToggleTextSize={onToggleTextSize}
-      />
+    <div className="container_homeScreen">
+      <div className="container_home">
+        <HomeMainHeader
+          isTextLarge={isTextLarge}
+          mode={mode}
+          onModeChange={onModeChange}
+          onOpenBreakingNews={onOpenBreakingNews}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
+      </div>
 
       <section className="container_newsFeed" aria-label="뉴스 릴스">
         {homeReelArticles.map((article, index) => (
@@ -950,15 +952,17 @@ function HomeBlockView({
   onToggleTextSize: () => void;
 }) {
   return (
-    <div className="container_home">
-      <HomeMainHeader
-        isTextLarge={isTextLarge}
-        mode={mode}
-        onModeChange={onModeChange}
-        onOpenBreakingNews={onOpenBreakingNews}
-        onOpenSearch={onOpenSearch}
-        onToggleTextSize={onToggleTextSize}
-      />
+    <div className="container_homeScreen">
+      <div className="container_home">
+        <HomeMainHeader
+          isTextLarge={isTextLarge}
+          mode={mode}
+          onModeChange={onModeChange}
+          onOpenBreakingNews={onOpenBreakingNews}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
+      </div>
 
       <section className="container_newsGrid container_newsGrid_block" aria-label="메인 뉴스">
         {Array.from({ length: 12 }, (_, index) => (
