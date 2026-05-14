@@ -19,6 +19,7 @@ type IconName =
   | "question"
   | "search"
   | "share"
+  | "sizeIncrease"
   | "thumbDown"
   | "thumbUp"
   | "user";
@@ -388,16 +389,16 @@ function NewsToolbar({
 }) {
   return (
     <div className="newsroll_toolbar" aria-label="상단 도구">
-      <button
+      <Button
         aria-label="글자 크기"
         aria-pressed={isTextLarge}
         className="newsroll_text_size_button"
         onClick={onToggleTextSize}
-        type="button"
+        size="medium"
+        variant="filled"
       >
-        <span>가</span>
-        <strong>가</strong>
-      </button>
+        <Icon name="sizeIncrease" />
+      </Button>
       <button
         aria-label="검색"
         className="newsroll_icon_button newsroll_toolbar_icon"
@@ -430,24 +431,58 @@ function HomeViewToggle({
   mode: HomeViewMode;
   onModeChange: (mode: HomeViewMode) => void;
 }) {
+  const tabIds = {
+    reels: "home-news-view-tab-reels",
+    block: "home-news-view-tab-block",
+  };
+  const panelIds = {
+    reels: "home-news-reels-panel",
+    block: "home-news-block-panel",
+  };
+
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const nextModeByKey: Partial<Record<string, HomeViewMode>> = {
+      ArrowLeft: mode === "reels" ? "block" : "reels",
+      ArrowRight: mode === "reels" ? "block" : "reels",
+      ArrowUp: mode === "reels" ? "block" : "reels",
+      ArrowDown: mode === "reels" ? "block" : "reels",
+      Home: "reels",
+      End: "block",
+    };
+    const nextMode = nextModeByKey[event.key];
+
+    if (!nextMode) {
+      return;
+    }
+
+    event.preventDefault();
+    onModeChange(nextMode);
+  }
+
   return (
-    <div className="wrapper_newsViewToggle" role="tablist" aria-label="뉴스 보기 방식">
+    <div className="wrapper_newsViewToggle" role="tablist" aria-label="뉴스 보기 방식" onKeyDown={handleKeyDown}>
       <button
+        aria-controls={panelIds.reels}
         aria-label="릴스형"
         aria-selected={mode === "reels"}
         className={`btn_newsViewOption${mode === "reels" ? " is_active" : ""}`}
+        id={tabIds.reels}
         onClick={() => onModeChange("reels")}
         role="tab"
+        tabIndex={mode === "reels" ? 0 : -1}
         type="button"
       >
         <Icon name="list" />
       </button>
       <button
+        aria-controls={panelIds.block}
         aria-label="블록형"
         aria-selected={mode === "block"}
         className={`btn_newsViewOption${mode === "block" ? " is_active" : ""}`}
+        id={tabIds.block}
         onClick={() => onModeChange("block")}
         role="tab"
+        tabIndex={mode === "block" ? 0 : -1}
         type="button"
       >
         <Icon name="fourSquare" />
@@ -503,11 +538,8 @@ function HomeMainHeader({
             onOpenBreakingNews();
           }}
         >
-          <span className="wrapper_breakingNewsIcon">
-            <Icon name="alarm" />
-          </span>
-          <span>{homeBreakingTitle}</span>
-          <Icon name="chevronRight" />
+          <Icon name="alarm" />
+          <span className="text_breakingNewsTitle">{homeBreakingTitle}</span>
         </a>
       </div>
     </>
@@ -524,7 +556,7 @@ function ReactionControls({
   onReactionChange: (reaction: Reaction) => void;
 }) {
   return (
-    <div className={`wrapper_articleReaction ${className}`.trim()} aria-label="기사 평가">
+    <div className={`wrapper_articleReaction ${className}`.trim()} aria-label="기사 평가" role="group">
       {reactionItems.map((item) => (
         <button
           aria-pressed={reaction === item.value}
@@ -589,12 +621,13 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
           const fillStyle = isBinary ? { blockSize: `${percent}%` } : { inlineSize: `${percent}%` };
 
           return (
-            <button
+            <Button
               aria-pressed={selectedGuideOption === index}
               className="btn_articleGuideOption"
               key={option}
               onClick={() => vote(index)}
-              type="button"
+              size="large"
+              variant="filled"
             >
               {hasVoted ? (
                 <span
@@ -613,7 +646,7 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
               {hasVoted && isBinary ? <strong className="text_articleGuidePercent">{percent}%</strong> : null}
               <span className="text_articleGuideOption">{option}</span>
               {hasVoted && !isBinary ? <strong className="text_articleGuidePercent">{percent}%</strong> : null}
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -624,7 +657,7 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
   );
 }
 
-function CommentReactionPanel({ guideKind }: { guideKind: GuideKind }) {
+function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: string }) {
   const guideChoices = guideKind === "binary" ? binaryGuideOptions : guideOptions;
   const commentTabs = [
     { id: "all", label: "전체" },
@@ -686,7 +719,7 @@ function CommentReactionPanel({ guideKind }: { guideKind: GuideKind }) {
   }
 
   return (
-    <section className="wrapper_commentPanel" aria-label="댓글 반응">
+    <section className="wrapper_commentPanel" id={id} aria-label="댓글 반응">
       <form
         className="form_commentComposer"
         onSubmit={(event) => {
@@ -826,18 +859,18 @@ function CommentReactionPanel({ guideKind }: { guideKind: GuideKind }) {
 function HomeReelCard({ article, index }: { article: HomeArticle; index: number }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
-  const [isOriginalOpen, setIsOriginalOpen] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
+  const commentPanelId = `home-comment-panel-${index}`;
 
   return (
     <article className="container_articleCard">
       <div className="wrapper_articleSummary">
-        <span className="badge_articleCategory">{article.category}</span>
+        <span className="chip_articleCategory">{article.category}</span>
         <h1>{article.title}</h1>
         <time dateTime="2026-12-31T08:30:00">{article.date}</time>
       </div>
-      <div className="wrapper_articleActions" aria-label="기사 도구">
+      <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
         <button
           aria-label="공유"
           aria-pressed={isShared}
@@ -865,34 +898,36 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
           <img className="img_articlePublisherLogo" src="/icons/icon_user.svg" alt="" width={32} height={32} />
           <span className="text_articlePublisherName">{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
         </div>
-        <span className="divider_articleSource" aria-hidden="true" />
         <span className="text_articleReporter">홍길동 기자</span>
       </div>
 
-      <button
-        aria-expanded={isOriginalOpen}
+      <Button
         className="btn_originalArticle"
-        onClick={() => setIsOriginalOpen((current) => !current)}
-        type="button"
+        href="https://example.com/original-news"
+        size="medium"
+        variant="filled"
       >
-        {isOriginalOpen ? "기사 원문 접기" : "기사 원문 보기"}
-      </button>
-      {isOriginalOpen ? <p className="text_originalArticleHint">국민일보 원문으로 이동할 준비가 됐습니다.</p> : null}
+        기사 원문 보기
+      </Button>
 
       <ReactionControls reaction={reaction} onReactionChange={setReaction} />
 
       <ArticleGuideSection kind={article.guideKind ?? "stacked"} />
 
-      <button
+      <Button
+        aria-controls={commentPanelId}
         aria-expanded={isCommentPanelOpen}
         className="btn_commentPanel"
         onClick={() => setIsCommentPanelOpen((current) => !current)}
-        type="button"
+        size="large"
+        variant="filled"
       >
         <Icon name="chat" />
         댓글 반응보기
-      </button>
-      {isCommentPanelOpen ? <CommentReactionPanel guideKind={article.guideKind ?? "stacked"} /> : null}
+      </Button>
+      {isCommentPanelOpen ? (
+        <CommentReactionPanel guideKind={article.guideKind ?? "stacked"} id={commentPanelId} />
+      ) : null}
     </article>
   );
 }
@@ -925,7 +960,12 @@ function HomeReelsView({
         />
       </div>
 
-      <section className="container_newsFeed" aria-label="뉴스 릴스">
+      <section
+        className="container_newsFeed"
+        id="home-news-reels-panel"
+        role="tabpanel"
+        aria-labelledby="home-news-view-tab-reels"
+      >
         {homeReelArticles.map((article, index) => (
           <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
         ))}
@@ -964,7 +1004,12 @@ function HomeBlockView({
         />
       </div>
 
-      <section className="container_newsGrid container_newsGrid_block" aria-label="메인 뉴스">
+      <section
+        className="container_newsGrid container_newsGrid_block"
+        id="home-news-block-panel"
+        role="tabpanel"
+        aria-labelledby="home-news-view-tab-block"
+      >
         {Array.from({ length: 12 }, (_, index) => (
           <HomeBlockItem key={index} onClick={onOpenDetail} />
         ))}
