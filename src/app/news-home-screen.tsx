@@ -32,14 +32,14 @@ type ReactionValue = Exclude<Reaction, null>;
 type CommentReactionValue = "like" | "dislike";
 type CommentSortOrder = "latest" | "popular";
 type SortOrder = "popular" | "latest";
-type PollKind = "stacked" | "binary";
+type GuideKind = "stacked" | "binary";
 
 type HomeArticle = {
   category: string;
   date: string;
   image: string;
   imageAlt: string;
-  pollKind?: PollKind;
+  guideKind?: GuideKind;
   title: string;
 };
 
@@ -164,17 +164,17 @@ const articleBody = `최근 국내 부동산 시장이 다시 한번 변곡점�
 
 전문가들은 당분간 가격 급등이나 급락보다는 지역별 양극화가 심화될 가능성에 주목한다. 정책 변화와 금리 방향성이 명확해지기 전까지는 관망세가 이어질 것이며, 안정적인 실거주 중심의 시장 재편이 예상된다.`;
 
-const pollOptions = [
+const guideOptions = [
   "어쩌구 저쩌구해서 어케 해야한다.",
   "상황을 더 지켜본 뒤 판단해야 한다.",
   "정책 지원을 먼저 확대해야 한다.",
 ];
 
-const binaryPollOptions = ["그렇다", "아니다"];
+const binaryGuideOptions = ["그렇다", "아니다"];
 
 const homeReelArticles: HomeArticle[] = [
-  { ...homeArticle, pollKind: "stacked" },
-  { ...homeArticle, pollKind: "binary" },
+  { ...homeArticle, guideKind: "stacked" },
+  { ...homeArticle, guideKind: "binary" },
 ];
 
 const reactionItems: { count: number; icon: IconName; label: string; value: ReactionValue }[] = [
@@ -415,7 +415,7 @@ function NewsToolbar({
 
 function HomeBlockItem({ onClick }: { onClick: () => void }) {
   return (
-    <button className="newsroll_home_block_item" onClick={onClick} type="button">
+    <button className="btn_newsBlockItem" onClick={onClick} type="button">
       <strong>{homeArticle.title}</strong>
       <span>1시간 전</span>
       <img alt={homeArticle.imageAlt} src={homeArticle.image} />
@@ -431,11 +431,11 @@ function HomeViewToggle({
   onModeChange: (mode: HomeViewMode) => void;
 }) {
   return (
-    <div className="newsroll_view_toggle" role="tablist" aria-label="뉴스 보기 방식">
+    <div className="wrapper_newsViewToggle" role="tablist" aria-label="뉴스 보기 방식">
       <button
         aria-label="릴스형"
         aria-selected={mode === "reels"}
-        className={`newsroll_toggle_button${mode === "reels" ? " newsroll_toggle_active" : ""}`}
+        className={`btn_newsViewOption${mode === "reels" ? " is_active" : ""}`}
         onClick={() => onModeChange("reels")}
         role="tab"
         type="button"
@@ -445,7 +445,7 @@ function HomeViewToggle({
       <button
         aria-label="블록형"
         aria-selected={mode === "block"}
-        className={`newsroll_toggle_button${mode === "block" ? " newsroll_toggle_active" : ""}`}
+        className={`btn_newsViewOption${mode === "block" ? " is_active" : ""}`}
         onClick={() => onModeChange("block")}
         role="tab"
         type="button"
@@ -460,20 +460,20 @@ function HomeMainHeader({
   isTextLarge,
   mode,
   onModeChange,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   mode: HomeViewMode;
   onModeChange: (mode: HomeViewMode) => void;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
-  const [isBreakingExpanded, setIsBreakingExpanded] = useState(false);
-
   return (
     <>
-      <header className="newsroll_header newsroll_home_main_toolbar">
+      <header className="container_homeToolbar">
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -481,37 +481,34 @@ function HomeMainHeader({
         />
       </header>
 
-      <section className="newsroll_home_header_group" aria-label="홈 요약">
-        <p className="newsroll_home_greeting">
+      <section className="container_hero" aria-label="홈 요약">
+        <p className="text_greeting">
           반갑습니다 <strong>콩콩이</strong>님!
         </p>
-        <p className="newsroll_home_metric">
+        <p className="wrapper_hero">
           <strong>
-            11,343<span className="newsroll_home_metric_unit">개</span>
+            11,343<span className="text_heroUnit">개</span>
           </strong>
-          <span className="newsroll_home_metric_caption">새로운 소식이 있습니다.</span>
+          <span className="text_heroCaption">새로운 소식이 있습니다.</span>
         </p>
         <HomeViewToggle mode={mode} onModeChange={onModeChange} />
       </section>
 
-      <div className="newsroll_home_breaking_group">
-        <button
-          aria-expanded={isBreakingExpanded}
-          className="newsroll_home_breaking_card"
-          onClick={() => setIsBreakingExpanded((current) => !current)}
-          type="button"
+      <div className="wrapper_breakingNews">
+        <a
+          className="btn_link_breakingNews"
+          href="#all-breaking-news"
+          onClick={(event) => {
+            event.preventDefault();
+            onOpenBreakingNews();
+          }}
         >
-          <span className="newsroll_home_breaking_icon">
+          <span className="wrapper_breakingNewsIcon">
             <Icon name="alarm" />
           </span>
           <span>{homeBreakingTitle}</span>
           <Icon name="chevronRight" />
-        </button>
-        {isBreakingExpanded ? (
-          <div className="newsroll_home_breaking_detail" role="status">
-            관련 속보 3건
-          </div>
-        ) : null}
+        </a>
       </div>
     </>
   );
@@ -527,11 +524,11 @@ function ReactionControls({
   onReactionChange: (reaction: Reaction) => void;
 }) {
   return (
-    <div className={`newsroll_reaction_controls ${className}`.trim()} aria-label="기사 평가">
+    <div className={`wrapper_articleReaction ${className}`.trim()} aria-label="기사 평가">
       {reactionItems.map((item) => (
         <button
           aria-pressed={reaction === item.value}
-          className={`newsroll_reaction_control newsroll_reaction_control_${item.value}`}
+          className={`btn_articleReaction btn_articleReaction_${item.value}`}
           key={item.value}
           onClick={() => onReactionChange(reaction === item.value ? null : item.value)}
           type="button"
@@ -567,25 +564,25 @@ function getVotePercentages(voteCounts: number[]) {
   return percentages;
 }
 
-function PollSection({ kind }: { kind: PollKind }) {
-  const [selectedPoll, setSelectedPoll] = useState<number | null>(null);
-  const options = kind === "binary" ? binaryPollOptions : pollOptions;
+function ArticleGuideSection({ kind }: { kind: GuideKind }) {
+  const [selectedGuideOption, setSelectedGuideOption] = useState<number | null>(null);
+  const options = kind === "binary" ? binaryGuideOptions : guideOptions;
   const [voteCounts, setVoteCounts] = useState(() => options.map(() => 0));
   const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
   const percentages = getVotePercentages(voteCounts);
   const hasVoted = totalVotes > 0;
 
   function vote(index: number) {
-    setSelectedPoll(index);
+    setSelectedGuideOption(index);
     setVoteCounts((currentCounts) =>
       currentCounts.map((count, countIndex) => (countIndex === index ? count + 1 : count)),
     );
   }
 
   return (
-    <section className={`newsroll_poll newsroll_poll_${kind}`} aria-label="의견 투표">
-      <h2 className="newsroll_poll_title">예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?</h2>
-      <div className="newsroll_poll_options">
+    <section className={`wrapper_articleGuide wrapper_articleGuide_${kind}`} aria-label="안내 문구">
+      <h2 className="text_articleGuide">예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?</h2>
+      <div className="wrapper_articleGuideOptions">
         {options.map((option, index) => {
           const percent = percentages[index];
           const isBinary = kind === "binary";
@@ -593,15 +590,15 @@ function PollSection({ kind }: { kind: PollKind }) {
 
           return (
             <button
-              aria-pressed={selectedPoll === index}
-              className="newsroll_poll_option"
+              aria-pressed={selectedGuideOption === index}
+              className="btn_articleGuideOption"
               key={option}
               onClick={() => vote(index)}
               type="button"
             >
               {hasVoted ? (
                 <span
-                  className="newsroll_poll_result_fill"
+                  className="bar_articleGuideResult"
                   style={fillStyle}
                   aria-hidden="true"
                 />
@@ -609,33 +606,33 @@ function PollSection({ kind }: { kind: PollKind }) {
               {!hasVoted && isBinary ? (
                 <img
                   alt=""
-                  className="newsroll_poll_binary_icon"
+                  className="img_articleGuideBinaryIcon"
                   src={index === 0 ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"}
                 />
               ) : null}
-              {hasVoted && isBinary ? <strong className="newsroll_poll_percent">{percent}%</strong> : null}
-              <span className="newsroll_poll_option_label">{option}</span>
-              {hasVoted && !isBinary ? <strong className="newsroll_poll_percent">{percent}%</strong> : null}
+              {hasVoted && isBinary ? <strong className="text_articleGuidePercent">{percent}%</strong> : null}
+              <span className="text_articleGuideOption">{option}</span>
+              {hasVoted && !isBinary ? <strong className="text_articleGuidePercent">{percent}%</strong> : null}
             </button>
           );
         })}
       </div>
-      <p className="newsroll_poll_total">
+      <p className="text_articleGuideTotal">
         <strong>{totalVotes}명</strong>이 참여했어요.
       </p>
     </section>
   );
 }
 
-function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
-  const pollChoices = pollKind === "binary" ? binaryPollOptions : pollOptions;
+function CommentReactionPanel({ guideKind }: { guideKind: GuideKind }) {
+  const guideChoices = guideKind === "binary" ? binaryGuideOptions : guideOptions;
   const commentTabs = [
     { id: "all", label: "전체" },
-    ...pollChoices.map((choice) => ({ id: choice, label: choice })),
+    ...guideChoices.map((choice) => ({ id: choice, label: choice })),
   ];
   const defaultComments = commentTemplates.map((comment, index) => ({
     ...comment,
-    choice: pollChoices[index % pollChoices.length],
+    choice: guideChoices[index % guideChoices.length],
   }));
   const [activeChoice, setActiveChoice] = useState(commentTabs[0].id);
   const [commentDraft, setCommentDraft] = useState("");
@@ -668,7 +665,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
       {
         author: "나",
         body,
-        choice: activeChoice === "all" ? pollChoices[0] : activeChoice,
+        choice: activeChoice === "all" ? guideChoices[0] : activeChoice,
         date: "방금 전",
         dislikes: 0,
         id: Date.now(),
@@ -689,9 +686,9 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
   }
 
   return (
-    <section className="newsroll_comment_panel" aria-label="댓글 반응">
+    <section className="wrapper_commentPanel" aria-label="댓글 반응">
       <form
-        className="newsroll_comment_composer"
+        className="form_commentComposer"
         onSubmit={(event) => {
           event.preventDefault();
           submitComment();
@@ -709,7 +706,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
         </button>
       </form>
 
-      <div className="newsroll_comment_summary">
+      <div className="wrapper_commentSummary">
         <span>댓글 {allComments.length}</span>
         <button
           aria-pressed={myCommentsOnly}
@@ -720,11 +717,11 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
         </button>
       </div>
 
-      <section className="newsroll_comment_age" aria-label="연령대별 댓글">
+      <section className="wrapper_commentAgeStats" aria-label="연령대별 댓글">
         <strong>
           <span>30대</span> 댓글이 가장 많이 달렸어요!
         </strong>
-        <div className="newsroll_comment_age_chart" aria-hidden="true">
+        <div className="wrapper_commentAgeChart" aria-hidden="true">
           {commentAgeStats.map((item) => (
             <span className={item.age === "30대" ? "is_peak" : undefined} key={item.age}>
               <i style={{ blockSize: `${item.value}px` }} />
@@ -734,11 +731,11 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
         </div>
       </section>
 
-      <section className="newsroll_comment_by_vote" aria-label="투표 선택지별 댓글">
-        <h3>투표 선택지 별</h3>
+      <section className="wrapper_commentByGuide" aria-label="안내 선택지별 댓글">
+        <h3>안내 선택지 별</h3>
         <PillTabMenu
-          ariaLabel="투표 선택지별 댓글 필터"
-          className="newsroll_comment_tabs"
+          ariaLabel="안내 선택지별 댓글 필터"
+          className="wrapper_commentTabs"
           items={commentTabs}
           onChange={setActiveChoice}
           value={activeChoice}
@@ -747,7 +744,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
 
       <button
         aria-label={`정렬: ${sortOrder === "popular" ? "인기순" : "최신순"}`}
-        className="newsroll_comment_sort"
+        className="btn_commentSort"
         onClick={() => setSortOrder((current) => (current === "popular" ? "latest" : "popular"))}
         type="button"
       >
@@ -755,7 +752,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
         <span aria-hidden="true" />
       </button>
 
-      <div className="newsroll_comment_list">
+      <div className="wrapper_commentList">
         {visibleComments.length > 0 ? (
           visibleComments.map((comment) => {
             const selectedReaction = commentReactions[comment.id] ?? null;
@@ -763,7 +760,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
             const dislikeCount = comment.dislikes + (selectedReaction === "dislike" ? 1 : 0);
 
             return (
-              <article className="newsroll_comment_item" key={comment.id}>
+              <article className="wrapper_commentItem" key={comment.id}>
                 <header>
                   <strong>{comment.author}</strong>
                   <time>{comment.date}</time>
@@ -777,11 +774,11 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
                   </button>
                 </header>
                 {commentMenuId === comment.id ? (
-                  <div className="newsroll_comment_menu" role="status">
+                  <div className="wrapper_commentMenu" role="status">
                     댓글 옵션이 열렸습니다.
                   </div>
                 ) : null}
-                <span className="newsroll_comment_choice">{comment.choice}</span>
+                <span className="badge_commentChoice">{comment.choice}</span>
                 <p>{comment.body}</p>
                 <footer>
                   <button
@@ -795,7 +792,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
                     <button
                       aria-label="댓글 좋아요"
                       aria-pressed={selectedReaction === "like"}
-                      className="newsroll_comment_reaction_like"
+                      className="btn_commentReaction_like"
                       onClick={() => toggleCommentReaction(comment.id, "like")}
                       type="button"
                     >
@@ -805,7 +802,7 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
                     <button
                       aria-label="댓글 싫어요"
                       aria-pressed={selectedReaction === "dislike"}
-                      className="newsroll_comment_reaction_dislike"
+                      className="btn_commentReaction_dislike"
                       onClick={() => toggleCommentReaction(comment.id, "dislike")}
                       type="button"
                     >
@@ -814,12 +811,12 @@ function CommentReactionPanel({ pollKind }: { pollKind: PollKind }) {
                     </button>
                   </span>
                 </footer>
-                {expandedReplyId === comment.id ? <p className="newsroll_comment_reply_hint">답글 입력 영역이 열렸습니다.</p> : null}
+                {expandedReplyId === comment.id ? <p className="text_commentReplyHint">답글 입력 영역이 열렸습니다.</p> : null}
               </article>
             );
           })
         ) : (
-          <p className="newsroll_comment_empty">표시할 댓글이 없습니다.</p>
+          <p className="text_commentEmpty">표시할 댓글이 없습니다.</p>
         )}
       </div>
     </section>
@@ -834,17 +831,17 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
   const [reaction, setReaction] = useState<Reaction>(null);
 
   return (
-    <article className="newsroll_home_reel_card">
-      <div className="newsroll_home_reel_summary">
-        <span className="newsroll_home_reels_chip">{article.category}</span>
+    <article className="container_articleCard">
+      <div className="wrapper_articleSummary">
+        <span className="badge_articleCategory">{article.category}</span>
         <h1>{article.title}</h1>
         <time dateTime="2026-12-31T08:30:00">{article.date}</time>
       </div>
-      <div className="newsroll_home_reels_actions" aria-label="기사 도구">
+      <div className="wrapper_articleActions" aria-label="기사 도구">
         <button
           aria-label="공유"
           aria-pressed={isShared}
-          className="newsroll_icon_button"
+          className="btn_articleTool"
           onClick={() => setIsShared((current) => !current)}
           type="button"
         >
@@ -853,7 +850,7 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
         <button
           aria-label="북마크"
           aria-pressed={isBookmarked}
-          className="newsroll_icon_button"
+          className="btn_articleTool"
           onClick={() => setIsBookmarked((current) => !current)}
           type="button"
         >
@@ -861,40 +858,41 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
         </button>
       </div>
       <img alt={article.imageAlt} src={article.image} />
-      <p className="newsroll_article_body">{articleBody}</p>
+      <p className="text_articleBody">{articleBody}</p>
 
-      <div className="newsroll_source_row">
-        <div className="newsroll_source_media">
-          <img className="newsroll_source_mark" src="/icons/icon_user.svg" alt="" width={32} height={32} />
-          <span className="newsroll_source_name">{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
+      <div className="wrapper_articleSource">
+        <div className="wrapper_articleSourcePublisher">
+          <img className="img_articlePublisherLogo" src="/icons/icon_user.svg" alt="" width={32} height={32} />
+          <span className="text_articlePublisherName">{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
         </div>
-        <span className="newsroll_source_reporter">홍길동 기자</span>
+        <span className="divider_articleSource" aria-hidden="true" />
+        <span className="text_articleReporter">홍길동 기자</span>
       </div>
 
       <button
         aria-expanded={isOriginalOpen}
-        className="newsroll_original_button"
+        className="btn_originalArticle"
         onClick={() => setIsOriginalOpen((current) => !current)}
         type="button"
       >
         {isOriginalOpen ? "기사 원문 접기" : "기사 원문 보기"}
       </button>
-      {isOriginalOpen ? <p className="newsroll_original_hint">국민일보 원문으로 이동할 준비가 됐습니다.</p> : null}
+      {isOriginalOpen ? <p className="text_originalArticleHint">국민일보 원문으로 이동할 준비가 됐습니다.</p> : null}
 
       <ReactionControls reaction={reaction} onReactionChange={setReaction} />
 
-      <PollSection kind={article.pollKind ?? "stacked"} />
+      <ArticleGuideSection kind={article.guideKind ?? "stacked"} />
 
       <button
         aria-expanded={isCommentPanelOpen}
-        className="newsroll_comment_button"
+        className="btn_commentPanel"
         onClick={() => setIsCommentPanelOpen((current) => !current)}
         type="button"
       >
         <Icon name="chat" />
         댓글 반응보기
       </button>
-      {isCommentPanelOpen ? <CommentReactionPanel pollKind={article.pollKind ?? "stacked"} /> : null}
+      {isCommentPanelOpen ? <CommentReactionPanel guideKind={article.guideKind ?? "stacked"} /> : null}
     </article>
   );
 }
@@ -903,26 +901,29 @@ function HomeReelsView({
   isTextLarge,
   mode,
   onModeChange,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   mode: HomeViewMode;
   onModeChange: (mode: HomeViewMode) => void;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
   return (
-    <div className="newsroll_home_container">
+    <div className="container_home">
       <HomeMainHeader
         isTextLarge={isTextLarge}
         mode={mode}
         onModeChange={onModeChange}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
 
-      <section className="newsroll_home_reels_feed" aria-label="뉴스 릴스">
+      <section className="container_newsFeed" aria-label="뉴스 릴스">
         {homeReelArticles.map((article, index) => (
           <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
         ))}
@@ -935,6 +936,7 @@ function HomeBlockView({
   isTextLarge,
   mode,
   onModeChange,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
   onOpenDetail,
@@ -942,21 +944,23 @@ function HomeBlockView({
   isTextLarge: boolean;
   mode: HomeViewMode;
   onModeChange: (mode: HomeViewMode) => void;
+  onOpenBreakingNews: () => void;
   onOpenDetail: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
   return (
-    <div className="newsroll_home_container">
+    <div className="container_home">
       <HomeMainHeader
         isTextLarge={isTextLarge}
         mode={mode}
         onModeChange={onModeChange}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
 
-      <section className="newsroll_home_sheet newsroll_home_block_sheet" aria-label="메인 뉴스">
+      <section className="container_newsGrid container_newsGrid_block" aria-label="메인 뉴스">
         {Array.from({ length: 12 }, (_, index) => (
           <HomeBlockItem key={index} onClick={onOpenDetail} />
         ))}
@@ -967,10 +971,12 @@ function HomeBlockView({
 
 function HomeView({
   isTextLarge,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -986,6 +992,7 @@ function HomeView({
       isTextLarge={isTextLarge}
       mode={homeViewMode}
       onModeChange={setHomeViewMode}
+      onOpenBreakingNews={onOpenBreakingNews}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
     />
@@ -994,6 +1001,7 @@ function HomeView({
       isTextLarge={isTextLarge}
       mode={homeViewMode}
       onModeChange={setHomeViewMode}
+      onOpenBreakingNews={onOpenBreakingNews}
       onOpenDetail={() => setDetailOpen(true)}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
@@ -1277,7 +1285,7 @@ function AllNewsView({
           <span>속보</span>
         </div>
 
-        <div className="newsroll_all_breaking_stack">
+        <div className="newsroll_all_breaking_stack" id="all-breaking-news">
           {(showAllBreaking ? allNewsBreaking : allNewsBreaking.slice(0, 3)).map((item, index) => (
             <button
               aria-pressed={selectedBreakingIndex === index}
@@ -2119,12 +2127,14 @@ function InfoView({
 function ActiveView({
   isTextLarge,
   onCloseSearch,
+  onOpenAllNews,
   onOpenSearch,
   onToggleTextSize,
   view,
 }: {
   isTextLarge: boolean;
   onCloseSearch: () => void;
+  onOpenAllNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
   view: View;
@@ -2149,7 +2159,14 @@ function ActiveView({
     return <InfoView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
   }
 
-  return <HomeView isTextLarge={isTextLarge} onOpenSearch={onOpenSearch} onToggleTextSize={onToggleTextSize} />;
+  return (
+    <HomeView
+      isTextLarge={isTextLarge}
+      onOpenBreakingNews={onOpenAllNews}
+      onOpenSearch={onOpenSearch}
+      onToggleTextSize={onToggleTextSize}
+    />
+  );
 }
 
 export function NewsHomeScreen() {
@@ -2175,6 +2192,7 @@ export function NewsHomeScreen() {
         <ActiveView
           isTextLarge={isTextLarge}
           onCloseSearch={() => setActiveView(searchBackView)}
+          onOpenAllNews={() => setActiveView("all")}
           onOpenSearch={openSearch}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
           view={activeView}
