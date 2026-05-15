@@ -7,6 +7,8 @@ type SelectVariant = "filled" | "outline";
 type SelectRadius = "square" | "rounded" | "full";
 
 export type SelectOption = {
+  disabled?: boolean;
+  hidden?: boolean;
   label: string;
   value: string;
 };
@@ -52,7 +54,7 @@ export function Select({
       {...props}
     >
       {options.map((option) => (
-        <option key={option.value} value={option.value}>
+        <option disabled={option.disabled} hidden={option.hidden} key={option.value} value={option.value}>
           {option.label}
         </option>
       ))}

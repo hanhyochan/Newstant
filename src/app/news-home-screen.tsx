@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { Fragment, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 
 import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
@@ -9,6 +9,7 @@ type IconName =
   | "bookmark"
   | "chevronRight"
   | "chat"
+  | "detail"
   | "dots"
   | "earth"
   | "fourSquare"
@@ -20,6 +21,7 @@ type IconName =
   | "search"
   | "share"
   | "sizeIncrease"
+  | "submit"
   | "thumbDown"
   | "thumbUp"
   | "user";
@@ -32,6 +34,7 @@ type Reaction = "like" | "dislike" | "neutral" | null;
 type ReactionValue = Exclude<Reaction, null>;
 type CommentReactionValue = "like" | "dislike";
 type CommentSortOrder = "latest" | "popular";
+type CommentAction = "delete" | "edit";
 type SortOrder = "popular" | "latest";
 type GuideKind = "stacked" | "binary";
 
@@ -193,14 +196,6 @@ const reactionItems: { count: number; icon: IconName; label: string; value: Reac
   { count: 5, icon: "dots", label: "글쎄요", value: "neutral" },
 ];
 
-const commentAgeStats = [
-  { age: "10대", value: 24 },
-  { age: "20대", value: 36 },
-  { age: "30대", value: 64 },
-  { age: "40대", value: 36 },
-  { age: "50대", value: 25 },
-  { age: "60대↑", value: 16 },
-];
 
 const commentBodies = [
   "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트...",
@@ -236,6 +231,16 @@ const commentTemplates: Omit<CommentItem, "choice">[] = [
     likes: 16,
     replies: 13,
   },
+];
+
+const commentSortOptions: { label: string; value: CommentSortOrder }[] = [
+  { label: "인기순", value: "popular" },
+  { label: "최신순", value: "latest" },
+];
+
+const commentActionOptions: { label: string; value: CommentAction }[] = [
+  { label: "삭제", value: "delete" },
+  { label: "수정", value: "edit" },
 ];
 
 const allNewsAssets = {
@@ -698,13 +703,28 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
   }));
   const [activeChoice, setActiveChoice] = useState(commentTabs[0].id);
   const [commentDraft, setCommentDraft] = useState("");
-  const [commentMenuId, setCommentMenuId] = useState<number | null>(null);
   const [commentReactions, setCommentReactions] = useState<Record<number, CommentReactionValue | null>>({});
+  const [deletedCommentIds, setDeletedCommentIds] = useState<number[]>([]);
   const [expandedReplyId, setExpandedReplyId] = useState<number | null>(null);
   const [myCommentsOnly, setMyCommentsOnly] = useState(false);
+  const [isCommentSortOpen, setIsCommentSortOpen] = useState(false);
+  const [openCommentActionId, setOpenCommentActionId] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
   const [userComments, setUserComments] = useState<CommentItem[]>([]);
-  const allComments = [...userComments, ...defaultComments];
+  const allComments = [...userComments, ...defaultComments].filter((comment) => !deletedCommentIds.includes(comment.id));
+  const getCommentReactionCounts = (comment: CommentItem) => {
+    const selectedReaction = commentReactions[comment.id] ?? null;
+
+    return {
+      dislikes: comment.dislikes + (selectedReaction === "dislike" ? 1 : 0),
+      likes: comment.likes + (selectedReaction === "like" ? 1 : 0),
+    };
+  };
+  const getCommentPopularity = (comment: CommentItem) => {
+    const { likes } = getCommentReactionCounts(comment);
+
+    return likes + comment.replies;
+  };
   const visibleComments = allComments
     .filter((comment) => (myCommentsOnly ? comment.isMine : true))
     .filter((comment) => (activeChoice === "all" ? true : comment.choice === activeChoice))
@@ -713,7 +733,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         return b.id - a.id;
       }
 
-      return b.likes + b.replies - (a.likes + a.replies);
+      return getCommentPopularity(b) - getCommentPopularity(a) || b.id - a.id;
     });
 
   function submitComment() {
@@ -747,6 +767,20 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
     }));
   }
 
+  function handleCommentAction(commentId: number, action: CommentAction) {
+    setOpenCommentActionId(null);
+
+    if (action === "delete") {
+      setDeletedCommentIds((currentIds) => (currentIds.includes(commentId) ? currentIds : [...currentIds, commentId]));
+      setExpandedReplyId((currentId) => (currentId === commentId ? null : currentId));
+      setCommentReactions((currentReactions) => {
+        const { [commentId]: _deletedReaction, ...nextReactions } = currentReactions;
+
+        return nextReactions;
+      });
+    }
+  }
+
   return (
     <section className="wrapper_commentPanel" id={id} aria-label="댓글 반응">
       <form
@@ -756,22 +790,27 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
           submitComment();
         }}
       >
-        <input
+        <TextInput
           aria-label="댓글 입력"
+          inputSize="large"
           onChange={(event) => setCommentDraft(event.target.value)}
           placeholder="홍길동님은 어떻게 생각하시나요?"
+          radius="rounded"
           type="text"
           value={commentDraft}
+          variant="outline"
+          wrapperClassName="input_commentComposer"
         />
-        <button aria-label="댓글 등록" type="submit">
-          <span aria-hidden="true" />
+        <button aria-label="댓글 등록" className="btn btn_filled btn_commentSubmit" type="submit">
+          <Icon name="submit" />
         </button>
       </form>
 
       <div className="wrapper_commentSummary">
-        <span>댓글 {allComments.length}</span>
+        <span className="text_commentTotal">댓글 {allComments.length}</span>
         <button
           aria-pressed={myCommentsOnly}
+          className="btn btn_medium btn_filled btn_rounded btn_commentMineFilter"
           onClick={() => setMyCommentsOnly((current) => !current)}
           type="button"
         >
@@ -779,21 +818,8 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         </button>
       </div>
 
-      <section className="wrapper_commentAgeStats" aria-label="연령대별 댓글">
-        <strong>
-          <span>30대</span> 댓글이 가장 많이 달렸어요!
-        </strong>
-        <div className="wrapper_commentAgeChart" aria-hidden="true">
-          {commentAgeStats.map((item) => (
-            <span className={item.age === "30대" ? "is_peak" : undefined} key={item.age}>
-              <i style={{ blockSize: `${item.value}px` }} />
-              <em>{item.age}</em>
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="wrapper_commentByGuide" aria-label="안내 선택지별 댓글">
+      <section className="container_commentGuide" aria-label="안내 선택지별 댓글">
+        <div className="wrapper_commentGuideTabs">
         <h3>안내 선택지 별</h3>
         <PillTabMenu
           ariaLabel="안내 선택지별 댓글 필터"
@@ -802,85 +828,126 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
           onChange={setActiveChoice}
           value={activeChoice}
         />
-      </section>
+        </div>
 
-      <button
-        aria-label={`정렬: ${sortOrder === "popular" ? "인기순" : "최신순"}`}
-        className="btn_commentSort"
-        onClick={() => setSortOrder((current) => (current === "popular" ? "latest" : "popular"))}
-        type="button"
-      >
-        {sortOrder === "popular" ? "인기순" : "최신순"}
-        <span aria-hidden="true" />
-      </button>
+        <div className="wrapper_commentGuideComments">
+          <div className="wrapper_commentDropdown wrapper_commentSort">
+            <button
+              aria-expanded={isCommentSortOpen}
+              aria-haspopup="listbox"
+              className="btn_commentDropdown"
+              onClick={() => setIsCommentSortOpen((current) => !current)}
+              type="button"
+            >
+              {commentSortOptions.find((option) => option.value === sortOrder)?.label}
+              <span aria-hidden="true" />
+            </button>
+            {isCommentSortOpen ? (
+              <div className="listbox_commentDropdown" role="listbox">
+                {commentSortOptions.map((option) => (
+                  <button
+                    aria-selected={sortOrder === option.value}
+                    key={option.value}
+                    onClick={() => {
+                      setSortOrder(option.value);
+                      setIsCommentSortOpen(false);
+                    }}
+                    role="option"
+                    type="button"
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
 
       <div className="wrapper_commentList">
         {visibleComments.length > 0 ? (
-          visibleComments.map((comment) => {
+          visibleComments.map((comment, index) => {
             const selectedReaction = commentReactions[comment.id] ?? null;
-            const likeCount = comment.likes + (selectedReaction === "like" ? 1 : 0);
-            const dislikeCount = comment.dislikes + (selectedReaction === "dislike" ? 1 : 0);
+            const { dislikes: dislikeCount, likes: likeCount } = getCommentReactionCounts(comment);
 
             return (
-              <article className="wrapper_commentItem" key={comment.id}>
-                <header>
-                  <strong>{comment.author}</strong>
-                  <time>{comment.date}</time>
-                  <button
-                    aria-expanded={commentMenuId === comment.id}
-                    aria-label="댓글 더보기"
-                    onClick={() => setCommentMenuId((current) => (current === comment.id ? null : comment.id))}
-                    type="button"
-                  >
-                    ...
-                  </button>
-                </header>
-                {commentMenuId === comment.id ? (
-                  <div className="wrapper_commentMenu" role="status">
-                    댓글 옵션이 열렸습니다.
-                  </div>
-                ) : null}
-                <span className="badge_commentChoice">{comment.choice}</span>
-                <p>{comment.body}</p>
-                <footer>
-                  <button
-                    aria-expanded={expandedReplyId === comment.id}
-                    onClick={() => setExpandedReplyId((current) => (current === comment.id ? null : comment.id))}
-                    type="button"
-                  >
-                    답글달기 {comment.replies}
-                  </button>
-                  <span>
+              <Fragment key={comment.id}>
+                {index > 0 ? <span aria-hidden="true" className="divider_commentItem" /> : null}
+                <article className="wrapper_commentItem">
+                  <header>
+                    <span className="wrapper_commentMeta">
+                      <strong>{comment.author}</strong>
+                      <time>{comment.date}</time>
+                    </span>
+                    <span className="wrapper_commentAction">
+                      <button
+                        aria-label="댓글 더보기"
+                        aria-expanded={openCommentActionId === comment.id}
+                        aria-haspopup="menu"
+                        className="btn_commentAction"
+                        onClick={() => setOpenCommentActionId((current) => (current === comment.id ? null : comment.id))}
+                        type="button"
+                      >
+                        <Icon name="detail" />
+                      </button>
+                      {openCommentActionId === comment.id ? (
+                        <div className="listbox_commentDropdown listbox_commentAction" role="menu">
+                          {commentActionOptions.map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => handleCommentAction(comment.id, option.value)}
+                              role="menuitem"
+                              type="button"
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
+                    </span>
+                  </header>
+                  <span className="badge_commentChoice">{comment.choice}</span>
+                  <p>{comment.body}</p>
+                  <footer>
                     <button
-                      aria-label="댓글 좋아요"
-                      aria-pressed={selectedReaction === "like"}
-                      className="btn_commentReaction_like"
-                      onClick={() => toggleCommentReaction(comment.id, "like")}
+                      aria-expanded={expandedReplyId === comment.id}
+                      onClick={() => setExpandedReplyId((current) => (current === comment.id ? null : comment.id))}
                       type="button"
                     >
-                      <Icon name="thumbUp" />
-                      {likeCount}
+                      답글달기 {comment.replies}
                     </button>
-                    <button
-                      aria-label="댓글 싫어요"
-                      aria-pressed={selectedReaction === "dislike"}
-                      className="btn_commentReaction_dislike"
-                      onClick={() => toggleCommentReaction(comment.id, "dislike")}
-                      type="button"
-                    >
-                      <Icon name="thumbDown" />
-                      {dislikeCount}
-                    </button>
-                  </span>
-                </footer>
-                {expandedReplyId === comment.id ? <p className="text_commentReplyHint">답글 입력 영역이 열렸습니다.</p> : null}
-              </article>
+                    <span>
+                      <button
+                        aria-label="댓글 좋아요"
+                        aria-pressed={selectedReaction === "like"}
+                        className="btn_commentReaction_like"
+                        onClick={() => toggleCommentReaction(comment.id, "like")}
+                        type="button"
+                      >
+                        <Icon name="thumbUp" />
+                        {likeCount}
+                      </button>
+                      <button
+                        aria-label="댓글 싫어요"
+                        aria-pressed={selectedReaction === "dislike"}
+                        className="btn_commentReaction_dislike"
+                        onClick={() => toggleCommentReaction(comment.id, "dislike")}
+                        type="button"
+                      >
+                        <Icon name="thumbDown" />
+                        {dislikeCount}
+                      </button>
+                    </span>
+                  </footer>
+                  {expandedReplyId === comment.id ? <p className="text_commentReplyHint">답글 입력 영역이 열렸습니다.</p> : null}
+                </article>
+              </Fragment>
             );
           })
         ) : (
           <p className="text_commentEmpty">표시할 댓글이 없습니다.</p>
         )}
-      </div>
+          </div>
+        </div>
+      </section>
     </section>
   );
 }
