@@ -248,6 +248,11 @@ const commentReplyTemplates = [
   },
 ];
 
+type CommentReplyItem = (typeof commentReplyTemplates)[number] & {
+  id: string;
+  isMine?: boolean;
+};
+
 const commentSortOptions: { label: string; value: CommentSortOrder }[] = [
   { label: "인기순", value: "popular" },
   { label: "최신순", value: "latest" },
@@ -561,7 +566,9 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
 function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: string }) {
   const guideChoices = guideKind === "binary" ? binaryGuideOptions : guideOptions;
   const panelId = id ?? "home-comment-panel";
+  const composerId = `${panelId}-composer`;
   const commentSortMenuId = `${panelId}-sort-menu`;
+  const panelRef = useRef<HTMLElement | null>(null);
   const commentTabs = useMemo(
     () => [{ id: "all", label: "전체" }, ...guideChoices.map((choice) => ({ id: choice, label: choice }))],
     [guideChoices],
@@ -575,17 +582,21 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
     [guideChoices],
   );
   const [activeChoice, setActiveChoice] = useState(commentTabs[0].id);
-  const [commentDraft, setCommentDraft] = useState("");
+  const [composerDraft, setComposerDraft] = useState("");
+  const [composerMode, setComposerMode] = useState<"comment" | "reply">("comment");
   const [commentReactions, setCommentReactions] = useState<Record<number, CommentReactionValue | null>>({});
   const [deletedCommentIds, setDeletedCommentIds] = useState<number[]>([]);
   const [deletedReplyIds, setDeletedReplyIds] = useState<string[]>([]);
   const [expandedReplyId, setExpandedReplyId] = useState<number | null>(null);
+  const [isComposerVisible, setIsComposerVisible] = useState(false);
   const [myCommentsOnly, setMyCommentsOnly] = useState(false);
   const [isCommentSortOpen, setIsCommentSortOpen] = useState(false);
   const [openCommentActionId, setOpenCommentActionId] = useState<number | null>(null);
   const [openReplyActionId, setOpenReplyActionId] = useState<string | null>(null);
+  const [replyTargetCommentId, setReplyTargetCommentId] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
   const [userComments, setUserComments] = useState<CommentItem[]>([]);
+  const [userRepliesByCommentId, setUserRepliesByCommentId] = useState<Record<number, CommentReplyItem[]>>({});
   const deletedCommentIdSet = useMemo(() => new Set(deletedCommentIds), [deletedCommentIds]);
   const deletedReplyIdSet = useMemo(() => new Set(deletedReplyIds), [deletedReplyIds]);
   const allComments = useMemo(
@@ -602,8 +613,9 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
   };
   const getCommentPopularity = (comment: CommentItem) => {
     const { likes } = getCommentReactionCounts(comment);
+    const userReplyCount = userRepliesByCommentId[comment.id]?.length ?? 0;
 
-    return likes + comment.replies;
+    return likes + comment.replies + userReplyCount;
   };
   const selectedSortLabel = commentSortOptions.find((option) => option.value === sortOrder)?.label;
   const visibleComments = useMemo(
@@ -618,7 +630,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
           return getCommentPopularity(b) - getCommentPopularity(a) || b.id - a.id;
         }),
-    [activeChoice, allComments, commentReactions, myCommentsOnly, sortOrder],
+    [activeChoice, allComments, commentReactions, myCommentsOnly, sortOrder, userRepliesByCommentId],
   );
 
   useEffect(() => {
@@ -657,10 +669,99 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
     };
   }, []);
 
-  function submitComment() {
-    const body = commentDraft.trim();
+  useEffect(() => {
+    const panel = panelRef.current;
+
+    if (!panel) {
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      setIsComposerVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsComposerVisible(entry.isIntersecting);
+      },
+      { threshold: 0.05 },
+    );
+
+    observer.observe(panel);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isComposerVisible) {
+      return;
+    }
+
+    setComposerDraft("");
+    setComposerMode("comment");
+    setReplyTargetCommentId(null);
+  }, [isComposerVisible]);
+
+  function resetComposer() {
+    setComposerDraft("");
+    setComposerMode("comment");
+    setReplyTargetCommentId(null);
+  }
+
+  function startReplyComposer(commentId: number) {
+    if (!isComposerVisible) {
+      return;
+    }
+
+    setReplyTargetCommentId(commentId);
+    setExpandedReplyId(commentId);
+    setComposerMode("reply");
+    setComposerDraft("");
+  }
+
+  function toggleReplyList(commentId: number) {
+    const isClosing = expandedReplyId === commentId;
+
+    setExpandedReplyId(isClosing ? null : commentId);
+
+    if (isClosing && replyTargetCommentId === commentId) {
+      resetComposer();
+    }
+  }
+
+  function submitComposer() {
+    const body = composerDraft.trim();
 
     if (!body) {
+      return;
+    }
+
+    if (composerMode === "reply") {
+      const targetComment = allComments.find((comment) => comment.id === replyTargetCommentId);
+
+      if (!targetComment) {
+        resetComposer();
+        return;
+      }
+
+      const reply: CommentReplyItem = {
+        author: "나",
+        body,
+        choice: activeChoice === "all" ? targetComment.choice : activeChoice,
+        date: "방금 전",
+        dislikes: 0,
+        id: `user-${Date.now()}`,
+        isMine: true,
+        likes: 0,
+      };
+
+      setUserRepliesByCommentId((currentReplies) => ({
+        ...currentReplies,
+        [targetComment.id]: [reply, ...(currentReplies[targetComment.id] ?? [])],
+      }));
+      setExpandedReplyId(targetComment.id);
+      resetComposer();
       return;
     }
 
@@ -678,7 +779,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
       },
       ...currentComments,
     ]);
-    setCommentDraft("");
+    resetComposer();
   }
 
   function toggleCommentReaction(commentId: number, reaction: CommentReactionValue) {
@@ -695,6 +796,9 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
     if (action === "delete") {
       setDeletedCommentIds((currentIds) => (currentIds.includes(commentId) ? currentIds : [...currentIds, commentId]));
       setExpandedReplyId((currentId) => (currentId === commentId ? null : currentId));
+      if (replyTargetCommentId === commentId) {
+        resetComposer();
+      }
       setCommentReactions((currentReactions) => {
         const { [commentId]: _deletedReaction, ...nextReactions } = currentReactions;
 
@@ -712,23 +816,8 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
   }
 
   return (
-    <section className="wrapper_commentPanel" id={id} aria-label="댓글 반응">
-      <form
-        className="form_commentComposer"
-        onSubmit={(event) => {
-          event.preventDefault();
-          submitComment();
-        }}
-      >
-        <CommentComposerInput
-          label="댓글 입력"
-          onChange={(event) => setCommentDraft(event.target.value)}
-          placeholder="홍길동님은 어떻게 생각하시나요?"
-          submitLabel="댓글 등록"
-          value={commentDraft}
-        />
-      </form>
-
+    <>
+    <section className="wrapper_commentPanel" id={id} ref={panelRef} aria-label="댓글 반응">
       <div className="wrapper_commentSummary">
         <span className="text_commentTotal">댓글 {allComments.length}</span>
         <Button
@@ -800,10 +889,14 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
             const actionMenuId = `${panelId}-comment-action-${comment.id}`;
             const replyListId = `${panelId}-reply-list-${comment.id}`;
             const isReplyListOpen = expandedReplyId === comment.id;
-            const commentReplies = Array.from({ length: Math.min(comment.replies, 3) }, (_, replyIndex) => ({
+            const templateReplies: CommentReplyItem[] = Array.from({ length: Math.min(comment.replies, 3) }, (_, replyIndex) => ({
               ...commentReplyTemplates[replyIndex % commentReplyTemplates.length],
               id: `${comment.id}-${replyIndex}`,
             })).filter((reply) => !deletedReplyIdSet.has(reply.id));
+            const userReplies = (userRepliesByCommentId[comment.id] ?? []).filter(
+              (reply) => !deletedReplyIdSet.has(reply.id),
+            );
+            const commentReplies = [...userReplies, ...templateReplies].slice(0, 3);
 
             return (
               <Fragment key={comment.id}>
@@ -851,7 +944,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                     <button
                       aria-controls={isReplyListOpen ? replyListId : undefined}
                       aria-expanded={isReplyListOpen}
-                      onClick={() => setExpandedReplyId((current) => (current === comment.id ? null : comment.id))}
+                      onClick={() => toggleReplyList(comment.id)}
                       type="button"
                     >
                       대댓글 {commentReplies.length}
@@ -886,6 +979,16 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                     role="region"
                   >
                     <div className="wrapper_commentRepliesInner">
+                      <Button
+                        className="btn_originalArticle"
+                        classNameOnly
+                        aria-controls={composerId}
+                        aria-pressed={composerMode === "reply" && replyTargetCommentId === comment.id}
+                        onClick={() => startReplyComposer(comment.id)}
+                        type="button"
+                      >
+                        대댓글 달기
+                      </Button>
                       {commentReplies.map((reply, replyIndex) => {
                         const replyActionMenuId = `${panelId}-reply-action-${reply.id}`;
 
@@ -973,6 +1076,31 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         </div>
       </section>
     </section>
+    {isComposerVisible ? (
+      <div
+        aria-label={composerMode === "reply" ? "대댓글 작성" : "댓글 작성"}
+        className="container_commentComposerFixed"
+        id={composerId}
+        role="region"
+      >
+        <form
+          className="form_commentComposer"
+          onSubmit={(event) => {
+            event.preventDefault();
+            submitComposer();
+          }}
+        >
+          <CommentComposerInput
+            label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
+            onChange={(event) => setComposerDraft(event.target.value)}
+            placeholder={composerMode === "reply" ? "대댓글을 입력해 주세요." : "홍길동님은 어떻게 생각하시나요?"}
+            submitLabel={composerMode === "reply" ? "대댓글 등록" : "댓글 등록"}
+            value={composerDraft}
+          />
+        </form>
+      </div>
+    ) : null}
+    </>
   );
 }
 
