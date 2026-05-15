@@ -1530,6 +1530,8 @@
 
     .btn_filled {
         border: 0;
+        color: var(--color-common-0);
+        background: var(--color-newsroll-purple-50);
     }
 
     .newsroll_text_size_button.btn_filled {
@@ -3206,13 +3208,13 @@
         min-height: 100dvh;
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_detail_top {
         min-height: 110px;
         padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_detail_toolbar {
@@ -3254,7 +3256,7 @@
     .newsroll_all_detail_body {
         display: grid;
         gap: 2px;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_detail_body .container_articleCard {
@@ -3619,13 +3621,13 @@
         min-height: 100dvh;
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_policy_detail_top {
         min-height: 110px;
         padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_policy_detail_top .newsroll_policy_status {
@@ -3812,7 +3814,7 @@
         padding-top: var(--spacing-padding-vertical-24);
         border-radius: var(--radius-8);
         color: var(--color-common-0);
-        background: var(--newsroll-color-accent-purple);
+        background: var(--color-newsroll-purple-50);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-700);
         line-height: var(--line-height-24);
@@ -4079,7 +4081,7 @@
         min-height: 100dvh;
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_my_recent_full_sheet {
@@ -4104,13 +4106,13 @@
         min-height: 100dvh;
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_my_time_top {
         min-height: 110px;
         padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_my_time_top .newsroll_policy_status {
@@ -4181,13 +4183,13 @@
         min-height: 100dvh;
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_my_activity_top {
         min-height: 110px;
         padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_my_activity_top .newsroll_policy_status {
@@ -4236,7 +4238,7 @@
         gap: var(--spacing-gap-vertical-10, 10px);
         padding: var(--spacing-padding-vertical-20) 0 var(--spacing-padding-vertical-24);
         border: 0;
-        border-bottom: var(--border-1) solid var(--newsroll-color-line);
+        border-bottom: var(--border-1) solid var(--color-cool-neutral-96);
         border-radius: 0;
         background: var(--color-background-elevated-normal);
         text-align: left;
@@ -4304,7 +4306,7 @@
     .newsroll_my_vote_result strong {
         position: relative;
         z-index: 1;
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-700);
         line-height: var(--line-height-24);
@@ -4670,10 +4672,6 @@
 
 @layer base {
     :root {
-        --newsroll-color-app-purple: var(--color-newsroll-purple-20);
-        --newsroll-color-accent-purple: var(--color-newsroll-purple-50);
-        --newsroll-color-line: var(--color-line-solid-normal);
-        --newsroll-color-text-muted: var(--color-neutral-60);
         --newsroll-max-width: 768px;
         --newsroll-shadow-card: 3px 3px 4px var(--color-alpha-shadow3);
     }
@@ -4697,14 +4695,14 @@
 @layer components {
     .newsroll_screen {
         padding-inline: 0;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_phone,
     .newsroll_screen_all .newsroll_phone {
         width: min(100%, var(--newsroll-max-width));
         overflow-x: hidden;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_header,
@@ -4714,7 +4712,7 @@
         min-height: 110px;
         padding: 0 var(--spacing-padding-horizontal-16);
         gap: 0;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .container_homeToolbar .newsroll_policy_status,
@@ -4786,13 +4784,11 @@
 
     .container_homeScreen,
     .container_home {
-        --newsroll-color-line: var(--color-cool-neutral-96);
-        --newsroll-color-text-muted: var(--color-cool-neutral-50);
         --newsroll-main-border-width: 1.5px;
         display: flex;
         flex-direction: column;
         gap: var(--spacing-gap-vertical-40);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .container_home {
@@ -4838,7 +4834,7 @@
     .wrapper_hero strong {
         display: flex;
         align-items: baseline;
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
         font-size: var(--font-size-48);
         font-weight: var(--font-weight-500);
         line-height: 52px;
@@ -4862,7 +4858,7 @@
         padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
-        background: var(--newsroll-color-accent-purple);
+        background: var(--color-newsroll-purple-50);
         text-align: left;
     }
 
@@ -4898,7 +4894,7 @@
         border: 0;
         border-radius: var(--radius-full);
         color: var(--color-label-strong);
-        background: var(--newsroll-color-line);
+        background: var(--color-cool-neutral-96);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-20);
@@ -4974,7 +4970,7 @@
         justify-content: center;
         border-radius: var(--radius-full);
         color: var(--color-label-strong);
-        background: var(--newsroll-color-accent-purple);
+        background: var(--color-newsroll-purple-50);
     }
 
     .newsroll_home_alarm .newsroll_icon {
@@ -5018,7 +5014,7 @@
     }
 
     .btn_newsBlockItem span {
-        color: var(--newsroll-color-text-muted);
+        color: var(--color-cool-neutral-50);
         font-size: var(--font-size-13);
         font-weight: var(--font-weight-400);
         line-height: 13px;
@@ -5039,7 +5035,7 @@
     .newsroll_all_news,
     .newsroll_info_screen,
     .newsroll_my_screen {
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_top {
@@ -5067,7 +5063,7 @@
         min-height: 56px;
         padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
-        background: var(--newsroll-color-accent-purple);
+        background: var(--color-newsroll-purple-50);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
@@ -5095,7 +5091,7 @@
     .newsroll_all_sections {
         width: 100%;
         gap: 2px;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_panel {
@@ -5118,7 +5114,7 @@
         padding-inline: var(--spacing-padding-horizontal-12);
         border: 0;
         border-radius: var(--radius-full);
-        background: var(--newsroll-color-line);
+        background: var(--color-cool-neutral-96);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-20);
@@ -5143,14 +5139,14 @@
     }
 
     .newsroll_all_meta {
-        color: var(--newsroll-color-text-muted);
+        color: var(--color-cool-neutral-50);
         font-size: var(--font-size-13);
         line-height: 13px;
     }
 
     .newsroll_all_press_tabs button {
         min-height: 50px;
-        border-color: var(--newsroll-color-line);
+        border-color: var(--color-cool-neutral-96);
         border-radius: var(--radius-full);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-400);
@@ -5164,7 +5160,7 @@
     .newsroll_all_headline_item + .newsroll_all_headline_item,
     .newsroll_all_relay_item + .newsroll_all_relay_item,
     .newsroll_info_faq_item {
-        border-color: var(--newsroll-color-line);
+        border-color: var(--color-cool-neutral-96);
     }
 
     .newsroll_info_top h1,
@@ -5194,7 +5190,7 @@
         min-width: auto;
         min-height: var(--spacing-padding-vertical-32);
         padding: 0 var(--spacing-padding-horizontal-16);
-        border: var(--border-1) solid var(--newsroll-color-line);
+        border: var(--border-1) solid var(--color-cool-neutral-96);
         border-radius: var(--radius-full);
         color: var(--color-label-strong);
         background: var(--color-background-elevated-normal);
@@ -5221,7 +5217,7 @@
         width: 100%;
         padding: 0;
         border: 0;
-        border-bottom: var(--border-1) solid var(--newsroll-color-line);
+        border-bottom: var(--border-1) solid var(--color-cool-neutral-96);
         border-radius: 0;
         background: transparent;
     }
@@ -5280,7 +5276,7 @@
         gap: var(--spacing-gap-vertical-12);
         padding: 0 0 var(--spacing-padding-vertical-24);
         border: 0;
-        border-bottom: var(--border-1) solid var(--newsroll-color-line);
+        border-bottom: var(--border-1) solid var(--color-cool-neutral-96);
         border-radius: 0;
     }
 
@@ -5313,7 +5309,7 @@
     .newsroll_info_notice_divider {
         height: 1px;
         padding: var(--spacing-padding-vertical-8) 0;
-        background: var(--newsroll-color-line);
+        background: var(--color-cool-neutral-96);
     }
 
     .newsroll_info_notice_detail_sheet p {
@@ -5331,7 +5327,7 @@
         gap: var(--spacing-gap-horizontal-12);
         padding-top: var(--spacing-padding-vertical-20);
         padding-top: var(--spacing-padding-vertical-16);
-        border-top: var(--border-1) solid var(--newsroll-color-line);
+        border-top: var(--border-1) solid var(--color-cool-neutral-96);
     }
 
     .newsroll_info_notice_pagination button {
@@ -5391,7 +5387,7 @@
         height: var(--spacing-padding-vertical-60);
         gap: 0;
         padding-inline: 0;
-        border-top: var(--border-1) solid var(--newsroll-color-line);
+        border-top: var(--border-1) solid var(--color-cool-neutral-96);
         transform: translateX(-50%);
     }
 
@@ -5401,7 +5397,7 @@
     }
 
     .newsroll_nav_item[aria-current='page'] {
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
     }
 }
 
@@ -5427,7 +5423,7 @@
     }
 
     .newsroll_text_size_button[aria-pressed='true'] {
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
     }
 
     .newsroll_home_alarm[aria-pressed='true'] {
@@ -5451,7 +5447,7 @@
         padding-bottom: calc(
             var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
         );
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .container_articleCard {
@@ -5474,7 +5470,7 @@
     }
 
     .container_articleCard time {
-        color: var(--newsroll-color-text-muted);
+        color: var(--color-cool-neutral-50);
         font-size: var(--font-size-15);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-20);
@@ -5534,10 +5530,6 @@
         --newsroll-icon-url: var(--newsroll-icon-fill-url);
     }
 
-    .wrapper_articleActions .btn_articleTool[aria-pressed='true'] {
-        color: var(--color-label-assistive);
-    }
-
     .wrapper_articleReaction {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5590,25 +5582,13 @@
         background: var(--color-background-elevated-normal);
     }
 
-    .btn_articleReaction_like[aria-pressed='true'] {
-        color: var(--color-status-negative);
-    }
-
-    .btn_articleReaction_dislike[aria-pressed='true'] {
-        color: var(--color-accent-foreground-blue);
-    }
-
-    .btn_articleReaction_neutral[aria-pressed='true'] {
-        color: var(--color-cool-neutral-50);
-    }
-
     .wrapper_articleGuide {
         display: flex;
         flex-direction: column;
         gap: var(--spacing-gap-vertical-16);
         padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-8);
-        background: var(--color-cool-neutral-96);
+        background: var(--color-cool-neutral-98);
     }
 
     .text_articleGuide {
@@ -5643,6 +5623,10 @@
         border-color: var(--color-cool-neutral-96);
     }
 
+    .btn_articleGuideOption[aria-pressed='true'] .text_articleGuideOption {
+        font-weight: var(--font-weight-700);
+    }
+
     .wrapper_articleGuide_binary .wrapper_articleGuideOptions {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5675,16 +5659,11 @@
         text-align: center;
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption[aria-pressed='true'] {
-        border-color: transparent;
-    }
-
     .bar_articleGuideResult {
         position: absolute;
         inset: 0 auto 0 0;
         z-index: 0;
         border-radius: inherit;
-        background: var(--color-fill-strong);
     }
 
     .wrapper_articleGuide_binary .btn_articleGuideOption:first-child .bar_articleGuideResult {
@@ -5708,7 +5687,7 @@
     }
 
     .text_articleGuidePercent {
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
         font-size: var(--font-size-16);
         font-style: normal;
         font-weight: var(--font-weight-600);
@@ -5763,6 +5742,13 @@
     .wrapper_articleGuide_stacked .bar_articleGuideResult {
         inset: 0 auto 0 0;
         border-radius: var(--radius-8) 0 0 var(--radius-8);
+        background: var(--color-cool-neutral-96);
+    }
+
+    .wrapper_articleGuide_stacked
+        .btn_articleGuideOption[aria-pressed='true']
+        .bar_articleGuideResult {
+        background: var(--color-newsroll-purple-50);
     }
 
     .text_articleGuideTotal {
@@ -5779,9 +5765,9 @@
     .btn_commentPanel {
         width: 100%;
         gap: var(--spacing-gap-horizontal-8);
-        border: var(--newsroll-main-border-width) solid var(--newsroll-color-accent-purple);
-        color: var(--newsroll-color-accent-purple);
-        background: var(--color-common-100);
+        border: 0;
+        color: var(--color-common-0);
+        background: var(--color-newsroll-purple-50);
     }
 
     .wrapper_commentPanel {
@@ -5799,7 +5785,7 @@
         align-items: center;
         gap: var(--spacing-gap-horizontal-8);
         padding: 0 var(--spacing-padding-horizontal-12);
-        border: var(--newsroll-main-border-width) solid var(--newsroll-color-accent-purple);
+        border: var(--newsroll-main-border-width) solid var(--color-newsroll-purple-50);
         border-radius: var(--radius-8);
         background: var(--color-background-elevated-normal);
     }
@@ -5827,7 +5813,7 @@
         align-items: center;
         justify-content: center;
         border-radius: var(--radius-full);
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
     }
 
     .form_commentComposer button span {
@@ -5881,7 +5867,7 @@
     }
 
     .wrapper_commentAgeStats strong span {
-        color: var(--newsroll-color-accent-purple);
+        color: var(--color-newsroll-purple-50);
     }
 
     .wrapper_commentAgeChart {
@@ -5907,7 +5893,7 @@
     }
 
     .wrapper_commentAgeChart .is_peak i {
-        background: var(--newsroll-color-accent-purple);
+        background: var(--color-newsroll-purple-50);
     }
 
     .wrapper_commentAgeChart em {
@@ -6136,7 +6122,7 @@
     .newsroll_all_latest_card[aria-pressed='true'],
     .newsroll_all_headline_item[aria-pressed='true'],
     .newsroll_all_relay_item[aria-pressed='true'] {
-        outline: var(--border-2) solid var(--newsroll-color-accent-purple);
+        outline: var(--border-2) solid var(--color-newsroll-purple-50);
         outline-offset: -2px;
     }
 
@@ -6157,7 +6143,7 @@
     .newsroll_info_tabs button:not([aria-selected='true']),
     .wrapper_commentTabs button:not([aria-selected='true']) {
         color: var(--color-label-strong);
-        border: var(--border-1) solid var(--newsroll-color-line);
+        border: var(--border-1) solid var(--color-cool-neutral-96);
         background: var(--color-background-elevated-normal);
         font-weight: var(--font-weight-400);
     }
@@ -6215,23 +6201,7 @@
         display: grid;
         align-content: start;
         gap: var(--spacing-gap-vertical-40);
-        background: var(--newsroll-color-app-purple);
-    }
-
-    .container_homeScreen {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-gap-vertical-40);
-        background: var(--newsroll-color-app-purple);
-    }
-
-    .container_home {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-gap-vertical-40);
-        padding-right: var(--spacing-padding-horizontal-16);
-        padding-left: var(--spacing-padding-horizontal-16);
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_screen_all {
@@ -6268,7 +6238,7 @@
         min-height: auto;
         padding-top: 0;
         padding-bottom: 0;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_search_page {
@@ -6297,7 +6267,7 @@
         width: 100%;
         max-width: none;
         display: grid;
-        background: var(--newsroll-color-app-purple);
+        background: var(--color-newsroll-purple-20);
     }
 
     .container_newsGrid,

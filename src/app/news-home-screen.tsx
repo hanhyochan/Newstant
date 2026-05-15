@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 
 import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
@@ -42,6 +42,15 @@ type HomeArticle = {
   imageAlt: string;
   guideKind?: GuideKind;
   title: string;
+};
+
+type HomeHeaderControls = {
+  isTextLarge: boolean;
+  mode: HomeViewMode;
+  onModeChange: (mode: HomeViewMode) => void;
+  onOpenBreakingNews: () => void;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
 };
 
 type PolicyDetailItem = {
@@ -498,14 +507,7 @@ function HomeMainHeader({
   onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
-}: {
-  isTextLarge: boolean;
-  mode: HomeViewMode;
-  onModeChange: (mode: HomeViewMode) => void;
-  onOpenBreakingNews: () => void;
-  onOpenSearch: () => void;
-  onToggleTextSize: () => void;
-}) {
+}: HomeHeaderControls) {
   return (
     <>
       <header className="container_homeToolbar">
@@ -543,6 +545,33 @@ function HomeMainHeader({
         </a>
       </div>
     </>
+  );
+}
+
+function HomeShell({
+  children,
+  isTextLarge,
+  mode,
+  onModeChange,
+  onOpenBreakingNews,
+  onOpenSearch,
+  onToggleTextSize,
+}: HomeHeaderControls & { children: ReactNode }) {
+  return (
+    <div className="container_homeScreen">
+      <div className="container_home">
+        <HomeMainHeader
+          isTextLarge={isTextLarge}
+          mode={mode}
+          onModeChange={onModeChange}
+          onOpenBreakingNews={onOpenBreakingNews}
+          onOpenSearch={onOpenSearch}
+          onToggleTextSize={onToggleTextSize}
+        />
+      </div>
+
+      {children}
+    </div>
   );
 }
 
@@ -939,27 +968,16 @@ function HomeReelsView({
   onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
-}: {
-  isTextLarge: boolean;
-  mode: HomeViewMode;
-  onModeChange: (mode: HomeViewMode) => void;
-  onOpenBreakingNews: () => void;
-  onOpenSearch: () => void;
-  onToggleTextSize: () => void;
-}) {
+}: HomeHeaderControls) {
   return (
-    <div className="container_homeScreen">
-      <div className="container_home">
-        <HomeMainHeader
-          isTextLarge={isTextLarge}
-          mode={mode}
-          onModeChange={onModeChange}
-          onOpenBreakingNews={onOpenBreakingNews}
-          onOpenSearch={onOpenSearch}
-          onToggleTextSize={onToggleTextSize}
-        />
-      </div>
-
+    <HomeShell
+      isTextLarge={isTextLarge}
+      mode={mode}
+      onModeChange={onModeChange}
+      onOpenBreakingNews={onOpenBreakingNews}
+      onOpenSearch={onOpenSearch}
+      onToggleTextSize={onToggleTextSize}
+    >
       <section
         className="container_newsFeed"
         id="home-news-reels-panel"
@@ -970,7 +988,7 @@ function HomeReelsView({
           <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
         ))}
       </section>
-    </div>
+    </HomeShell>
   );
 }
 
@@ -982,28 +1000,18 @@ function HomeBlockView({
   onOpenSearch,
   onToggleTextSize,
   onOpenDetail,
-}: {
-  isTextLarge: boolean;
-  mode: HomeViewMode;
-  onModeChange: (mode: HomeViewMode) => void;
-  onOpenBreakingNews: () => void;
+}: HomeHeaderControls & {
   onOpenDetail: () => void;
-  onOpenSearch: () => void;
-  onToggleTextSize: () => void;
 }) {
   return (
-    <div className="container_homeScreen">
-      <div className="container_home">
-        <HomeMainHeader
-          isTextLarge={isTextLarge}
-          mode={mode}
-          onModeChange={onModeChange}
-          onOpenBreakingNews={onOpenBreakingNews}
-          onOpenSearch={onOpenSearch}
-          onToggleTextSize={onToggleTextSize}
-        />
-      </div>
-
+    <HomeShell
+      isTextLarge={isTextLarge}
+      mode={mode}
+      onModeChange={onModeChange}
+      onOpenBreakingNews={onOpenBreakingNews}
+      onOpenSearch={onOpenSearch}
+      onToggleTextSize={onToggleTextSize}
+    >
       <section
         className="container_newsGrid container_newsGrid_block"
         id="home-news-block-panel"
@@ -1014,7 +1022,7 @@ function HomeBlockView({
           <HomeBlockItem key={index} onClick={onOpenDetail} />
         ))}
       </section>
-    </div>
+    </HomeShell>
   );
 }
 
