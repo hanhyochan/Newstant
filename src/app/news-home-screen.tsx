@@ -1,6 +1,15 @@
 "use client";
 
-import { Fragment, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import {
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
 
 import { Button, Select, TextInput, Textarea } from "@/design-system/components";
 
@@ -230,6 +239,25 @@ const commentTemplates: Omit<CommentItem, "choice">[] = [
     id: 3,
     likes: 16,
     replies: 13,
+  },
+];
+
+const commentReplyTemplates = [
+  {
+    author: "콩콩이",
+    body: "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트~~",
+    choice: "아모른직다",
+    date: "2026.12.31 08:30",
+    dislikes: 16,
+    likes: 16,
+  },
+  {
+    author: "콩콩이",
+    body: "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트~~",
+    choice: "아모른직다",
+    date: "2026.12.31 08:30",
+    dislikes: 16,
+    likes: 16,
   },
 ];
 
@@ -693,25 +721,38 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
 
 function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: string }) {
   const guideChoices = guideKind === "binary" ? binaryGuideOptions : guideOptions;
-  const commentTabs = [
-    { id: "all", label: "전체" },
-    ...guideChoices.map((choice) => ({ id: choice, label: choice })),
-  ];
-  const defaultComments = commentTemplates.map((comment, index) => ({
-    ...comment,
-    choice: guideChoices[index % guideChoices.length],
-  }));
+  const panelId = id ?? "home-comment-panel";
+  const commentSortMenuId = `${panelId}-sort-menu`;
+  const commentTabs = useMemo(
+    () => [{ id: "all", label: "전체" }, ...guideChoices.map((choice) => ({ id: choice, label: choice }))],
+    [guideChoices],
+  );
+  const defaultComments = useMemo(
+    () =>
+      commentTemplates.map((comment, index) => ({
+        ...comment,
+        choice: guideChoices[index % guideChoices.length],
+      })),
+    [guideChoices],
+  );
   const [activeChoice, setActiveChoice] = useState(commentTabs[0].id);
   const [commentDraft, setCommentDraft] = useState("");
   const [commentReactions, setCommentReactions] = useState<Record<number, CommentReactionValue | null>>({});
   const [deletedCommentIds, setDeletedCommentIds] = useState<number[]>([]);
+  const [deletedReplyIds, setDeletedReplyIds] = useState<string[]>([]);
   const [expandedReplyId, setExpandedReplyId] = useState<number | null>(null);
   const [myCommentsOnly, setMyCommentsOnly] = useState(false);
   const [isCommentSortOpen, setIsCommentSortOpen] = useState(false);
   const [openCommentActionId, setOpenCommentActionId] = useState<number | null>(null);
+  const [openReplyActionId, setOpenReplyActionId] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
   const [userComments, setUserComments] = useState<CommentItem[]>([]);
-  const allComments = [...userComments, ...defaultComments].filter((comment) => !deletedCommentIds.includes(comment.id));
+  const deletedCommentIdSet = useMemo(() => new Set(deletedCommentIds), [deletedCommentIds]);
+  const deletedReplyIdSet = useMemo(() => new Set(deletedReplyIds), [deletedReplyIds]);
+  const allComments = useMemo(
+    () => [...userComments, ...defaultComments].filter((comment) => !deletedCommentIdSet.has(comment.id)),
+    [defaultComments, deletedCommentIdSet, userComments],
+  );
   const getCommentReactionCounts = (comment: CommentItem) => {
     const selectedReaction = commentReactions[comment.id] ?? null;
 
@@ -725,16 +766,57 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
     return likes + comment.replies;
   };
-  const visibleComments = allComments
-    .filter((comment) => (myCommentsOnly ? comment.isMine : true))
-    .filter((comment) => (activeChoice === "all" ? true : comment.choice === activeChoice))
-    .sort((a, b) => {
-      if (sortOrder === "latest") {
-        return b.id - a.id;
+  const selectedSortLabel = commentSortOptions.find((option) => option.value === sortOrder)?.label;
+  const visibleComments = useMemo(
+    () =>
+      allComments
+        .filter((comment) => (myCommentsOnly ? comment.isMine : true))
+        .filter((comment) => (activeChoice === "all" ? true : comment.choice === activeChoice))
+        .sort((a, b) => {
+          if (sortOrder === "latest") {
+            return b.id - a.id;
+          }
+
+          return getCommentPopularity(b) - getCommentPopularity(a) || b.id - a.id;
+        }),
+    [activeChoice, allComments, commentReactions, myCommentsOnly, sortOrder],
+  );
+
+  useEffect(() => {
+    function closeCommentDropdowns(event: globalThis.PointerEvent) {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
       }
 
-      return getCommentPopularity(b) - getCommentPopularity(a) || b.id - a.id;
-    });
+      if (target.closest(".wrapper_commentDropdown, .wrapper_commentAction")) {
+        return;
+      }
+
+      setIsCommentSortOpen(false);
+      setOpenCommentActionId(null);
+      setOpenReplyActionId(null);
+    }
+
+    function closeCommentDropdownsWithEscape(event: globalThis.KeyboardEvent) {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      setIsCommentSortOpen(false);
+      setOpenCommentActionId(null);
+      setOpenReplyActionId(null);
+    }
+
+    document.addEventListener("pointerdown", closeCommentDropdowns);
+    document.addEventListener("keydown", closeCommentDropdownsWithEscape);
+
+    return () => {
+      document.removeEventListener("pointerdown", closeCommentDropdowns);
+      document.removeEventListener("keydown", closeCommentDropdownsWithEscape);
+    };
+  }, []);
 
   function submitComment() {
     const body = commentDraft.trim();
@@ -769,6 +851,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
   function handleCommentAction(commentId: number, action: CommentAction) {
     setOpenCommentActionId(null);
+    setOpenReplyActionId(null);
 
     if (action === "delete") {
       setDeletedCommentIds((currentIds) => (currentIds.includes(commentId) ? currentIds : [...currentIds, commentId]));
@@ -778,6 +861,14 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
         return nextReactions;
       });
+    }
+  }
+
+  function handleReplyAction(replyId: string, action: CommentAction) {
+    setOpenReplyActionId(null);
+
+    if (action === "delete") {
+      setDeletedReplyIds((currentIds) => (currentIds.includes(replyId) ? currentIds : [...currentIds, replyId]));
     }
   }
 
@@ -820,7 +911,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
       <section className="container_commentGuide" aria-label="안내 선택지별 댓글">
         <div className="wrapper_commentGuideTabs">
-        <h3>안내 선택지 별</h3>
+        <h3>투표 선택지 별</h3>
         <PillTabMenu
           ariaLabel="안내 선택지별 댓글 필터"
           className="wrapper_commentTabs"
@@ -833,17 +924,23 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         <div className="wrapper_commentGuideComments">
           <div className="wrapper_commentDropdown wrapper_commentSort">
             <button
+              aria-controls={isCommentSortOpen ? commentSortMenuId : undefined}
               aria-expanded={isCommentSortOpen}
               aria-haspopup="listbox"
+              aria-label="댓글 정렬"
               className="btn_commentDropdown"
-              onClick={() => setIsCommentSortOpen((current) => !current)}
+              onClick={() => {
+                setOpenCommentActionId(null);
+                setOpenReplyActionId(null);
+                setIsCommentSortOpen((current) => !current);
+              }}
               type="button"
             >
-              {commentSortOptions.find((option) => option.value === sortOrder)?.label}
+              {selectedSortLabel}
               <span aria-hidden="true" />
             </button>
             {isCommentSortOpen ? (
-              <div className="listbox_commentDropdown" role="listbox">
+              <div className="listbox_commentDropdown" id={commentSortMenuId} role="listbox">
                 {commentSortOptions.map((option) => (
                   <button
                     aria-selected={sortOrder === option.value}
@@ -867,6 +964,13 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
           visibleComments.map((comment, index) => {
             const selectedReaction = commentReactions[comment.id] ?? null;
             const { dislikes: dislikeCount, likes: likeCount } = getCommentReactionCounts(comment);
+            const actionMenuId = `${panelId}-comment-action-${comment.id}`;
+            const replyListId = `${panelId}-reply-list-${comment.id}`;
+            const isReplyListOpen = expandedReplyId === comment.id;
+            const commentReplies = Array.from({ length: comment.replies }, (_, replyIndex) => ({
+              ...commentReplyTemplates[replyIndex % commentReplyTemplates.length],
+              id: `${comment.id}-${replyIndex}`,
+            })).filter((reply) => !deletedReplyIdSet.has(reply.id));
 
             return (
               <Fragment key={comment.id}>
@@ -880,16 +984,21 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                     <span className="wrapper_commentAction">
                       <button
                         aria-label="댓글 더보기"
+                        aria-controls={openCommentActionId === comment.id ? actionMenuId : undefined}
                         aria-expanded={openCommentActionId === comment.id}
                         aria-haspopup="menu"
                         className="btn_commentAction"
-                        onClick={() => setOpenCommentActionId((current) => (current === comment.id ? null : comment.id))}
+                        onClick={() => {
+                          setIsCommentSortOpen(false);
+                          setOpenReplyActionId(null);
+                          setOpenCommentActionId((current) => (current === comment.id ? null : comment.id));
+                        }}
                         type="button"
                       >
                         <Icon name="detail" />
                       </button>
                       {openCommentActionId === comment.id ? (
-                        <div className="listbox_commentDropdown listbox_commentAction" role="menu">
+                        <div className="listbox_commentDropdown listbox_commentAction" id={actionMenuId} role="menu">
                           {commentActionOptions.map((option) => (
                             <button
                               key={option.value}
@@ -908,11 +1017,12 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                   <p>{comment.body}</p>
                   <footer>
                     <button
-                      aria-expanded={expandedReplyId === comment.id}
+                      aria-controls={isReplyListOpen ? replyListId : undefined}
+                      aria-expanded={isReplyListOpen}
                       onClick={() => setExpandedReplyId((current) => (current === comment.id ? null : comment.id))}
                       type="button"
                     >
-                      답글달기 {comment.replies}
+                      대댓글 {commentReplies.length}
                     </button>
                     <span>
                       <button
@@ -937,7 +1047,85 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                       </button>
                     </span>
                   </footer>
-                  {expandedReplyId === comment.id ? <p className="text_commentReplyHint">답글 입력 영역이 열렸습니다.</p> : null}
+                  <div
+                    aria-hidden={!isReplyListOpen}
+                    className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
+                    id={replyListId}
+                    role="region"
+                  >
+                    <div className="wrapper_commentRepliesInner">
+                      {commentReplies.map((reply) => {
+                        const replyActionMenuId = `${panelId}-reply-action-${reply.id}`;
+
+                        return (
+                        <article className="wrapper_commentReplyItem" key={reply.id}>
+                          <header>
+                            <span className="wrapper_commentMeta">
+                              <strong>{reply.author}</strong>
+                              <time>{reply.date}</time>
+                            </span>
+                            <span className="wrapper_commentAction">
+                              <button
+                                aria-label="대댓글 더보기"
+                                aria-controls={openReplyActionId === reply.id ? replyActionMenuId : undefined}
+                                aria-expanded={openReplyActionId === reply.id}
+                                aria-haspopup="menu"
+                                className="btn_commentAction"
+                                disabled={!isReplyListOpen}
+                                onClick={() => {
+                                  setIsCommentSortOpen(false);
+                                  setOpenCommentActionId(null);
+                                  setOpenReplyActionId((current) => (current === reply.id ? null : reply.id));
+                                }}
+                                type="button"
+                              >
+                                <Icon name="detail" />
+                              </button>
+                              {openReplyActionId === reply.id ? (
+                                <div className="listbox_commentDropdown listbox_commentAction" id={replyActionMenuId} role="menu">
+                                  {commentActionOptions.map((option) => (
+                                    <button
+                                      key={option.value}
+                                      onClick={() => handleReplyAction(reply.id, option.value)}
+                                      role="menuitem"
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : null}
+                            </span>
+                          </header>
+                          <span className="badge_commentChoice">{reply.choice}</span>
+                          <p>{reply.body}</p>
+                          <footer>
+                            <span>
+                              <button
+                                aria-label="대댓글 좋아요"
+                                className="btn_commentReaction_like"
+                                disabled={!isReplyListOpen}
+                                type="button"
+                              >
+                                <Icon name="thumbUp" />
+                                {reply.likes}
+                              </button>
+                              <button
+                                aria-label="대댓글 싫어요"
+                                className="btn_commentReaction_dislike"
+                                disabled={!isReplyListOpen}
+                                type="button"
+                              >
+                                <Icon name="thumbDown" />
+                                {reply.dislikes}
+                              </button>
+                            </span>
+                          </footer>
+                        </article>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </article>
               </Fragment>
             );
