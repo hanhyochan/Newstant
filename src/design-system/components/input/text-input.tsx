@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes } from "react";
 
-import { cn } from "./utils";
+import { cn } from "../shared/utils";
 
 type TextInputSize = "small" | "medium" | "large" | "xlarge";
 type TextInputVariant = "filled" | "outline";
@@ -15,6 +15,7 @@ export type TextInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size">
   size?: TextInputSize;
   state?: TextInputState;
   variant?: TextInputVariant;
+  wrapperClassNameOnly?: boolean;
   wrapperClassName?: string;
 };
 
@@ -29,6 +30,7 @@ export function TextInput({
   size,
   state = "default",
   variant = "outline",
+  wrapperClassNameOnly = false,
   wrapperClassName,
   ...props
 }: TextInputProps) {
@@ -38,19 +40,23 @@ export function TextInput({
 
   return (
     <label
-      className={cn(
-        "text_input",
-        `text_input_${resolvedSize}`,
-        `text_input_${variant}`,
-        resolvedRadius === "rounded" && "text_input_rounded",
-        resolvedRadius === "full" && "text_input_full_rounded",
-        state === "complete" && "text_input_complete",
-        state === "error" && "text_input_error",
-        active && "text_input_active",
-        disabled && "text_input_disabled",
-        isView && "text_input_view",
-        wrapperClassName,
-      )}
+      className={
+        wrapperClassNameOnly
+          ? wrapperClassName
+          : cn(
+              "text_input",
+              `text_input_${resolvedSize}`,
+              `text_input_${variant}`,
+              resolvedRadius === "rounded" && "text_input_rounded",
+              resolvedRadius === "full" && "text_input_full_rounded",
+              state === "complete" && "text_input_complete",
+              state === "error" && "text_input_error",
+              active && "text_input_active",
+              disabled && "text_input_disabled",
+              isView && "text_input_view",
+              wrapperClassName,
+            )
+      }
     >
       <input
         className={className}

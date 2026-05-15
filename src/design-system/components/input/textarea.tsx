@@ -1,6 +1,6 @@
 import type { TextareaHTMLAttributes } from "react";
 
-import { cn } from "./utils";
+import { cn } from "../shared/utils";
 
 type TextareaSize = "small" | "medium" | "large";
 type TextareaVariant = "filled" | "outline";

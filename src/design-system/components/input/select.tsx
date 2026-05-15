@@ -1,6 +1,6 @@
 import type { SelectHTMLAttributes } from "react";
 
-import { cn } from "./utils";
+import { cn } from "../shared/utils";
 
 type SelectSize = "small" | "medium" | "large";
 type SelectVariant = "filled" | "outline";

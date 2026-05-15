@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useEffect, useMemo, useState } from "react";
 
-import { Chip } from "./components/chip";
-
 const meta: Meta = {
   title: "Design System/Foundation",
   parameters: {
@@ -239,9 +237,7 @@ function TypographyStyleRow({
       }}
     >
       <div className="ds_inline_stack">
-        <Chip chipSize="small" variant="filled">
-          {item.label}
-        </Chip>
+        <span className="type-caption_1">{item.label}</span>
         <code className="type-caption_1">{item.className}</code>
         {metrics.fontSize && metrics.lineHeight ? (
           <span className="type-caption_1">

@@ -1,6 +1,6 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 
-import { cn } from "./utils";
+import { cn } from "../shared/utils";
 
 type ButtonSize = "small" | "medium" | "large";
 type ButtonVariant = "filled" | "outline";
@@ -9,6 +9,7 @@ type ButtonRadius = "square" | "rounded" | "full";
 type SharedButtonProps = {
   active?: boolean;
   children?: ReactNode;
+  classNameOnly?: boolean;
   className?: string;
   disabled?: boolean;
   href?: string;
@@ -36,6 +37,7 @@ export function Button({
   active = false,
   children,
   className,
+  classNameOnly = false,
   disabled = false,
   href,
   iconOnly = false,
@@ -48,17 +50,19 @@ export function Button({
 }: ButtonProps) {
   const resolvedRadius = radius ?? shape ?? "rounded";
 
-  const classes = cn(
-    "btn",
-    `btn_${size}`,
-    `btn_${variant}`,
-    resolvedRadius === "rounded" && "btn_rounded",
-    resolvedRadius === "full" && "btn_full_rounded",
-    active && "btn_active",
-    iconOnly && "btn_icon",
-    shadow && "btn_shadow",
-    className,
-  );
+  const classes = classNameOnly
+    ? className
+    : cn(
+        "btn",
+        `btn_${size}`,
+        `btn_${variant}`,
+        resolvedRadius === "rounded" && "btn_rounded",
+        resolvedRadius === "full" && "btn_full_rounded",
+        active && "btn_active",
+        iconOnly && "btn_icon",
+        shadow && "btn_shadow",
+        className,
+      );
 
   if (href) {
     return (

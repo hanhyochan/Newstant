@@ -6,34 +6,26 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
 } from "react";
 
-import { Button, Select, TextInput, Textarea } from "@/design-system/components";
-
-type IconName =
-  | "alarm"
-  | "bookmark"
-  | "chevronRight"
-  | "chat"
-  | "detail"
-  | "dots"
-  | "earth"
-  | "fourSquare"
-  | "home"
-  | "list"
-  | "loudspeaker"
-  | "menu"
-  | "question"
-  | "search"
-  | "share"
-  | "sizeIncrease"
-  | "submit"
-  | "thumbDown"
-  | "thumbUp"
-  | "user";
+import {
+  BreakingNewsLink,
+  Button,
+  ChipLabel,
+  CommentComposerInput,
+  Icon,
+  IconButton,
+  NewsViewToggle,
+  PillTabMenu,
+  ReactionButton,
+  Select,
+  TextInput,
+  Textarea,
+  type IconName,
+  type PillTabItem,
+} from "@/design-system/components";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
@@ -77,11 +69,6 @@ type PolicyItem = {
   tags: string[];
   title: string;
   updatedAt: string;
-};
-
-type PillTabItem<T extends string> = {
-  id: T;
-  label: string;
 };
 
 type CommentItem = {
@@ -349,77 +336,6 @@ const allNewsRelayByCategory: Record<string, { image: string; title: string }[]>
   ]),
 );
 
-function Icon({ name }: { name: IconName }) {
-  return <span aria-hidden="true" className={`newsroll_icon newsroll_icon_${name}`} />;
-}
-
-function PillTabMenu<T extends string>({
-  ariaLabel,
-  className,
-  getPanelId,
-  getTabId,
-  items,
-  onChange,
-  value,
-}: {
-  ariaLabel: string;
-  className: string;
-  getPanelId?: (id: T) => string;
-  getTabId?: (id: T) => string;
-  items: PillTabItem<T>[];
-  onChange: (id: T) => void;
-  value: T;
-}) {
-  const activeIndex = Math.max(
-    0,
-    items.findIndex((item) => item.id === value),
-  );
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const lastIndex = items.length - 1;
-    const nextIndexByKey: Record<string, number> = {
-      ArrowDown: activeIndex === lastIndex ? 0 : activeIndex + 1,
-      ArrowLeft: activeIndex === 0 ? lastIndex : activeIndex - 1,
-      ArrowRight: activeIndex === lastIndex ? 0 : activeIndex + 1,
-      ArrowUp: activeIndex === 0 ? lastIndex : activeIndex - 1,
-      End: lastIndex,
-      Home: 0,
-    };
-    const nextIndex = nextIndexByKey[event.key];
-
-    if (nextIndex === undefined) {
-      return;
-    }
-
-    event.preventDefault();
-    onChange(items[nextIndex].id);
-  }
-
-  return (
-    <div className={className} role="tablist" aria-label={ariaLabel} onKeyDown={handleKeyDown}>
-      {items.map((item) => {
-        const selected = value === item.id;
-
-        return (
-          <button
-            aria-controls={getPanelId?.(item.id)}
-            aria-selected={selected}
-            className={selected ? "is_active" : undefined}
-            id={getTabId?.(item.id)}
-            key={item.id}
-            onClick={() => onChange(item.id)}
-            role="tab"
-            tabIndex={selected ? 0 : -1}
-            type="button"
-          >
-            {item.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function NewsToolbar({
   isTextLarge,
   onOpenSearch,
@@ -434,6 +350,7 @@ function NewsToolbar({
       <Button
         aria-label="글자 크기"
         aria-pressed={isTextLarge}
+        classNameOnly
         className="newsroll_text_size_button"
         onClick={onToggleTextSize}
         size="medium"
@@ -441,17 +358,8 @@ function NewsToolbar({
       >
         <Icon name="sizeIncrease" />
       </Button>
-      <button
-        aria-label="검색"
-        className="newsroll_icon_button newsroll_toolbar_icon"
-        onClick={onOpenSearch}
-        type="button"
-      >
-        <Icon name="search" />
-      </button>
-      <button aria-label="메뉴" className="newsroll_icon_button newsroll_toolbar_icon" type="button">
-        <Icon name="menu" />
-      </button>
+      <IconButton baseClassName="newsroll_toolbar_icon" icon="search" label="검색" onClick={onOpenSearch} />
+      <IconButton baseClassName="newsroll_toolbar_icon" icon="menu" label="메뉴" />
     </div>
   );
 }
@@ -463,73 +371,6 @@ function HomeBlockItem({ onClick }: { onClick: () => void }) {
       <span>1시간 전</span>
       <img alt={homeArticle.imageAlt} src={homeArticle.image} />
     </button>
-  );
-}
-
-function HomeViewToggle({
-  mode,
-  onModeChange,
-}: {
-  mode: HomeViewMode;
-  onModeChange: (mode: HomeViewMode) => void;
-}) {
-  const tabIds = {
-    reels: "home-news-view-tab-reels",
-    block: "home-news-view-tab-block",
-  };
-  const panelIds = {
-    reels: "home-news-reels-panel",
-    block: "home-news-block-panel",
-  };
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const nextModeByKey: Partial<Record<string, HomeViewMode>> = {
-      ArrowLeft: mode === "reels" ? "block" : "reels",
-      ArrowRight: mode === "reels" ? "block" : "reels",
-      ArrowUp: mode === "reels" ? "block" : "reels",
-      ArrowDown: mode === "reels" ? "block" : "reels",
-      Home: "reels",
-      End: "block",
-    };
-    const nextMode = nextModeByKey[event.key];
-
-    if (!nextMode) {
-      return;
-    }
-
-    event.preventDefault();
-    onModeChange(nextMode);
-  }
-
-  return (
-    <div className="wrapper_newsViewToggle" role="tablist" aria-label="뉴스 보기 방식" onKeyDown={handleKeyDown}>
-      <button
-        aria-controls={panelIds.reels}
-        aria-label="릴스형"
-        aria-selected={mode === "reels"}
-        className={`btn_newsViewOption${mode === "reels" ? " is_active" : ""}`}
-        id={tabIds.reels}
-        onClick={() => onModeChange("reels")}
-        role="tab"
-        tabIndex={mode === "reels" ? 0 : -1}
-        type="button"
-      >
-        <Icon name="list" />
-      </button>
-      <button
-        aria-controls={panelIds.block}
-        aria-label="블록형"
-        aria-selected={mode === "block"}
-        className={`btn_newsViewOption${mode === "block" ? " is_active" : ""}`}
-        id={tabIds.block}
-        onClick={() => onModeChange("block")}
-        role="tab"
-        tabIndex={mode === "block" ? 0 : -1}
-        type="button"
-      >
-        <Icon name="fourSquare" />
-      </button>
-    </div>
   );
 }
 
@@ -561,21 +402,18 @@ function HomeMainHeader({
           </strong>
           <span className="text_heroCaption">새로운 소식이 있습니다.</span>
         </p>
-        <HomeViewToggle mode={mode} onModeChange={onModeChange} />
+        <NewsViewToggle mode={mode} onModeChange={onModeChange} />
       </section>
 
       <div className="wrapper_breakingNews">
-        <a
-          className="btn_link_breakingNews"
+        <BreakingNewsLink
           href="#all-breaking-news"
           onClick={(event) => {
             event.preventDefault();
             onOpenBreakingNews();
           }}
-        >
-          <Icon name="alarm" />
-          <span className="text_breakingNewsTitle">{homeBreakingTitle}</span>
-        </a>
+          title={homeBreakingTitle}
+        />
       </div>
     </>
   );
@@ -620,18 +458,18 @@ function ReactionControls({
   return (
     <div className={`wrapper_articleReaction ${className}`.trim()} aria-label="기사 평가" role="group">
       {reactionItems.map((item) => (
-        <button
+        <ReactionButton
           aria-pressed={reaction === item.value}
-          className={`btn_articleReaction btn_articleReaction_${item.value}`}
+          icon={item.icon}
           key={item.value}
           onClick={() => onReactionChange(reaction === item.value ? null : item.value)}
-          type="button"
+          tone={item.value}
+          variant="article"
         >
-          <Icon name={item.icon} />
           <strong>
             {item.label} {item.count}
           </strong>
-        </button>
+        </ReactionButton>
       ))}
     </div>
   );
@@ -685,6 +523,7 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
           return (
             <Button
               aria-pressed={selectedGuideOption === index}
+              classNameOnly
               className="btn_articleGuideOption"
               key={option}
               onClick={() => vote(index)}
@@ -881,32 +720,26 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
           submitComment();
         }}
       >
-        <TextInput
-          aria-label="댓글 입력"
-          inputSize="large"
+        <CommentComposerInput
+          label="댓글 입력"
           onChange={(event) => setCommentDraft(event.target.value)}
           placeholder="홍길동님은 어떻게 생각하시나요?"
-          radius="rounded"
-          type="text"
+          submitLabel="댓글 등록"
           value={commentDraft}
-          variant="outline"
-          wrapperClassName="input_commentComposer"
         />
-        <button aria-label="댓글 등록" className="btn btn_filled btn_commentSubmit" type="submit">
-          <Icon name="submit" />
-        </button>
       </form>
 
       <div className="wrapper_commentSummary">
         <span className="text_commentTotal">댓글 {allComments.length}</span>
-        <button
+        <Button
           aria-pressed={myCommentsOnly}
-          className="btn btn_medium btn_filled btn_rounded btn_commentMineFilter"
+          className="btn_commentMineFilter"
+          classNameOnly
           onClick={() => setMyCommentsOnly((current) => !current)}
           type="button"
         >
           나의 댓글
-        </button>
+        </Button>
       </div>
 
       <section className="container_commentGuide" aria-label="안내 선택지별 댓글">
@@ -967,7 +800,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
             const actionMenuId = `${panelId}-comment-action-${comment.id}`;
             const replyListId = `${panelId}-reply-list-${comment.id}`;
             const isReplyListOpen = expandedReplyId === comment.id;
-            const commentReplies = Array.from({ length: comment.replies }, (_, replyIndex) => ({
+            const commentReplies = Array.from({ length: Math.min(comment.replies, 3) }, (_, replyIndex) => ({
               ...commentReplyTemplates[replyIndex % commentReplyTemplates.length],
               id: `${comment.id}-${replyIndex}`,
             })).filter((reply) => !deletedReplyIdSet.has(reply.id));
@@ -982,21 +815,20 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                       <time>{comment.date}</time>
                     </span>
                     <span className="wrapper_commentAction">
-                      <button
+                      <IconButton
                         aria-label="댓글 더보기"
                         aria-controls={openCommentActionId === comment.id ? actionMenuId : undefined}
                         aria-expanded={openCommentActionId === comment.id}
                         aria-haspopup="menu"
-                        className="btn_commentAction"
+                        baseClassName="btn_commentAction"
+                        icon="detail"
+                        label="댓글 더보기"
                         onClick={() => {
                           setIsCommentSortOpen(false);
                           setOpenReplyActionId(null);
                           setOpenCommentActionId((current) => (current === comment.id ? null : comment.id));
                         }}
-                        type="button"
-                      >
-                        <Icon name="detail" />
-                      </button>
+                      />
                       {openCommentActionId === comment.id ? (
                         <div className="listbox_commentDropdown listbox_commentAction" id={actionMenuId} role="menu">
                           {commentActionOptions.map((option) => (
@@ -1013,7 +845,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                       ) : null}
                     </span>
                   </header>
-                  <span className="badge_commentChoice">{comment.choice}</span>
+                  <ChipLabel kind="commentChoice">{comment.choice}</ChipLabel>
                   <p>{comment.body}</p>
                   <footer>
                     <button
@@ -1025,26 +857,26 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                       대댓글 {commentReplies.length}
                     </button>
                     <span>
-                      <button
+                      <ReactionButton
                         aria-label="댓글 좋아요"
                         aria-pressed={selectedReaction === "like"}
-                        className="btn_commentReaction_like"
+                        icon="thumbUp"
                         onClick={() => toggleCommentReaction(comment.id, "like")}
-                        type="button"
+                        tone="like"
+                        variant="comment"
                       >
-                        <Icon name="thumbUp" />
                         {likeCount}
-                      </button>
-                      <button
+                      </ReactionButton>
+                      <ReactionButton
                         aria-label="댓글 싫어요"
                         aria-pressed={selectedReaction === "dislike"}
-                        className="btn_commentReaction_dislike"
+                        icon="thumbDown"
                         onClick={() => toggleCommentReaction(comment.id, "dislike")}
-                        type="button"
+                        tone="dislike"
+                        variant="comment"
                       >
-                        <Icon name="thumbDown" />
                         {dislikeCount}
-                      </button>
+                      </ReactionButton>
                     </span>
                   </footer>
                   <div
@@ -1054,33 +886,33 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                     role="region"
                   >
                     <div className="wrapper_commentRepliesInner">
-                      {commentReplies.map((reply) => {
+                      {commentReplies.map((reply, replyIndex) => {
                         const replyActionMenuId = `${panelId}-reply-action-${reply.id}`;
 
                         return (
-                        <article className="wrapper_commentReplyItem" key={reply.id}>
+                        <Fragment key={reply.id}>
+                        <article className="wrapper_commentReplyItem">
                           <header>
                             <span className="wrapper_commentMeta">
                               <strong>{reply.author}</strong>
                               <time>{reply.date}</time>
                             </span>
                             <span className="wrapper_commentAction">
-                              <button
+                              <IconButton
                                 aria-label="대댓글 더보기"
                                 aria-controls={openReplyActionId === reply.id ? replyActionMenuId : undefined}
                                 aria-expanded={openReplyActionId === reply.id}
                                 aria-haspopup="menu"
-                                className="btn_commentAction"
+                                baseClassName="btn_commentAction"
                                 disabled={!isReplyListOpen}
+                                icon="detail"
+                                label="대댓글 더보기"
                                 onClick={() => {
                                   setIsCommentSortOpen(false);
                                   setOpenCommentActionId(null);
                                   setOpenReplyActionId((current) => (current === reply.id ? null : reply.id));
                                 }}
-                                type="button"
-                              >
-                                <Icon name="detail" />
-                              </button>
+                              />
                               {openReplyActionId === reply.id ? (
                                 <div className="listbox_commentDropdown listbox_commentAction" id={replyActionMenuId} role="menu">
                                   {commentActionOptions.map((option) => (
@@ -1097,31 +929,35 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                               ) : null}
                             </span>
                           </header>
-                          <span className="badge_commentChoice">{reply.choice}</span>
+                          <ChipLabel kind="commentChoice">{reply.choice}</ChipLabel>
                           <p>{reply.body}</p>
                           <footer>
                             <span>
-                              <button
+                              <ReactionButton
                                 aria-label="대댓글 좋아요"
-                                className="btn_commentReaction_like"
                                 disabled={!isReplyListOpen}
-                                type="button"
+                                icon="thumbUp"
+                                tone="like"
+                                variant="comment"
                               >
-                                <Icon name="thumbUp" />
                                 {reply.likes}
-                              </button>
-                              <button
+                              </ReactionButton>
+                              <ReactionButton
                                 aria-label="대댓글 싫어요"
-                                className="btn_commentReaction_dislike"
                                 disabled={!isReplyListOpen}
-                                type="button"
+                                icon="thumbDown"
+                                tone="dislike"
+                                variant="comment"
                               >
-                                <Icon name="thumbDown" />
                                 {reply.dislikes}
-                              </button>
+                              </ReactionButton>
                             </span>
                           </footer>
                         </article>
+                        {replyIndex < commentReplies.length - 1 ? (
+                          <span aria-hidden="true" className="divider_commentItem" />
+                        ) : null}
+                        </Fragment>
                         );
                       })}
                     </div>
@@ -1150,29 +986,25 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
   return (
     <article className="container_articleCard">
       <div className="wrapper_articleSummary">
-        <span className="chip_articleCategory">{article.category}</span>
+        <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
         <h1>{article.title}</h1>
         <time dateTime="2026-12-31T08:30:00">{article.date}</time>
       </div>
       <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
-        <button
-          aria-label="공유"
+        <IconButton
           aria-pressed={isShared}
-          className="btn_articleTool"
+          baseClassName="btn_articleTool"
+          icon="share"
+          label="공유"
           onClick={() => setIsShared((current) => !current)}
-          type="button"
-        >
-          <Icon name="share" />
-        </button>
-        <button
-          aria-label="북마크"
+        />
+        <IconButton
           aria-pressed={isBookmarked}
-          className="btn_articleTool"
+          baseClassName="btn_articleTool"
+          icon="bookmark"
+          label="북마크"
           onClick={() => setIsBookmarked((current) => !current)}
-          type="button"
-        >
-          <Icon name="bookmark" />
-        </button>
+        />
       </div>
       <img alt={article.imageAlt} src={article.image} />
       <p className="text_articleBody">{articleBody}</p>
@@ -1187,6 +1019,7 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
 
       <Button
         className="btn_originalArticle"
+        classNameOnly
         href="https://example.com/original-news"
         size="medium"
         variant="filled"
@@ -1202,6 +1035,7 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
         aria-controls={commentPanelId}
         aria-expanded={isCommentPanelOpen}
         className="btn_commentPanel"
+        classNameOnly
         onClick={() => setIsCommentPanelOpen((current) => !current)}
         size="large"
         variant="filled"
@@ -2514,16 +2348,14 @@ export function NewsHomeScreen() {
       {activeView !== "search" ? (
         <nav className="newsroll_bottom_nav" aria-label="하단 탐색">
           {navItems.map((item) => (
-            <button
+            <IconButton
               aria-current={activeView === item.tab ? "page" : undefined}
-              aria-label={item.label}
-              className="newsroll_nav_item"
+              baseClassName="newsroll_nav_item"
+              icon={item.icon}
               key={item.label}
+              label={item.label}
               onClick={() => setActiveView(item.tab)}
-              type="button"
-            >
-              <Icon name={item.icon} />
-            </button>
+            />
           ))}
         </nav>
       ) : null}

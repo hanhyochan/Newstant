@@ -5,9 +5,9 @@ import "../src/app/globals.css";
 const preview: Preview = {
   parameters: {
     backgrounds: {
-      default: "light",
+      default: "neutral-95",
       values: [
-        { name: "light", value: "#f7f4ee" },
+        { name: "neutral-95", value: "#dbdcdf" },
         { name: "white", value: "#ffffff" },
         { name: "dark", value: "#111111" },
       ],

@@ -1498,6 +1498,14 @@
     }
 
     .btn:focus-visible,
+    .btn_articleGuideOption:focus-visible,
+    .btn_commentMineFilter:focus-visible,
+    .btn_commentPanel:focus-visible,
+    .btn_commentSubmit:focus-visible,
+    .btn_originalArticle:focus-visible,
+    .input_commentComposer:focus-within,
+    .newsroll_text_size_button:focus-visible,
+    .newsroll_toolbar_icon:focus-visible,
     .tab:focus-visible,
     .text_input:focus-within,
     .textarea:focus-visible,
@@ -1532,6 +1540,13 @@
         border: 0;
         color: var(--color-common-0);
         background: var(--color-newsroll-purple-50);
+    }
+
+    .newsroll_text_size_button {
+        appearance: none;
+        cursor: pointer;
+        border: 0;
+        background: transparent;
     }
 
     .newsroll_text_size_button.btn_filled {
@@ -2150,6 +2165,16 @@
     }
 
     .newsroll_toolbar_icon {
+        width: var(--spacing-padding-horizontal-24);
+        height: var(--spacing-padding-vertical-24);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        appearance: none;
+        cursor: pointer;
+        background: transparent;
         color: var(--color-common-100);
     }
 
@@ -2403,8 +2428,8 @@
     }
 
     .newsroll_nav_item[aria-current='page'] .newsroll_icon,
-    .btn_newsViewOption.is_active .newsroll_icon,
-    .btn_articleReaction[aria-pressed='true'] .newsroll_icon {
+    .btn_newsViewOption[aria-selected='true'] .newsroll_icon,
+    .wrapper_articleReaction > button[aria-pressed='true'] .newsroll_icon {
         --newsroll-icon-url: var(--newsroll-icon-fill-url);
     }
 
@@ -4971,7 +4996,7 @@
         height: 24px;
     }
 
-    .btn_newsViewOption.is_active {
+    .btn_newsViewOption[aria-selected='true'] {
         color: var(--color-label-strong);
         background: var(--color-common-100);
     }
@@ -5540,7 +5565,7 @@
     }
 
     .wrapper_articleActions .btn_articleTool[aria-pressed='true'] .newsroll_icon,
-    .btn_articleReaction[aria-pressed='true'] .newsroll_icon {
+    .wrapper_articleReaction > button[aria-pressed='true'] .newsroll_icon {
         --newsroll-icon-url: var(--newsroll-icon-fill-url);
     }
 
@@ -5552,7 +5577,9 @@
         border-radius: 0;
     }
 
-    .btn_articleReaction {
+    .btn_articleReaction_like,
+    .btn_articleReaction_dislike,
+    .btn_articleReaction_neutral {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -5564,17 +5591,19 @@
         line-height: var(--line-height-20);
     }
 
-    .btn_articleReaction strong {
+    .btn_articleReaction_like strong,
+    .btn_articleReaction_dislike strong,
+    .btn_articleReaction_neutral strong {
         font-size: var(--font-size-15);
         font-weight: var(--font-weight-600);
         line-height: var(--line-height-20);
     }
 
-    .btn_articleReaction + .btn_articleReaction {
+    .wrapper_articleReaction > button + button {
         border-left: var(--newsroll-main-border-width) solid var(--color-cool-neutral-96);
     }
 
-    .btn_articleReaction .newsroll_icon,
+    .wrapper_articleReaction .newsroll_icon,
     .btn_commentPanel .newsroll_icon {
         width: 24px;
         height: 24px;
@@ -5592,7 +5621,7 @@
         color: var(--color-cool-neutral-50);
     }
 
-    .btn_articleReaction[aria-pressed='true'] {
+    .wrapper_articleReaction > button[aria-pressed='true'] {
         background: var(--color-background-elevated-normal);
     }
 
@@ -5625,10 +5654,19 @@
         position: relative;
         overflow: hidden;
         min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-8);
         justify-content: space-between;
+        padding-inline: var(--spacing-padding-horizontal-24);
+        border-radius: var(--radius-8);
         color: var(--color-cool-neutral-50);
         border: var(--newsroll-main-border-width) solid transparent;
         background: var(--color-common-100);
+        cursor: pointer;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
         text-align: left;
     }
 
@@ -5743,9 +5781,22 @@
 
     .container_articleCard .btn_originalArticle {
         width: 100%;
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-gap-horizontal-8);
+        padding-inline: var(--spacing-padding-horizontal-16);
         border: var(--newsroll-main-border-width) solid var(--color-cool-neutral-96);
+        border-radius: var(--radius-8);
         color: var(--color-cool-neutral-50);
         background: var(--color-common-100);
+        cursor: pointer;
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        text-decoration: none;
+        white-space: nowrap;
     }
 
     .container_articleCard .btn_originalArticle:active {
@@ -5777,10 +5828,21 @@
 
     .btn_commentPanel {
         width: 100%;
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         gap: var(--spacing-gap-horizontal-8);
+        padding: 0;
         border: 0;
+        border-radius: var(--radius-8);
         color: var(--color-common-0);
         background: var(--color-newsroll-purple-50);
+        cursor: pointer;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        white-space: nowrap;
     }
 
     .wrapper_commentPanel {
@@ -5800,13 +5862,29 @@
 
     .input_commentComposer {
         flex: 1;
+        width: 100%;
+        min-width: 0;
+        min-height: 52px;
+        display: inline-flex;
+        align-items: center;
+        padding-inline: var(--spacing-padding-horizontal-24);
         border: var(--newsroll-main-border-width) solid var(--color-newsroll-purple-50);
+        border-radius: var(--radius-8);
+        color: var(--color-label-strong);
+        background: var(--color-background-elevated-normal);
+        cursor: text;
+        font-size: var(--font-size-16);
+        line-height: var(--line-height-24);
     }
 
     .input_commentComposer input {
+        width: 100%;
         min-width: 0;
+        border: 0;
+        outline: 0;
         padding-right: calc(var(--spacing-padding-horizontal-24) + var(--spacing-gap-horizontal-12));
         color: var(--color-label-strong);
+        background: transparent;
     }
 
     .input_commentComposer input::placeholder {
@@ -5848,9 +5926,21 @@
     }
 
     .wrapper_commentSummary .btn_commentMineFilter {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-gap-horizontal-8);
+        padding-inline: var(--spacing-padding-horizontal-16);
         border: var(--newsroll-main-border-width) solid var(--color-cool-neutral-96);
+        border-radius: var(--radius-8);
         color: var(--color-cool-neutral-50);
         background: var(--color-common-100);
+        cursor: pointer;
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        white-space: nowrap;
     }
 
     .wrapper_commentSummary .btn_commentMineFilter:active,
@@ -5974,7 +6064,7 @@
 
     .wrapper_commentList {
         display: grid;
-        gap: 0;
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .wrapper_commentItem {
@@ -5986,7 +6076,7 @@
             'footer'
             'replies';
         gap: var(--spacing-gap-vertical-16);
-        padding: var(--spacing-padding-vertical-24) 0 0;
+        padding: 0;
     }
 
     .divider_commentItem {
