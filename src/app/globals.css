@@ -4889,9 +4889,9 @@
         flex-direction: column;
         overflow: hidden;
         overscroll-behavior: contain;
-        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16) 0;
-        border-radius: var(--radius-20) var(--radius-20) 0 0;
-        background: var(--color-background-elevated-normal);
+        padding: 0;
+        border-radius: 0;
+        background: var(--color-newsroll-purple-20);
         will-change: top;
     }
 
@@ -5119,8 +5119,9 @@
         grid-template-columns: repeat(auto-fit, minmax(min(156px, 100%), 1fr));
         align-content: start;
         gap: 28px var(--spacing-gap-horizontal-16);
-        padding: 0 0 calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
-        border-radius: 0;
+        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16)
+            calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
+        border-radius: var(--radius-20) var(--radius-20) 0 0;
         color: var(--color-label-strong);
         background: var(--color-background-elevated-normal);
     }
@@ -5588,10 +5589,10 @@
         -webkit-overflow-scrolling: touch;
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: var(--spacing-gap-vertical-4);
         padding-bottom: calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
         border-radius: 0;
-        background: var(--color-background-elevated-normal);
+        background: var(--color-newsroll-purple-20);
     }
 
     .container_newsFeed::-webkit-scrollbar {
@@ -5600,13 +5601,50 @@
 
     .container_articleCard {
         position: relative;
+        flex: 0 0 auto;
         display: flex;
         flex-direction: column;
         gap: var(--spacing-gap-vertical-24);
-        padding: 0 0 var(--spacing-padding-vertical-24);
+        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
         background: var(--color-background-elevated-normal);
+        overflow: visible;
+    }
+
+    .wrapper_articleCardContent {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        min-height: 0;
+    }
+
+    .container_homeScreen.is_homeSheetDocked .container_newsFeed {
+        scroll-snap-type: y mandatory;
+    }
+
+    .container_homeScreen.is_homeSheetDocked .container_newsFeed .container_articleCard {
+        position: sticky;
+        top: 0;
+        flex: 0 0 100%;
+        height: 100%;
+        max-height: 100%;
+        overflow: hidden;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
+    .container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent {
+        flex: 1 1 auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent::-webkit-scrollbar {
+        display: none;
     }
 
     .container_articleCard :where(h1, h2) {
@@ -5625,7 +5663,7 @@
         line-height: var(--line-height-20);
     }
 
-    .container_articleCard > img {
+    .wrapper_articleCardContent > img {
         width: 100%;
         height: auto;
         aspect-ratio: 16 / 9;
@@ -6834,4 +6872,8 @@
 
 .container_homeToolbar > .newsroll_toolbar[aria-label='상단 도구'] {
     margin-top: 48px;
+}
+
+.container_homeToolbar > .newsroll_toolbar {
+    margin-top: 28px;
 }

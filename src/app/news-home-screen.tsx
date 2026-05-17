@@ -87,6 +87,8 @@ type CommentItem = {
 
 const articleImage = "/images/news-apartment.png";
 const homeSheetDockedGap = 16;
+const homeSheetInitialTopRatio = 0.54;
+const articleReleaseRatio = 0.1;
 
 const homeArticle: HomeArticle = {
   category: "정치",
@@ -493,11 +495,9 @@ function HomeShell({
     const stopTop = Math.round(
       toolbarBottom + homeSheetDockedGap + dockedControlsHeight + homeSheetDockedGap,
     );
-    const preferredInitialTop = Math.round(
-      home.getBoundingClientRect().bottom - screenTop + 40,
-    );
-    const maxInitialTop = Math.max(stopTop, screen.clientHeight - 160);
-    const initialTop = Math.max(stopTop, Math.min(preferredInitialTop, maxInitialTop));
+    const preferredInitialTop = Math.round(home.getBoundingClientRect().bottom - screenTop + 24);
+    const readableInitialTop = Math.round(screen.clientHeight * homeSheetInitialTopRatio);
+    const initialTop = Math.max(stopTop, Math.min(preferredInitialTop, readableInitialTop));
 
     const previousBounds = sheetBoundsRef.current;
     const previousTop = sheetTopRef.current || previousBounds.initialTop || initialTop;
@@ -542,9 +542,73 @@ function HomeShell({
     return false;
   };
 
+  const getActiveArticleScroller = () => {
+    const feedScroller = scrollerRef.current;
+
+    if (!feedScroller) {
+      return null;
+    }
+
+    const articles = Array.from(
+      feedScroller.querySelectorAll<HTMLElement>(".container_articleCard"),
+    );
+
+    if (articles.length === 0) {
+      return null;
+    }
+
+    const activeArticle = articles.reduce((closest, article) => {
+      const closestDistance = Math.abs(closest.offsetTop - feedScroller.scrollTop);
+      const articleDistance = Math.abs(article.offsetTop - feedScroller.scrollTop);
+      return articleDistance < closestDistance ? article : closest;
+    }, articles[0]);
+
+    return activeArticle.querySelector<HTMLElement>(".wrapper_articleCardContent");
+  };
+
+  const routeDockedArticleScroll = (deltaY: number) => {
+    const feedScroller = scrollerRef.current;
+    const articleScroller = getActiveArticleScroller();
+    const { stopTop } = sheetBoundsRef.current;
+    const isDocked = sheetTopRef.current <= stopTop + 1;
+
+    if (!feedScroller || !articleScroller || !isDocked) {
+      return false;
+    }
+
+    if (deltaY < 0 && articleScroller.scrollTop > 0) {
+      articleScroller.scrollTop += deltaY;
+      return true;
+    }
+
+    if (deltaY > 0) {
+      const remainingScroll =
+        articleScroller.scrollHeight - articleScroller.clientHeight - articleScroller.scrollTop;
+      const releaseThreshold = articleScroller.clientHeight * articleReleaseRatio;
+
+      if (remainingScroll > releaseThreshold) {
+        articleScroller.scrollTop += deltaY;
+        return true;
+      }
+
+      feedScroller.scrollTop += deltaY;
+      return true;
+    }
+
+    return false;
+  };
+
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
     if (moveSheet(event.deltaY)) {
       event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (routeDockedArticleScroll(event.deltaY)) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     }
   };
 
@@ -564,6 +628,16 @@ function HomeShell({
     const deltaY = previousY - currentY;
     if (moveSheet(deltaY)) {
       event.preventDefault();
+      event.stopPropagation();
+      touchYRef.current = currentY;
+      return;
+    }
+
+    if (routeDockedArticleScroll(deltaY)) {
+      event.preventDefault();
+      event.stopPropagation();
+      touchYRef.current = currentY;
+      return;
     }
     touchYRef.current = currentY;
   };
@@ -603,7 +677,11 @@ function HomeShell({
         />
       </div>
 
-      <div className="container_homeSheet" onScrollCapture={handleSheetScroll} ref={sheetRef}>
+      <div
+        className="container_homeSheet"
+        onScrollCapture={handleSheetScroll}
+        ref={sheetRef}
+      >
         {children}
       </div>
     </div>
@@ -1281,6 +1359,7 @@ function HomeReelCard({
 
   return (
     <article className="container_articleCard">
+      <div className="wrapper_articleCardContent">
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
         <ArticleTitle>{article.title}</ArticleTitle>
@@ -1342,6 +1421,7 @@ function HomeReelCard({
       {isCommentPanelOpen ? (
         <CommentReactionPanel guideKind={article.guideKind ?? "stacked"} id={commentPanelId} />
       ) : null}
+      </div>
     </article>
   );
 }
