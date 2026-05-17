@@ -6,8 +6,10 @@ import {
   useMemo,
   useRef,
   useState,
+  type TouchEvent,
   type PointerEvent,
   type ReactNode,
+  type WheelEvent,
 } from "react";
 
 import {
@@ -84,6 +86,7 @@ type CommentItem = {
 };
 
 const articleImage = "/images/news-apartment.png";
+const homeSheetDockedGap = 16;
 
 const homeArticle: HomeArticle = {
   category: "정치",
@@ -374,7 +377,7 @@ function HomeBlockItem({ onClick }: { onClick: () => void }) {
     <button className="btn_newsBlockItem" onClick={onClick} type="button">
       <strong>{homeArticle.title}</strong>
       <span>1시간 전</span>
-      <img alt={homeArticle.imageAlt} src={homeArticle.image} />
+      <img alt="" src={homeArticle.image} />
     </button>
   );
 }
@@ -387,6 +390,8 @@ function HomeMainHeader({
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls) {
+  const [isAlarmOn, setIsAlarmOn] = useState(false);
+
   return (
     <>
       <header className="container_homeToolbar">
@@ -407,7 +412,21 @@ function HomeMainHeader({
           </strong>
           <span className="text_heroCaption">새로운 소식이 있습니다.</span>
         </p>
-        <NewsViewToggle mode={mode} onModeChange={onModeChange} />
+        <div className="wrapper_homeDockedControls">
+          <NewsViewToggle mode={mode} onModeChange={onModeChange} />
+          <Button
+            aria-label="알림"
+            aria-pressed={isAlarmOn}
+            className="newsroll_homeDockedAlarm"
+            iconOnly
+            onClick={() => setIsAlarmOn((current) => !current)}
+            radius="full"
+            size="large"
+            variant="outline"
+          >
+            <Icon name="alarm" />
+          </Button>
+        </div>
       </section>
 
       <div className="wrapper_breakingNews">
@@ -433,9 +452,147 @@ function HomeShell({
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls & { children: ReactNode }) {
+  const screenRef = useRef<HTMLDivElement>(null);
+  const homeRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLElement | null>(null);
+  const scrollerTopRef = useRef(0);
+  const touchYRef = useRef<number | null>(null);
+  const sheetTopRef = useRef(0);
+  const sheetBoundsRef = useRef({ initialTop: 0, stopTop: 0 });
+  const [isSheetDocked, setIsSheetDocked] = useState(false);
+
+  const setSheetTop = (nextTop: number) => {
+    const { initialTop, stopTop } = sheetBoundsRef.current;
+    const boundedTop = Math.min(initialTop, Math.max(stopTop, nextTop));
+    sheetTopRef.current = boundedTop;
+    screenRef.current?.style.setProperty("--home-sheet-top", `${boundedTop}px`);
+    setIsSheetDocked((current) => {
+      const nextDocked = boundedTop <= stopTop + 1;
+      return current === nextDocked ? current : nextDocked;
+    });
+  };
+
+  const measureSheet = () => {
+    const screen = screenRef.current;
+    const home = homeRef.current;
+
+    if (!screen || !home) {
+      return;
+    }
+
+    const screenTop = screen.getBoundingClientRect().top;
+    const toolbar = home.querySelector(".newsroll_toolbar");
+    const dockedControls = home.querySelector(".wrapper_homeDockedControls");
+    const toolbarRect = toolbar?.getBoundingClientRect();
+    const toolbarTop = toolbar
+      ? toolbarRect!.top - screenTop
+      : 48;
+    const toolbarBottom = toolbarRect ? toolbarRect.bottom - screenTop : toolbarTop + 40;
+    const dockedControlsHeight = dockedControls?.getBoundingClientRect().height ?? 48;
+    const stopTop = Math.round(
+      toolbarBottom + homeSheetDockedGap + dockedControlsHeight + homeSheetDockedGap,
+    );
+    const preferredInitialTop = Math.round(
+      home.getBoundingClientRect().bottom - screenTop + 40,
+    );
+    const maxInitialTop = Math.max(stopTop, screen.clientHeight - 160);
+    const initialTop = Math.max(stopTop, Math.min(preferredInitialTop, maxInitialTop));
+
+    const previousBounds = sheetBoundsRef.current;
+    const previousTop = sheetTopRef.current || previousBounds.initialTop || initialTop;
+    const wasDocked = previousTop <= previousBounds.stopTop + 1;
+    const wasPartiallyLifted = previousTop < previousBounds.initialTop;
+    const nextTop = wasDocked
+      ? stopTop
+      : wasPartiallyLifted
+        ? Math.min(initialTop, Math.max(stopTop, previousTop))
+        : initialTop;
+
+    sheetBoundsRef.current = { initialTop, stopTop };
+    screen.style.setProperty("--home-sheet-initial-top", `${initialTop}px`);
+    scrollerRef.current = sheetRef.current?.querySelector<HTMLElement>(
+      ".container_newsFeed, .container_newsGrid",
+    ) ?? null;
+    if (scrollerRef.current) {
+      scrollerRef.current.scrollTop = wasDocked ? scrollerTopRef.current : 0;
+    }
+    setSheetTop(nextTop);
+  };
+
+  const moveSheet = (deltaY: number) => {
+    const scroller = scrollerRef.current;
+    const { initialTop, stopTop } = sheetBoundsRef.current;
+    const currentTop = sheetTopRef.current || initialTop;
+
+    if (!scroller || initialTop <= stopTop) {
+      return false;
+    }
+
+    if (deltaY > 0 && currentTop > stopTop) {
+      setSheetTop(currentTop - deltaY);
+      return true;
+    }
+
+    if (deltaY < 0 && scroller.scrollTop <= 0 && currentTop < initialTop) {
+      setSheetTop(currentTop - deltaY);
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (moveSheet(event.deltaY)) {
+      event.preventDefault();
+    }
+  };
+
+  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    touchYRef.current = event.touches[0]?.clientY ?? null;
+  };
+
+  const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
+    const currentY = event.touches[0]?.clientY;
+    const previousY = touchYRef.current;
+
+    if (currentY == null || previousY == null) {
+      touchYRef.current = currentY ?? null;
+      return;
+    }
+
+    const deltaY = previousY - currentY;
+    if (moveSheet(deltaY)) {
+      event.preventDefault();
+    }
+    touchYRef.current = currentY;
+  };
+
+  const handleSheetScroll = () => {
+    if (scrollerRef.current) {
+      scrollerTopRef.current = scrollerRef.current.scrollTop;
+    }
+  };
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(measureSheet);
+    window.addEventListener("resize", measureSheet);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", measureSheet);
+    };
+  }, [isTextLarge, mode]);
+
   return (
-    <div className="container_homeScreen">
-      <div className="container_home">
+    <div
+      className={`container_homeScreen${isSheetDocked ? " is_homeSheetDocked" : ""}`}
+      onTouchMove={handleTouchMove}
+      onTouchStart={handleTouchStart}
+      onWheel={handleWheel}
+      ref={screenRef}
+    >
+      <div className="container_home" ref={homeRef}>
         <HomeMainHeader
           isTextLarge={isTextLarge}
           mode={mode}
@@ -446,7 +603,9 @@ function HomeShell({
         />
       </div>
 
-      {children}
+      <div className="container_homeSheet" onScrollCapture={handleSheetScroll} ref={sheetRef}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -1104,18 +1263,27 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
   );
 }
 
-function HomeReelCard({ article, index }: { article: HomeArticle; index: number }) {
+function HomeReelCard({
+  article,
+  headingLevel = "h2",
+  index,
+}: {
+  article: HomeArticle;
+  headingLevel?: "h1" | "h2";
+  index: number;
+}) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
   const commentPanelId = `home-comment-panel-${index}`;
+  const ArticleTitle = headingLevel;
 
   return (
     <article className="container_articleCard">
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
-        <h1>{article.title}</h1>
+        <ArticleTitle>{article.title}</ArticleTitle>
         <time dateTime="2026-12-31T08:30:00">{article.date}</time>
       </div>
       <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
@@ -1178,71 +1346,6 @@ function HomeReelCard({ article, index }: { article: HomeArticle; index: number 
   );
 }
 
-function HomeReelsView({
-  isTextLarge,
-  mode,
-  onModeChange,
-  onOpenBreakingNews,
-  onOpenSearch,
-  onToggleTextSize,
-}: HomeHeaderControls) {
-  return (
-    <HomeShell
-      isTextLarge={isTextLarge}
-      mode={mode}
-      onModeChange={onModeChange}
-      onOpenBreakingNews={onOpenBreakingNews}
-      onOpenSearch={onOpenSearch}
-      onToggleTextSize={onToggleTextSize}
-    >
-      <section
-        className="container_newsFeed"
-        id="home-news-reels-panel"
-        role="tabpanel"
-        aria-labelledby="home-news-view-tab-reels"
-      >
-        {homeReelArticles.map((article, index) => (
-          <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
-        ))}
-      </section>
-    </HomeShell>
-  );
-}
-
-function HomeBlockView({
-  isTextLarge,
-  mode,
-  onModeChange,
-  onOpenBreakingNews,
-  onOpenSearch,
-  onToggleTextSize,
-  onOpenDetail,
-}: HomeHeaderControls & {
-  onOpenDetail: () => void;
-}) {
-  return (
-    <HomeShell
-      isTextLarge={isTextLarge}
-      mode={mode}
-      onModeChange={onModeChange}
-      onOpenBreakingNews={onOpenBreakingNews}
-      onOpenSearch={onOpenSearch}
-      onToggleTextSize={onToggleTextSize}
-    >
-      <section
-        className="container_newsGrid container_newsGrid_block"
-        id="home-news-block-panel"
-        role="tabpanel"
-        aria-labelledby="home-news-view-tab-block"
-      >
-        {Array.from({ length: 12 }, (_, index) => (
-          <HomeBlockItem key={index} onClick={onOpenDetail} />
-        ))}
-      </section>
-    </HomeShell>
-  );
-}
-
 function HomeView({
   isTextLarge,
   onOpenBreakingNews,
@@ -1261,25 +1364,39 @@ function HomeView({
     return <AllNewsArticleDetail onBack={() => setDetailOpen(false)} onOpenSearch={onOpenSearch} />;
   }
 
-  return homeViewMode === "reels" ? (
-    <HomeReelsView
+  return (
+    <HomeShell
       isTextLarge={isTextLarge}
       mode={homeViewMode}
       onModeChange={setHomeViewMode}
       onOpenBreakingNews={onOpenBreakingNews}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
-    />
-  ) : (
-    <HomeBlockView
-      isTextLarge={isTextLarge}
-      mode={homeViewMode}
-      onModeChange={setHomeViewMode}
-      onOpenBreakingNews={onOpenBreakingNews}
-      onOpenDetail={() => setDetailOpen(true)}
-      onOpenSearch={onOpenSearch}
-      onToggleTextSize={onToggleTextSize}
-    />
+    >
+      {homeViewMode === "reels" ? (
+        <section
+          className="container_newsFeed"
+          id="home-news-reels-panel"
+          role="tabpanel"
+          aria-labelledby="home-news-view-tab-reels"
+        >
+          {homeReelArticles.map((article, index) => (
+            <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
+          ))}
+        </section>
+      ) : (
+        <section
+          className="container_newsGrid container_newsGrid_block"
+          id="home-news-block-panel"
+          role="tabpanel"
+          aria-labelledby="home-news-view-tab-block"
+        >
+          {Array.from({ length: 12 }, (_, index) => (
+            <HomeBlockItem key={index} onClick={() => setDetailOpen(true)} />
+          ))}
+        </section>
+      )}
+    </HomeShell>
   );
 }
 
@@ -1448,7 +1565,7 @@ function AllNewsArticleDetail({
         </div>
       </header>
       <div className="newsroll_all_detail_body">
-        <HomeReelCard article={homeArticle} index={0} />
+        <HomeReelCard article={homeArticle} headingLevel="h1" index={0} />
       </div>
     </section>
   );
@@ -2458,7 +2575,9 @@ export function NewsHomeScreen() {
 
   return (
     <main
-      className={`newsroll_screen${activeView === "all" ? " newsroll_screen_all" : ""}${
+      className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
+        activeView === "all" ? " newsroll_screen_all" : ""
+      }${
         isTextLarge ? " newsroll_text_large" : ""
       }`}
     >

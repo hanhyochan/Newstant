@@ -38,6 +38,22 @@ export const PrimaryCommentPanel: Story = {
   ),
 };
 
+export const HomeDockedAlarm: Story = {
+  render: () => (
+    <Button
+      aria-label="알림"
+      aria-pressed="false"
+      className="newsroll_homeDockedAlarm"
+      iconOnly
+      radius="full"
+      size="large"
+      variant="outline"
+    >
+      <Icon name="alarm" />
+    </Button>
+  ),
+};
+
 export const CommentMineFilter: Story = {
   render: () => (
     <Button aria-pressed="false" className="btn_commentMineFilter" classNameOnly type="button">
