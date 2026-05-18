@@ -29,6 +29,7 @@ import {
   type IconName,
   type PillTabItem,
 } from "@/design-system/components";
+import { NewsRollCommonLayout } from "@/design-system/templates";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
@@ -511,7 +512,7 @@ function HomeShell({
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls & { children: ReactNode }) {
-  const screenRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLElement>(null);
   const homeRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
@@ -963,14 +964,17 @@ function HomeShell({
   }, []);
 
   return (
-    <div
+    <NewsRollCommonLayout
+      aria-label="메인 뉴스"
       className={`container_homeScreen${isSheetDocked ? " is_homeSheetDocked" : ""}`}
       onTouchMoveCapture={handleTouchMove}
       onTouchStartCapture={handleTouchStart}
       onWheelCapture={handleWheel}
       ref={screenRef}
-    >
-      <div className="container_home" ref={homeRef}>
+      sheetClassName="container_homeSheet"
+      sheetProps={{ onScrollCapture: handleSheetScroll }}
+      sheetRef={sheetRef}
+      top={(
         <HomeMainHeader
           isTextLarge={isTextLarge}
           mode={mode}
@@ -979,16 +983,12 @@ function HomeShell({
           onOpenSearch={onOpenSearch}
           onToggleTextSize={onToggleTextSize}
         />
-      </div>
-
-      <div
-        className="container_homeSheet"
-        onScrollCapture={handleSheetScroll}
-        ref={sheetRef}
-      >
-        {children}
-      </div>
-    </div>
+      )}
+      topClassName="container_home"
+      topRef={homeRef}
+    >
+      {children}
+    </NewsRollCommonLayout>
   );
 }
 
@@ -2052,8 +2052,12 @@ function AllNewsArticleDetail({
   const [isAlarmOn, setIsAlarmOn] = useState(false);
 
   return (
-    <section className="newsroll_all_detail" aria-label="뉴스 상세">
-      <header className="newsroll_all_detail_top">
+    <NewsRollCommonLayout
+      aria-label="?? ??"
+      className="newsroll_all_detail"
+      sheetClassName="newsroll_all_detail_body"
+      top={(
+
         <div className="newsroll_all_detail_toolbar">
           <button aria-label="전체뉴스로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
             <span aria-hidden="true" />
@@ -2069,11 +2073,11 @@ function AllNewsArticleDetail({
             <Icon name="alarm" />
           </button>
         </div>
-      </header>
-      <div className="newsroll_all_detail_body">
+      )}
+      topClassName="newsroll_all_detail_top"
+    >
         <HomeReelCard article={article} headingLevel="h1" index={0} />
-      </div>
-    </section>
+    </NewsRollCommonLayout>
   );
 }
 
@@ -2169,8 +2173,11 @@ function AllNewsView({
   }
 
   return (
-    <section className="newsroll_all_news" aria-label="전체뉴스">
-      <div className="newsroll_all_top">
+    <NewsRollCommonLayout
+      aria-label="????"
+      className="newsroll_all_news"
+      sheetClassName="newsroll_all_sections"
+      top={(<>
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -2200,9 +2207,9 @@ function AllNewsView({
         </div>
 
         <AllNewsMoreButton expanded={showAllBreaking} onClick={() => setShowAllBreaking((current) => !current)} tone="dark" />
-      </div>
-
-      <div className="newsroll_all_sections">
+      </>)}
+      topClassName="newsroll_all_top"
+    >
         <section className="newsroll_all_panel newsroll_all_latest_panel" aria-label="최신 뉴스">
           <h1 className="newsroll_all_section_title">
             최신 뉴스 <strong>10</strong>
@@ -2286,8 +2293,7 @@ function AllNewsView({
             ))}
           </div>
         </section>
-      </div>
-    </section>
+    </NewsRollCommonLayout>
   );
 }
 
@@ -2481,8 +2487,11 @@ function PolicyDetailView({
   const [isShared, setIsShared] = useState(false);
 
   return (
-    <section className="newsroll_policy_detail" aria-label="국가정책 상세">
-      <header className="newsroll_policy_detail_top">
+    <NewsRollCommonLayout
+      aria-label="???? ??"
+      className="newsroll_policy_detail"
+      sheetClassName="newsroll_policy_detail_sheet"
+      top={(<>
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -2491,9 +2500,9 @@ function PolicyDetailView({
         <button aria-label="국가정책 목록으로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
           <span aria-hidden="true" />
         </button>
-      </header>
-
-      <article className="newsroll_policy_detail_sheet">
+      </>)}
+      topClassName="newsroll_policy_detail_top"
+    >
         <div className="newsroll_policy_detail_tags">
           {item.tags.map((tag, index) => (
             <span className={index === item.tags.length - 1 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
@@ -2560,8 +2569,7 @@ function PolicyDetailView({
           <span aria-hidden="true">{isExpanded ? "-" : "+"}</span>
           {isExpanded ? "접기" : "상세보기"}
         </button>
-      </article>
-    </section>
+    </NewsRollCommonLayout>
   );
 }
 
@@ -2595,8 +2603,11 @@ function PolicyView({
   }
 
   return (
-    <section className="newsroll_policy_screen" aria-label="국가정책">
-      <div className="newsroll_policy_top">
+    <NewsRollCommonLayout
+      aria-label="????"
+      className="newsroll_policy_screen"
+      sheetClassName="newsroll_policy_sheet"
+      top={(<>
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
@@ -2610,9 +2621,9 @@ function PolicyView({
           </strong>
           <span>국가정책 정보가 있습니다.</span>
         </section>
-      </div>
-
-      <div className="newsroll_policy_sheet">
+      </>)}
+      topClassName="newsroll_policy_top"
+    >
         <PillTabMenu
           ariaLabel="연령 필터"
           className="newsroll_policy_age_tabs"
@@ -2646,8 +2657,7 @@ function PolicyView({
             />
           ))}
         </div>
-      </div>
-    </section>
+    </NewsRollCommonLayout>
   );
 }
 const myRecentNews = Array.from({ length: 4 }, (_, index) => ({
@@ -2720,17 +2730,20 @@ function MyPageView({
   }
 
   return (
-    <section className="newsroll_my_screen" aria-label="마이페이지">
-      <div className="newsroll_my_top">
+    <NewsRollCommonLayout
+      aria-label="?????"
+      className="newsroll_my_screen"
+      sheetClassName="newsroll_my_sheet"
+      top={(<>
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
           onToggleTextSize={onToggleTextSize}
         />
         <h1>마이페이지</h1>
-      </div>
-
-      <div className="newsroll_my_sheet">
+      </>)}
+      topClassName="newsroll_my_top"
+    >
         <section className="newsroll_my_profile" aria-label="프로필">
           <strong>콩콩이님</strong>
           <button
@@ -2862,8 +2875,7 @@ function MyPageView({
             <span className={`newsroll_my_switch${isDarkMode ? " is_on" : ""}`} aria-hidden="true" />
           </button>
         </section>
-      </div>
-    </section>
+    </NewsRollCommonLayout>
   );
 }
 function InfoNoticePanel() {
@@ -2986,17 +2998,20 @@ function InfoView({
   const activeInfoTabLabel = infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "FAQ";
 
   return (
-    <section className="newsroll_info_screen" aria-label="인포메이션">
-      <div className="newsroll_info_top">
+    <NewsRollCommonLayout
+      aria-label="?????"
+      className="newsroll_info_screen"
+      sheetClassName="newsroll_info_sheet"
+      top={(<>
         <NewsToolbar
           isTextLarge={isTextLarge}
           onOpenSearch={onOpenSearch}
           onToggleTextSize={onToggleTextSize}
         />
         <h1>{activeInfoTabLabel}</h1>
-      </div>
-
-      <div className="newsroll_info_sheet">
+      </>)}
+      topClassName="newsroll_info_top"
+    >
         <PillTabMenu
           ariaLabel="인포메이션 메뉴"
           className="newsroll_info_tabs"
@@ -3016,8 +3031,7 @@ function InfoView({
           {activeInfoTab === "faq" ? <InfoFaqPanel /> : null}
           {activeInfoTab === "inquiry" ? <InfoInquiryPanel /> : null}
         </div>
-      </div>
-    </section>
+    </NewsRollCommonLayout>
   );
 }
 

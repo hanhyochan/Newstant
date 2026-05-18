@@ -4847,6 +4847,17 @@
         background: var(--color-newsroll-purple-20);
     }
 
+    .newsroll_common_layout,
+    .newsroll_common_top,
+    .newsroll_common_sheet {
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .newsroll_common_layout {
+        width: 100%;
+    }
+
     .container_homeScreen {
         --home-sheet-top: var(--home-sheet-initial-top, 492px);
         height: 100dvh;
