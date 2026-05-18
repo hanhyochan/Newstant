@@ -104,6 +104,61 @@ const homeArticle: HomeArticle = {
   title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
 };
 
+const homeArticles: HomeArticle[] = [
+  {
+    ...homeArticle,
+    guideKind: "stacked",
+  },
+  {
+    category: "경제",
+    date: "2026년 12월 31일 09:10",
+    guideKind: "binary",
+    image: articleImage,
+    imageAlt: "도심 아파트 단지 전경",
+    title: "대출 규제 이후 서울 외곽 거래량 다시 줄었다",
+  },
+  {
+    category: "사회",
+    date: "2026년 12월 31일 10:20",
+    guideKind: "stacked",
+    image: articleImage,
+    imageAlt: "아침 햇살이 비치는 주거 단지",
+    title: "청년 월세 지원 확대 논의, 지자체별 신청 조건 달라",
+  },
+  {
+    category: "정책",
+    date: "2026년 12월 31일 11:35",
+    guideKind: "binary",
+    image: articleImage,
+    imageAlt: "신축 공동주택 단지",
+    title: "주택시장 안정 대책 발표 앞두고 실수요자 관망세",
+  },
+  {
+    category: "지역",
+    date: "2026년 12월 31일 13:00",
+    guideKind: "stacked",
+    image: articleImage,
+    imageAlt: "수도권 아파트 단지",
+    title: "수도권 남부 교통 호재 지역, 매수 문의만 소폭 증가",
+  },
+  {
+    category: "복지",
+    date: "2026년 12월 31일 14:25",
+    guideKind: "binary",
+    image: articleImage,
+    imageAlt: "주거지와 상가가 함께 보이는 단지",
+    title: "신혼부부 주거비 지원 기준 완화 여부 다음 달 결정",
+  },
+  {
+    category: "문화",
+    date: "2026년 12월 31일 15:40",
+    guideKind: "stacked",
+    image: articleImage,
+    imageAlt: "도심 주거 단지와 하늘",
+    title: "동네 생활권 문화시설 확충, 주민 체감도 조사 시작",
+  },
+];
+
 const homeBreakingTitle = "정청래, ‘필버 중단’ 국민의 힘에 “대구/경북 통합 찬반 당론 먼저 정하라”";
 
 const navItems: { icon: IconName; label: string; tab: Tab }[] = [
@@ -192,10 +247,6 @@ const guideOptions = [
 
 const binaryGuideOptions = ["그렇다", "아니다"];
 
-const homeReelArticles: HomeArticle[] = Array.from({ length: 7 }, () => ({
-  ...homeArticle,
-  guideKind: "stacked",
-}));
 
 const reactionItems: { count: number; icon: IconName; label: string; value: ReactionValue }[] = [
   { count: 16, icon: "thumbUp", label: "좋아요", value: "like" },
@@ -380,12 +431,12 @@ function NewsToolbar({
   );
 }
 
-function HomeBlockItem({ onClick }: { onClick: () => void }) {
+function HomeBlockItem({ article, onClick }: { article: HomeArticle; onClick: () => void }) {
   return (
     <button className="btn_newsBlockItem" onClick={onClick} type="button">
-      <strong>{homeArticle.title}</strong>
-      <span>1시간 전</span>
-      <img alt="" src={homeArticle.image} />
+      <strong>{article.title}</strong>
+      <span>{article.date}</span>
+      <img alt="" src={article.image} />
     </button>
   );
 }
@@ -468,6 +519,7 @@ function HomeShell({
   const touchYRef = useRef<number | null>(null);
   const sheetTopRef = useRef(0);
   const sheetBoundsRef = useRef({ initialTop: 0, stopTop: 0 });
+  const previousModeRef = useRef(mode);
   const articleBoundaryRef = useRef<{
     article: HTMLElement | null;
     direction: "end" | "start" | null;
@@ -520,6 +572,15 @@ function HomeShell({
     };
   };
 
+  const resetSheetContentScroll = (scroller: HTMLElement) => {
+    scroller.scrollTop = 0;
+    scroller.querySelectorAll<HTMLElement>(".wrapper_articleCardContent").forEach((articleScroller) => {
+      articleScroller.scrollTop = 0;
+    });
+    scrollerTopRef.current = 0;
+    clearArticleBoundary();
+  };
+
   const setSheetTop = (nextTop: number) => {
     const { initialTop, stopTop } = sheetBoundsRef.current;
     const boundedTop = Math.min(initialTop, Math.max(stopTop, nextTop));
@@ -548,17 +609,23 @@ function HomeShell({
       : 48;
     const toolbarBottom = toolbarRect ? toolbarRect.bottom - screenTop : toolbarTop + 40;
     const dockedControlsHeight = dockedControls?.getBoundingClientRect().height ?? 48;
-    const stopTop = Math.round(
+    const previousBounds = sheetBoundsRef.current;
+    const didModeChange = previousModeRef.current !== mode;
+    const measuredStopTop = Math.round(
       toolbarBottom + homeSheetDockedGap + dockedControlsHeight + homeSheetDockedGap,
     );
-    const initialTop = Math.max(
-      stopTop,
+    const measuredInitialTop = Math.max(
+      measuredStopTop,
       Math.round(home.getBoundingClientRect().bottom - screenTop + homeSheetInitialGap),
     );
-
-    const previousBounds = sheetBoundsRef.current;
-    const previousTop = sheetTopRef.current || previousBounds.initialTop || initialTop;
+    const previousTop = sheetTopRef.current || previousBounds.initialTop || measuredInitialTop;
     const wasDocked = previousTop <= previousBounds.stopTop + 1;
+    const shouldPreserveExpandedInitialTop = previousBounds.initialTop > 0
+      && (wasDocked || isSheetDocked || didModeChange);
+    const stopTop = measuredStopTop;
+    const initialTop = shouldPreserveExpandedInitialTop
+      ? Math.max(previousBounds.initialTop, measuredInitialTop)
+      : measuredInitialTop;
     const wasPartiallyLifted = previousTop < previousBounds.initialTop;
     const nextTop = wasDocked
       ? stopTop
@@ -569,11 +636,16 @@ function HomeShell({
     sheetBoundsRef.current = { initialTop, stopTop };
     screen.style.setProperty("--home-sheet-initial-top", `${initialTop}px`);
     scrollerRef.current = sheetRef.current?.querySelector<HTMLElement>(
-      ".container_newsFeed, .container_newsGrid",
+      ".container_newsFeed, .wrapper_newsGridScroll",
     ) ?? null;
     if (scrollerRef.current) {
-      scrollerRef.current.scrollTop = wasDocked ? scrollerTopRef.current : 0;
+      if (didModeChange) {
+        resetSheetContentScroll(scrollerRef.current);
+      } else {
+        scrollerRef.current.scrollTop = wasDocked ? scrollerTopRef.current : 0;
+      }
     }
+    previousModeRef.current = mode;
     setSheetTop(nextTop);
   };
 
@@ -618,6 +690,21 @@ function HomeShell({
     Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight)
   );
 
+  const isSheetContentAtStart = () => {
+    const scroller = scrollerRef.current;
+    const articleScroller = getActiveArticleScroller();
+
+    if (!scroller) {
+      return true;
+    }
+
+    if (scroller.classList.contains("wrapper_newsGridScroll")) {
+      return scroller.scrollTop <= 1;
+    }
+
+    return scroller.scrollTop <= 1 && (!articleScroller || articleScroller.scrollTop <= 1);
+  };
+
   const setArticleContentPosition = (article: HTMLElement, position: "end" | "start") => {
     const articleScroller = article.querySelector<HTMLElement>(".wrapper_articleCardContent");
 
@@ -654,8 +741,7 @@ function HomeShell({
     const scroller = scrollerRef.current;
     const { initialTop, stopTop } = sheetBoundsRef.current;
     const currentTop = sheetTopRef.current || initialTop;
-    const articleScroller = getActiveArticleScroller();
-    const isArticleAtTop = !articleScroller || articleScroller.scrollTop <= 0;
+    const isBlockGrid = scroller?.classList.contains("wrapper_newsGridScroll") ?? false;
 
     if (!scroller || initialTop <= stopTop) {
       return false;
@@ -667,7 +753,18 @@ function HomeShell({
       return true;
     }
 
-    if (deltaY < 0 && scroller.scrollTop <= 0 && currentTop < initialTop && isArticleAtTop) {
+    if (deltaY < 0 && currentTop < initialTop && isSheetContentAtStart()) {
+      scroller.scrollTop = 0;
+      setSheetTop(currentTop - deltaY);
+      return true;
+    }
+
+    if (deltaY < 0 && isBlockGrid && currentTop < initialTop) {
+      if (scroller.scrollTop > 0) {
+        scroller.scrollTop = Math.max(0, scroller.scrollTop + deltaY);
+        return true;
+      }
+
       scroller.scrollTop = 0;
       setSheetTop(currentTop - deltaY);
       return true;
@@ -857,7 +954,7 @@ function HomeShell({
       window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", measureSheet);
     };
-  }, [isTextLarge, mode]);
+  }, [isTextLarge, isSheetDocked, mode]);
 
   useEffect(() => () => {
     if (articleBoundaryRef.current.timeoutId != null) {
@@ -868,9 +965,9 @@ function HomeShell({
   return (
     <div
       className={`container_homeScreen${isSheetDocked ? " is_homeSheetDocked" : ""}`}
-      onTouchMove={handleTouchMove}
-      onTouchStart={handleTouchStart}
-      onWheel={handleWheel}
+      onTouchMoveCapture={handleTouchMove}
+      onTouchStartCapture={handleTouchStart}
+      onWheelCapture={handleWheel}
       ref={screenRef}
     >
       <div className="container_home" ref={homeRef}>
@@ -1752,9 +1849,21 @@ function HomeView({
 }) {
   const [homeViewMode, setHomeViewMode] = useState<HomeViewMode>("reels");
   const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedDetailArticle, setSelectedDetailArticle] = useState<HomeArticle>(homeArticle);
+
+  function openHomeDetail(article: HomeArticle) {
+    setSelectedDetailArticle(article);
+    setDetailOpen(true);
+  }
 
   if (detailOpen) {
-    return <AllNewsArticleDetail onBack={() => setDetailOpen(false)} onOpenSearch={onOpenSearch} />;
+    return (
+      <AllNewsArticleDetail
+        article={selectedDetailArticle}
+        onBack={() => setDetailOpen(false)}
+        onOpenSearch={onOpenSearch}
+      />
+    );
   }
 
   return (
@@ -1773,7 +1882,7 @@ function HomeView({
           role="tabpanel"
           aria-labelledby="home-news-view-tab-reels"
         >
-          {homeReelArticles.map((article, index) => (
+          {homeArticles.map((article, index) => (
             <HomeReelCard article={article} index={index} key={`${article.title}-${index}`} />
           ))}
         </section>
@@ -1784,9 +1893,11 @@ function HomeView({
           role="tabpanel"
           aria-labelledby="home-news-view-tab-block"
         >
-          {Array.from({ length: 12 }, (_, index) => (
-            <HomeBlockItem key={index} onClick={() => setDetailOpen(true)} />
-          ))}
+          <div className="wrapper_newsGridScroll">
+            {homeArticles.map((article) => (
+              <HomeBlockItem article={article} key={article.title} onClick={() => openHomeDetail(article)} />
+            ))}
+          </div>
         </section>
       )}
     </HomeShell>
@@ -1930,9 +2041,11 @@ function AllNewsRelayItem({
 }
 
 function AllNewsArticleDetail({
+  article = homeArticle,
   onBack,
   onOpenSearch,
 }: {
+  article?: HomeArticle;
   onBack: () => void;
   onOpenSearch: () => void;
 }) {
@@ -1958,7 +2071,7 @@ function AllNewsArticleDetail({
         </div>
       </header>
       <div className="newsroll_all_detail_body">
-        <HomeReelCard article={homeArticle} headingLevel="h1" index={0} />
+        <HomeReelCard article={article} headingLevel="h1" index={0} />
       </div>
     </section>
   );
