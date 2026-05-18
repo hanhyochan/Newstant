@@ -41,6 +41,10 @@ type CommentSortOrder = "latest" | "popular";
 type CommentAction = "delete" | "edit";
 type SortOrder = "popular" | "latest";
 type GuideKind = "stacked" | "binary";
+type CommentScrollTarget = {
+  bottomGap?: number;
+  id: string;
+};
 
 type HomeArticle = {
   category: string;
@@ -89,6 +93,7 @@ type CommentItem = {
 const articleImage = "/images/news-apartment.png";
 const homeSheetDockedGap = 16;
 const homeSheetInitialGap = 40;
+const commentScrollDelayMs = 120;
 
 const homeArticle: HomeArticle = {
   category: "정치",
@@ -560,11 +565,13 @@ function HomeShell({
     }
 
     if (deltaY > 0 && currentTop > stopTop) {
+      scroller.scrollTop = 0;
       setSheetTop(currentTop - deltaY);
       return true;
     }
 
     if (deltaY < 0 && scroller.scrollTop <= 0 && currentTop < initialTop && isArticleAtTop) {
+      scroller.scrollTop = 0;
       setSheetTop(currentTop - deltaY);
       return true;
     }
@@ -840,10 +847,11 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
   const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
   const [userComments, setUserComments] = useState<CommentItem[]>([]);
   const [userRepliesByCommentId, setUserRepliesByCommentId] = useState<Record<number, CommentReplyItem[]>>({});
+  const [pendingScrollTarget, setPendingScrollTarget] = useState<CommentScrollTarget | null>(null);
   const deletedCommentIdSet = useMemo(() => new Set(deletedCommentIds), [deletedCommentIds]);
   const deletedReplyIdSet = useMemo(() => new Set(deletedReplyIds), [deletedReplyIds]);
   const allComments = useMemo(
-    () => [...userComments, ...defaultComments].filter((comment) => !deletedCommentIdSet.has(comment.id)),
+    () => [...defaultComments, ...userComments].filter((comment) => !deletedCommentIdSet.has(comment.id)),
     [defaultComments, deletedCommentIdSet, userComments],
   );
   const getCommentReactionCounts = (comment: CommentItem) => {
@@ -875,6 +883,59 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         }),
     [activeChoice, allComments, commentReactions, myCommentsOnly, sortOrder, userRepliesByCommentId],
   );
+
+  function scrollArticleTo(articleScroller: HTMLElement, nextScrollTop: number) {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    articleScroller.scrollTop = nextScrollTop;
+
+    if (!prefersReducedMotion && typeof articleScroller.scrollTo === "function") {
+      articleScroller.scrollTo({
+        behavior: "smooth",
+        top: nextScrollTop,
+      });
+    }
+  }
+
+  function scrollElementBottomIntoView(targetId: string, bottomGap = 24) {
+    const target = document.getElementById(targetId);
+    const articleScroller = panelRef.current?.closest(".wrapper_articleCardContent");
+
+    if (!(articleScroller instanceof HTMLElement) || !target) {
+      return;
+    }
+
+    const scrollerRect = articleScroller.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const composerRect = document.getElementById(composerId)?.getBoundingClientRect();
+    const visibleBottom = composerRect ? Math.min(scrollerRect.bottom, composerRect.top) : scrollerRect.bottom;
+    const targetScrollTop = articleScroller.scrollTop + targetRect.bottom - visibleBottom + bottomGap;
+    const nextScrollTop = Math.min(
+      Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight),
+      Math.max(0, targetScrollTop),
+    );
+
+    scrollArticleTo(articleScroller, nextScrollTop);
+  }
+
+  function scrollPanelTopToReadingPosition() {
+    const panel = panelRef.current;
+    const articleScroller = panel?.closest(".wrapper_articleCardContent");
+
+    if (!(articleScroller instanceof HTMLElement) || !panel) {
+      return;
+    }
+
+    const scrollerRect = articleScroller.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const targetScrollTop = (
+      articleScroller.scrollTop + panelRect.top - scrollerRect.top - articleScroller.clientHeight * 0.3
+    );
+    const nextScrollTop = Math.max(0, targetScrollTop);
+
+    scrollArticleTo(articleScroller, nextScrollTop);
+    setIsComposerVisible(true);
+  }
 
   useEffect(() => {
     function closeCommentDropdowns(event: globalThis.PointerEvent) {
@@ -919,21 +980,36 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
       return;
     }
 
-    if (!("IntersectionObserver" in window)) {
-      setIsComposerVisible(true);
+    const scrollRoot = panel.closest(".wrapper_articleCardContent");
+    const updateComposerVisibility = () => {
+      const panelRect = panel.getBoundingClientRect();
+      const rootRect = scrollRoot?.getBoundingClientRect() ?? { top: 0, bottom: window.innerHeight };
+      const visibleHeight = Math.min(panelRect.bottom, rootRect.bottom) - Math.max(panelRect.top, rootRect.top);
+      const visibleRatio = panelRect.height > 0 ? visibleHeight / panelRect.height : 0;
+
+      setIsComposerVisible(visibleRatio >= 0.05);
+    };
+
+    updateComposerVisibility();
+    scrollRoot?.addEventListener("scroll", updateComposerVisibility, { passive: true });
+    window.addEventListener("resize", updateComposerVisibility);
+
+    return () => {
+      scrollRoot?.removeEventListener("scroll", updateComposerVisibility);
+      window.removeEventListener("resize", updateComposerVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+
+    if (!panel) {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsComposerVisible(entry.isIntersecting);
-      },
-      { threshold: 0.05 },
-    );
+    const timeout = window.setTimeout(scrollPanelTopToReadingPosition, commentScrollDelayMs);
 
-    observer.observe(panel);
-
-    return () => observer.disconnect();
+    return () => window.clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
@@ -945,6 +1021,19 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
     setComposerMode("comment");
     setReplyTargetCommentId(null);
   }, [isComposerVisible]);
+
+  useEffect(() => {
+    if (!pendingScrollTarget) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      scrollElementBottomIntoView(pendingScrollTarget.id, pendingScrollTarget.bottomGap);
+      setPendingScrollTarget(null);
+    }, commentScrollDelayMs);
+
+    return () => window.clearTimeout(timeout);
+  }, [pendingScrollTarget]);
 
   function resetComposer() {
     setComposerDraft("");
@@ -965,6 +1054,10 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
   function toggleReplyList(commentId: number) {
     const isClosing = expandedReplyId === commentId;
+
+    if (!isClosing) {
+      setPendingScrollTarget({ id: `${panelId}-reply-list-${commentId}` });
+    }
 
     setExpandedReplyId(isClosing ? null : commentId);
 
@@ -999,28 +1092,32 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         likes: 0,
       };
 
+      setPendingScrollTarget({ bottomGap: 0, id: `${panelId}-reply-${reply.id}` });
       setUserRepliesByCommentId((currentReplies) => ({
         ...currentReplies,
-        [targetComment.id]: [reply, ...(currentReplies[targetComment.id] ?? [])],
+        [targetComment.id]: [...(currentReplies[targetComment.id] ?? []), reply],
       }));
       setExpandedReplyId(targetComment.id);
       resetComposer();
       return;
     }
 
+    const commentId = Date.now();
+
+    setPendingScrollTarget({ bottomGap: 0, id: `${panelId}-comment-${commentId}` });
     setUserComments((currentComments) => [
+      ...currentComments,
       {
         author: "나",
         body,
         choice: activeChoice === "all" ? guideChoices[0] : activeChoice,
         date: "방금 전",
         dislikes: 0,
-        id: Date.now(),
+        id: commentId,
         isMine: true,
         likes: 0,
         replies: 0,
       },
-      ...currentComments,
     ]);
     resetComposer();
   }
@@ -1130,6 +1227,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
             const selectedReaction = commentReactions[comment.id] ?? null;
             const { dislikes: dislikeCount, likes: likeCount } = getCommentReactionCounts(comment);
             const actionMenuId = `${panelId}-comment-action-${comment.id}`;
+            const replyToggleId = `${panelId}-reply-toggle-${comment.id}`;
             const replyListId = `${panelId}-reply-list-${comment.id}`;
             const isReplyListOpen = expandedReplyId === comment.id;
             const templateReplies: CommentReplyItem[] = Array.from({ length: Math.min(comment.replies, 3) }, (_, replyIndex) => ({
@@ -1139,12 +1237,12 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
             const userReplies = (userRepliesByCommentId[comment.id] ?? []).filter(
               (reply) => !deletedReplyIdSet.has(reply.id),
             );
-            const commentReplies = [...userReplies, ...templateReplies].slice(0, 3);
+            const commentReplies = [...templateReplies, ...userReplies];
 
             return (
               <Fragment key={comment.id}>
                 {index > 0 ? <span aria-hidden="true" className="divider_commentItem" /> : null}
-                <article className="wrapper_commentItem">
+                <article className="wrapper_commentItem" id={`${panelId}-comment-${comment.id}`}>
                   <header>
                     <span className="wrapper_commentMeta">
                       <strong>{comment.author}</strong>
@@ -1185,8 +1283,9 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                   <p>{comment.body}</p>
                   <footer>
                     <button
-                      aria-controls={isReplyListOpen ? replyListId : undefined}
+                      aria-controls={replyListId}
                       aria-expanded={isReplyListOpen}
+                      id={replyToggleId}
                       onClick={() => toggleReplyList(comment.id)}
                       type="button"
                     >
@@ -1217,6 +1316,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                   </footer>
                   <div
                     aria-hidden={!isReplyListOpen}
+                    aria-labelledby={replyToggleId}
                     className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
                     id={replyListId}
                     role="region"
@@ -1237,7 +1337,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
                         return (
                         <Fragment key={reply.id}>
-                        <article className="wrapper_commentReplyItem">
+                        <article className="wrapper_commentReplyItem" id={`${panelId}-reply-${reply.id}`}>
                           <header>
                             <span className="wrapper_commentMeta">
                               <strong>{reply.author}</strong>
@@ -1365,11 +1465,16 @@ function HomeReelCard({
   const articleTitleId = `home-article-title-${index}`;
   const ArticleTitle = headingLevel;
 
+  function handleCommentPanelToggle() {
+    setIsCommentPanelOpen((current) => !current);
+  }
   return (
     <article aria-labelledby={articleTitleId} className="container_articleCard">
       <div
         aria-labelledby={articleTitleId}
-        className="wrapper_articleCardContent"
+        className={`wrapper_articleCardContent${
+          isCommentPanelOpen ? " is_commentComposerSpaceReserved" : ""
+        }`}
         id={articleContentId}
         role="region"
         tabIndex={0}
@@ -1425,7 +1530,7 @@ function HomeReelCard({
         aria-expanded={isCommentPanelOpen}
         className="btn_commentPanel"
         classNameOnly
-        onClick={() => setIsCommentPanelOpen((current) => !current)}
+        onClick={handleCommentPanelToggle}
         size="large"
         variant="filled"
       >
