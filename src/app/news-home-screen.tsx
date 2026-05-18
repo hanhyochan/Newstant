@@ -94,6 +94,7 @@ const articleImage = "/images/news-apartment.png";
 const homeSheetDockedGap = 16;
 const homeSheetInitialGap = 40;
 const commentScrollDelayMs = 120;
+const nextArticleRevealDelayMs = 260;
 
 const homeArticle: HomeArticle = {
   category: "정치",
@@ -191,9 +192,10 @@ const guideOptions = [
 
 const binaryGuideOptions = ["그렇다", "아니다"];
 
-const homeReelArticles: HomeArticle[] = [
-  { ...homeArticle, guideKind: "stacked" },
-];
+const homeReelArticles: HomeArticle[] = Array.from({ length: 7 }, () => ({
+  ...homeArticle,
+  guideKind: "stacked",
+}));
 
 const reactionItems: { count: number; icon: IconName; label: string; value: ReactionValue }[] = [
   { count: 16, icon: "thumbUp", label: "좋아요", value: "like" },
@@ -466,7 +468,57 @@ function HomeShell({
   const touchYRef = useRef<number | null>(null);
   const sheetTopRef = useRef(0);
   const sheetBoundsRef = useRef({ initialTop: 0, stopTop: 0 });
+  const articleBoundaryRef = useRef<{
+    article: HTMLElement | null;
+    direction: "end" | "start" | null;
+    isReady: boolean;
+    timeoutId: number | null;
+  }>({
+    article: null,
+    direction: null,
+    isReady: false,
+    timeoutId: null,
+  });
   const [isSheetDocked, setIsSheetDocked] = useState(false);
+
+  const clearArticleBoundary = () => {
+    if (articleBoundaryRef.current.timeoutId != null) {
+      window.clearTimeout(articleBoundaryRef.current.timeoutId);
+    }
+
+    articleBoundaryRef.current = {
+      article: null,
+      direction: null,
+      isReady: false,
+      timeoutId: null,
+    };
+  };
+
+  const scheduleArticleBoundary = (article: HTMLElement, direction: "end" | "start") => {
+    if (articleBoundaryRef.current.timeoutId != null) {
+      window.clearTimeout(articleBoundaryRef.current.timeoutId);
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      const currentBoundary = articleBoundaryRef.current;
+
+      if (currentBoundary.article === article && currentBoundary.direction === direction) {
+        articleBoundaryRef.current = {
+          article,
+          direction,
+          isReady: true,
+          timeoutId: null,
+        };
+      }
+    }, nextArticleRevealDelayMs);
+
+    articleBoundaryRef.current = {
+      article,
+      direction,
+      isReady: false,
+      timeoutId,
+    };
+  };
 
   const setSheetTop = (nextTop: number) => {
     const { initialTop, stopTop } = sheetBoundsRef.current;
@@ -525,33 +577,78 @@ function HomeShell({
     setSheetTop(nextTop);
   };
 
-  const getActiveArticleScroller = () => {
+  const getFeedArticles = () => {
     const feedScroller = scrollerRef.current;
+
+    if (!feedScroller) {
+      return [];
+    }
+
+    return Array.from(
+      feedScroller.querySelectorAll<HTMLElement>(".container_articleCard"),
+    );
+  };
+
+  const getActiveArticle = () => {
+    const feedScroller = scrollerRef.current;
+    const articles = getFeedArticles();
 
     if (!feedScroller) {
       return null;
     }
 
-    const articles = Array.from(
-      feedScroller.querySelectorAll<HTMLElement>(".container_articleCard"),
-    );
-
     if (articles.length === 0) {
       return null;
     }
 
-    const activeArticle = articles.reduce((closest, article) => {
+    return articles.reduce((closest, article) => {
       const closestDistance = Math.abs(closest.offsetTop - feedScroller.scrollTop);
       const articleDistance = Math.abs(article.offsetTop - feedScroller.scrollTop);
       return articleDistance < closestDistance ? article : closest;
     }, articles[0]);
+  };
 
-    return activeArticle.querySelector<HTMLElement>(".wrapper_articleCardContent");
+  const getActiveArticleScroller = () => {
+    const activeArticle = getActiveArticle();
+
+    return activeArticle?.querySelector<HTMLElement>(".wrapper_articleCardContent") ?? null;
   };
 
   const getArticleScrollLimit = (articleScroller: HTMLElement) => (
     Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight)
   );
+
+  const setArticleContentPosition = (article: HTMLElement, position: "end" | "start") => {
+    const articleScroller = article.querySelector<HTMLElement>(".wrapper_articleCardContent");
+
+    if (!articleScroller) {
+      return;
+    }
+
+    articleScroller.scrollTop = position === "end"
+      ? getArticleScrollLimit(articleScroller)
+      : 0;
+  };
+
+  const scrollFeedToArticle = (article: HTMLElement, contentPosition: "end" | "start" = "start") => {
+    const feedScroller = scrollerRef.current;
+
+    if (!feedScroller) {
+      return;
+    }
+
+    setArticleContentPosition(article, contentPosition);
+
+    if (typeof feedScroller.scrollTo === "function") {
+      feedScroller.scrollTo({
+        behavior: "smooth",
+        top: article.offsetTop,
+      });
+      return;
+    }
+
+    feedScroller.scrollTop = article.offsetTop;
+  };
 
   const moveSheet = (deltaY: number) => {
     const scroller = scrollerRef.current;
@@ -581,30 +678,121 @@ function HomeShell({
 
   const routeDockedArticleScroll = (deltaY: number) => {
     const feedScroller = scrollerRef.current;
+    const activeArticle = getActiveArticle();
     const articleScroller = getActiveArticleScroller();
     const { stopTop } = sheetBoundsRef.current;
     const isDocked = sheetTopRef.current <= stopTop + 1;
 
-    if (!feedScroller || !articleScroller || !isDocked) {
+    if (!feedScroller || !activeArticle || !articleScroller || !isDocked) {
       return false;
     }
 
     const maxScroll = getArticleScrollLimit(articleScroller);
+    const articles = getFeedArticles();
+    const activeIndex = articles.indexOf(activeArticle);
+    const previousArticle = activeIndex > 0 ? articles[activeIndex - 1] : null;
+    const nextArticle = activeIndex >= 0 ? articles[activeIndex + 1] : null;
+    const isArticleAtStart = articleScroller.scrollTop <= 1;
+    const isArticleAtEnd = articleScroller.scrollTop >= maxScroll - 1;
 
     if (maxScroll <= 1) {
+      if (deltaY < 0 && previousArticle) {
+        const boundaryState = articleBoundaryRef.current;
+        const canRevealPreviousArticle = boundaryState.article === activeArticle
+          && boundaryState.direction === "start"
+          && boundaryState.isReady;
+
+        if (!canRevealPreviousArticle) {
+          scheduleArticleBoundary(activeArticle, "start");
+          return true;
+        }
+
+        clearArticleBoundary();
+        scrollFeedToArticle(previousArticle, "end");
+        return true;
+      }
+
+      if (deltaY > 0 && nextArticle) {
+        const boundaryState = articleBoundaryRef.current;
+        const canRevealNextArticle = boundaryState.article === activeArticle
+          && boundaryState.direction === "end"
+          && boundaryState.isReady;
+
+        if (!canRevealNextArticle) {
+          scheduleArticleBoundary(activeArticle, "end");
+          return true;
+        }
+
+        clearArticleBoundary();
+        scrollFeedToArticle(nextArticle, "start");
+        return true;
+      }
+
+      clearArticleBoundary();
       return false;
     }
 
-    if (deltaY < 0 && articleScroller.scrollTop > 0) {
-      articleScroller.scrollTop = Math.max(0, articleScroller.scrollTop + deltaY);
-      return true;
+    if (deltaY < 0) {
+      if (!isArticleAtStart) {
+        const nextScrollTop = Math.max(0, articleScroller.scrollTop + deltaY);
+        articleScroller.scrollTop = nextScrollTop;
+        if (nextScrollTop <= 1) {
+          scheduleArticleBoundary(activeArticle, "start");
+        } else {
+          clearArticleBoundary();
+        }
+        return true;
+      }
+
+      if (previousArticle) {
+        const boundaryState = articleBoundaryRef.current;
+        const canRevealPreviousArticle = boundaryState.article === activeArticle
+          && boundaryState.direction === "start"
+          && boundaryState.isReady;
+
+        if (!canRevealPreviousArticle) {
+          scheduleArticleBoundary(activeArticle, "start");
+          return true;
+        }
+
+        clearArticleBoundary();
+        scrollFeedToArticle(previousArticle, "end");
+        return true;
+      }
+
+      clearArticleBoundary();
+      return false;
     }
 
     if (deltaY > 0) {
-      if (articleScroller.scrollTop < maxScroll) {
-        articleScroller.scrollTop = Math.min(maxScroll, articleScroller.scrollTop + deltaY);
+      if (!isArticleAtEnd) {
+        const nextScrollTop = Math.min(maxScroll, articleScroller.scrollTop + deltaY);
+        articleScroller.scrollTop = nextScrollTop;
+        if (nextScrollTop >= maxScroll - 1) {
+          scheduleArticleBoundary(activeArticle, "end");
+        } else {
+          clearArticleBoundary();
+        }
         return true;
       }
+
+      const boundaryState = articleBoundaryRef.current;
+      const canRevealNextArticle = boundaryState.article === activeArticle
+        && boundaryState.direction === "end"
+        && boundaryState.isReady;
+
+      if (!canRevealNextArticle) {
+        scheduleArticleBoundary(activeArticle, "end");
+        return true;
+      }
+
+      if (nextArticle) {
+        clearArticleBoundary();
+        scrollFeedToArticle(nextArticle, "start");
+        return true;
+      }
+
+      clearArticleBoundary();
     }
 
     return false;
@@ -670,6 +858,12 @@ function HomeShell({
       window.removeEventListener("resize", measureSheet);
     };
   }, [isTextLarge, mode]);
+
+  useEffect(() => () => {
+    if (articleBoundaryRef.current.timeoutId != null) {
+      window.clearTimeout(articleBoundaryRef.current.timeoutId);
+    }
+  }, []);
 
   return (
     <div
