@@ -4847,7 +4847,7 @@
     }
 
     .container_homeScreen {
-        --home-sheet-top: var(--home-sheet-initial-top, 430px);
+        --home-sheet-top: var(--home-sheet-initial-top, 492px);
         height: 100dvh;
         min-height: 100dvh;
         position: relative;
@@ -5638,7 +5638,7 @@
         flex: 1 1 auto;
         overflow-x: hidden;
         overflow-y: auto;
-        overscroll-behavior: auto;
+        overscroll-behavior: contain;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
     }

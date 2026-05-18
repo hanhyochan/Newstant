@@ -3,6 +3,7 @@
 import {
   Fragment,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -87,8 +88,7 @@ type CommentItem = {
 
 const articleImage = "/images/news-apartment.png";
 const homeSheetDockedGap = 16;
-const homeSheetInitialTopRatio = 0.54;
-const articleReleaseRatio = 0.1;
+const homeSheetInitialGap = 40;
 
 const homeArticle: HomeArticle = {
   category: "정치",
@@ -188,7 +188,6 @@ const binaryGuideOptions = ["그렇다", "아니다"];
 
 const homeReelArticles: HomeArticle[] = [
   { ...homeArticle, guideKind: "stacked" },
-  { ...homeArticle, guideKind: "binary" },
 ];
 
 const reactionItems: { count: number; icon: IconName; label: string; value: ReactionValue }[] = [
@@ -495,9 +494,10 @@ function HomeShell({
     const stopTop = Math.round(
       toolbarBottom + homeSheetDockedGap + dockedControlsHeight + homeSheetDockedGap,
     );
-    const preferredInitialTop = Math.round(home.getBoundingClientRect().bottom - screenTop + 24);
-    const readableInitialTop = Math.round(screen.clientHeight * homeSheetInitialTopRatio);
-    const initialTop = Math.max(stopTop, Math.min(preferredInitialTop, readableInitialTop));
+    const initialTop = Math.max(
+      stopTop,
+      Math.round(home.getBoundingClientRect().bottom - screenTop + homeSheetInitialGap),
+    );
 
     const previousBounds = sheetBoundsRef.current;
     const previousTop = sheetTopRef.current || previousBounds.initialTop || initialTop;
@@ -524,6 +524,7 @@ function HomeShell({
     const scroller = scrollerRef.current;
     const { initialTop, stopTop } = sheetBoundsRef.current;
     const currentTop = sheetTopRef.current || initialTop;
+    const articleScroller = getActiveArticleScroller();
 
     if (!scroller || initialTop <= stopTop) {
       return false;
@@ -534,7 +535,12 @@ function HomeShell({
       return true;
     }
 
-    if (deltaY < 0 && scroller.scrollTop <= 0 && currentTop < initialTop) {
+    if (
+      deltaY < 0
+      && scroller.scrollTop <= 0
+      && currentTop < initialTop
+      && (!articleScroller || articleScroller.scrollTop <= 0)
+    ) {
       setSheetTop(currentTop - deltaY);
       return true;
     }
@@ -576,23 +582,22 @@ function HomeShell({
       return false;
     }
 
+    if (articleScroller.scrollHeight <= articleScroller.clientHeight + 1) {
+      return false;
+    }
+
     if (deltaY < 0 && articleScroller.scrollTop > 0) {
-      articleScroller.scrollTop += deltaY;
+      articleScroller.scrollTop = Math.max(0, articleScroller.scrollTop + deltaY);
       return true;
     }
 
     if (deltaY > 0) {
-      const remainingScroll =
-        articleScroller.scrollHeight - articleScroller.clientHeight - articleScroller.scrollTop;
-      const releaseThreshold = articleScroller.clientHeight * articleReleaseRatio;
+      const maxScroll = articleScroller.scrollHeight - articleScroller.clientHeight;
 
-      if (remainingScroll > releaseThreshold) {
-        articleScroller.scrollTop += deltaY;
+      if (articleScroller.scrollTop < maxScroll) {
+        articleScroller.scrollTop = Math.min(maxScroll, articleScroller.scrollTop + deltaY);
         return true;
       }
-
-      feedScroller.scrollTop += deltaY;
-      return true;
     }
 
     return false;
@@ -648,7 +653,8 @@ function HomeShell({
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    measureSheet();
     const frame = window.requestAnimationFrame(measureSheet);
     window.addEventListener("resize", measureSheet);
 
