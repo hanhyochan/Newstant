@@ -520,34 +520,6 @@ function HomeShell({
     setSheetTop(nextTop);
   };
 
-  const moveSheet = (deltaY: number) => {
-    const scroller = scrollerRef.current;
-    const { initialTop, stopTop } = sheetBoundsRef.current;
-    const currentTop = sheetTopRef.current || initialTop;
-    const articleScroller = getActiveArticleScroller();
-
-    if (!scroller || initialTop <= stopTop) {
-      return false;
-    }
-
-    if (deltaY > 0 && currentTop > stopTop) {
-      setSheetTop(currentTop - deltaY);
-      return true;
-    }
-
-    if (
-      deltaY < 0
-      && scroller.scrollTop <= 0
-      && currentTop < initialTop
-      && (!articleScroller || articleScroller.scrollTop <= 0)
-    ) {
-      setSheetTop(currentTop - deltaY);
-      return true;
-    }
-
-    return false;
-  };
-
   const getActiveArticleScroller = () => {
     const feedScroller = scrollerRef.current;
 
@@ -572,6 +544,34 @@ function HomeShell({
     return activeArticle.querySelector<HTMLElement>(".wrapper_articleCardContent");
   };
 
+  const getArticleScrollLimit = (articleScroller: HTMLElement) => (
+    Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight)
+  );
+
+  const moveSheet = (deltaY: number) => {
+    const scroller = scrollerRef.current;
+    const { initialTop, stopTop } = sheetBoundsRef.current;
+    const currentTop = sheetTopRef.current || initialTop;
+    const articleScroller = getActiveArticleScroller();
+    const isArticleAtTop = !articleScroller || articleScroller.scrollTop <= 0;
+
+    if (!scroller || initialTop <= stopTop) {
+      return false;
+    }
+
+    if (deltaY > 0 && currentTop > stopTop) {
+      setSheetTop(currentTop - deltaY);
+      return true;
+    }
+
+    if (deltaY < 0 && scroller.scrollTop <= 0 && currentTop < initialTop && isArticleAtTop) {
+      setSheetTop(currentTop - deltaY);
+      return true;
+    }
+
+    return false;
+  };
+
   const routeDockedArticleScroll = (deltaY: number) => {
     const feedScroller = scrollerRef.current;
     const articleScroller = getActiveArticleScroller();
@@ -582,7 +582,9 @@ function HomeShell({
       return false;
     }
 
-    if (articleScroller.scrollHeight <= articleScroller.clientHeight + 1) {
+    const maxScroll = getArticleScrollLimit(articleScroller);
+
+    if (maxScroll <= 1) {
       return false;
     }
 
@@ -592,8 +594,6 @@ function HomeShell({
     }
 
     if (deltaY > 0) {
-      const maxScroll = articleScroller.scrollHeight - articleScroller.clientHeight;
-
       if (articleScroller.scrollTop < maxScroll) {
         articleScroller.scrollTop = Math.min(maxScroll, articleScroller.scrollTop + deltaY);
         return true;
@@ -1361,14 +1361,22 @@ function HomeReelCard({
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
   const commentPanelId = `home-comment-panel-${index}`;
+  const articleContentId = `home-article-content-${index}`;
+  const articleTitleId = `home-article-title-${index}`;
   const ArticleTitle = headingLevel;
 
   return (
-    <article className="container_articleCard">
-      <div className="wrapper_articleCardContent">
+    <article aria-labelledby={articleTitleId} className="container_articleCard">
+      <div
+        aria-labelledby={articleTitleId}
+        className="wrapper_articleCardContent"
+        id={articleContentId}
+        role="region"
+        tabIndex={0}
+      >
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
-        <ArticleTitle>{article.title}</ArticleTitle>
+        <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
         <time dateTime="2026-12-31T08:30:00">{article.date}</time>
       </div>
       <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
