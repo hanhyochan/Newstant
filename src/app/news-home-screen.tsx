@@ -57,8 +57,10 @@ type HomeArticle = {
 };
 
 type HomeHeaderControls = {
+  isDetailOpen?: boolean;
   isTextLarge: boolean;
   mode: HomeViewMode;
+  onCloseDetail?: () => void;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
@@ -96,6 +98,32 @@ const homeSheetDockedGap = 16;
 const homeSheetInitialGap = 40;
 const commentScrollDelayMs = 120;
 const nextArticleRevealDelayMs = 260;
+
+function resetNewsRollViewport() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    const scrollTargets = [
+      document.scrollingElement,
+      document.documentElement,
+      document.body,
+      ...document.querySelectorAll<HTMLElement>(
+        ".newsroll_phone, .newsroll_all_news, .newsroll_policy_screen",
+      ),
+    ];
+
+    scrollTargets.forEach((target) => {
+      if (!target) {
+        return;
+      }
+
+      target.scrollTop = 0;
+      target.scrollLeft = 0;
+    });
+  });
+}
 
 const homeArticle: HomeArticle = {
   category: "정치",
@@ -443,8 +471,10 @@ function HomeBlockItem({ article, onClick }: { article: HomeArticle; onClick: ()
 }
 
 function HomeMainHeader({
+  isDetailOpen = false,
   isTextLarge,
   mode,
+  onCloseDetail,
   onModeChange,
   onOpenBreakingNews,
   onOpenSearch,
@@ -473,7 +503,18 @@ function HomeMainHeader({
           <span className="text_heroCaption">새로운 소식이 있습니다.</span>
         </p>
         <div className="wrapper_homeDockedControls">
-          <NewsViewToggle mode={mode} onModeChange={onModeChange} />
+          {isDetailOpen ? (
+            <button
+              aria-label="블록형 뉴스 목록으로 돌아가기"
+              className="newsroll_homeDetailBack newsroll_all_detail_back"
+              onClick={onCloseDetail}
+              type="button"
+            >
+              <span aria-hidden="true" />
+            </button>
+          ) : (
+            <NewsViewToggle mode={mode} onModeChange={onModeChange} />
+          )}
           <Button
             aria-label="알림"
             aria-pressed={isAlarmOn}
@@ -505,8 +546,10 @@ function HomeMainHeader({
 
 function HomeShell({
   children,
+  isDetailOpen = false,
   isTextLarge,
   mode,
+  onCloseDetail,
   onModeChange,
   onOpenBreakingNews,
   onOpenSearch,
@@ -976,8 +1019,10 @@ function HomeShell({
       sheetRef={sheetRef}
       top={(
         <HomeMainHeader
+          isDetailOpen={isDetailOpen}
           isTextLarge={isTextLarge}
           mode={mode}
+          onCloseDetail={onCloseDetail}
           onModeChange={onModeChange}
           onOpenBreakingNews={onOpenBreakingNews}
           onOpenSearch={onOpenSearch}
@@ -1740,17 +1785,20 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
 function HomeReelCard({
   article,
+  framed = true,
   headingLevel = "h2",
   index,
 }: {
   article: HomeArticle;
+  framed?: boolean;
   headingLevel?: "h1" | "h2";
-  index: number;
+  index: number | string;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
+  const numericIndex = typeof index === "number" ? index : 0;
   const commentPanelId = `home-comment-panel-${index}`;
   const articleContentId = `home-article-content-${index}`;
   const articleTitleId = `home-article-title-${index}`;
@@ -1759,17 +1807,17 @@ function HomeReelCard({
   function handleCommentPanelToggle() {
     setIsCommentPanelOpen((current) => !current);
   }
-  return (
-    <article aria-labelledby={articleTitleId} className="container_articleCard">
-      <div
-        aria-labelledby={articleTitleId}
-        className={`wrapper_articleCardContent${
-          isCommentPanelOpen ? " is_commentComposerSpaceReserved" : ""
-        }`}
-        id={articleContentId}
-        role="region"
-        tabIndex={0}
-      >
+
+  const articleContent = (
+    <div
+      aria-labelledby={articleTitleId}
+      className={`wrapper_articleCardContent${
+        isCommentPanelOpen ? " is_commentComposerSpaceReserved" : ""
+      }`}
+      id={articleContentId}
+      role="region"
+      tabIndex={0}
+    >
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
         <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
@@ -1797,7 +1845,7 @@ function HomeReelCard({
       <div className="wrapper_articleSource">
         <div className="wrapper_articleSourcePublisher">
           <img className="img_articlePublisherLogo" src="/icons/icon_user.svg" alt="" width={32} height={32} />
-          <span className="text_articlePublisherName">{index % 2 === 0 ? "국민일보" : "중앙일보"}</span>
+          <span className="text_articlePublisherName">{numericIndex % 2 === 0 ? "국민일보" : "중앙일보"}</span>
         </div>
         <span className="text_articleReporter">홍길동 기자</span>
       </div>
@@ -1831,8 +1879,40 @@ function HomeReelCard({
       {isCommentPanelOpen ? (
         <CommentReactionPanel guideKind={article.guideKind ?? "stacked"} id={commentPanelId} />
       ) : null}
-      </div>
+    </div>
+  );
+
+  if (!framed) {
+    return articleContent;
+  }
+
+  return (
+    <article aria-labelledby={articleTitleId} className="container_articleCard">
+      {articleContent}
     </article>
+  );
+}
+
+function ArticleDetailContent({
+  article,
+  backLabel,
+  onBack,
+}: {
+  article: HomeArticle;
+  backLabel?: string;
+  onBack?: () => void;
+}) {
+  return (
+    <section className="container_newsFeed container_newsFeed_detail" aria-label="기사 상세">
+      <article aria-labelledby="home-article-title-detail" className="container_articleCard">
+        {backLabel && onBack ? (
+          <button aria-label={backLabel} className="newsroll_all_detail_back" onClick={onBack} type="button">
+            <span aria-hidden="true" />
+          </button>
+        ) : null}
+        <HomeReelCard article={article} framed={false} headingLevel="h1" index="detail" />
+      </article>
+    </section>
   );
 }
 
@@ -1856,26 +1936,25 @@ function HomeView({
     setDetailOpen(true);
   }
 
-  if (detailOpen) {
-    return (
-      <AllNewsArticleDetail
-        article={selectedDetailArticle}
-        onBack={() => setDetailOpen(false)}
-        onOpenSearch={onOpenSearch}
-      />
-    );
-  }
-
   return (
     <HomeShell
+      isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
-      onModeChange={setHomeViewMode}
+      onCloseDetail={() => setDetailOpen(false)}
+      onModeChange={(nextMode) => {
+        setDetailOpen(false);
+        setHomeViewMode(nextMode);
+      }}
       onOpenBreakingNews={onOpenBreakingNews}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
     >
-      {homeViewMode === "reels" ? (
+      {detailOpen ? (
+        <ArticleDetailContent
+          article={selectedDetailArticle}
+        />
+      ) : homeViewMode === "reels" ? (
         <section
           className="container_newsFeed"
           id="home-news-reels-panel"
@@ -2040,47 +2119,6 @@ function AllNewsRelayItem({
   );
 }
 
-function AllNewsArticleDetail({
-  article = homeArticle,
-  onBack,
-  onOpenSearch,
-}: {
-  article?: HomeArticle;
-  onBack: () => void;
-  onOpenSearch: () => void;
-}) {
-  const [isAlarmOn, setIsAlarmOn] = useState(false);
-
-  return (
-    <NewsRollCommonLayout
-      aria-label="?? ??"
-      className="newsroll_all_detail"
-      sheetClassName="newsroll_all_detail_body"
-      top={(
-
-        <div className="newsroll_all_detail_toolbar">
-          <button aria-label="전체뉴스로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
-            <span aria-hidden="true" />
-          </button>
-          <NewsToolbar isTextLarge={false} onOpenSearch={onOpenSearch} onToggleTextSize={() => undefined} />
-          <button
-            aria-label="알림"
-            aria-pressed={isAlarmOn}
-            className="newsroll_home_alarm"
-            onClick={() => setIsAlarmOn((current) => !current)}
-            type="button"
-          >
-            <Icon name="alarm" />
-          </button>
-        </div>
-      )}
-      topClassName="newsroll_all_detail_top"
-    >
-        <HomeReelCard article={article} headingLevel="h1" index={0} />
-    </NewsRollCommonLayout>
-  );
-}
-
 function AllNewsView({
   isTextLarge,
   onOpenSearch,
@@ -2168,13 +2206,9 @@ function AllNewsView({
     });
   }
 
-  if (detailOpen) {
-    return <AllNewsArticleDetail onBack={() => setDetailOpen(false)} onOpenSearch={onOpenSearch} />;
-  }
-
   return (
     <NewsRollCommonLayout
-      aria-label="????"
+      aria-label="전체 뉴스"
       className="newsroll_all_news"
       sheetClassName="newsroll_all_sections"
       top={(<>
@@ -2210,6 +2244,14 @@ function AllNewsView({
       </>)}
       topClassName="newsroll_all_top"
     >
+      {detailOpen ? (
+        <ArticleDetailContent
+          article={homeArticle}
+          backLabel="전체뉴스 목록으로 돌아가기"
+          onBack={() => setDetailOpen(false)}
+        />
+      ) : (
+        <>
         <section className="newsroll_all_panel newsroll_all_latest_panel" aria-label="최신 뉴스">
           <h1 className="newsroll_all_section_title">
             최신 뉴스 <strong>10</strong>
@@ -2293,6 +2335,8 @@ function AllNewsView({
             ))}
           </div>
         </section>
+        </>
+      )}
     </NewsRollCommonLayout>
   );
 }
@@ -2469,40 +2513,26 @@ function PolicyListItem({
   );
 }
 
-function PolicyDetailView({
-  isTextLarge,
+function PolicyDetailContent({
   item,
   onBack,
-  onOpenSearch,
-  onToggleTextSize,
 }: {
-  isTextLarge: boolean;
   item: PolicyItem;
   onBack: () => void;
-  onOpenSearch: () => void;
-  onToggleTextSize: () => void;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShared, setIsShared] = useState(false);
 
+  useLayoutEffect(() => {
+    resetNewsRollViewport();
+  }, []);
+
   return (
-    <NewsRollCommonLayout
-      aria-label="???? ??"
-      className="newsroll_policy_detail"
-      sheetClassName="newsroll_policy_detail_sheet"
-      top={(<>
-        <NewsToolbar
-          isTextLarge={isTextLarge}
-          onOpenSearch={onOpenSearch}
-          onToggleTextSize={onToggleTextSize}
-        />
+    <>
         <button aria-label="국가정책 목록으로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
           <span aria-hidden="true" />
         </button>
-      </>)}
-      topClassName="newsroll_policy_detail_top"
-    >
         <div className="newsroll_policy_detail_tags">
           {item.tags.map((tag, index) => (
             <span className={index === item.tags.length - 1 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
@@ -2569,7 +2599,7 @@ function PolicyDetailView({
           <span aria-hidden="true">{isExpanded ? "-" : "+"}</span>
           {isExpanded ? "접기" : "상세보기"}
         </button>
-    </NewsRollCommonLayout>
+    </>
   );
 }
 
@@ -2590,21 +2620,9 @@ function PolicyView({
   const visiblePolicyItems =
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
 
-  if (detailItem) {
-    return (
-      <PolicyDetailView
-        isTextLarge={isTextLarge}
-        item={detailItem}
-        onBack={() => setDetailItem(null)}
-        onOpenSearch={onOpenSearch}
-        onToggleTextSize={onToggleTextSize}
-      />
-    );
-  }
-
   return (
     <NewsRollCommonLayout
-      aria-label="????"
+      aria-label="국가정책"
       className="newsroll_policy_screen"
       sheetClassName="newsroll_policy_sheet"
       top={(<>
@@ -2624,6 +2642,10 @@ function PolicyView({
       </>)}
       topClassName="newsroll_policy_top"
     >
+      {detailItem ? (
+        <PolicyDetailContent item={detailItem} onBack={() => setDetailItem(null)} />
+      ) : (
+        <>
         <PillTabMenu
           ariaLabel="연령 필터"
           className="newsroll_policy_age_tabs"
@@ -2657,6 +2679,8 @@ function PolicyView({
             />
           ))}
         </div>
+        </>
+      )}
     </NewsRollCommonLayout>
   );
 }
@@ -2731,7 +2755,7 @@ function MyPageView({
 
   return (
     <NewsRollCommonLayout
-      aria-label="?????"
+      aria-label="마이페이지"
       className="newsroll_my_screen"
       sheetClassName="newsroll_my_sheet"
       top={(<>
@@ -2999,7 +3023,7 @@ function InfoView({
 
   return (
     <NewsRollCommonLayout
-      aria-label="?????"
+      aria-label="인포메이션"
       className="newsroll_info_screen"
       sheetClassName="newsroll_info_sheet"
       top={(<>
@@ -3084,6 +3108,10 @@ export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("home");
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
   const [isTextLarge, setIsTextLarge] = useState(false);
+
+  useLayoutEffect(() => {
+    resetNewsRollViewport();
+  }, [activeView]);
 
   function openSearch() {
     if (activeView !== "search") {
