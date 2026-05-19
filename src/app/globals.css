@@ -4793,8 +4793,56 @@
         width: 100%;
     }
 
+    .newsroll_sheetFrame {
+        --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
+        --newsroll-main-border-width: 1.5px;
+        height: 100dvh;
+        min-height: 100dvh;
+        position: relative;
+        isolation: isolate;
+        gap: 0;
+        overflow: hidden;
+        background: var(--color-newsroll-purple-20);
+    }
+
+    .newsroll_sheetFrameTop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 0;
+    }
+
+    .newsroll_sheetFrameSheet {
+        position: absolute;
+        top: var(--newsroll-common-sheet-top);
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 0;
+        border-radius: 0;
+        background: var(--color-newsroll-purple-20);
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        will-change: top;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_sheetFrameSheet {
+        bottom: var(--spacing-padding-vertical-60);
+    }
+
+    .newsroll_sheetFrameSheet::-webkit-scrollbar {
+        display: none;
+    }
+
     .container_homeScreen {
-        --home-sheet-top: var(--home-sheet-initial-top, 492px);
+        --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
         height: 100dvh;
         min-height: 100dvh;
         position: relative;
@@ -4827,7 +4875,7 @@
 
     .container_homeSheet {
         position: absolute;
-        top: var(--home-sheet-top);
+        top: var(--newsroll-common-sheet-top);
         right: 0;
         bottom: 0;
         left: 0;
@@ -5584,6 +5632,11 @@
         color: var(--color-label-strong);
         background: var(--color-background-elevated-normal);
         overflow: visible;
+    }
+
+    .newsroll_emptyFrameCard {
+        flex: 1 1 auto;
+        min-height: 100%;
     }
 
     .wrapper_articleCardContent {
@@ -6650,6 +6703,11 @@
         background: var(--color-newsroll-purple-20);
     }
 
+    .newsroll_all_sheet {
+        min-height: 0;
+    }
+
+    .newsroll_all_sheet,
     .newsroll_all_detail_body,
     .newsroll_policy_sheet,
     .newsroll_my_sheet,
