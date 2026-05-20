@@ -7,10 +7,8 @@ import {
   useMemo,
   useRef,
   useState,
-  type TouchEvent,
   type PointerEvent,
   type ReactNode,
-  type WheelEvent,
 } from "react";
 
 import {
@@ -29,7 +27,7 @@ import {
   type IconName,
   type PillTabItem,
 } from "@/design-system/components";
-import { NewsRollCommonLayout } from "@/design-system/templates";
+import { NewsRollCommonLayout, useDockedPanelScroll } from "@/design-system/templates";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
@@ -383,7 +381,16 @@ const allNewsLatest = [
   { category: "문화", image: allNewsAssets.relayFour, title: "지역 축제 방문객 증가, 골목상권 매출도 동반 상승" },
 ];
 
-const allNewsPresses = ["중앙일보", "국민일보", "한겨레"];
+const allNewsPresses = ["중앙일보", "국민일보", "국민일보_2"];
+const allNewsPressLabels: Record<string, string> = {
+  국민일보_2: "국민일보",
+};
+const allNewsPressLogos = ["J", "i", "⊕"];
+
+const pressHeadlineArticle = {
+  image: "/images/news-apartment.png",
+  title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
+};
 
 const allNewsHeadlinesByPress: Record<string, { image: string; title: string }[]> = {
   국민일보: Array.from({ length: 8 }, (_, index) => ({
@@ -559,284 +566,18 @@ function HomeShell({
   const screenRef = useRef<HTMLElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
-  const scrollerTopRef = useRef(0);
-  const touchYRef = useRef<number | null>(null);
   const previousModeRef = useRef(mode);
-  const articleBoundaryRef = useRef<{
-    article: HTMLElement | null;
-    direction: "end" | "start" | null;
-    isReady: boolean;
-    timeoutId: number | null;
-  }>({
-    article: null,
-    direction: null,
-    isReady: false,
-    timeoutId: null,
+  const dockedPanelScroll = useDockedPanelScroll({
+    boundaryDelayMs: nextArticleRevealDelayMs,
+    contentScrollerSelector: ".wrapper_articleCardContent",
+    dockedClassName: "is_homeSheetDocked",
+    panelSelector: ".container_articleCard",
+    rootRef: screenRef,
+    scrollerRef,
   });
-  const clearArticleBoundary = () => {
-    if (articleBoundaryRef.current.timeoutId != null) {
-      window.clearTimeout(articleBoundaryRef.current.timeoutId);
-    }
-
-    articleBoundaryRef.current = {
-      article: null,
-      direction: null,
-      isReady: false,
-      timeoutId: null,
-    };
-  };
-
-  const scheduleArticleBoundary = (article: HTMLElement, direction: "end" | "start") => {
-    if (articleBoundaryRef.current.timeoutId != null) {
-      window.clearTimeout(articleBoundaryRef.current.timeoutId);
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      const currentBoundary = articleBoundaryRef.current;
-
-      if (currentBoundary.article === article && currentBoundary.direction === direction) {
-        articleBoundaryRef.current = {
-          article,
-          direction,
-          isReady: true,
-          timeoutId: null,
-        };
-      }
-    }, nextArticleRevealDelayMs);
-
-    articleBoundaryRef.current = {
-      article,
-      direction,
-      isReady: false,
-      timeoutId,
-    };
-  };
-
-  const waitForArticleBoundary = (article: HTMLElement, direction: "end" | "start") => {
-    const boundaryState = articleBoundaryRef.current;
-    const isReady = boundaryState.article === article
-      && boundaryState.direction === direction
-      && boundaryState.isReady;
-
-    if (isReady) {
-      clearArticleBoundary();
-      return true;
-    }
-
-    scheduleArticleBoundary(article, direction);
-    return false;
-  };
-
-  const resetSheetContentScroll = (scroller: HTMLElement) => {
-    scroller.scrollTop = 0;
-    scroller.querySelectorAll<HTMLElement>(".wrapper_articleCardContent").forEach((articleScroller) => {
-      articleScroller.scrollTop = 0;
-    });
-    scrollerTopRef.current = 0;
-    clearArticleBoundary();
-  };
-
-  const getFeedArticles = () => {
-    const feedScroller = scrollerRef.current;
-
-    if (!feedScroller) {
-      return [];
-    }
-
-    return Array.from(
-      feedScroller.querySelectorAll<HTMLElement>(".container_articleCard"),
-    );
-  };
-
-  const getActiveArticle = () => {
-    const feedScroller = scrollerRef.current;
-    const articles = getFeedArticles();
-
-    if (!feedScroller) {
-      return null;
-    }
-
-    if (articles.length === 0) {
-      return null;
-    }
-
-    return articles.reduce((closest, article) => {
-      const closestDistance = Math.abs(closest.offsetTop - feedScroller.scrollTop);
-      const articleDistance = Math.abs(article.offsetTop - feedScroller.scrollTop);
-      return articleDistance < closestDistance ? article : closest;
-    }, articles[0]);
-  };
-
-  const getActiveArticleScroller = () => {
-    const activeArticle = getActiveArticle();
-
-    return activeArticle?.querySelector<HTMLElement>(".wrapper_articleCardContent") ?? null;
-  };
-
-  const getArticleScrollLimit = (articleScroller: HTMLElement) => (
-    Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight)
-  );
-
-  const setArticleContentPosition = (article: HTMLElement, position: "end" | "start") => {
-    const articleScroller = article.querySelector<HTMLElement>(".wrapper_articleCardContent");
-
-    if (!articleScroller) {
-      return;
-    }
-
-    articleScroller.scrollTop = position === "end"
-      ? getArticleScrollLimit(articleScroller)
-      : 0;
-  };
-
-  const scrollFeedToArticle = (article: HTMLElement, contentPosition: "end" | "start" = "start") => {
-    const feedScroller = scrollerRef.current;
-
-    if (!feedScroller) {
-      return;
-    }
-
-    setArticleContentPosition(article, contentPosition);
-
-    if (typeof feedScroller.scrollTo === "function") {
-      feedScroller.scrollTo({
-        behavior: "smooth",
-        top: article.offsetTop,
-      });
-      return;
-    }
-
-    feedScroller.scrollTop = article.offsetTop;
-  };
-
-  const routeDockedArticleScroll = (deltaY: number) => {
-    const feedScroller = scrollerRef.current;
-    const activeArticle = getActiveArticle();
-    const articleScroller = getActiveArticleScroller();
-    const isDocked = screenRef.current?.classList.contains("is_homeSheetDocked") ?? false;
-
-    if (!feedScroller || !activeArticle || !articleScroller || !isDocked) {
-      return false;
-    }
-
-    const maxScroll = getArticleScrollLimit(articleScroller);
-    const articles = getFeedArticles();
-    const activeIndex = articles.indexOf(activeArticle);
-    const previousArticle = activeIndex > 0 ? articles[activeIndex - 1] : null;
-    const nextArticle = activeIndex >= 0 ? articles[activeIndex + 1] : null;
-    const isArticleAtStart = articleScroller.scrollTop <= 1;
-    const isArticleAtEnd = articleScroller.scrollTop >= maxScroll - 1;
-
-    if (maxScroll <= 1) {
-      if (deltaY < 0 && previousArticle) {
-        if (!waitForArticleBoundary(activeArticle, "start")) {
-          return true;
-        }
-
-        scrollFeedToArticle(previousArticle, "end");
-        return true;
-      }
-
-      if (deltaY > 0 && nextArticle) {
-        if (!waitForArticleBoundary(activeArticle, "end")) {
-          return true;
-        }
-
-        scrollFeedToArticle(nextArticle, "start");
-        return true;
-      }
-
-      clearArticleBoundary();
-      return false;
-    }
-
-    if (deltaY < 0) {
-      if (!isArticleAtStart) {
-        const nextScrollTop = Math.max(0, articleScroller.scrollTop + deltaY);
-        articleScroller.scrollTop = nextScrollTop;
-        if (nextScrollTop <= 1) {
-          scheduleArticleBoundary(activeArticle, "start");
-        } else {
-          clearArticleBoundary();
-        }
-        return true;
-      }
-
-      if (previousArticle) {
-        if (!waitForArticleBoundary(activeArticle, "start")) {
-          return true;
-        }
-
-        scrollFeedToArticle(previousArticle, "end");
-        return true;
-      }
-
-      clearArticleBoundary();
-      return false;
-    }
-
-    if (deltaY > 0) {
-      if (!isArticleAtEnd) {
-        const nextScrollTop = Math.min(maxScroll, articleScroller.scrollTop + deltaY);
-        articleScroller.scrollTop = nextScrollTop;
-        if (nextScrollTop >= maxScroll - 1) {
-          scheduleArticleBoundary(activeArticle, "end");
-        } else {
-          clearArticleBoundary();
-        }
-        return true;
-      }
-
-      if (!waitForArticleBoundary(activeArticle, "end")) {
-        return true;
-      }
-
-      if (nextArticle) {
-        scrollFeedToArticle(nextArticle, "start");
-        return true;
-      }
-
-      clearArticleBoundary();
-    }
-
-    return false;
-  };
-
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (routeDockedArticleScroll(event.deltaY)) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
-  };
-
-  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    touchYRef.current = event.touches[0]?.clientY ?? null;
-  };
-
-  const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
-    const currentY = event.touches[0]?.clientY;
-    const previousY = touchYRef.current;
-
-    if (currentY == null || previousY == null) {
-      touchYRef.current = currentY ?? null;
-      return;
-    }
-
-    const deltaY = previousY - currentY;
-    if (routeDockedArticleScroll(deltaY)) {
-      event.preventDefault();
-      event.stopPropagation();
-      touchYRef.current = currentY;
-      return;
-    }
-    touchYRef.current = currentY;
-  };
 
   const handleSheetScroll = () => {
-    if (scrollerRef.current) {
-      scrollerTopRef.current = scrollerRef.current.scrollTop;
-    }
+    dockedPanelScroll.storeScrollTop();
   };
 
   useLayoutEffect(() => {
@@ -846,21 +587,15 @@ function HomeShell({
     scrollerRef.current = nextScroller;
     if (nextScroller) {
       if (didModeChange) {
-        resetSheetContentScroll(nextScroller);
+        dockedPanelScroll.resetScroll(nextScroller);
       } else if (screenRef.current?.classList.contains("is_homeSheetDocked")) {
-        nextScroller.scrollTop = scrollerTopRef.current;
+        dockedPanelScroll.restoreScrollTop(nextScroller);
       } else {
         nextScroller.scrollTop = 0;
       }
     }
     previousModeRef.current = mode;
   }, [children, mode]);
-
-  useEffect(() => () => {
-    if (articleBoundaryRef.current.timeoutId != null) {
-      window.clearTimeout(articleBoundaryRef.current.timeoutId);
-    }
-  }, []);
 
   return (
     <NewsRollCommonLayout
@@ -871,9 +606,9 @@ function HomeShell({
       dockedGap={homeSheetDockedGap}
       initialGap={homeSheetInitialGap}
       movingSheet
-      onTouchMoveCapture={handleTouchMove}
-      onTouchStartCapture={handleTouchStart}
-      onWheelCapture={handleWheel}
+      onTouchMoveCapture={dockedPanelScroll.handleTouchMove}
+      onTouchStartCapture={dockedPanelScroll.handleTouchStart}
+      onWheelCapture={dockedPanelScroll.handleWheel}
       ref={screenRef}
       sheetClassName="container_homeSheet"
       sheetProps={{ onScrollCapture: handleSheetScroll }}
@@ -1989,6 +1724,16 @@ function AllNewsView({
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
+  const screenRef = useRef<HTMLElement>(null);
+  const feedRef = useRef<HTMLElement>(null);
+  const dockedPanelScroll = useDockedPanelScroll({
+    boundaryDelayMs: nextArticleRevealDelayMs,
+    dockedClassName: "is_newsrollSheetDocked",
+    panelSelector: ".newsroll_all_panel",
+    rootRef: screenRef,
+    scrollerRef: feedRef,
+    shortPanelTransition: "instant",
+  });
   const [activePress, setActivePress] = useState(allNewsPresses[0]);
   const [activeRelayCategory, setActiveRelayCategory] = useState(allNewsRelayCategories[0]);
   const latestScrollerRef = useRef<HTMLDivElement>(null);
@@ -2004,8 +1749,10 @@ function AllNewsView({
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const breakingItems = showAllBreaking ? allNewsBreaking : allNewsBreaking.slice(0, 3);
   const relayItems = allNewsRelayByCategory[activeRelayCategory] ?? [];
-  const pressHeadlines = allNewsHeadlinesByPress[activePress] ?? [];
-  const headlineItems = showAllHeadlines ? pressHeadlines : pressHeadlines.slice(0, 4);
+  const headlineItems = Array.from(
+    { length: showAllHeadlines ? 8 : 4 },
+    () => pressHeadlineArticle,
+  );
 
   function handleLatestPointerDown(event: PointerEvent<HTMLDivElement>) {
     const node = latestScrollerRef.current;
@@ -2070,7 +1817,11 @@ function AllNewsView({
       initialGap={40}
       minInitialTop={492}
       movingSheet
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet"
+      onTouchMoveCapture={dockedPanelScroll.handleTouchMove}
+      onTouchStartCapture={dockedPanelScroll.handleTouchStart}
+      onWheelCapture={dockedPanelScroll.handleWheel}
+      ref={screenRef}
+      sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_all_sheetFrameSheet"
       sheetScrollSelector=".newsroll_all_feed"
       top={
         <header className="container_homeToolbar newsroll_all_breakingHeader">
@@ -2110,7 +1861,7 @@ function AllNewsView({
       }
       topClassName="container_home newsroll_sheetFrameTop"
     >
-      <section className="container_newsFeed newsroll_all_feed" aria-label="전체 뉴스 콘텐츠 영역">
+      <section className="container_newsFeed newsroll_all_feed" aria-label="전체 뉴스 콘텐츠 영역" ref={feedRef}>
         <article className="container_articleCard newsroll_all_panel newsroll_all_latest_panel" aria-label="최신 뉴스">
           <h1 className="newsroll_all_section_title">
             최신 뉴스 <strong>10</strong>
@@ -2143,23 +1894,35 @@ function AllNewsView({
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_press_panel" aria-label="언론사별 헤드라인">
           <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
-          <PillTabMenu
-            ariaLabel="언론사 선택"
-            className="newsroll_all_press_tabs"
-            items={allNewsPresses.map((press) => ({ id: press, label: press }))}
-            onChange={(press) => {
-              setActivePress(press);
-              setSelectedHeadlineIndex(null);
-            }}
-            value={activePress}
-          />
+          <div className="newsroll_all_press_tabs" role="tablist" aria-label="언론사 선택">
+            {allNewsPresses.map((press, index) => {
+              const selected = activePress === press;
+              const label = allNewsPressLabels[press] ?? press;
+
+              return (
+                <button
+                  aria-selected={selected}
+                  key={press}
+                  onClick={() => {
+                    setActivePress(press);
+                    setSelectedHeadlineIndex(null);
+                  }}
+                  role="tab"
+                  tabIndex={selected ? 0 : -1}
+                  type="button"
+                >
+                  <span className="newsroll_all_press_logo" aria-hidden="true">
+                    {allNewsPressLogos[index]}
+                  </span>
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+          </div>
           <div className="newsroll_all_headline_list">
             {headlineItems.map((item, index) => (
               <AllNewsHeadlineItem
-                item={{
-                  ...item,
-                  title: activePress === "중앙일보" ? item.title : "'APEC, 국익에 도움됐다' 74%... 국힘 지지층도 인정",
-                }}
+                item={item}
                 key={`${item.title}-${index}`}
                 onClick={() => setSelectedHeadlineIndex((current) => (current === index ? null : index))}
                 selected={selectedHeadlineIndex === index}
