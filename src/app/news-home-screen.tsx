@@ -1728,11 +1728,11 @@ function AllNewsView({
   const feedRef = useRef<HTMLElement>(null);
   const dockedPanelScroll = useDockedPanelScroll({
     boundaryDelayMs: nextArticleRevealDelayMs,
+    contentScrollerSelector: ".newsroll_all_panelContent",
     dockedClassName: "is_newsrollSheetDocked",
     panelSelector: ".newsroll_all_panel",
     rootRef: screenRef,
     scrollerRef: feedRef,
-    shortPanelTransition: "instant",
   });
   const [activePress, setActivePress] = useState(allNewsPresses[0]);
   const [activeRelayCategory, setActiveRelayCategory] = useState(allNewsRelayCategories[0]);
@@ -1863,6 +1863,7 @@ function AllNewsView({
     >
       <section className="container_newsFeed newsroll_all_feed" aria-label="전체 뉴스 콘텐츠 영역" ref={feedRef}>
         <article className="container_articleCard newsroll_all_panel newsroll_all_latest_panel" aria-label="최신 뉴스">
+          <div className="newsroll_all_panelContent">
           <h1 className="newsroll_all_section_title">
             최신 뉴스 <strong>10</strong>
           </h1>
@@ -1890,9 +1891,11 @@ function AllNewsView({
               />
             ))}
           </div>
+          </div>
         </article>
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_press_panel" aria-label="언론사별 헤드라인">
+          <div className="newsroll_all_panelContent">
           <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
           <div className="newsroll_all_press_tabs" role="tablist" aria-label="언론사 선택">
             {allNewsPresses.map((press, index) => {
@@ -1930,9 +1933,11 @@ function AllNewsView({
             ))}
           </div>
           <AllNewsMoreButton expanded={showAllHeadlines} onClick={() => setShowAllHeadlines((current) => !current)} />
+          </div>
         </article>
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_relay_panel" aria-label="릴레이 뉴스">
+          <div className="newsroll_all_panelContent">
           <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
           <PillTabMenu
             ariaLabel="릴레이 뉴스 카테고리"
@@ -1954,6 +1959,7 @@ function AllNewsView({
                 selected={selectedRelayIndex === index}
               />
             ))}
+          </div>
           </div>
         </article>
       </section>

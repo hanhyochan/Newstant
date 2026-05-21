@@ -2966,6 +2966,13 @@
         box-shadow: none;
     }
 
+    .newsroll_all_panelContent {
+        min-width: 0;
+        min-height: 0;
+        display: grid;
+        gap: inherit;
+    }
+
     .newsroll_all_latest_panel {
         min-height: 583px;
         padding-bottom: calc(
@@ -4796,6 +4803,7 @@
 
     .newsroll_sheetFrame {
         --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
+        --newsroll-bottom-nav-clearance: var(--spacing-padding-vertical-60);
         --newsroll-main-border-width: 1.5px;
         height: 100dvh;
         min-height: 100dvh;
@@ -4835,7 +4843,7 @@
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_sheetFrameSheet {
-        bottom: var(--spacing-padding-vertical-60);
+        bottom: var(--newsroll-bottom-nav-clearance);
     }
 
     .newsroll_sheetFrameSheet::-webkit-scrollbar {
@@ -4893,6 +4901,10 @@
 
     .container_homeScreen.is_homeSheetDocked .container_homeSheet {
         bottom: var(--spacing-padding-vertical-60);
+    }
+
+    .newsroll_screen_all .newsroll_sheetFrame .newsroll_sheetFrameSheet {
+        bottom: var(--newsroll-bottom-nav-clearance);
     }
 
     .container_homeToolbar {
@@ -4957,9 +4969,12 @@
         top: 0;
         flex: 0 0 100%;
         height: 100%;
+        min-height: 0;
         max-height: 100%;
+        display: flex;
+        flex-direction: column;
         overflow-x: hidden;
-        overflow-y: auto;
+        overflow-y: hidden;
         overscroll-behavior: contain;
         scroll-snap-align: start;
         scroll-snap-stop: always;
@@ -4967,18 +4982,73 @@
         -webkit-overflow-scrolling: touch;
     }
 
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_panelContent {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_panelContent::-webkit-scrollbar {
+        display: none;
+    }
+
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_feed .newsroll_all_latest_panel {
-        flex-basis: auto;
-        height: auto;
-        max-height: none;
+        --newsroll-all-latest-panel-height: 100%;
+        flex: 0 0 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: 100%;
+        overflow: hidden;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_panel .newsroll_all_panelContent {
+        grid-template-rows: auto minmax(0, 1fr);
+        overflow: hidden;
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_feed .newsroll_all_panel::-webkit-scrollbar {
         display: none;
     }
 
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_scroller {
+        height: 100%;
+        min-height: 0;
+        align-items: stretch;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_card {
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        align-content: start;
+        grid-template-rows: auto auto auto;
+    }
+
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_image {
-        height: 352px;
+        display: block;
+        width: 100%;
+        height: clamp(
+            140px,
+            calc(100dvh - var(--newsroll-common-sheet-top) - var(--newsroll-bottom-nav-clearance) - 280px),
+            260px
+        );
+        min-height: 0;
+        max-height: none;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_body {
+        min-height: 0;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_body strong {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
     }
 
     .newsroll_all_more_icon {
