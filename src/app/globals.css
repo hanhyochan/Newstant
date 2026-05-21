@@ -5241,6 +5241,25 @@
         justify-content: space-between;
     }
 
+    .newsroll_sheetFrame .newsroll_allDockedControls {
+        display: none;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_allDockedControls {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_breakingHeader {
+        gap: var(--spacing-gap-vertical-16);
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_breaking_label,
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_breakingBody {
+        display: none;
+    }
+
     .newsroll_homeDockedAlarm {
         border-color: var(--color-newsroll-purple-50);
         color: var(--color-common-0);
@@ -5259,7 +5278,16 @@
         display: inline-flex;
     }
 
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_homeDockedAlarm {
+        display: inline-flex;
+    }
+
     .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedAlarm .newsroll_icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_homeDockedAlarm .newsroll_icon {
         width: 16px;
         height: 16px;
     }

@@ -1745,6 +1745,7 @@ function AllNewsView({
   const [selectedHeadlineIndex, setSelectedHeadlineIndex] = useState<number | null>(null);
   const [selectedLatestIndex, setSelectedLatestIndex] = useState<number | null>(null);
   const [selectedRelayIndex, setSelectedRelayIndex] = useState<number | null>(null);
+  const [isBreakingAlarmOn, setIsBreakingAlarmOn] = useState(false);
   const [showAllBreaking, setShowAllBreaking] = useState(false);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const breakingItems = showAllBreaking ? allNewsBreaking : allNewsBreaking.slice(0, 3);
@@ -1814,6 +1815,7 @@ function AllNewsView({
     <NewsRollCommonLayout
       aria-label="전체 뉴스"
       className="newsroll_sheetFrame"
+      dockedGap={40}
       initialGap={40}
       minInitialTop={492}
       movingSheet
@@ -1830,6 +1832,20 @@ function AllNewsView({
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
+          <div className="wrapper_homeDockedControls newsroll_allDockedControls">
+            <Button
+              aria-label="속보 알림"
+              aria-pressed={isBreakingAlarmOn}
+              className="newsroll_homeDockedAlarm"
+              iconOnly
+              onClick={() => setIsBreakingAlarmOn((current) => !current)}
+              radius="full"
+              size="large"
+              variant="outline"
+            >
+              <Icon name="alarm" />
+            </Button>
+          </div>
           <div className="newsroll_all_breaking_label">
             <Icon name="alarm" />
             <span>속보</span>
