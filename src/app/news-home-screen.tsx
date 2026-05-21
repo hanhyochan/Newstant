@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
 } from "react";
@@ -109,7 +110,7 @@ function resetNewsRollViewport() {
       document.documentElement,
       document.body,
       ...document.querySelectorAll<HTMLElement>(
-        ".newsroll_phone, .newsroll_all_news, .newsroll_policy_screen",
+        ".newsroll_phone, .newsroll_policy_screen",
       ),
     ];
 
@@ -381,16 +382,8 @@ const allNewsLatest = [
   { category: "문화", image: allNewsAssets.relayFour, title: "지역 축제 방문객 증가, 골목상권 매출도 동반 상승" },
 ];
 
-const allNewsPresses = ["중앙일보", "국민일보", "국민일보_2"];
-const allNewsPressLabels: Record<string, string> = {
-  국민일보_2: "국민일보",
-};
+const allNewsPresses = ["중앙일보", "국민일보", "한겨레"];
 const allNewsPressLogos = ["J", "i", "⊕"];
-
-const pressHeadlineArticle = {
-  image: "/images/news-apartment.png",
-  title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
-};
 
 const allNewsHeadlinesByPress: Record<string, { image: string; title: string }[]> = {
   국민일보: Array.from({ length: 8 }, (_, index) => ({
@@ -1654,6 +1647,10 @@ function AllNewsMoreButton({
   );
 }
 
+function AllNewsPanelContent({ children }: { children: ReactNode }) {
+  return <div className="newsroll_all_panelContent">{children}</div>;
+}
+
 function AllNewsLatestCard({
   item,
   onClick,
@@ -1750,10 +1747,10 @@ function AllNewsView({
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const breakingItems = showAllBreaking ? allNewsBreaking : allNewsBreaking.slice(0, 3);
   const relayItems = allNewsRelayByCategory[activeRelayCategory] ?? [];
-  const headlineItems = Array.from(
-    { length: showAllHeadlines ? 8 : 4 },
-    () => pressHeadlineArticle,
-  );
+  const activePressIndex = Math.max(0, allNewsPresses.indexOf(activePress));
+  const activeRelayIndex = Math.max(0, allNewsRelayCategories.indexOf(activeRelayCategory));
+  const activeHeadlineItems = allNewsHeadlinesByPress[activePress] ?? [];
+  const headlineItems = showAllHeadlines ? activeHeadlineItems : activeHeadlineItems.slice(0, 4);
 
   function handleLatestPointerDown(event: PointerEvent<HTMLDivElement>) {
     const node = latestScrollerRef.current;
@@ -1809,6 +1806,27 @@ function AllNewsView({
       behavior: "smooth",
       left: targetIndex * cardStep,
     });
+  }
+
+  function handlePressTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const lastIndex = allNewsPresses.length - 1;
+    const nextIndexByKey: Record<string, number> = {
+      ArrowDown: activePressIndex === lastIndex ? 0 : activePressIndex + 1,
+      ArrowLeft: activePressIndex === 0 ? lastIndex : activePressIndex - 1,
+      ArrowRight: activePressIndex === lastIndex ? 0 : activePressIndex + 1,
+      ArrowUp: activePressIndex === 0 ? lastIndex : activePressIndex - 1,
+      End: lastIndex,
+      Home: 0,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) {
+      return;
+    }
+
+    event.preventDefault();
+    setActivePress(allNewsPresses[nextIndex]);
+    setSelectedHeadlineIndex(null);
   }
 
   return (
@@ -1879,104 +1897,122 @@ function AllNewsView({
     >
       <section className="container_newsFeed newsroll_all_feed" aria-label="전체 뉴스 콘텐츠 영역" ref={feedRef}>
         <article className="container_articleCard newsroll_all_panel newsroll_all_latest_panel" aria-label="최신 뉴스">
-          <div className="newsroll_all_panelContent">
-          <h1 className="newsroll_all_section_title">
-            최신 뉴스 <strong>10</strong>
-          </h1>
-          <div
-            className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
-            onPointerCancel={stopLatestDrag}
-            onPointerDown={handleLatestPointerDown}
-            onPointerLeave={stopLatestDrag}
-            onPointerMove={handleLatestPointerMove}
-            onPointerUp={stopLatestDrag}
-            ref={latestScrollerRef}
-          >
-            {allNewsLatest.map((item, index) => (
-              <AllNewsLatestCard
-                item={item}
-                key={`${item.title}-${index}`}
-                onClick={() => {
-                  if (latestDidDragRef.current) {
-                    return;
-                  }
+          <AllNewsPanelContent>
+            <h1 className="newsroll_all_section_title">
+              최신 뉴스 <strong>10</strong>
+            </h1>
+            <div
+              className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
+              onPointerCancel={stopLatestDrag}
+              onPointerDown={handleLatestPointerDown}
+              onPointerLeave={stopLatestDrag}
+              onPointerMove={handleLatestPointerMove}
+              onPointerUp={stopLatestDrag}
+              ref={latestScrollerRef}
+            >
+              {allNewsLatest.map((item, index) => (
+                <AllNewsLatestCard
+                  item={item}
+                  key={`${item.title}-${index}`}
+                  onClick={() => {
+                    if (latestDidDragRef.current) {
+                      return;
+                    }
 
-                  setSelectedLatestIndex((current) => (current === index ? null : index));
-                }}
-                selected={selectedLatestIndex === index}
-              />
-            ))}
-          </div>
-          </div>
+                    setSelectedLatestIndex((current) => (current === index ? null : index));
+                  }}
+                  selected={selectedLatestIndex === index}
+                />
+              ))}
+            </div>
+          </AllNewsPanelContent>
         </article>
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_press_panel" aria-label="언론사별 헤드라인">
-          <div className="newsroll_all_panelContent">
-          <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
-          <div className="newsroll_all_press_tabs" role="tablist" aria-label="언론사 선택">
-            {allNewsPresses.map((press, index) => {
-              const selected = activePress === press;
-              const label = allNewsPressLabels[press] ?? press;
+          <AllNewsPanelContent>
+            <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
+            <div
+              className="newsroll_all_press_tabs"
+              role="tablist"
+              aria-label="언론사 선택"
+              onKeyDown={handlePressTabKeyDown}
+            >
+              {allNewsPresses.map((press, index) => {
+                const selected = activePress === press;
 
-              return (
-                <button
-                  aria-selected={selected}
-                  key={press}
-                  onClick={() => {
-                    setActivePress(press);
-                    setSelectedHeadlineIndex(null);
-                  }}
-                  role="tab"
-                  tabIndex={selected ? 0 : -1}
-                  type="button"
-                >
-                  <span className="newsroll_all_press_logo" aria-hidden="true">
-                    {allNewsPressLogos[index]}
-                  </span>
-                  <span>{label}</span>
-                </button>
-              );
-            })}
-          </div>
-          <div className="newsroll_all_headline_list">
-            {headlineItems.map((item, index) => (
-              <AllNewsHeadlineItem
-                item={item}
-                key={`${item.title}-${index}`}
-                onClick={() => setSelectedHeadlineIndex((current) => (current === index ? null : index))}
-                selected={selectedHeadlineIndex === index}
-              />
-            ))}
-          </div>
-          <AllNewsMoreButton expanded={showAllHeadlines} onClick={() => setShowAllHeadlines((current) => !current)} />
-          </div>
+                return (
+                  <button
+                    aria-controls="all-news-headline-panel"
+                    aria-selected={selected}
+                    id={`all-news-press-tab-${index}`}
+                    key={press}
+                    onClick={() => {
+                      setActivePress(press);
+                      setSelectedHeadlineIndex(null);
+                    }}
+                    role="tab"
+                    tabIndex={selected ? 0 : -1}
+                    type="button"
+                  >
+                    <span className="newsroll_all_press_logo" aria-hidden="true">
+                      {allNewsPressLogos[index]}
+                    </span>
+                    <span>{press}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div
+              aria-labelledby={`all-news-press-tab-${activePressIndex}`}
+              className="newsroll_all_headline_list"
+              id="all-news-headline-panel"
+              role="tabpanel"
+            >
+              {headlineItems.map((item, index) => (
+                <AllNewsHeadlineItem
+                  item={item}
+                  key={`${item.title}-${index}`}
+                  onClick={() => setSelectedHeadlineIndex((current) => (current === index ? null : index))}
+                  selected={selectedHeadlineIndex === index}
+                />
+              ))}
+            </div>
+            <AllNewsMoreButton expanded={showAllHeadlines} onClick={() => setShowAllHeadlines((current) => !current)} />
+          </AllNewsPanelContent>
         </article>
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_relay_panel" aria-label="릴레이 뉴스">
-          <div className="newsroll_all_panelContent">
-          <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
-          <PillTabMenu
-            ariaLabel="릴레이 뉴스 카테고리"
-            className="newsroll_all_category_tabs"
-            items={allNewsRelayCategories.map((category) => ({ id: category, label: category }))}
-            onChange={(category) => {
-              setActiveRelayCategory(category);
-              setSelectedRelayIndex(null);
-            }}
-            value={activeRelayCategory}
-          />
-          <div className="newsroll_all_relay_list">
-            {relayItems.map((item, index) => (
-              <AllNewsRelayItem
-                featured={index === 0 || index === 5}
-                item={item}
-                key={`${item.title}-${index}`}
-                onClick={() => setSelectedRelayIndex((current) => (current === index ? null : index))}
-                selected={selectedRelayIndex === index}
-              />
-            ))}
-          </div>
-          </div>
+          <AllNewsPanelContent>
+            <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
+            <PillTabMenu
+              ariaLabel="릴레이 뉴스 카테고리"
+              className="newsroll_all_category_tabs"
+              getPanelId={(category) => `all-news-relay-panel-${allNewsRelayCategories.indexOf(category)}`}
+              getTabId={(category) => `all-news-relay-tab-${allNewsRelayCategories.indexOf(category)}`}
+              items={allNewsRelayCategories.map((category) => ({ id: category, label: category }))}
+              onChange={(category) => {
+                setActiveRelayCategory(category);
+                setSelectedRelayIndex(null);
+              }}
+              value={activeRelayCategory}
+            />
+            <div
+              aria-labelledby={`all-news-relay-tab-${activeRelayIndex}`}
+              className="newsroll_all_relay_list"
+              id={`all-news-relay-panel-${activeRelayIndex}`}
+              role="tabpanel"
+            >
+              {relayItems.map((item, index) => (
+                <AllNewsRelayItem
+                  featured={index === 0 || index === 5}
+                  item={item}
+                  key={`${item.title}-${index}`}
+                  onClick={() => setSelectedRelayIndex((current) => (current === index ? null : index))}
+                  selected={selectedRelayIndex === index}
+                />
+              ))}
+            </div>
+          </AllNewsPanelContent>
         </article>
       </section>
     </NewsRollCommonLayout>

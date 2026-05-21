@@ -511,22 +511,6 @@
         --line-height-90: 90px;
     }
 
-
-        .newsroll_all_news {
-            width: calc(
-                100% + var(--spacing-padding-horizontal-16) + var(--spacing-padding-horizontal-16)
-            );
-            min-height: 100dvh;
-            position: relative;
-            left: calc(var(--spacing-padding-horizontal-16) * -1);
-            padding-bottom: calc(
-                var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
-            );
-            overflow-x: visible;
-            color: var(--color-common-100);
-            background: var(--color-newsroll-purple-20);
-        }
-
         .newsroll_all_top {
             padding: var(--spacing-padding-vertical-24) 0;
         }
@@ -794,13 +778,6 @@
             line-height: 26px;
         }
 
-        .newsroll_all_press_tabs .is_active {
-            color: var(--color-common-100);
-            border-color: var(--color-label-strong);
-            background: var(--color-label-strong);
-            font-weight: var(--font-weight-700);
-        }
-
         .newsroll_all_press_logo {
             width: calc(var(--spacing-padding-horizontal-24) + var(--spacing-padding-horizontal-4));
             height: calc(var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4));
@@ -812,11 +789,6 @@
             background: var(--color-neutral-30);
             font-size: var(--font-size-12);
             font-weight: var(--font-weight-700);
-        }
-
-        .newsroll_all_press_tabs .is_active .newsroll_all_press_logo {
-            color: var(--color-label-strong);
-            background: var(--color-common-100);
         }
 
         .newsroll_all_headline_list,
@@ -873,12 +845,6 @@
             flex: 0 0 auto;
             border: var(--border-1) solid var(--color-neutral-95);
             background: var(--color-background-elevated-normal);
-        }
-
-        .newsroll_all_category_tabs .is_active {
-            color: var(--color-common-100);
-            border-color: var(--color-label-strong);
-            background: var(--color-label-strong);
         }
 
         .newsroll_all_relay_item {
@@ -2835,15 +2801,6 @@
         padding: 0;
     }
 
-    .newsroll_all_news {
-        width: 100%;
-        min-height: 100dvh;
-        padding-bottom: 0;
-        overflow: visible;
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-    }
-
     .newsroll_all_top {
         padding: var(--spacing-padding-vertical-24) 0;
         background: var(--color-newsroll-purple-20);
@@ -3159,13 +3116,6 @@
         line-height: 26px;
     }
 
-    .newsroll_all_press_tabs .is_active {
-        color: var(--color-common-100);
-        border-color: var(--color-label-strong);
-        background: var(--color-label-strong);
-        font-weight: var(--font-weight-700);
-    }
-
     .newsroll_all_press_logo {
         width: calc(var(--spacing-padding-horizontal-24) + var(--spacing-padding-horizontal-4));
         height: calc(var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4));
@@ -3177,11 +3127,6 @@
         background: var(--color-orange-50);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-700);
-    }
-
-    .newsroll_all_press_tabs .is_active .newsroll_all_press_logo {
-        color: var(--color-orange-50);
-        background: var(--color-common-100);
     }
 
     .newsroll_all_headline_list,
@@ -3244,12 +3189,6 @@
         border: var(--border-1) solid var(--color-neutral-95);
         background: var(--color-background-elevated-normal);
         line-height: var(--line-height-16);
-    }
-
-    .newsroll_all_category_tabs .is_active {
-        color: var(--color-common-100);
-        border-color: var(--color-label-strong);
-        background: var(--color-label-strong);
     }
 
     .newsroll_all_relay_item {
@@ -5409,7 +5348,6 @@
         display: none;
     }
 
-    .newsroll_all_news,
     .newsroll_info_screen,
     .newsroll_my_screen {
         background: var(--color-newsroll-purple-20);
@@ -5528,10 +5466,6 @@
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-400);
         line-height: 26px;
-    }
-
-    .newsroll_all_press_tabs .is_active {
-        font-weight: var(--font-weight-700);
     }
 
     .newsroll_all_headline_item + .newsroll_all_headline_item,
@@ -6837,7 +6771,6 @@
         background: var(--color-neutral-95);
     }
 
-    .newsroll_all_news,
     .newsroll_policy_screen,
     .newsroll_my_screen,
     .newsroll_info_screen,
@@ -6847,7 +6780,6 @@
         );
     }
 
-    .newsroll_all_news,
     .newsroll_all_detail,
     .newsroll_policy_screen,
     .newsroll_policy_detail,
@@ -7016,7 +6948,6 @@
         width: min(100vw, var(--newsroll-max-width));
     }
 
-    .newsroll_all_news,
     .newsroll_policy_screen,
     .newsroll_my_screen,
     .newsroll_info_screen,
@@ -7082,7 +7013,6 @@
     .container_homeScreen,
     .container_home,
     .container_homeSheet,
-    .newsroll_all_news,
     .newsroll_policy_screen,
     .newsroll_my_screen,
     .newsroll_info_screen,
