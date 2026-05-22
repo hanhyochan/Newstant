@@ -10,6 +10,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
+  type TouchEvent,
 } from "react";
 
 import {
@@ -29,7 +30,9 @@ import {
   type PillTabItem,
 } from "@/design-system/components";
 import {
+  NewsRollArticleDetailPanel,
   NewsRollCommonLayout,
+  NewsRollDockedControls,
   NewsRollPagePanel,
   NewsRollSummaryHeroTop,
   useDockedPanelScroll,
@@ -369,15 +372,13 @@ const commentActionOptions: { label: string; value: CommentAction }[] = [
 ];
 
 const allNewsAssets = {
-  comment: "https://www.figma.com/api/mcp/asset/3f35cfa2-0bc7-4d2a-9328-60390c1622a1",
-  eye: "https://www.figma.com/api/mcp/asset/7c832f0b-f9d8-4bdc-a3df-8602d289353e",
-  latest: "https://www.figma.com/api/mcp/asset/e19fd2c5-0cdc-49f3-b038-98f397c30d89",
-  relayOne: "https://www.figma.com/api/mcp/asset/1a59a503-73ff-4503-8685-d29d170dbdf5",
-  relayTwo: "https://www.figma.com/api/mcp/asset/1e86871e-c835-4bdc-b822-dc9d837e6dd2",
-  relayThree: "https://www.figma.com/api/mcp/asset/51809d7f-3c59-4ce6-a2af-54b3350504af",
-  relayFour: "https://www.figma.com/api/mcp/asset/530565e8-22ee-49ff-bc51-969b92bb5ee5",
-  relayFive: "https://www.figma.com/api/mcp/asset/100ceedd-8afb-44a1-b9d1-1cf93a4c3cb9",
-  thumbnail: "https://www.figma.com/api/mcp/asset/1a59a503-73ff-4503-8685-d29d170dbdf5",
+  latest: articleImage,
+  relayOne: articleImage,
+  relayTwo: articleImage,
+  relayThree: articleImage,
+  relayFour: articleImage,
+  relayFive: articleImage,
+  thumbnail: articleImage,
 };
 
 const allNewsBreaking = [
@@ -401,8 +402,11 @@ const allNewsPressLogos = ["J", "i", "⊕"];
 const allNewsDockedScrollSelectors = {
   contentScroller: ".newsroll_all_panelContent",
   immediatePanel: ".newsroll_all_latest_panel",
+  latestScroller: ".newsroll_all_latest_scroller",
   panel: ".newsroll_all_panel",
 };
+const allNewsSwipeAxisThresholdPx = 8;
+type SwipeAxis = "horizontal" | "vertical";
 
 const allNewsHeadlinesByPress: Record<string, { image: string; title: string }[]> = {
   국민일보: Array.from({ length: 8 }, (_, index) => ({
@@ -516,7 +520,7 @@ function HomeMainHeader({
           ariaLabel: "홈 요약",
           caption: "새로운 소식이 있습니다.",
           controls: (
-            <div className="wrapper_homeDockedControls">
+            <NewsRollDockedControls isDetailOpen={isDetailOpen}>
               {isDetailOpen ? (
                 <button
                   aria-label="블록형 뉴스 목록으로 돌아가기"
@@ -541,7 +545,7 @@ function HomeMainHeader({
               >
                 <Icon name="alarm" />
               </Button>
-            </div>
+            </NewsRollDockedControls>
           ),
           count: "11,343",
           greeting: <>반갑습니다 <strong>콩콩이</strong>님!</>,
@@ -1511,19 +1515,16 @@ function ArticleDetailContent({
   onBack?: () => void;
 }) {
   return (
-    <section className="container_newsFeed container_newsFeed_detail" aria-label="기사 상세">
-      <article aria-labelledby="home-article-title-detail" className="container_articleCard">
-        {backLabel && onBack ? (
-          <button aria-label={backLabel} className="newsroll_all_detail_back" onClick={onBack} type="button">
-            <span aria-hidden="true" />
-          </button>
-        ) : null}
-        <HomeReelCard article={article} framed={false} headingLevel="h1" index="detail" />
-      </article>
-    </section>
+    <NewsRollArticleDetailPanel
+      ariaLabel="기사 상세"
+      backLabel={backLabel}
+      labelledBy="home-article-title-detail"
+      onBack={onBack}
+    >
+      <HomeReelCard article={article} framed={false} headingLevel="h1" index="detail" />
+    </NewsRollArticleDetailPanel>
   );
 }
-
 function HomeView({
   isTextLarge,
   onOpenBreakingNews,
@@ -1673,19 +1674,34 @@ function AllNewsPanelContent({ children }: { children: ReactNode }) {
   return <div className="newsroll_all_panelContent">{children}</div>;
 }
 
+type AllNewsArticlePreview = {
+  category?: string;
+  guideKind?: GuideKind;
+  image: string;
+  title: string;
+};
+
+function createAllNewsArticle(preview: AllNewsArticlePreview, fallbackCategory: string, index: number): HomeArticle {
+  return {
+    category: preview.category ?? fallbackCategory,
+    date: homeArticle.date,
+    guideKind: preview.guideKind ?? (index % 2 === 0 ? "stacked" : "binary"),
+    image: preview.image,
+    imageAlt: homeArticle.imageAlt,
+    title: preview.title,
+  };
+}
+
 function AllNewsLatestCard({
   item,
   onClick,
-  selected,
 }: {
   item: (typeof allNewsLatest)[number];
   onClick: () => void;
-  selected: boolean;
 }) {
   return (
     <button
       aria-label={`${item.category} 기사: ${item.title}`}
-      aria-pressed={selected}
       className="newsroll_all_latest_card"
       onClick={onClick}
       type="button"
@@ -1703,16 +1719,13 @@ function AllNewsLatestCard({
 function AllNewsHeadlineItem({
   item,
   onClick,
-  selected,
 }: {
   item: (typeof allNewsHeadlinesByPress)[string][number];
   onClick: () => void;
-  selected: boolean;
 }) {
   return (
     <button
       aria-label={`헤드라인 기사: ${item.title}`}
-      aria-pressed={selected}
       className="newsroll_all_headline_item"
       onClick={onClick}
       type="button"
@@ -1730,17 +1743,14 @@ function AllNewsRelayItem({
   item,
   featured = false,
   onClick,
-  selected,
 }: {
   featured?: boolean;
   item: (typeof allNewsRelayByCategory)[string][number];
   onClick: () => void;
-  selected: boolean;
 }) {
   return (
     <button
       aria-label={`릴레이 뉴스 기사: ${item.title}`}
-      aria-pressed={selected}
       className="newsroll_all_relay_item"
       onClick={onClick}
       type="button"
@@ -1778,11 +1788,14 @@ function AllNewsView({
   const latestDragActiveRef = useRef(false);
   const latestDidDragRef = useRef(false);
   const latestDragStartRef = useRef({ scrollLeft: 0, x: 0 });
+  const latestTouchIntentRef = useRef<{
+    axis: SwipeAxis | null;
+    isFromLatestScroller: boolean;
+    x: number;
+    y: number;
+  } | null>(null);
   const [isLatestDragging, setIsLatestDragging] = useState(false);
-  const [selectedBreakingIndex, setSelectedBreakingIndex] = useState<number | null>(null);
-  const [selectedHeadlineIndex, setSelectedHeadlineIndex] = useState<number | null>(null);
-  const [selectedLatestIndex, setSelectedLatestIndex] = useState<number | null>(null);
-  const [selectedRelayIndex, setSelectedRelayIndex] = useState<number | null>(null);
+  const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
   const [isBreakingAlarmOn, setIsBreakingAlarmOn] = useState(false);
   const [showAllBreaking, setShowAllBreaking] = useState(false);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
@@ -1792,6 +1805,55 @@ function AllNewsView({
   const activeRelayIndex = Math.max(0, allNewsRelayCategories.indexOf(activeRelayCategory));
   const activeHeadlineItems = allNewsHeadlinesByPress[activePress] ?? [];
   const headlineItems = showAllHeadlines ? activeHeadlineItems : activeHeadlineItems.slice(0, 4);
+
+  function isLatestScrollerEventTarget(target: EventTarget | null) {
+    return target instanceof Element && target.closest(allNewsDockedScrollSelectors.latestScroller) !== null;
+  }
+
+  function handleAllNewsTouchStart(event: TouchEvent<HTMLElement>) {
+    const touch = event.touches[0] ?? null;
+
+    if (touch) {
+      latestTouchIntentRef.current = {
+        axis: null,
+        isFromLatestScroller: isLatestScrollerEventTarget(event.target),
+        x: touch.clientX,
+        y: touch.clientY,
+      };
+    } else {
+      latestTouchIntentRef.current = null;
+    }
+
+    dockedPanelScroll.handleTouchStart(event);
+  }
+
+  function handleAllNewsTouchMove(event: TouchEvent<HTMLElement>) {
+    const touch = event.touches[0] ?? null;
+    const latestTouchIntent = latestTouchIntentRef.current;
+
+    if (touch && latestTouchIntent?.isFromLatestScroller) {
+      const deltaX = touch.clientX - latestTouchIntent.x;
+      const deltaY = touch.clientY - latestTouchIntent.y;
+      const absoluteX = Math.abs(deltaX);
+      const absoluteY = Math.abs(deltaY);
+
+      if (!latestTouchIntent.axis && Math.max(absoluteX, absoluteY) > allNewsSwipeAxisThresholdPx) {
+        latestTouchIntent.axis = absoluteX > absoluteY ? "horizontal" : "vertical";
+      }
+
+      if (latestTouchIntent.axis === "horizontal") {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+    }
+
+    dockedPanelScroll.handleTouchMove(event);
+  }
+
+  function resetLatestTouchIntent() {
+    latestTouchIntentRef.current = null;
+  }
 
   function handleLatestPointerDown(event: PointerEvent<HTMLDivElement>) {
     const node = latestScrollerRef.current;
@@ -1867,8 +1929,17 @@ function AllNewsView({
 
     event.preventDefault();
     setActivePress(allNewsPresses[nextIndex]);
-    setSelectedHeadlineIndex(null);
   }
+
+  function openAllNewsDetail(article: HomeArticle) {
+    setDetailArticle(article);
+  }
+
+  function closeAllNewsDetail() {
+    setDetailArticle(null);
+  }
+
+  const isDetailOpen = detailArticle !== null;
 
   return (
     <NewsRollCommonLayout
@@ -1878,13 +1949,17 @@ function AllNewsView({
       initialGap={40}
       minInitialTop={492}
       movingSheet
-      onTouchMoveCapture={dockedPanelScroll.handleTouchMove}
-      onTouchStartCapture={dockedPanelScroll.handleTouchStart}
+      onTouchCancelCapture={resetLatestTouchIntent}
+      onTouchEndCapture={resetLatestTouchIntent}
+      onTouchMoveCapture={handleAllNewsTouchMove}
+      onTouchStartCapture={handleAllNewsTouchStart}
       onWheelCapture={dockedPanelScroll.handleWheel}
       ref={screenRef}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_all_sheetFrameSheet"
-      sheetNestedScrollResetSelector={allNewsDockedScrollSelectors.contentScroller}
-      sheetScrollSelector=".newsroll_all_feed"
+      sheetNestedScrollResetSelector={
+        isDetailOpen ? homeDockedScrollSelectors.contentScroller : allNewsDockedScrollSelectors.contentScroller
+      }
+      sheetScrollSelector={isDetailOpen ? ".container_newsFeed_detail" : ".newsroll_all_feed"}
       top={
         <header className="container_homeToolbar newsroll_all_breakingHeader">
           <NewsToolbar
@@ -1892,7 +1967,17 @@ function AllNewsView({
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
-          <div className="wrapper_homeDockedControls newsroll_allDockedControls">
+          <NewsRollDockedControls className="newsroll_allDockedControls" isDetailOpen={isDetailOpen}>
+            {isDetailOpen ? (
+              <button
+                aria-label="전체 뉴스 목록으로 돌아가기"
+                className="newsroll_homeDetailBack newsroll_all_detail_back"
+                onClick={closeAllNewsDetail}
+                type="button"
+              >
+                <span aria-hidden="true" />
+              </button>
+            ) : null}
             <Button
               aria-label="속보 알림"
               aria-pressed={isBreakingAlarmOn}
@@ -1905,7 +1990,7 @@ function AllNewsView({
             >
               <Icon name="alarm" />
             </Button>
-          </div>
+          </NewsRollDockedControls>
           <div className="newsroll_all_breaking_label">
             <Icon name="alarm" />
             <span>속보</span>
@@ -1914,10 +1999,13 @@ function AllNewsView({
             <div className="newsroll_all_breaking_stack" id="all-breaking-news">
               {breakingItems.map((item, index) => (
                 <button
-                  aria-pressed={selectedBreakingIndex === index}
                   className="newsroll_all_breaking_card"
                   key={item}
-                  onClick={() => setSelectedBreakingIndex((current) => (current === index ? null : index))}
+                  onClick={() =>
+                    openAllNewsDetail(
+                      createAllNewsArticle({ image: allNewsAssets.latest, title: item }, homeArticle.category, index),
+                    )
+                  }
                   type="button"
                 >
                   {item}
@@ -1927,10 +2015,7 @@ function AllNewsView({
             <AllNewsMoreButton
               ariaLabel={showAllBreaking ? "속보 접기" : "속보 더보기"}
               expanded={showAllBreaking}
-              onClick={() => {
-                setShowAllBreaking((current) => !current);
-                setSelectedBreakingIndex(null);
-              }}
+              onClick={() => setShowAllBreaking((current) => !current)}
               tone="dark"
             />
           </div>
@@ -1938,6 +2023,9 @@ function AllNewsView({
       }
       topClassName="container_home newsroll_sheetFrameTop"
     >
+      {detailArticle ? (
+        <ArticleDetailContent article={detailArticle} />
+      ) : (
       <section className="container_newsFeed newsroll_all_feed" aria-label="전체 뉴스 콘텐츠 영역" ref={feedRef}>
         <article className="container_articleCard newsroll_all_panel newsroll_all_latest_panel" aria-label="최신 뉴스">
           <AllNewsPanelContent>
@@ -1964,9 +2052,8 @@ function AllNewsView({
                       return;
                     }
 
-                    setSelectedLatestIndex((current) => (current === index ? null : index));
+                    openAllNewsDetail(createAllNewsArticle(item, item.category, index));
                   }}
-                  selected={selectedLatestIndex === index}
                 />
               ))}
             </div>
@@ -1991,10 +2078,7 @@ function AllNewsView({
                     aria-selected={selected}
                     id={`all-news-press-tab-${index}`}
                     key={press}
-                    onClick={() => {
-                      setActivePress(press);
-                      setSelectedHeadlineIndex(null);
-                    }}
+                    onClick={() => setActivePress(press)}
                     role="tab"
                     tabIndex={selected ? 0 : -1}
                     type="button"
@@ -2017,8 +2101,7 @@ function AllNewsView({
                 <AllNewsHeadlineItem
                   item={item}
                   key={`${item.title}-${index}`}
-                  onClick={() => setSelectedHeadlineIndex((current) => (current === index ? null : index))}
-                  selected={selectedHeadlineIndex === index}
+                  onClick={() => openAllNewsDetail(createAllNewsArticle(item, activePress, index))}
                 />
               ))}
             </div>
@@ -2043,10 +2126,7 @@ function AllNewsView({
               }
               getTabId={(category) => `all-news-relay-tab-${allNewsRelayCategories.indexOf(category)}`}
               items={allNewsRelayCategories.map((category) => ({ id: category, label: category }))}
-              onChange={(category) => {
-                setActiveRelayCategory(category);
-                setSelectedRelayIndex(null);
-              }}
+              onChange={setActiveRelayCategory}
               value={activeRelayCategory}
             />
             <div
@@ -2060,14 +2140,14 @@ function AllNewsView({
                   featured={index === 0 || index === 5}
                   item={item}
                   key={`${item.title}-${index}`}
-                  onClick={() => setSelectedRelayIndex((current) => (current === index ? null : index))}
-                  selected={selectedRelayIndex === index}
+                  onClick={() => openAllNewsDetail(createAllNewsArticle(item, activeRelayCategory, index))}
                 />
               ))}
             </div>
           </AllNewsPanelContent>
         </article>
       </section>
+      )}
     </NewsRollCommonLayout>
   );
 }
