@@ -1473,7 +1473,7 @@ function HomeReelCard({
       <ArticleGuideSection kind={article.guideKind ?? "stacked"} />
 
       <Button
-        aria-controls={commentPanelId}
+        aria-controls={isCommentPanelOpen ? commentPanelId : undefined}
         aria-expanded={isCommentPanelOpen}
         className="btn_commentPanel"
         classNameOnly

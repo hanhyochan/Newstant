@@ -2837,11 +2837,13 @@
     }
 
     .newsroll_all_latest_panel {
+        --newsroll-all-latest-panel-natural-height: 540px;
         --newsroll-all-latest-panel-available-height: calc(
-            100dvh - var(--newsroll-common-sheet-top, 492px)
+            100dvh - var(--newsroll-common-sheet-stop-top, 168px) -
+                var(--newsroll-bottom-nav-clearance)
         );
         --newsroll-all-latest-panel-height: min(
-            540px,
+            var(--newsroll-all-latest-panel-natural-height),
             var(--newsroll-all-latest-panel-available-height)
         );
         height: var(--newsroll-all-latest-panel-height);
@@ -2893,7 +2895,9 @@
 
     .newsroll_all_latest_scroller {
         width: 100%;
+        height: 100%;
         min-height: 0;
+        max-height: 100%;
         gap: var(--spacing-gap-horizontal-24);
         align-items: stretch;
         cursor: grab;
@@ -4156,6 +4160,7 @@
 
     .newsroll_sheetFrame {
         --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
+        --newsroll-common-sheet-stop-top: 168px;
         --newsroll-bottom-nav-clearance: var(--spacing-padding-vertical-60);
         --newsroll-main-border-width: 1.5px;
         height: 100dvh;
@@ -4350,20 +4355,14 @@
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_feed .newsroll_all_latest_panel {
-        --newsroll-all-latest-panel-available-height: calc(
-            100dvh - var(--newsroll-common-sheet-top, 492px) -
-                var(--newsroll-bottom-nav-clearance)
-        );
         align-self: stretch;
         flex: 0 0 auto;
+        height: var(--newsroll-all-latest-panel-height);
+        max-height: var(--newsroll-all-latest-panel-height);
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_feed .newsroll_all_panel::-webkit-scrollbar {
         display: none;
-    }
-
-    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_scroller {
-        height: 100%;
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_image {

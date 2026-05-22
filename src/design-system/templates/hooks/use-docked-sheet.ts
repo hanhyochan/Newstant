@@ -195,6 +195,7 @@ export function useDockedSheet({
 
     sheetBoundsRef.current = { initialTop: measuredInitialTop, stopTop: measuredStopTop };
     screen.style.setProperty("--newsroll-common-sheet-initial-top", `${measuredInitialTop}px`);
+    screen.style.setProperty("--newsroll-common-sheet-stop-top", `${measuredStopTop}px`);
     setSheetTop(nextTop);
     hasMeasuredRef.current = true;
   };
