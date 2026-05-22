@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type ReactNode,
+  type TouchEventHandler,
   type TouchEvent,
   type WheelEvent,
 } from "react";
@@ -14,8 +15,12 @@ type UseDockedSheetOptions = {
   dockedControlsSelector?: string;
   dockedGap: number;
   initialGap: number;
+  initiallyDocked?: boolean;
+  lockSheetPosition?: boolean;
   minInitialTop?: number;
   movingSheet: boolean;
+  onTouchCancelCapture?: TouchEventHandler<HTMLElement>;
+  onTouchEndCapture?: TouchEventHandler<HTMLElement>;
   onTouchMoveCapture?: (event: TouchEvent<HTMLElement>) => void;
   onTouchStartCapture?: (event: TouchEvent<HTMLElement>) => void;
   onWheelCapture?: (event: WheelEvent<HTMLElement>) => void;
@@ -26,14 +31,20 @@ type UseDockedSheetOptions = {
 
 const DEFAULT_TOOLBAR_HEIGHT = 40;
 const SHEET_EDGE_THRESHOLD = 1;
+const WHEEL_HANDOFF_RELEASE_MS = 420;
+type ScrollInput = "touch" | "wheel";
 
 export function useDockedSheet({
   children,
   dockedControlsSelector,
   dockedGap,
   initialGap,
+  initiallyDocked = false,
+  lockSheetPosition = false,
   minInitialTop,
   movingSheet,
+  onTouchCancelCapture,
+  onTouchEndCapture,
   onTouchMoveCapture,
   onTouchStartCapture,
   onWheelCapture,
@@ -45,8 +56,13 @@ export function useDockedSheet({
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
   const touchYRef = useRef<number | null>(null);
+  const sheetHandoffLockRef = useRef<{
+    direction: number;
+    timeoutId: number | null;
+  } | null>(null);
   const sheetTopRef = useRef(0);
   const sheetBoundsRef = useRef({ initialTop: 0, stopTop: 0 });
+  const hasMeasuredRef = useRef(false);
   const [isSheetDocked, setIsSheetDocked] = useState(false);
 
   const getSheetScroller = () => {
@@ -63,6 +79,53 @@ export function useDockedSheet({
     return sheet.querySelector<HTMLElement>(sheetScrollSelector) ?? sheet;
   };
 
+  const clearSheetHandoffLock = () => {
+    const lock = sheetHandoffLockRef.current;
+
+    if (lock?.timeoutId != null) {
+      window.clearTimeout(lock.timeoutId);
+    }
+
+    sheetHandoffLockRef.current = null;
+    rootRef.current?.classList.remove("is_newsrollSheetHandoffLocked");
+  };
+
+  const setSheetHandoffLock = (direction: number, input: ScrollInput) => {
+    clearSheetHandoffLock();
+
+    const lock = {
+      direction,
+      timeoutId: null as number | null,
+    };
+
+    if (input === "wheel") {
+      lock.timeoutId = window.setTimeout(clearSheetHandoffLock, WHEEL_HANDOFF_RELEASE_MS);
+    }
+
+    sheetHandoffLockRef.current = lock;
+    rootRef.current?.classList.add("is_newsrollSheetHandoffLocked");
+  };
+
+  const consumeSheetHandoffLock = (deltaY: number, input: ScrollInput) => {
+    const direction = Math.sign(deltaY);
+    const lock = sheetHandoffLockRef.current;
+
+    if (!lock || direction === 0) {
+      return false;
+    }
+
+    if (lock.direction !== direction) {
+      clearSheetHandoffLock();
+      return false;
+    }
+
+    if (input === "wheel") {
+      setSheetHandoffLock(direction, input);
+    }
+
+    return true;
+  };
+
   const setSheetTop = (nextTop: number) => {
     const screen = rootRef.current;
     const { initialTop, stopTop } = sheetBoundsRef.current;
@@ -74,6 +137,17 @@ export function useDockedSheet({
       const nextDocked = boundedTop <= stopTop + SHEET_EDGE_THRESHOLD;
       return current === nextDocked ? current : nextDocked;
     });
+  };
+
+  const getCurrentSheetTop = () => {
+    const screen = rootRef.current;
+    const sheet = sheetRef.current;
+
+    if (!screen || !sheet) {
+      return sheetTopRef.current || sheetBoundsRef.current.initialTop;
+    }
+
+    return Math.round(sheet.getBoundingClientRect().top - screen.getBoundingClientRect().top);
   };
 
   const measureSheet = () => {
@@ -103,18 +177,26 @@ export function useDockedSheet({
       measuredTopBottom + initialGap,
     );
     const previousBounds = sheetBoundsRef.current;
+    const isFirstMeasure = !hasMeasuredRef.current;
     const previousTop = sheetTopRef.current || previousBounds.initialTop || measuredInitialTop;
     const wasDocked = previousTop <= previousBounds.stopTop + 1;
     const wasPartiallyLifted = previousTop < previousBounds.initialTop;
-    const nextTop = wasDocked
-      ? measuredStopTop
-      : wasPartiallyLifted
-        ? Math.min(measuredInitialTop, Math.max(measuredStopTop, previousTop))
-        : measuredInitialTop;
+    let nextTop = measuredInitialTop;
+
+    if (lockSheetPosition) {
+      nextTop = measuredStopTop;
+    } else if (isFirstMeasure && initiallyDocked) {
+      nextTop = measuredStopTop;
+    } else if (wasDocked) {
+      nextTop = measuredStopTop;
+    } else if (wasPartiallyLifted) {
+      nextTop = Math.min(measuredInitialTop, Math.max(measuredStopTop, previousTop));
+    }
 
     sheetBoundsRef.current = { initialTop: measuredInitialTop, stopTop: measuredStopTop };
     screen.style.setProperty("--newsroll-common-sheet-initial-top", `${measuredInitialTop}px`);
     setSheetTop(nextTop);
+    hasMeasuredRef.current = true;
   };
 
   const isSheetContentAtStart = () => {
@@ -124,7 +206,11 @@ export function useDockedSheet({
 
   const isSheetUndocked = () => {
     const { initialTop, stopTop } = sheetBoundsRef.current;
-    const currentTop = sheetTopRef.current || initialTop;
+    const currentTop = getCurrentSheetTop() || initialTop;
+
+    if (lockSheetPosition) {
+      return false;
+    }
 
     return movingSheet && currentTop > stopTop + SHEET_EDGE_THRESHOLD;
   };
@@ -147,23 +233,39 @@ export function useDockedSheet({
     });
   };
 
-  const moveSheet = (deltaY: number) => {
+  const moveSheet = (deltaY: number, input: ScrollInput) => {
     const { initialTop, stopTop } = sheetBoundsRef.current;
-    const currentTop = sheetTopRef.current || initialTop;
+    const currentTop = getCurrentSheetTop() || initialTop;
+
+    if (lockSheetPosition) {
+      return false;
+    }
 
     if (!movingSheet || initialTop <= stopTop) {
       return false;
     }
 
     if (deltaY > 0 && currentTop > stopTop) {
+      const nextTop = currentTop - deltaY;
       resetSheetScroll();
-      setSheetTop(currentTop - deltaY);
+      setSheetTop(nextTop);
+
+      if (nextTop <= stopTop + SHEET_EDGE_THRESHOLD) {
+        setSheetHandoffLock(1, input);
+      }
+
       return true;
     }
 
     if (deltaY < 0 && currentTop < initialTop && isSheetContentAtStart()) {
+      const nextTop = currentTop - deltaY;
       resetSheetScroll();
-      setSheetTop(currentTop - deltaY);
+      setSheetTop(nextTop);
+
+      if (nextTop >= initialTop - SHEET_EDGE_THRESHOLD) {
+        setSheetHandoffLock(-1, input);
+      }
+
       return true;
     }
 
@@ -171,9 +273,15 @@ export function useDockedSheet({
   };
 
   const handleWheel = (event: WheelEvent<HTMLElement>) => {
+    if (consumeSheetHandoffLock(event.deltaY, "wheel")) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     onWheelCapture?.(event);
 
-    if (event.defaultPrevented || !moveSheet(event.deltaY)) {
+    if (event.defaultPrevented || !moveSheet(event.deltaY, "wheel")) {
       return;
     }
 
@@ -189,13 +297,19 @@ export function useDockedSheet({
     touchYRef.current = event.touches[0]?.clientY ?? null;
   };
 
+  const handleTouchEnd = (event: TouchEvent<HTMLElement>) => {
+    onTouchEndCapture?.(event);
+    touchYRef.current = null;
+    clearSheetHandoffLock();
+  };
+
+  const handleTouchCancel = (event: TouchEvent<HTMLElement>) => {
+    onTouchCancelCapture?.(event);
+    touchYRef.current = null;
+    clearSheetHandoffLock();
+  };
+
   const handleTouchMove = (event: TouchEvent<HTMLElement>) => {
-    onTouchMoveCapture?.(event);
-
-    if (event.defaultPrevented) {
-      return;
-    }
-
     const currentY = event.touches[0]?.clientY;
     const previousY = touchYRef.current;
 
@@ -206,7 +320,21 @@ export function useDockedSheet({
 
     const deltaY = previousY - currentY;
 
-    if (moveSheet(deltaY)) {
+    if (consumeSheetHandoffLock(deltaY, "touch")) {
+      event.preventDefault();
+      event.stopPropagation();
+      touchYRef.current = currentY;
+      return;
+    }
+
+    onTouchMoveCapture?.(event);
+
+    if (event.defaultPrevented) {
+      touchYRef.current = currentY;
+      return;
+    }
+
+    if (moveSheet(deltaY, "touch")) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -232,6 +360,8 @@ export function useDockedSheet({
     dockedControlsSelector,
     dockedGap,
     initialGap,
+    initiallyDocked,
+    lockSheetPosition,
     minInitialTop,
     movingSheet,
     sheetNestedScrollResetSelector,
@@ -239,6 +369,8 @@ export function useDockedSheet({
   ]);
 
   return {
+    handleTouchCancel,
+    handleTouchEnd,
     handleTouchMove,
     handleTouchStart,
     handleWheel,

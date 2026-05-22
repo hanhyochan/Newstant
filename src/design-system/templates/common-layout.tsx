@@ -16,6 +16,8 @@ type NewsRollCommonLayoutProps = HTMLAttributes<HTMLElement> & {
   dockedControlsSelector?: string;
   dockedGap?: number;
   initialGap?: number;
+  initiallyDocked?: boolean;
+  lockSheetPosition?: boolean;
   minInitialTop?: number;
   movingSheet?: boolean;
   sheetClassName?: string;
@@ -59,6 +61,8 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   dockedControlsSelector,
   dockedGap = 16,
   initialGap = 40,
+  initiallyDocked = false,
+  lockSheetPosition = false,
   minInitialTop,
   movingSheet = false,
   sheetClassName,
@@ -73,6 +77,8 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   ...rootProps
 }, rootRef) {
   const {
+    onTouchCancelCapture,
+    onTouchEndCapture,
     onTouchMoveCapture,
     onTouchStartCapture,
     onWheelCapture,
@@ -83,8 +89,12 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
     dockedControlsSelector,
     dockedGap,
     initialGap,
+    initiallyDocked,
+    lockSheetPosition,
     minInitialTop,
     movingSheet,
+    onTouchCancelCapture,
+    onTouchEndCapture,
     onTouchMoveCapture,
     onTouchStartCapture,
     onWheelCapture,
@@ -102,6 +112,8 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
         movingSheet && dockedSheet.isSheetDocked ? dockedClassName : undefined,
         className,
       )}
+      onTouchCancelCapture={movingSheet ? dockedSheet.handleTouchCancel : onTouchCancelCapture}
+      onTouchEndCapture={movingSheet ? dockedSheet.handleTouchEnd : onTouchEndCapture}
       onTouchMoveCapture={movingSheet ? dockedSheet.handleTouchMove : onTouchMoveCapture}
       onTouchStartCapture={movingSheet ? dockedSheet.handleTouchStart : onTouchStartCapture}
       onWheelCapture={movingSheet ? dockedSheet.handleWheel : onWheelCapture}

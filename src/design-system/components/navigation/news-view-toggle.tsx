@@ -41,7 +41,7 @@ export function NewsViewToggle({ mode, onModeChange }: NewsViewToggleProps) {
   return (
     <div className="wrapper_newsViewToggle" role="tablist" aria-label="뉴스 보기 방식" onKeyDown={handleKeyDown}>
       <button
-        aria-controls={panelIds.reels}
+        aria-controls={mode === "reels" ? panelIds.reels : undefined}
         aria-label="릴스형"
         aria-selected={mode === "reels"}
         className="btn_newsViewOption"
@@ -54,7 +54,7 @@ export function NewsViewToggle({ mode, onModeChange }: NewsViewToggleProps) {
         <Icon name="list" />
       </button>
       <button
-        aria-controls={panelIds.block}
+        aria-controls={mode === "block" ? panelIds.block : undefined}
         aria-label="블록형"
         aria-selected={mode === "block"}
         className="btn_newsViewOption"

@@ -8,7 +8,7 @@ export type PillTabItem<T extends string> = {
 export type PillTabMenuProps<T extends string> = {
   ariaLabel: string;
   className: string;
-  getPanelId?: (id: T) => string;
+  getPanelId?: (id: T) => string | undefined;
   getTabId?: (id: T) => string;
   items: PillTabItem<T>[];
   onChange: (id: T) => void;

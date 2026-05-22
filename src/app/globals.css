@@ -511,32 +511,6 @@
         --line-height-90: 90px;
     }
 
-        .newsroll_all_top {
-            padding: var(--spacing-padding-vertical-24) 0;
-        }
-
-        .newsroll_all_top .newsroll_toolbar {
-            min-height: var(--spacing-padding-vertical-24);
-            padding-bottom: calc(
-                var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4)
-            );
-        }
-
-        .newsroll_all_top .newsroll_toolbar [aria-label='메뉴'] {
-            position: relative;
-        }
-
-        .newsroll_all_top .newsroll_toolbar [aria-label='메뉴']::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: -6px;
-            width: var(--spacing-padding-horizontal-4);
-            height: var(--spacing-padding-vertical-4);
-            border-radius: var(--radius-full);
-            background: var(--color-orange-50);
-        }
-
         .newsroll_all_breaking_label {
             display: inline-flex;
             align-items: center;
@@ -606,16 +580,6 @@
             border-right: var(--border-2) solid currentColor;
             border-bottom: var(--border-2) solid currentColor;
             transform: rotate(45deg) translateY(-1px);
-        }
-
-        .newsroll_all_sections {
-            display: grid;
-            gap: calc(var(--spacing-gap-vertical-4) / 2);
-            width: calc(
-                100% + var(--spacing-padding-horizontal-16) + var(--spacing-padding-horizontal-16)
-            );
-            position: relative;
-            left: calc(var(--spacing-padding-horizontal-16) * -1);
         }
 
         .newsroll_all_panel {
@@ -1386,24 +1350,6 @@
     .newsroll_info_tabs .is_active {
         color: var(--color-label-strong);
         background: var(--color-newsroll-purple-50);
-    }
-
-    .newsroll_policy_hero {
-        position: relative;
-        display: grid;
-        gap: var(--spacing-gap-vertical-4);
-        padding: var(--spacing-padding-vertical-24) 0;
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-        left: calc(var(--spacing-padding-horizontal-16) * -1);
-        transform: translateY(calc(var(--spacing-padding-vertical-32) * -1));
-        padding-inline: var(--spacing-padding-horizontal-16);
-    }
-
-    .newsroll_policy_hero strong {
-        color: var(--color-newsroll-purple-50);
-        font-size: var(--font-size-48);
-        line-height: var(--line-height-60);
     }
 
     .newsroll_bottom_nav {
@@ -2801,35 +2747,6 @@
         padding: 0;
     }
 
-    .newsroll_all_top {
-        padding: var(--spacing-padding-vertical-24) 0;
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_all_top .newsroll_toolbar {
-        min-height: var(--spacing-padding-vertical-24);
-        padding-bottom: calc(var(--spacing-gap-vertical-20) + var(--border-2));
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴'] {
-        position: relative;
-    }
-
-    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴']::before {
-        content: '';
-        position: absolute;
-        top: 2px;
-        left: -6px;
-        width: var(--spacing-padding-horizontal-4);
-        height: var(--spacing-padding-vertical-4);
-        border-radius: var(--radius-full);
-        background: var(--color-orange-50);
-    }
-
     .newsroll_all_breaking_label {
         display: inline-flex;
         align-items: center;
@@ -2897,17 +2814,6 @@
         border-right: var(--border-2) solid currentColor;
         border-bottom: var(--border-2) solid currentColor;
         transform: rotate(45deg) translateY(-1px);
-    }
-
-    .newsroll_all_sections {
-        display: grid;
-        gap: calc(var(--spacing-gap-vertical-4) / 2);
-        width: calc(
-            100% + var(--spacing-padding-horizontal-16) + var(--spacing-padding-horizontal-16)
-        );
-        position: relative;
-        left: calc(var(--spacing-padding-horizontal-16) * -1);
-        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_panel {
@@ -3230,19 +3136,6 @@
         object-fit: cover;
     }
 
-    .newsroll_all_detail {
-        min-height: 100dvh;
-        padding-bottom: var(--spacing-padding-vertical-60);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_all_detail_top {
-        min-height: 110px;
-        padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--color-newsroll-purple-20);
-    }
-
     .newsroll_all_detail_back {
         width: var(--size-44);
         height: var(--size-44);
@@ -3262,15 +3155,6 @@
         transform: rotate(45deg) translate(2px, -1px);
     }
 
-    .newsroll_all_detail_body {
-        display: grid;
-        gap: 2px;
-        background: var(--color-newsroll-purple-20);
-    }
-
-
-
-
     .newsroll_screen {
         padding-inline: 0;
     }
@@ -3281,14 +3165,7 @@
         overflow: hidden;
     }
 
-    .newsroll_header,
-    .newsroll_all_top {
-        padding-right: var(--spacing-padding-horizontal-16);
-        padding-left: var(--spacing-padding-horizontal-16);
-    }
-
-    .newsroll_feed,
-    .newsroll_all_sections {
+    .newsroll_feed {
         width: 100%;
         border-radius: var(--radius-20) var(--radius-20) 0 0;
         background: var(--color-background-elevated-normal);
@@ -3324,162 +3201,6 @@
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
         background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_policy_top {
-        min-height: 407px;
-        padding: 0 var(--spacing-padding-horizontal-16);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_policy_status {
-        height: 35px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding-bottom: 8px;
-        color: var(--color-common-100);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-16);
-    }
-
-    .newsroll_policy_status_icons {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .newsroll_policy_signal {
-        height: 12px;
-        display: inline-flex;
-        align-items: flex-end;
-        gap: 2px;
-    }
-
-    .newsroll_policy_signal i {
-        width: 3px;
-        border-radius: var(--radius-full);
-        background: currentColor;
-    }
-
-    .newsroll_policy_signal i:nth-child(1) {
-        height: 4px;
-    }
-
-    .newsroll_policy_signal i:nth-child(2) {
-        height: 6px;
-    }
-
-    .newsroll_policy_signal i:nth-child(3) {
-        height: 8px;
-    }
-
-    .newsroll_policy_signal i:nth-child(4) {
-        height: 10px;
-    }
-
-    .newsroll_policy_wifi {
-        width: 13px;
-        height: 9px;
-        border: 2px solid currentColor;
-        border-bottom: 0;
-        border-radius: var(--radius-full) var(--radius-full) 0 0;
-    }
-
-    .newsroll_policy_battery {
-        position: relative;
-        width: 22px;
-        height: 11px;
-        border: 1px solid currentColor;
-        border-radius: 2px;
-    }
-
-    .newsroll_policy_battery::before {
-        content: '';
-        position: absolute;
-        inset: 2px;
-        border-radius: 1px;
-        background: currentColor;
-    }
-
-    .newsroll_policy_battery::after {
-        content: '';
-        position: absolute;
-        top: 3px;
-        right: -4px;
-        width: 2px;
-        height: 5px;
-        border-radius: 0 2px 2px 0;
-        background: currentColor;
-    }
-
-    .newsroll_policy_top .newsroll_toolbar {
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .newsroll_policy_top .newsroll_text_size_button {
-        padding: 0;
-        font-size: var(--font-size-14);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_policy_top .newsroll_text_size_button strong {
-        font-size: var(--font-size-20);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_policy_top .newsroll_toolbar [aria-label='메뉴'] {
-        position: relative;
-    }
-
-    .newsroll_policy_top .newsroll_toolbar [aria-label='메뉴']::before {
-        content: '';
-        position: absolute;
-        top: 7px;
-        left: -6px;
-        width: 5px;
-        height: 5px;
-        border-radius: var(--radius-full);
-        background: var(--color-orange-50);
-    }
-
-    .newsroll_policy_hero {
-        display: grid;
-        gap: var(--spacing-gap-vertical-8);
-        padding: 35px 0 0;
-        padding: 0;
-        color: var(--color-common-100);
-        background: transparent;
-    }
-
-    .newsroll_policy_hero span {
-        color: var(--color-common-100);
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-400);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_policy_hero strong {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 2px;
-        color: var(--color-newsroll-purple-50);
-        font-size: 44px;
-        font-weight: var(--font-weight-500);
-        line-height: 52px;
-        letter-spacing: 0;
-    }
-
-    .newsroll_policy_hero strong span {
-        color: var(--color-common-100);
-        font-size: var(--font-size-24);
-        font-weight: var(--font-weight-400);
-        line-height: var(--line-height-32);
     }
 
     .newsroll_policy_sheet {
@@ -3623,29 +3344,6 @@
         gap: 7px;
     }
 
-    .newsroll_policy_detail {
-        min-height: 100dvh;
-        padding-bottom: var(--spacing-padding-vertical-60);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_policy_detail_top {
-        min-height: 110px;
-        padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_policy_detail_sheet {
-        min-height: calc(100dvh - 145px);
-        display: grid;
-        padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
-            calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-32));
-        border-radius: var(--radius-20) var(--radius-20) 0 0;
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
     .newsroll_policy_detail_tags {
         display: flex;
         flex-wrap: wrap;
@@ -3668,15 +3366,6 @@
 
     .newsroll_policy_detail_tags .is_accent {
         background: var(--color-newsroll-purple-90);
-    }
-
-    .newsroll_policy_detail_sheet h1 {
-        padding: var(--spacing-padding-vertical-20) 0 0;
-        color: var(--color-label-strong);
-        font-size: var(--font-size-20);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-28);
-        letter-spacing: 0;
     }
 
     .newsroll_policy_detail_summary {
@@ -3792,58 +3481,6 @@
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
         background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_my_top {
-        min-height: 110px;
-        padding: 0 var(--spacing-padding-horizontal-16);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_my_top .newsroll_policy_status {
-        height: 35px;
-    }
-
-    .newsroll_my_top .newsroll_toolbar {
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .newsroll_my_top .newsroll_text_size_button {
-        padding: 0;
-        font-size: var(--font-size-14);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_my_top .newsroll_text_size_button strong {
-        font-size: var(--font-size-20);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴'] {
-        position: relative;
-    }
-
-    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴']::before {
-        content: '';
-        position: absolute;
-        top: 7px;
-        left: -6px;
-        width: 5px;
-        height: 5px;
-        border-radius: var(--radius-full);
-        background: var(--color-orange-50);
-    }
-
-    .newsroll_my_top h1 {
-        padding: 30px 0 0;
-        color: var(--color-common-100);
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-24);
     }
 
     .newsroll_my_sheet {
@@ -4063,174 +3700,6 @@
         letter-spacing: 0;
     }
 
-    .newsroll_my_time_screen {
-        min-height: 100dvh;
-        padding-bottom: var(--spacing-padding-vertical-60);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_my_time_top {
-        min-height: 110px;
-        padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_my_time_top .newsroll_policy_status {
-        height: 35px;
-    }
-
-    .newsroll_my_time_top .newsroll_toolbar {
-        min-height: auto;
-        justify-content: end;
-    }
-
-    .newsroll_my_time_top .newsroll_toolbar [aria-label='메뉴'] {
-        display: inline-flex;
-    }
-
-    .newsroll_my_time_sheet {
-        min-height: calc(100dvh - 145px);
-        padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
-            calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
-        border-radius: var(--radius-20) var(--radius-20) 0 0;
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
-    .newsroll_my_time_sheet h1 {
-        padding: 0 0 18px;
-        color: var(--color-label-strong);
-        font-size: var(--font-size-20);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-28);
-        letter-spacing: 0;
-    }
-
-    .newsroll_my_time_group {
-        display: grid;
-        padding: 18px 0 var(--spacing-padding-vertical-24);
-        border-bottom: var(--border-1) solid var(--color-line-normal-normal);
-    }
-
-    .newsroll_my_time_group:last-child {
-        border-bottom: 0;
-        padding-bottom: 0;
-    }
-
-    .newsroll_my_time_group h2 {
-        padding: 0 0 var(--spacing-padding-vertical-16);
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-26, 26px);
-        letter-spacing: 0;
-    }
-
-    .newsroll_my_time_row {
-        min-height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-16);
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-400);
-        line-height: var(--line-height-24);
-        text-align: left;
-    }
-
-    .newsroll_my_activity_screen {
-        min-height: 100dvh;
-        padding-bottom: var(--spacing-padding-vertical-60);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_my_activity_top {
-        min-height: 110px;
-        padding: 0 var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-12);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_my_activity_top .newsroll_policy_status {
-        height: 35px;
-    }
-
-    .newsroll_my_activity_top .newsroll_toolbar {
-        min-height: auto;
-        justify-content: end;
-    }
-
-    .newsroll_my_activity_top .newsroll_toolbar [aria-label='메뉴'] {
-        display: inline-flex;
-    }
-
-    .newsroll_my_activity_sheet {
-        min-height: calc(100dvh - 145px);
-        padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
-            calc(var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24));
-        border-radius: var(--radius-20) var(--radius-20) 0 0;
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
-    .newsroll_my_activity_sheet h1 {
-        padding: 0 0 var(--spacing-padding-vertical-20);
-        color: var(--color-label-strong);
-        font-size: var(--font-size-20);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-28);
-        letter-spacing: 0;
-    }
-
-    .newsroll_my_activity_tabs {
-        padding-bottom: var(--spacing-padding-vertical-20);
-    }
-
-    .newsroll_my_activity_list {
-        display: grid;
-        gap: 0;
-    }
-
-    .newsroll_my_activity_card {
-        width: 100%;
-        display: grid;
-        gap: var(--spacing-gap-vertical-10, 10px);
-        padding: var(--spacing-padding-vertical-20) 0 var(--spacing-padding-vertical-24);
-        border: 0;
-        border-bottom: var(--border-1) solid var(--color-cool-neutral-96);
-        border-radius: 0;
-        background: var(--color-background-elevated-normal);
-        text-align: left;
-    }
-
-    .newsroll_my_activity_card:first-child {
-        padding-top: 0;
-    }
-
-    .newsroll_my_activity_kicker {
-        color: var(--color-label-alternative);
-        font-size: var(--font-size-12);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-16);
-    }
-
-    .newsroll_my_activity_card h2 {
-        color: var(--color-label-strong);
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-24);
-        letter-spacing: 0;
-    }
-
-    .newsroll_my_activity_card p {
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-22, 22px);
-    }
-
     .newsroll_my_vote_result {
         position: relative;
         overflow: hidden;
@@ -4406,58 +3875,6 @@
         padding-bottom: var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
         background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_info_top {
-        min-height: 110px;
-        padding: 0 var(--spacing-padding-horizontal-16);
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_info_top .newsroll_policy_status {
-        height: 35px;
-    }
-
-    .newsroll_info_top .newsroll_toolbar {
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .newsroll_info_top .newsroll_text_size_button {
-        padding: 0;
-        font-size: var(--font-size-14);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_info_top .newsroll_text_size_button strong {
-        font-size: var(--font-size-20);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴'] {
-        position: relative;
-    }
-
-    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴']::before {
-        content: '';
-        position: absolute;
-        top: 7px;
-        left: -6px;
-        width: 5px;
-        height: 5px;
-        border-radius: var(--radius-full);
-        background: var(--color-orange-50);
-    }
-
-    .newsroll_info_top h1 {
-        padding: 30px 0 0;
-        color: var(--color-common-100);
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
     }
 
     .newsroll_info_sheet {
@@ -4666,29 +4083,15 @@
         background: var(--color-newsroll-purple-20);
     }
 
-    .newsroll_header,
-    .newsroll_all_top,
-    .newsroll_info_top,
-    .newsroll_my_top {
+    .newsroll_header {
         min-height: 110px;
         padding: 0 var(--spacing-padding-horizontal-16);
         gap: 0;
         background: var(--color-newsroll-purple-20);
     }
 
-    .container_homeToolbar .newsroll_policy_status,
-    .newsroll_header .newsroll_policy_status,
-    .newsroll_all_top .newsroll_policy_status,
-    .newsroll_info_top .newsroll_policy_status,
-    .newsroll_my_top .newsroll_policy_status {
-        height: 35px;
-    }
-
     .container_homeToolbar .newsroll_toolbar,
-    .newsroll_header .newsroll_toolbar,
-    .newsroll_all_top .newsroll_toolbar,
-    .newsroll_info_top .newsroll_toolbar,
-    .newsroll_my_top .newsroll_toolbar {
+    .newsroll_header .newsroll_toolbar {
         min-height: 40px;
         display: flex;
         align-items: center;
@@ -4697,10 +4100,7 @@
     }
 
     .container_homeToolbar .newsroll_text_size_button,
-    .newsroll_header .newsroll_text_size_button,
-    .newsroll_all_top .newsroll_text_size_button,
-    .newsroll_info_top .newsroll_text_size_button,
-    .newsroll_my_top .newsroll_text_size_button {
+    .newsroll_header .newsroll_text_size_button {
         width: 24px;
         height: 24px;
         display: inline-flex;
@@ -4712,27 +4112,18 @@
     }
 
     .container_homeToolbar .newsroll_toolbar .newsroll_icon,
-    .newsroll_header .newsroll_toolbar .newsroll_icon,
-    .newsroll_all_top .newsroll_toolbar .newsroll_icon,
-    .newsroll_info_top .newsroll_toolbar .newsroll_icon,
-    .newsroll_my_top .newsroll_toolbar .newsroll_icon {
+    .newsroll_header .newsroll_toolbar .newsroll_icon {
         width: 24px;
         height: 24px;
     }
 
     .container_homeToolbar .newsroll_toolbar [aria-label='메뉴'],
-    .newsroll_header .newsroll_toolbar [aria-label='메뉴'],
-    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴'],
-    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴'],
-    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴'] {
+    .newsroll_header .newsroll_toolbar [aria-label='메뉴'] {
         position: relative;
     }
 
     .container_homeToolbar .newsroll_toolbar [aria-label='메뉴']::before,
-    .newsroll_header .newsroll_toolbar [aria-label='메뉴']::before,
-    .newsroll_all_top .newsroll_toolbar [aria-label='메뉴']::before,
-    .newsroll_info_top .newsroll_toolbar [aria-label='메뉴']::before,
-    .newsroll_my_top .newsroll_toolbar [aria-label='메뉴']::before {
+    .newsroll_header .newsroll_toolbar [aria-label='메뉴']::before {
         content: '';
         position: absolute;
         top: 7px;
@@ -5354,15 +4745,6 @@
         background: var(--color-newsroll-purple-20);
     }
 
-    .newsroll_all_top {
-        padding-top: 0;
-        padding-bottom: var(--spacing-padding-vertical-24);
-    }
-
-    .newsroll_all_top .newsroll_toolbar {
-        padding-bottom: calc(var(--spacing-gap-vertical-24) + var(--border-1));
-    }
-
     .newsroll_all_breaking_label {
         gap: var(--spacing-gap-horizontal-8);
         font-size: var(--font-size-18);
@@ -5402,12 +4784,6 @@
     .newsroll_all_more_dark {
         padding-top: var(--spacing-padding-vertical-24);
         background: var(--color-background-transparent-alternative);
-    }
-
-    .newsroll_all_sections {
-        width: 100%;
-        gap: 2px;
-        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_all_panel {
@@ -5473,15 +4849,6 @@
     .newsroll_all_relay_item + .newsroll_all_relay_item,
     .newsroll_info_faq_item {
         border-color: var(--color-cool-neutral-96);
-    }
-
-    .newsroll_info_top h1,
-    .newsroll_my_top h1 {
-        padding: 14px 0 0;
-        color: var(--color-common-100);
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
     }
 
     .newsroll_info_sheet {
@@ -6781,9 +6148,7 @@
         );
     }
 
-    .newsroll_all_detail,
     .newsroll_policy_screen,
-    .newsroll_policy_detail,
     .newsroll_my_screen,
     .newsroll_info_screen,
     .newsroll_search_page {
@@ -6803,23 +6168,11 @@
         overflow-x: hidden;
     }
 
-    .newsroll_all_top,
-    .newsroll_all_detail_top,
-    .newsroll_policy_top,
-    .newsroll_policy_detail_top,
-    .newsroll_my_top,
-    .newsroll_info_top,
     .newsroll_search_page {
         padding-right: var(--spacing-padding-horizontal-16);
         padding-left: var(--spacing-padding-horizontal-16);
     }
 
-    .newsroll_all_top,
-    .newsroll_all_detail_top,
-    .newsroll_policy_top,
-    .newsroll_policy_detail_top,
-    .newsroll_my_top,
-    .newsroll_info_top,
     .newsroll_search_top {
         display: grid;
         align-content: start;
@@ -6837,38 +6190,19 @@
         padding-top: 0;
     }
 
-    .newsroll_all_top .newsroll_toolbar,
     .newsroll_all_breaking_stack,
     .newsroll_all_more_dark {
         padding-top: 0;
         padding-bottom: 0;
     }
 
-    .newsroll_all_breaking_stack,
-    .newsroll_all_detail_body,
-    .newsroll_all_sections {
+    .newsroll_all_breaking_stack {
         gap: var(--spacing-gap-vertical-24);
     }
 
-    .newsroll_all_sections {
-        position: static;
-        left: auto;
-        width: 100%;
-        max-width: none;
-        display: grid;
-        background: var(--color-newsroll-purple-20);
-    }
-
-    .newsroll_all_sheet {
-        min-height: 0;
-    }
-
-    .newsroll_all_sheet,
-    .newsroll_all_detail_body,
     .newsroll_policy_sheet,
     .newsroll_my_sheet,
-    .newsroll_info_sheet,
-    .newsroll_policy_detail_sheet {
+    .newsroll_info_sheet {
         justify-self: stretch;
         width: 100%;
         max-width: none;
@@ -6952,48 +6286,11 @@
     .newsroll_policy_screen,
     .newsroll_my_screen,
     .newsroll_info_screen,
-    .newsroll_search_page,
-    .newsroll_all_sections {
+    .newsroll_search_page {
         justify-self: stretch;
         width: 100%;
         max-width: none;
         transform: none;
-    }
-
-    .newsroll_all_sections {
-        position: static;
-        left: auto;
-    }
-
-    .newsroll_policy_top {
-        padding-right: 0;
-        padding-left: 0;
-    }
-
-    .newsroll_policy_top > .newsroll_toolbar,
-    .newsroll_policy_hero {
-        padding-right: var(--spacing-padding-horizontal-16);
-        padding-left: var(--spacing-padding-horizontal-16);
-    }
-
-    .newsroll_my_top {
-        display: grid;
-        align-content: start;
-        gap: var(--spacing-gap-vertical-24);
-        padding-right: var(--spacing-padding-horizontal-16);
-        padding-left: var(--spacing-padding-horizontal-16);
-    }
-
-    .newsroll_my_top .newsroll_toolbar {
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .newsroll_my_top h1 {
-        padding: 0;
     }
 
     .newsroll_screen,
@@ -7018,14 +6315,11 @@
     .newsroll_my_screen,
     .newsroll_info_screen,
     .newsroll_search_page,
-    .newsroll_all_sections,
     .container_newsGrid,
     .container_newsFeed,
     .container_articleCard,
     .newsroll_all_panel,
-    .newsroll_all_detail_body,
     .newsroll_policy_sheet,
-    .newsroll_policy_detail_sheet,
     .newsroll_my_sheet,
     .newsroll_info_sheet {
         width: 100%;
@@ -7034,9 +6328,7 @@
         box-sizing: border-box;
     }
 
-    .newsroll_all_sections,
     .newsroll_policy_sheet,
-    .newsroll_policy_detail_sheet,
     .newsroll_my_sheet,
     .newsroll_info_sheet {
         border-radius: var(--radius-20) var(--radius-20) 0 0;
@@ -7061,53 +6353,115 @@
     margin-top: 28px;
 }
 
-.newsroll_common_top.newsroll_all_top,
-.newsroll_common_top.newsroll_policy_top {
-    min-height: 110px;
-    gap: 0;
-    padding: 0 var(--spacing-padding-horizontal-16);
-    background: var(--color-newsroll-purple-20);
+.newsroll_policy_header,
+.newsroll_my_header,
+.newsroll_info_header {
+    display: grid;
+    align-content: start;
+    gap: var(--spacing-gap-vertical-24);
+    color: var(--color-common-100);
 }
 
-.newsroll_common_top.newsroll_all_top > .newsroll_toolbar,
-.newsroll_common_top.newsroll_policy_top > .newsroll_toolbar {
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--spacing-gap-horizontal-16);
-    margin-top: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-.newsroll_common_top.newsroll_all_top > .newsroll_toolbar .newsroll_text_size_button,
-.newsroll_common_top.newsroll_policy_top > .newsroll_toolbar .newsroll_text_size_button {
-    width: 24px;
-    height: 24px;
+.newsroll_my_header h1,
+.newsroll_info_header h1 {
     padding: 0;
+    color: var(--color-common-100);
+    font-size: var(--font-size-18);
+    font-weight: var(--font-weight-600);
+    line-height: var(--line-height-24);
 }
 
-.newsroll_common_top.newsroll_all_top > .newsroll_toolbar .newsroll_icon,
-.newsroll_common_top.newsroll_policy_top > .newsroll_toolbar .newsroll_icon {
-    width: 24px;
-    height: 24px;
+.newsroll_sheetFrame.newsroll_policy_screen,
+.newsroll_sheetFrame.newsroll_my_screen,
+.newsroll_sheetFrame.newsroll_info_screen {
+    display: block;
+    align-content: normal;
+    gap: 0;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    padding-bottom: 0;
+    overflow: hidden;
 }
 
-.newsroll_common_top.newsroll_all_top > .newsroll_toolbar [aria-label='메뉴'],
-.newsroll_common_top.newsroll_policy_top > .newsroll_toolbar [aria-label='메뉴'] {
-    position: relative;
-    display: inline-flex;
+.newsroll_screen_panel,
+.newsroll_screen_panel .newsroll_phone {
+    height: 100dvh;
+    min-height: 0;
+    max-height: 100dvh;
+    overflow: hidden;
 }
 
-.newsroll_common_top.newsroll_all_top > .newsroll_toolbar [aria-label='메뉴']::before,
-.newsroll_common_top.newsroll_policy_top > .newsroll_toolbar [aria-label='메뉴']::before {
-    content: '';
-    position: absolute;
-    top: 7px;
-    left: -6px;
-    width: 5px;
-    height: 5px;
-    border-radius: var(--radius-full);
-    background: var(--color-orange-50);
+.newsroll_sheetFrame.newsroll_policy_screen .newsroll_sheetFrameSheet,
+.newsroll_sheetFrame.newsroll_my_screen .newsroll_sheetFrameSheet,
+.newsroll_sheetFrame.newsroll_info_screen .newsroll_sheetFrameSheet {
+    bottom: var(--newsroll-bottom-nav-clearance);
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - var(--newsroll-common-sheet-top) - var(--newsroll-bottom-nav-clearance));
+    min-height: 0;
+    max-height: calc(100dvh - var(--newsroll-common-sheet-top) - var(--newsroll-bottom-nav-clearance));
+    padding: 0;
+    border-radius: 0;
+    background: var(--color-newsroll-purple-20);
+    overflow: hidden;
+}
+
+.newsroll_page_feed {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+}
+
+.newsroll_page_panel {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    overflow: hidden;
+    padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
+    border-radius: var(--radius-20);
+    color: var(--color-label-strong);
+    background: var(--color-background-elevated-normal);
+    box-shadow: none;
+}
+
+.newsroll_page_panelContent {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_page_panelContent {
+    overflow-y: auto;
+}
+
+.newsroll_common_layout.is_newsrollSheetHandoffLocked .wrapper_articleCardContent,
+.newsroll_common_layout.is_newsrollSheetHandoffLocked .newsroll_all_panelContent,
+.newsroll_common_layout.is_newsrollSheetHandoffLocked .newsroll_page_panelContent {
+    overflow-y: hidden;
+}
+
+.newsroll_page_panelContent::-webkit-scrollbar {
+    display: none;
+}
+
+.newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_policy_hero {
+    display: none;
 }
