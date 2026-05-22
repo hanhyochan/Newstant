@@ -3,26 +3,25 @@
 import { useEffect, useRef, type RefObject, type TouchEvent, type WheelEvent } from "react";
 
 type BoundaryDirection = "end" | "start";
-type ShortPanelTransition = "delayed" | "instant";
 
 type UseDockedPanelScrollOptions = {
   boundaryDelayMs: number;
   contentScrollerSelector?: string;
   dockedClassName: string;
+  instantPanelSelector?: string;
   panelSelector: string;
   rootRef: RefObject<HTMLElement | null>;
   scrollerRef: RefObject<HTMLElement | null>;
-  shortPanelTransition?: ShortPanelTransition;
 };
 
 export function useDockedPanelScroll({
   boundaryDelayMs,
   contentScrollerSelector,
   dockedClassName,
+  instantPanelSelector,
   panelSelector,
   rootRef,
   scrollerRef,
-  shortPanelTransition = "delayed",
 }: UseDockedPanelScrollOptions) {
   const scrollerTopRef = useRef(0);
   const touchYRef = useRef<number | null>(null);
@@ -125,6 +124,10 @@ export function useDockedPanelScroll({
     return panel.querySelector<HTMLElement>(contentScrollerSelector);
   };
 
+  const isInstantPanel = (panel: HTMLElement) => (
+    instantPanelSelector ? panel.matches(instantPanelSelector) : false
+  );
+
   const getScrollLimit = (contentScroller: HTMLElement) => (
     Math.max(0, contentScroller.scrollHeight - contentScroller.clientHeight)
   );
@@ -136,12 +139,16 @@ export function useDockedPanelScroll({
       return;
     }
 
-    contentScroller.scrollTop = position === "end"
+    contentScroller.scrollTop = !isInstantPanel(panel) && position === "end"
       ? getScrollLimit(contentScroller)
       : 0;
   };
 
-  const scrollToPanel = (panel: HTMLElement, contentPosition: BoundaryDirection = "start") => {
+  const scrollToPanel = (
+    panel: HTMLElement,
+    contentPosition: BoundaryDirection = "start",
+    behavior: ScrollBehavior = "smooth",
+  ) => {
     const scroller = scrollerRef.current;
 
     if (!scroller) {
@@ -150,9 +157,14 @@ export function useDockedPanelScroll({
 
     setPanelContentPosition(panel, contentPosition);
 
+    if (behavior === "auto") {
+      scroller.scrollTop = panel.offsetTop;
+      return;
+    }
+
     if (typeof scroller.scrollTo === "function") {
       scroller.scrollTo({
-        behavior: "smooth",
+        behavior,
         top: panel.offsetTop,
       });
       return;
@@ -172,13 +184,35 @@ export function useDockedPanelScroll({
       return false;
     }
 
-    if (shortPanelTransition === "delayed" && !waitForBoundary(activePanel, direction)) {
+    if (!isInstantPanel(activePanel) && !waitForBoundary(activePanel, direction)) {
       return true;
     }
 
     clearBoundary();
-    scrollToPanel(nextPanel, contentPosition);
+    scrollToPanel(
+      nextPanel,
+      contentPosition,
+      isInstantPanel(activePanel) || isInstantPanel(nextPanel) ? "auto" : "smooth",
+    );
     return true;
+  };
+
+  const moveByDirection = (
+    deltaY: number,
+    activePanel: HTMLElement,
+    previousPanel: HTMLElement | null,
+    nextPanel: HTMLElement | null,
+  ) => {
+    if (deltaY < 0) {
+      return moveToAdjacentPanel(activePanel, previousPanel, "start", "end");
+    }
+
+    if (deltaY > 0) {
+      return moveToAdjacentPanel(activePanel, nextPanel, "end", "start");
+    }
+
+    clearBoundary();
+    return false;
   };
 
   const routeDockedPanelScroll = (deltaY: number) => {
@@ -193,31 +227,23 @@ export function useDockedPanelScroll({
 
     const activeIndex = panels.indexOf(activePanel);
     const previousPanel = activeIndex > 0 ? panels[activeIndex - 1] : null;
-    const nextPanel = activeIndex >= 0 ? panels[activeIndex + 1] : null;
+    const nextPanel = panels[activeIndex + 1] ?? null;
     const activeContentScroller = getPanelContentScroller(activePanel);
 
     if (!activeContentScroller) {
       return false;
     }
 
+    const shouldScrollContent = !isInstantPanel(activePanel);
     const maxScroll = getScrollLimit(activeContentScroller);
-    const isPanelAtStart = activeContentScroller.scrollTop <= 1;
-    const isPanelAtEnd = activeContentScroller.scrollTop >= maxScroll - 1;
 
-    if (maxScroll <= 1) {
-      if (deltaY < 0) {
-        return moveToAdjacentPanel(activePanel, previousPanel, "start", "end");
-      }
-
-      if (deltaY > 0) {
-        return moveToAdjacentPanel(activePanel, nextPanel, "end", "start");
-      }
-
-      clearBoundary();
-      return false;
+    if (!shouldScrollContent || maxScroll <= 1) {
+      return moveByDirection(deltaY, activePanel, previousPanel, nextPanel);
     }
 
     if (deltaY < 0) {
+      const isPanelAtStart = activeContentScroller.scrollTop <= 1;
+
       if (!isPanelAtStart) {
         const nextScrollTop = Math.max(0, activeContentScroller.scrollTop + deltaY);
         activeContentScroller.scrollTop = nextScrollTop;
@@ -233,6 +259,8 @@ export function useDockedPanelScroll({
     }
 
     if (deltaY > 0) {
+      const isPanelAtEnd = activeContentScroller.scrollTop >= maxScroll - 1;
+
       if (!isPanelAtEnd) {
         const nextScrollTop = Math.min(maxScroll, activeContentScroller.scrollTop + deltaY);
         activeContentScroller.scrollTop = nextScrollTop;

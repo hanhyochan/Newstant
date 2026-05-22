@@ -1626,16 +1626,19 @@ function AllNewsMeta() {
 }
 
 function AllNewsMoreButton({
+  ariaLabel,
   expanded = false,
   onClick,
   tone = "light",
 }: {
+  ariaLabel?: string;
   expanded?: boolean;
   onClick?: () => void;
   tone?: "dark" | "light";
 }) {
   return (
     <button
+      aria-label={ariaLabel}
       aria-expanded={expanded}
       className={`btn_originalArticle newsroll_all_more newsroll_all_more_${tone}`}
       onClick={onClick}
@@ -1661,7 +1664,13 @@ function AllNewsLatestCard({
   selected: boolean;
 }) {
   return (
-    <button aria-pressed={selected} className="newsroll_all_latest_card" onClick={onClick} type="button">
+    <button
+      aria-label={`${item.category} 기사: ${item.title}`}
+      aria-pressed={selected}
+      className="newsroll_all_latest_card"
+      onClick={onClick}
+      type="button"
+    >
       <span className="newsroll_all_chip">{item.category}</span>
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
       <span className="newsroll_all_latest_body">
@@ -1682,7 +1691,13 @@ function AllNewsHeadlineItem({
   selected: boolean;
 }) {
   return (
-    <button aria-pressed={selected} className="newsroll_all_headline_item" onClick={onClick} type="button">
+    <button
+      aria-label={`헤드라인 기사: ${item.title}`}
+      aria-pressed={selected}
+      className="newsroll_all_headline_item"
+      onClick={onClick}
+      type="button"
+    >
       <span className="newsroll_all_headline_body">
         <strong>{item.title}</strong>
         <AllNewsMeta />
@@ -1704,7 +1719,13 @@ function AllNewsRelayItem({
   selected: boolean;
 }) {
   return (
-    <button aria-pressed={selected} className="newsroll_all_relay_item" onClick={onClick} type="button">
+    <button
+      aria-label={`릴레이 뉴스 기사: ${item.title}`}
+      aria-pressed={selected}
+      className="newsroll_all_relay_item"
+      onClick={onClick}
+      type="button"
+    >
       <strong className={featured ? "newsroll_all_relay_title_large" : undefined}>{item.title}</strong>
       <AllNewsMeta />
       <img alt="" src={item.image} />
@@ -1727,6 +1748,7 @@ function AllNewsView({
     boundaryDelayMs: nextArticleRevealDelayMs,
     contentScrollerSelector: ".newsroll_all_panelContent",
     dockedClassName: "is_newsrollSheetDocked",
+    instantPanelSelector: ".newsroll_all_latest_panel",
     panelSelector: ".newsroll_all_panel",
     rootRef: screenRef,
     scrollerRef: feedRef,
@@ -1883,6 +1905,7 @@ function AllNewsView({
               ))}
             </div>
             <AllNewsMoreButton
+              ariaLabel={showAllBreaking ? "속보 접기" : "속보 더보기"}
               expanded={showAllBreaking}
               onClick={() => {
                 setShowAllBreaking((current) => !current);
@@ -1902,6 +1925,7 @@ function AllNewsView({
               최신 뉴스 <strong>10</strong>
             </h1>
             <div
+              aria-label="최신 뉴스 목록"
               className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
               onPointerCancel={stopLatestDrag}
               onPointerDown={handleLatestPointerDown}
@@ -1909,6 +1933,7 @@ function AllNewsView({
               onPointerMove={handleLatestPointerMove}
               onPointerUp={stopLatestDrag}
               ref={latestScrollerRef}
+              role="group"
             >
               {allNewsLatest.map((item, index) => (
                 <AllNewsLatestCard
@@ -1977,7 +2002,11 @@ function AllNewsView({
                 />
               ))}
             </div>
-            <AllNewsMoreButton expanded={showAllHeadlines} onClick={() => setShowAllHeadlines((current) => !current)} />
+            <AllNewsMoreButton
+              ariaLabel={showAllHeadlines ? "언론사별 헤드라인 접기" : "언론사별 헤드라인 더보기"}
+              expanded={showAllHeadlines}
+              onClick={() => setShowAllHeadlines((current) => !current)}
+            />
           </AllNewsPanelContent>
         </article>
 
