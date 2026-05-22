@@ -19,6 +19,7 @@ type NewsRollCommonLayoutProps = HTMLAttributes<HTMLElement> & {
   minInitialTop?: number;
   movingSheet?: boolean;
   sheetClassName?: string;
+  sheetNestedScrollResetSelector?: string;
   sheetRef?: Ref<HTMLDivElement>;
   sheetScrollSelector?: string;
   sheetProps?: HTMLAttributes<HTMLDivElement>;
@@ -61,6 +62,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   minInitialTop,
   movingSheet = false,
   sheetClassName,
+  sheetNestedScrollResetSelector,
   sheetProps,
   sheetRef,
   sheetScrollSelector,
@@ -86,6 +88,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
     onTouchMoveCapture,
     onTouchStartCapture,
     onWheelCapture,
+    sheetNestedScrollResetSelector,
     sheetScrollSelector,
     top,
   });

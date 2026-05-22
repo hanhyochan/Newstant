@@ -2931,10 +2931,25 @@
     }
 
     .newsroll_all_latest_panel {
-        min-height: 583px;
+        --newsroll-all-latest-panel-available-height: calc(
+            100dvh - var(--newsroll-common-sheet-top, 492px)
+        );
+        --newsroll-all-latest-panel-height: min(
+            540px,
+            var(--newsroll-all-latest-panel-available-height)
+        );
+        height: var(--newsroll-all-latest-panel-height);
+        min-height: 0;
+        max-height: var(--newsroll-all-latest-panel-height);
+        overflow: hidden;
         padding-bottom: calc(
             var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4)
         );
+    }
+
+    .newsroll_all_latest_panel .newsroll_all_panelContent {
+        grid-template-rows: auto minmax(0, 1fr);
+        overflow: hidden;
     }
 
     .newsroll_all_press_panel {
@@ -2972,7 +2987,9 @@
 
     .newsroll_all_latest_scroller {
         width: 100%;
+        min-height: 0;
         gap: var(--spacing-gap-horizontal-24);
+        align-items: stretch;
         cursor: grab;
         overscroll-behavior-x: contain;
         scroll-behavior: smooth;
@@ -2989,10 +3006,15 @@
 
     .newsroll_all_latest_card {
         width: min(78vw, 300px);
+        height: 100%;
+        min-height: 0;
         display: grid;
         flex: 0 0 min(78vw, 300px);
+        grid-template-rows: auto minmax(0, 1fr) auto;
         gap: var(--spacing-gap-vertical-16);
+        align-content: start;
         justify-items: start;
+        overflow: hidden;
         scroll-snap-align: start;
         text-align: left;
     }
@@ -3016,7 +3038,8 @@
 
     .newsroll_all_latest_image {
         width: 100%;
-        aspect-ratio: 300 / 328;
+        height: 100%;
+        min-height: 0;
         border-radius: var(--radius-8);
         object-fit: cover;
     }
@@ -4842,10 +4865,6 @@
         bottom: var(--spacing-padding-vertical-60);
     }
 
-    .newsroll_screen_all .newsroll_sheetFrame .newsroll_sheetFrameSheet {
-        bottom: var(--newsroll-bottom-nav-clearance);
-    }
-
     .container_homeToolbar {
         min-height: auto;
     }
@@ -4893,7 +4912,7 @@
     .container_newsFeed.newsroll_all_feed {
         flex: 1 1 auto;
         height: 100%;
-        overflow-y: auto;
+        overflow-y: hidden;
         overscroll-behavior: contain;
     }
 
@@ -4940,18 +4959,12 @@
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_feed .newsroll_all_latest_panel {
-        --newsroll-all-latest-panel-max-height: min(100%, 540px);
+        --newsroll-all-latest-panel-available-height: calc(
+            100dvh - var(--newsroll-common-sheet-top, 492px) -
+                var(--newsroll-bottom-nav-clearance)
+        );
         align-self: stretch;
         flex: 0 0 auto;
-        height: fit-content;
-        min-height: 0;
-        max-height: var(--newsroll-all-latest-panel-max-height);
-        overflow: hidden;
-    }
-
-    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_panel .newsroll_all_panelContent {
-        grid-template-rows: auto minmax(0, 1fr);
-        overflow: hidden;
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_feed .newsroll_all_panel::-webkit-scrollbar {
@@ -4960,23 +4973,10 @@
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_scroller {
         height: 100%;
-        min-height: 0;
-        align-items: stretch;
-    }
-
-    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_card {
-        height: 100%;
-        min-height: 0;
-        overflow: hidden;
-        align-content: start;
-        grid-template-rows: auto minmax(0, 1fr) auto;
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_image {
         display: block;
-        width: 100%;
-        height: 100%;
-        min-height: 0;
         max-height: none;
     }
 

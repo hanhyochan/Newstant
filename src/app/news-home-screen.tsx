@@ -98,6 +98,10 @@ const homeSheetInitialGap = 40;
 const homeSheetScrollSelector = ".container_newsFeed, .wrapper_newsGridScroll";
 const commentScrollDelayMs = 120;
 const nextArticleRevealDelayMs = 260;
+const homeDockedScrollSelectors = {
+  contentScroller: ".wrapper_articleCardContent",
+  panel: ".container_articleCard",
+};
 
 function resetNewsRollViewport() {
   if (typeof window === "undefined") {
@@ -384,6 +388,11 @@ const allNewsLatest = [
 
 const allNewsPresses = ["중앙일보", "국민일보", "한겨레"];
 const allNewsPressLogos = ["J", "i", "⊕"];
+const allNewsDockedScrollSelectors = {
+  contentScroller: ".newsroll_all_panelContent",
+  immediatePanel: ".newsroll_all_latest_panel",
+  panel: ".newsroll_all_panel",
+};
 
 const allNewsHeadlinesByPress: Record<string, { image: string; title: string }[]> = {
   국민일보: Array.from({ length: 8 }, (_, index) => ({
@@ -562,9 +571,9 @@ function HomeShell({
   const previousModeRef = useRef(mode);
   const dockedPanelScroll = useDockedPanelScroll({
     boundaryDelayMs: nextArticleRevealDelayMs,
-    contentScrollerSelector: ".wrapper_articleCardContent",
+    contentScrollerSelector: homeDockedScrollSelectors.contentScroller,
     dockedClassName: "is_homeSheetDocked",
-    panelSelector: ".container_articleCard",
+    panelSelector: homeDockedScrollSelectors.panel,
     rootRef: screenRef,
     scrollerRef,
   });
@@ -604,6 +613,7 @@ function HomeShell({
       onWheelCapture={dockedPanelScroll.handleWheel}
       ref={screenRef}
       sheetClassName="container_homeSheet"
+      sheetNestedScrollResetSelector={homeDockedScrollSelectors.contentScroller}
       sheetProps={{ onScrollCapture: handleSheetScroll }}
       sheetRef={sheetRef}
       sheetScrollSelector={homeSheetScrollSelector}
@@ -1746,10 +1756,10 @@ function AllNewsView({
   const feedRef = useRef<HTMLElement>(null);
   const dockedPanelScroll = useDockedPanelScroll({
     boundaryDelayMs: nextArticleRevealDelayMs,
-    contentScrollerSelector: ".newsroll_all_panelContent",
+    contentScrollerSelector: allNewsDockedScrollSelectors.contentScroller,
     dockedClassName: "is_newsrollSheetDocked",
-    instantPanelSelector: ".newsroll_all_latest_panel",
-    panelSelector: ".newsroll_all_panel",
+    immediatePanelSelector: allNewsDockedScrollSelectors.immediatePanel,
+    panelSelector: allNewsDockedScrollSelectors.panel,
     rootRef: screenRef,
     scrollerRef: feedRef,
   });
@@ -1864,6 +1874,7 @@ function AllNewsView({
       onWheelCapture={dockedPanelScroll.handleWheel}
       ref={screenRef}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_all_sheetFrameSheet"
+      sheetNestedScrollResetSelector={allNewsDockedScrollSelectors.contentScroller}
       sheetScrollSelector=".newsroll_all_feed"
       top={
         <header className="container_homeToolbar newsroll_all_breakingHeader">

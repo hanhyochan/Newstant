@@ -19,9 +19,13 @@ type UseDockedSheetOptions = {
   onTouchMoveCapture?: (event: TouchEvent<HTMLElement>) => void;
   onTouchStartCapture?: (event: TouchEvent<HTMLElement>) => void;
   onWheelCapture?: (event: WheelEvent<HTMLElement>) => void;
+  sheetNestedScrollResetSelector?: string;
   sheetScrollSelector?: string;
   top: ReactNode;
 };
+
+const DEFAULT_TOOLBAR_HEIGHT = 40;
+const SHEET_EDGE_THRESHOLD = 1;
 
 export function useDockedSheet({
   children,
@@ -33,6 +37,7 @@ export function useDockedSheet({
   onTouchMoveCapture,
   onTouchStartCapture,
   onWheelCapture,
+  sheetNestedScrollResetSelector,
   sheetScrollSelector,
   top,
 }: UseDockedSheetOptions) {
@@ -66,7 +71,7 @@ export function useDockedSheet({
     sheetTopRef.current = boundedTop;
     screen?.style.setProperty("--newsroll-common-sheet-top", `${boundedTop}px`);
     setIsSheetDocked((current) => {
-      const nextDocked = boundedTop <= stopTop + 1;
+      const nextDocked = boundedTop <= stopTop + SHEET_EDGE_THRESHOLD;
       return current === nextDocked ? current : nextDocked;
     });
   };
@@ -86,7 +91,9 @@ export function useDockedSheet({
       : null;
     const toolbarRect = toolbar?.getBoundingClientRect();
     const toolbarTop = toolbarRect ? toolbarRect.top - screenTop : 0;
-    const toolbarBottom = toolbarRect ? toolbarRect.bottom - screenTop : toolbarTop + 40;
+    const toolbarBottom = toolbarRect
+      ? toolbarRect.bottom - screenTop
+      : toolbarTop + DEFAULT_TOOLBAR_HEIGHT;
     const dockedControlsHeight = dockedControls?.getBoundingClientRect().height ?? 0;
     const measuredStopTop = Math.round(toolbarBottom + dockedGap + dockedControlsHeight + dockedGap);
     const measuredTopBottom = Math.round(topNode.getBoundingClientRect().bottom - screenTop);
@@ -112,11 +119,35 @@ export function useDockedSheet({
 
   const isSheetContentAtStart = () => {
     const scroller = getSheetScroller();
-    return !scroller || scroller.scrollTop <= 1;
+    return !scroller || scroller.scrollTop <= SHEET_EDGE_THRESHOLD;
+  };
+
+  const isSheetUndocked = () => {
+    const { initialTop, stopTop } = sheetBoundsRef.current;
+    const currentTop = sheetTopRef.current || initialTop;
+
+    return movingSheet && currentTop > stopTop + SHEET_EDGE_THRESHOLD;
+  };
+
+  const resetSheetScroll = () => {
+    const scroller = getSheetScroller();
+
+    if (!scroller) {
+      return;
+    }
+
+    scroller.scrollTop = 0;
+
+    if (!sheetNestedScrollResetSelector) {
+      return;
+    }
+
+    scroller.querySelectorAll<HTMLElement>(sheetNestedScrollResetSelector).forEach((node) => {
+      node.scrollTop = 0;
+    });
   };
 
   const moveSheet = (deltaY: number) => {
-    const scroller = getSheetScroller();
     const { initialTop, stopTop } = sheetBoundsRef.current;
     const currentTop = sheetTopRef.current || initialTop;
 
@@ -125,19 +156,13 @@ export function useDockedSheet({
     }
 
     if (deltaY > 0 && currentTop > stopTop) {
-      if (scroller) {
-        scroller.scrollTop = 0;
-      }
-
+      resetSheetScroll();
       setSheetTop(currentTop - deltaY);
       return true;
     }
 
     if (deltaY < 0 && currentTop < initialTop && isSheetContentAtStart()) {
-      if (scroller) {
-        scroller.scrollTop = 0;
-      }
-
+      resetSheetScroll();
       setSheetTop(currentTop - deltaY);
       return true;
     }
@@ -158,6 +183,9 @@ export function useDockedSheet({
 
   const handleTouchStart = (event: TouchEvent<HTMLElement>) => {
     onTouchStartCapture?.(event);
+    if (isSheetUndocked()) {
+      resetSheetScroll();
+    }
     touchYRef.current = event.touches[0]?.clientY ?? null;
   };
 
@@ -199,7 +227,16 @@ export function useDockedSheet({
       window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", measureSheet);
     };
-  }, [children, dockedControlsSelector, dockedGap, initialGap, minInitialTop, movingSheet, top]);
+  }, [
+    children,
+    dockedControlsSelector,
+    dockedGap,
+    initialGap,
+    minInitialTop,
+    movingSheet,
+    sheetNestedScrollResetSelector,
+    top,
+  ]);
 
   return {
     handleTouchMove,
