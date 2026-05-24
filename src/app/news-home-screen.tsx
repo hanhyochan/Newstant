@@ -102,6 +102,8 @@ type CommentItem = {
 };
 
 const articleImage = "/images/news-apartment.png";
+const defaultNewsDateTime = "2026-12-31T08:30:00";
+const defaultNewsDateLabel = "2026년 12월 31일 08:30";
 const homeSheetDockedGap = 16;
 const homeSheetInitialGap = 40;
 const homeSheetScrollSelector = ".container_newsFeed, .wrapper_newsGridScroll";
@@ -140,6 +142,20 @@ function resetNewsRollViewport() {
       target.scrollLeft = 0;
     });
   });
+}
+
+function NewsCreatedTime({
+  children = defaultNewsDateLabel,
+  dateTime = defaultNewsDateTime,
+}: {
+  children?: ReactNode;
+  dateTime?: string;
+}) {
+  return (
+    <time className="newsroll_createdTime" dateTime={dateTime}>
+      {children}
+    </time>
+  );
 }
 
 const homeArticle: HomeArticle = {
@@ -1194,7 +1210,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                   <header>
                     <span className="wrapper_commentMeta">
                       <strong>{comment.author}</strong>
-                      <time>{comment.date}</time>
+                      <NewsCreatedTime>{comment.date}</NewsCreatedTime>
                     </span>
                     <span className="wrapper_commentAction">
                       <IconButton
@@ -1289,7 +1305,7 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
                           <header>
                             <span className="wrapper_commentMeta">
                               <strong>{reply.author}</strong>
-                              <time>{reply.date}</time>
+                              <NewsCreatedTime>{reply.date}</NewsCreatedTime>
                             </span>
                             <span className="wrapper_commentAction">
                               <IconButton
@@ -1433,7 +1449,7 @@ function HomeReelCard({
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
         <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
-        <time dateTime="2026-12-31T08:30:00">{article.date}</time>
+        <NewsCreatedTime>{article.date}</NewsCreatedTime>
       </div>
       <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
         <IconButton
@@ -1627,10 +1643,10 @@ function SearchView({ onClose }: { onClose: () => void }) {
   );
 }
 
-function AllNewsMeta() {
+function AllNewsMeta({ stacked = false }: { stacked?: boolean }) {
   return (
-    <p className="newsroll_all_meta">
-      <span>1시간 전</span>
+    <p className={`newsroll_all_meta${stacked ? " newsroll_all_meta_stacked" : ""}`}>
+      <NewsCreatedTime />
       <span className="newsroll_all_stats" aria-label="조회수와 반응">
         <span>
           <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
@@ -1710,7 +1726,7 @@ function AllNewsLatestCard({
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
       <span className="newsroll_all_latest_body">
         <strong>{item.title}</strong>
-        <AllNewsMeta />
+        <AllNewsMeta stacked />
       </span>
     </button>
   );
@@ -2516,8 +2532,9 @@ function PolicyView({
   );
 }
 const myRecentNews = Array.from({ length: 4 }, (_, index) => ({
+  dateTime: defaultNewsDateTime,
   image: articleImage,
-  time: "1시간 전",
+  time: defaultNewsDateLabel,
   title: index % 2 === 0 ? "용인 수지, 강남·분당 가격 동조화로..." : "용인 수지, 강남·분당 가격 동조화로...",
 }));
 
@@ -2662,7 +2679,7 @@ function MyPageView({
               >
                 <img alt="" src={item.image} />
                 <strong>{item.title}</strong>
-                <span>{item.time}</span>
+                <NewsCreatedTime dateTime={item.dateTime}>{item.time}</NewsCreatedTime>
               </button>
             ))}
           </div>
