@@ -2088,19 +2088,23 @@ function AllNewsView({
                 const selected = activePress === press;
 
                 return (
-                  <button
+                  <Button
                     aria-controls="all-news-headline-panel"
                     aria-selected={selected}
+                    className="newsroll_all_press_tabButton"
                     id={`all-news-press-tab-${index}`}
                     key={press}
                     onClick={() => setActivePress(press)}
+                    radius="full"
                     role="tab"
+                    size="large"
                     tabIndex={selected ? 0 : -1}
                     type="button"
+                    variant={selected ? "filled" : "outline"}
                   >
                     <div className="newsroll_all_press_logo" aria-hidden="true" />
                     <span>{press}</span>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
