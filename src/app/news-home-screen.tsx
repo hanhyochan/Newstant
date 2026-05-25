@@ -414,7 +414,6 @@ const allNewsLatest = [
 ];
 
 const allNewsPresses = ["중앙일보", "국민일보", "한겨레"];
-const allNewsPressLogos = ["J", "i", "⊕"];
 const allNewsDockedScrollSelectors = {
   contentScroller: ".newsroll_all_panelContent",
   immediatePanel: ".newsroll_all_latest_panel",
@@ -2080,7 +2079,7 @@ function AllNewsView({
           <AllNewsPanelContent>
             <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
             <div
-              className="newsroll_all_press_tabs"
+              className="newsroll_all_press_tabMenu"
               role="tablist"
               aria-label="언론사 선택"
               onKeyDown={handlePressTabKeyDown}
@@ -2099,9 +2098,7 @@ function AllNewsView({
                     tabIndex={selected ? 0 : -1}
                     type="button"
                   >
-                    <span className="newsroll_all_press_logo" aria-hidden="true">
-                      {allNewsPressLogos[index]}
-                    </span>
+                    <div className="newsroll_all_press_logo" aria-hidden="true" />
                     <span>{press}</span>
                   </button>
                 );
