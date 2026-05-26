@@ -1,5 +1,6 @@
 export { BreakingNewsLink } from "./button/breaking-news-link";
 export type { BreakingNewsLinkProps } from "./button/breaking-news-link";
+export { ArticleActionButtons } from "./button/article-action-buttons";
 export { Button } from "./button/button";
 export type { ButtonProps } from "./button/button";
 export { IconButton } from "./button/icon-button";
@@ -22,5 +23,11 @@ export { TextInput } from "./input/text-input";
 export type { TextInputProps } from "./input/text-input";
 export { NewsViewToggle } from "./navigation/news-view-toggle";
 export type { NewsViewMode, NewsViewToggleProps } from "./navigation/news-view-toggle";
+export { NewsRollDropdownArrow, NewsRollDropdownMenu } from "./navigation/dropdown-menu";
+export type {
+  NewsRollDropdownArrowProps,
+  NewsRollDropdownMenuProps,
+  NewsRollDropdownOption,
+} from "./navigation/dropdown-menu";
 export { PillTabMenu } from "./navigation/pill-tab-menu";
 export type { PillTabItem, PillTabMenuProps } from "./navigation/pill-tab-menu";

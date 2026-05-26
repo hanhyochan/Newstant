@@ -15,6 +15,7 @@ import {
 } from "react";
 
 import {
+  ArticleActionButtons,
   BreakingNewsLink,
   Button,
   ChipLabel,
@@ -22,6 +23,8 @@ import {
   Icon,
   IconButton,
   NewsRollDivider,
+  NewsRollDropdownArrow,
+  NewsRollDropdownMenu,
   NewsViewToggle,
   PillTabMenu,
   ReactionButton,
@@ -34,6 +37,7 @@ import {
 import {
   NewsRollArticleDetailPanel,
   NewsRollCommonLayout,
+  NewsRollDetailBackButton,
   NewsRollDockedControls,
   NewsRollPagePanel,
   NewsRollSummaryHeroTop,
@@ -557,14 +561,10 @@ function HomeMainHeader({
           controls: (
             <NewsRollDockedControls isDetailOpen={isDetailOpen}>
               {isDetailOpen ? (
-                <button
-                  aria-label="블록형 뉴스 목록으로 돌아가기"
-                  className="newsroll_homeDetailBack newsroll_all_detail_back"
+                <NewsRollDetailBackButton
+                  ariaLabel="블록형 뉴스 목록으로 돌아가기"
                   onClick={onCloseDetail}
-                  type="button"
-                >
-                  <span aria-hidden="true" />
-                </button>
+                />
               ) : (
                 <NewsViewToggle mode={mode} onModeChange={onModeChange} />
               )}
@@ -851,7 +851,6 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
 
     return likes + comment.replies + userReplyCount;
   };
-  const selectedSortLabel = commentSortOptions.find((option) => option.value === sortOrder)?.label;
   const visibleComments = useMemo(
     () =>
       allComments
@@ -1167,42 +1166,20 @@ function CommentReactionPanel({ guideKind, id }: { guideKind: GuideKind; id?: st
         </div>
 
         <div className="wrapper_commentGuideComments">
-          <div className="wrapper_commentDropdown wrapper_commentSort">
-            <button
-              aria-controls={isCommentSortOpen ? commentSortMenuId : undefined}
-              aria-expanded={isCommentSortOpen}
-              aria-haspopup="listbox"
-              aria-label="댓글 정렬"
-              className="btn_commentDropdown"
-              onClick={() => {
-                setOpenCommentActionId(null);
-                setOpenReplyActionId(null);
-                setIsCommentSortOpen((current) => !current);
-              }}
-              type="button"
-            >
-              {selectedSortLabel}
-              <span aria-hidden="true" />
-            </button>
-            {isCommentSortOpen ? (
-              <div className="listbox_commentDropdown" id={commentSortMenuId} role="listbox">
-                {commentSortOptions.map((option) => (
-                  <button
-                    aria-selected={sortOrder === option.value}
-                    key={option.value}
-                    onClick={() => {
-                      setSortOrder(option.value);
-                      setIsCommentSortOpen(false);
-                    }}
-                    role="option"
-                    type="button"
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <NewsRollDropdownMenu
+            ariaLabel="댓글 정렬"
+            className="wrapper_commentSort"
+            isOpen={isCommentSortOpen}
+            listboxId={commentSortMenuId}
+            onChange={setSortOrder}
+            onOpenChange={(nextOpen) => {
+              setOpenCommentActionId(null);
+              setOpenReplyActionId(null);
+              setIsCommentSortOpen(nextOpen);
+            }}
+            options={commentSortOptions}
+            value={sortOrder}
+          />
 
       <div className="wrapper_commentList">
         {visibleComments.length > 0 ? (
@@ -1470,22 +1447,12 @@ function HomeReelCard({
         <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
         <HomeArticleMeta date={article.date} />
       </div>
-      <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
-        <IconButton
-          aria-pressed={isShared}
-          baseClassName="btn_articleTool"
-          icon="share"
-          label="공유"
-          onClick={() => setIsShared((current) => !current)}
-        />
-        <IconButton
-          aria-pressed={isBookmarked}
-          baseClassName="btn_articleTool"
-          icon="bookmark"
-          label="북마크"
-          onClick={() => setIsBookmarked((current) => !current)}
-        />
-      </div>
+      <ArticleActionButtons
+        isBookmarked={isBookmarked}
+        isShared={isShared}
+        onBookmark={() => setIsBookmarked((current) => !current)}
+        onShare={() => setIsShared((current) => !current)}
+      />
       <img alt={article.imageAlt} src={article.image} />
       <p className="text_articleBody">{articleBody}</p>
 
@@ -2003,14 +1970,10 @@ function AllNewsView({
           />
           <NewsRollDockedControls className="newsroll_allDockedControls" isDetailOpen={isDetailOpen}>
             {isDetailOpen ? (
-              <button
-                aria-label="전체 뉴스 목록으로 돌아가기"
-                className="newsroll_homeDetailBack newsroll_all_detail_back"
+              <NewsRollDetailBackButton
+                ariaLabel="전체 뉴스 목록으로 돌아가기"
                 onClick={closeAllNewsDetail}
-                type="button"
-              >
-                <span aria-hidden="true" />
-              </button>
+              />
             ) : null}
             <Button
               aria-label="속보 알림"
@@ -2212,7 +2175,7 @@ const policyItemsByAge: Record<string, PolicyItem[]> = {
       tags: ["일자리", "취업", "보조금"],
       summary: "취업 준비 청년의 자격증 응시료 부담을 낮추기 위한 지역 지원 정책.",
       registeredAt: "2026년 12월 31일",
-      updatedAt: "2026년 12월 31일",
+      updatedAt: "2027년 1월 3일",
       details: basePolicyDetails,
     },
   ],
@@ -2311,6 +2274,10 @@ const policySortLabels: Record<SortOrder, string> = {
   latest: "최신순",
   popular: "인기순",
 };
+const policySortOptions: { label: string; value: SortOrder }[] = [
+  { label: policySortLabels.popular, value: "popular" },
+  { label: policySortLabels.latest, value: "latest" },
+];
 const policyListTargetCount = 10;
 
 function fillPolicyListItems(items: PolicyItem[]) {
@@ -2319,6 +2286,15 @@ function fillPolicyListItems(items: PolicyItem[]) {
   }
 
   return Array.from({ length: policyListTargetCount }, (_, index) => items[index % items.length]);
+}
+
+function getPolicyDateDisplay(item: PolicyItem) {
+  const isUpdated = item.registeredAt !== item.updatedAt;
+
+  return {
+    date: isUpdated ? item.updatedAt : item.registeredAt,
+    label: isUpdated ? "최종수정" : "최초등록",
+  };
 }
 
 function PolicyListItem({
@@ -2330,6 +2306,8 @@ function PolicyListItem({
   item: PolicyItem;
   onSelect: () => void;
 }) {
+  const policyDate = getPolicyDateDisplay(item);
+
   return (
     <button
       aria-pressed={isSelected}
@@ -2339,44 +2317,26 @@ function PolicyListItem({
     >
       <div className="newsroll_policy_list_tags">
         {item.tags.map((tag, index) => (
-          <span className={index === 2 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
+          <ChipLabel kind={index === 2 ? "policyAccent" : "policy"} key={`${item.title}-${tag}`}>
             {tag}
-          </span>
+          </ChipLabel>
         ))}
       </div>
       <h2>{item.title}</h2>
       <div className="newsroll_policy_dates">
         <span>
-          <strong>등록</strong> {item.registeredAt}
-        </span>
-        <span>
-          <strong>수정</strong> {item.updatedAt}
-        </span>
-      </div>
-      <div className="newsroll_policy_stats" aria-label="조회수와 댓글">
-        <span>
-          <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
-          132
-        </span>
-        <span>
-          <i className="newsroll_all_stat_icon_comment" aria-hidden="true" />
-          132
+          <strong>{policyDate.label}</strong>
+          {policyDate.date}
         </span>
       </div>
     </button>
   );
 }
 
-function PolicyDetailContent({
-  item,
-  onBack,
-}: {
-  item: PolicyItem;
-  onBack: () => void;
-}) {
+function PolicyDetailContent({ item }: { item: PolicyItem }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isShared, setIsShared] = useState(false);
+  const policyDate = getPolicyDateDisplay(item);
 
   useLayoutEffect(() => {
     resetNewsRollViewport();
@@ -2384,49 +2344,32 @@ function PolicyDetailContent({
 
   return (
     <>
-        <button aria-label="국가정책 목록으로 돌아가기" className="newsroll_all_detail_back" onClick={onBack} type="button">
-          <span aria-hidden="true" />
-        </button>
         <div className="newsroll_policy_detail_tags">
           {item.tags.map((tag, index) => (
-            <span className={index === item.tags.length - 1 ? "is_accent" : undefined} key={`${item.title}-${tag}`}>
+            <ChipLabel kind={index === item.tags.length - 1 ? "policyAccent" : "policy"} key={`${item.title}-${tag}`}>
               {tag}
-            </span>
+            </ChipLabel>
           ))}
         </div>
 
-        <h1>{item.title}</h1>
-        <p className="newsroll_policy_detail_summary">{item.summary}</p>
-
-        <div className="newsroll_policy_detail_dates">
-          <span>
-            <strong>등록</strong> {item.registeredAt}
-          </span>
-          <span>
-            <strong>수정</strong> {item.updatedAt}
-          </span>
+        <div className="newsroll_policy_detail_body">
+          <h1>{item.title}</h1>
+          <div className="newsroll_policy_detail_dates">
+            <span>
+              <strong>{policyDate.label}</strong>
+              {policyDate.date}
+            </span>
+          </div>
+          <p className="newsroll_policy_detail_summary">{item.summary}</p>
         </div>
 
-        <div className="newsroll_policy_detail_actions" aria-label="정책 도구">
-          <button
-            aria-label="공유"
-            aria-pressed={isShared}
-            className="newsroll_icon_button"
-            onClick={() => setIsShared((current) => !current)}
-            type="button"
-          >
-            <Icon name="share" />
-          </button>
-          <button
-            aria-label="북마크"
-            aria-pressed={isBookmarked}
-            className="newsroll_icon_button"
-            onClick={() => setIsBookmarked((current) => !current)}
-            type="button"
-          >
-            <Icon name="bookmark" />
-          </button>
-        </div>
+        <ArticleActionButtons
+          ariaLabel="정책 도구"
+          isBookmarked={isBookmarked}
+          isShared={isShared}
+          onBookmark={() => setIsBookmarked((current) => !current)}
+          onShare={() => setIsShared((current) => !current)}
+        />
 
         <dl className="newsroll_policy_detail_list">
           {item.details.map((detail) => (
@@ -2437,22 +2380,14 @@ function PolicyDetailContent({
           ))}
         </dl>
 
-        {isExpanded ? (
-          <div className="newsroll_policy_detail_more">
-            <strong>상세 안내</strong>
-            <p>신청 전 모집 공고와 제출 서류를 다시 확인하고, 접수 기간 안에 온라인 신청을 완료해주세요.</p>
-          </div>
-        ) : null}
-
-        <button
-          aria-expanded={isExpanded}
-          className="newsroll_policy_detail_more_button"
-          onClick={() => setIsExpanded((current) => !current)}
-          type="button"
+        <Button
+          className="newsroll_policy_detail_toggle"
+          size="large"
+          variant="filled"
         >
-          <span aria-hidden="true">{isExpanded ? "-" : "+"}</span>
-          {isExpanded ? "접기" : "상세보기"}
-        </button>
+          <Icon name="plus" />
+          상세보기
+        </Button>
     </>
   );
 }
@@ -2469,10 +2404,45 @@ function PolicyView({
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
   const [detailItem, setDetailItem] = useState<PolicyItem | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
+  const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
+  const policyListSectionRef = useRef<HTMLDivElement>(null);
   const policyItems = fillPolicyListItems(policyItemsByAge[activeAge] ?? policyItemsByAge.전체);
   const visiblePolicyItems =
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
+  const activeAgeIndex = Math.max(0, policyAgeTabs.indexOf(activeAge));
+  const isPolicyDetailOpen = detailItem !== null;
+  const policySortMenuId = "policy-sort-menu";
+
+  useEffect(() => {
+    if (!isPolicySortOpen) {
+      return;
+    }
+
+    function closePolicySortOnPointerDown(event: globalThis.PointerEvent) {
+      const target = event.target;
+
+      if (target instanceof Node && policyListSectionRef.current?.contains(target)) {
+        return;
+      }
+
+      setIsPolicySortOpen(false);
+    }
+
+    function closePolicySortOnEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsPolicySortOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", closePolicySortOnPointerDown);
+    document.addEventListener("keydown", closePolicySortOnEscape);
+
+    return () => {
+      document.removeEventListener("pointerdown", closePolicySortOnPointerDown);
+      document.removeEventListener("keydown", closePolicySortOnEscape);
+    };
+  }, [isPolicySortOpen]);
 
   return (
     <NewsRollCommonLayout
@@ -2486,12 +2456,23 @@ function PolicyView({
       sheetScrollSelector={pagePanelContentSelector}
       top={(
         <NewsRollSummaryHeroTop
+          toolbarClassName="newsroll_all_breakingHeader"
           toolbar={(
-            <NewsToolbar
-              isTextLarge={isTextLarge}
-              onOpenSearch={onOpenSearch}
-              onToggleTextSize={onToggleTextSize}
-            />
+            <>
+              <NewsToolbar
+                isTextLarge={isTextLarge}
+                onOpenSearch={onOpenSearch}
+                onToggleTextSize={onToggleTextSize}
+              />
+              <NewsRollDockedControls className="newsroll_allDockedControls" isDetailOpen={isPolicyDetailOpen}>
+                {isPolicyDetailOpen ? (
+                  <NewsRollDetailBackButton
+                    ariaLabel="국가정책 목록으로 돌아가기"
+                    onClick={() => setDetailItem(null)}
+                  />
+                ) : null}
+              </NewsRollDockedControls>
+            </>
           )}
           hero={{
             ariaLabel: "맞춤 정책 요약",
@@ -2505,43 +2486,84 @@ function PolicyView({
       )}
       topClassName="container_home newsroll_sheetFrameTop"
     >
-      <NewsRollPagePanel ariaLabel="국가정책 콘텐츠 영역">
+      <NewsRollPagePanel
+        ariaLabel="국가정책 콘텐츠 영역"
+        key={detailItem ? `policy-detail-${detailItem.title}` : "policy-list"}
+      >
         {detailItem ? (
-          <PolicyDetailContent item={detailItem} onBack={() => setDetailItem(null)} />
+          <PolicyDetailContent item={detailItem} />
         ) : (
           <>
             <PillTabMenu
               ariaLabel="연령 필터"
-              className="newsroll_policy_age_tabs"
+              className="newsroll_all_category_tabs newsroll_policy_age_tabs"
+              getPanelId={() => "policy-list-panel"}
+              getTabId={(age) => `policy-age-tab-${policyAgeTabs.indexOf(age)}`}
               items={policyAgeTabs.map((label) => ({ id: label, label }))}
               onChange={(nextAge) => {
                 setActiveAge(nextAge);
+                setIsPolicySortOpen(false);
                 setSelectedPolicyIndex(0);
               }}
               value={activeAge}
             />
 
-            <button
-              aria-label={`정렬: ${policySortLabels[sortOrder]}`}
-              className="newsroll_policy_sort"
-              onClick={() => setSortOrder((current) => (current === "popular" ? "latest" : "popular"))}
-              type="button"
+            <div
+              aria-labelledby={`policy-age-tab-${activeAgeIndex}`}
+              className="newsroll_policy_listSection"
+              id="policy-list-panel"
+              ref={policyListSectionRef}
+              role="tabpanel"
             >
-              {policySortLabels[sortOrder]} <span aria-hidden="true" />
-            </button>
-
-            <div className="newsroll_policy_list">
-              {visiblePolicyItems.map((item, index) => (
-                <PolicyListItem
-                  isSelected={selectedPolicyIndex === index}
-                  item={item}
-                  key={`${activeAge}-${sortOrder}-${item.title}-${index}`}
-                  onSelect={() => {
-                    setSelectedPolicyIndex(index);
-                    setDetailItem(item);
-                  }}
-                />
-              ))}
+              <button
+                aria-controls={isPolicySortOpen ? policySortMenuId : undefined}
+                aria-expanded={isPolicySortOpen}
+                aria-haspopup="listbox"
+                aria-label="정책 정렬"
+                className="btn_commentDropdown newsroll_policy_sort"
+                onClick={() => setIsPolicySortOpen((current) => !current)}
+                type="button"
+              >
+                {policySortLabels[sortOrder]}
+                <NewsRollDropdownArrow />
+              </button>
+              {isPolicySortOpen ? (
+                <div
+                  className="listbox_commentDropdown newsroll_policy_sortListbox"
+                  id={policySortMenuId}
+                  role="listbox"
+                >
+                  {policySortOptions.map((option) => (
+                    <button
+                      aria-selected={sortOrder === option.value}
+                      key={option.value}
+                      onClick={() => {
+                        setSortOrder(option.value);
+                        setIsPolicySortOpen(false);
+                      }}
+                      role="option"
+                      type="button"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              <div className="newsroll_policy_items">
+                {visiblePolicyItems.map((item, index) => (
+                  <Fragment key={`${activeAge}-${sortOrder}-${item.title}-${index}`}>
+                    {index > 0 ? <NewsRollDivider className="newsroll_policy_itemDivider" /> : null}
+                    <PolicyListItem
+                      isSelected={selectedPolicyIndex === index}
+                      item={item}
+                      onSelect={() => {
+                        setSelectedPolicyIndex(index);
+                        setDetailItem(item);
+                      }}
+                    />
+                  </Fragment>
+                ))}
+              </div>
             </div>
           </>
         )}

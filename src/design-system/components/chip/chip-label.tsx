@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type ChipLabelKind = "articleCategory" | "commentChoice";
+type ChipLabelKind = "articleCategory" | "commentChoice" | "policy" | "policyAccent";
 
 export type ChipLabelProps = {
   children: ReactNode;
@@ -8,7 +8,12 @@ export type ChipLabelProps = {
 };
 
 export function ChipLabel({ children, kind }: ChipLabelProps) {
-  const className = kind === "articleCategory" ? "chip_articleCategory" : "badge_commentChoice";
+  const classNameByKind: Record<ChipLabelKind, string> = {
+    articleCategory: "chip_articleCategory",
+    commentChoice: "badge_commentChoice",
+    policy: "chip_policy",
+    policyAccent: "chip_policy chip_policyAccent",
+  };
 
-  return <span className={className}>{children}</span>;
+  return <span className={classNameByKind[kind]}>{children}</span>;
 }
