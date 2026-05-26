@@ -10,6 +10,8 @@ export { ChipLabel } from "./chip/chip-label";
 export type { ChipLabelProps } from "./chip/chip-label";
 export { Icon } from "./icon/icon";
 export type { IconName } from "./icon/icon";
+export { NewsRollDivider } from "./shared/divider";
+export type { NewsRollDividerProps } from "./shared/divider";
 export { CommentComposerInput } from "./input/comment-composer-input";
 export type { CommentComposerInputProps } from "./input/comment-composer-input";
 export { Select } from "./input/select";

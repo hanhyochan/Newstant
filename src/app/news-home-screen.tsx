@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type HTMLAttributes,
   type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
@@ -20,6 +21,7 @@ import {
   CommentComposerInput,
   Icon,
   IconButton,
+  NewsRollDivider,
   NewsViewToggle,
   PillTabMenu,
   ReactionButton,
@@ -503,9 +505,27 @@ function HomeBlockItem({ article, onClick }: { article: HomeArticle; onClick: ()
   return (
     <button className="btn_newsBlockItem" onClick={onClick} type="button">
       <strong>{article.title}</strong>
-      <span>{article.date}</span>
+      <HomeArticleMeta className="newsroll_blockMeta" date={article.date} />
       <img alt="" src={article.image} />
     </button>
+  );
+}
+
+function NewsViewCount({ className = "newsroll_viewCount" }: { className?: string }) {
+  return (
+    <span className={className} aria-label="조회수">
+      <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
+      132
+    </span>
+  );
+}
+
+function HomeArticleMeta({ className = "newsroll_article_meta", date }: { className?: string; date: string }) {
+  return (
+    <p className={className}>
+      <NewsCreatedTime>{date}</NewsCreatedTime>
+      <NewsViewCount />
+    </p>
   );
 }
 
@@ -1448,7 +1468,7 @@ function HomeReelCard({
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
         <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
-        <NewsCreatedTime>{article.date}</NewsCreatedTime>
+        <HomeArticleMeta date={article.date} />
       </div>
       <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
         <IconButton
@@ -1642,20 +1662,11 @@ function SearchView({ onClose }: { onClose: () => void }) {
   );
 }
 
-function AllNewsMeta({ stacked = false }: { stacked?: boolean }) {
+function AllNewsMeta() {
   return (
-    <p className={`newsroll_all_meta${stacked ? " newsroll_all_meta_stacked" : ""}`}>
+    <p className="newsroll_all_meta">
       <NewsCreatedTime />
-      <span className="newsroll_all_stats" aria-label="조회수와 반응">
-        <span>
-          <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
-          132
-        </span>
-        <span>
-          <i className="newsroll_all_stat_icon_comment" aria-hidden="true" />
-          132
-        </span>
-      </span>
+      <NewsViewCount className="newsroll_all_views" />
     </p>
   );
 }
@@ -1685,8 +1696,16 @@ function AllNewsMoreButton({
   );
 }
 
-function AllNewsPanelContent({ children }: { children: ReactNode }) {
-  return <div className="newsroll_all_panelContent">{children}</div>;
+type AllNewsPanelContentProps = HTMLAttributes<HTMLDivElement>;
+
+function AllNewsPanelContent({ children, className, ...props }: AllNewsPanelContentProps) {
+  const classNames = ["newsroll_all_panelContent", className].filter(Boolean).join(" ");
+
+  return (
+    <div className={classNames} {...props}>
+      {children}
+    </div>
+  );
 }
 
 type AllNewsArticlePreview = {
@@ -1725,7 +1744,7 @@ function AllNewsLatestCard({
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
       <span className="newsroll_all_latest_body">
         <strong>{item.title}</strong>
-        <AllNewsMeta stacked />
+        <AllNewsMeta />
       </span>
     </button>
   );
@@ -2076,7 +2095,11 @@ function AllNewsView({
         </article>
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_press_panel" aria-label="언론사별 헤드라인">
-          <AllNewsPanelContent>
+          <AllNewsPanelContent
+            aria-labelledby={`all-news-press-tab-${activePressIndex}`}
+            id="all-news-headline-panel"
+            role="tabpanel"
+          >
             <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
             <div
               className="newsroll_all_press_tabMenu"
@@ -2108,20 +2131,15 @@ function AllNewsView({
                 );
               })}
             </div>
-            <div
-              aria-labelledby={`all-news-press-tab-${activePressIndex}`}
-              className="newsroll_all_headline_list"
-              id="all-news-headline-panel"
-              role="tabpanel"
-            >
-              {headlineItems.map((item, index) => (
+            {headlineItems.map((item, index) => (
+              <Fragment key={`${item.title}-${index}`}>
+                {index > 0 ? <NewsRollDivider className="newsroll_all_itemDivider" /> : null}
                 <AllNewsHeadlineItem
                   item={item}
-                  key={`${item.title}-${index}`}
                   onClick={() => openAllNewsDetail(createAllNewsArticle(item, activePress, index))}
                 />
-              ))}
-            </div>
+              </Fragment>
+            ))}
             <AllNewsMoreButton
               ariaLabel={showAllHeadlines ? "언론사별 헤드라인 접기" : "언론사별 헤드라인 더보기"}
               expanded={showAllHeadlines}
@@ -2131,7 +2149,11 @@ function AllNewsView({
         </article>
 
         <article className="container_articleCard newsroll_all_panel newsroll_all_relay_panel" aria-label="릴레이 뉴스">
-          <AllNewsPanelContent>
+          <AllNewsPanelContent
+            aria-labelledby={`all-news-relay-tab-${activeRelayIndex}`}
+            id={`all-news-relay-panel-${activeRelayIndex}`}
+            role="tabpanel"
+          >
             <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
             <PillTabMenu
               ariaLabel="릴레이 뉴스 카테고리"
@@ -2146,21 +2168,16 @@ function AllNewsView({
               onChange={setActiveRelayCategory}
               value={activeRelayCategory}
             />
-            <div
-              aria-labelledby={`all-news-relay-tab-${activeRelayIndex}`}
-              className="newsroll_all_relay_list"
-              id={`all-news-relay-panel-${activeRelayIndex}`}
-              role="tabpanel"
-            >
-              {relayItems.map((item, index) => (
+            {relayItems.map((item, index) => (
+              <Fragment key={`${item.title}-${index}`}>
+                {index > 0 ? <NewsRollDivider className="newsroll_all_itemDivider" /> : null}
                 <AllNewsRelayItem
                   featured={index === 0 || index === 5}
                   item={item}
-                  key={`${item.title}-${index}`}
                   onClick={() => openAllNewsDetail(createAllNewsArticle(item, activeRelayCategory, index))}
                 />
-              ))}
-            </div>
+              </Fragment>
+            ))}
           </AllNewsPanelContent>
         </article>
       </section>
@@ -2974,12 +2991,20 @@ function ActiveView({
 export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("home");
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
+  const [viewResetKeys, setViewResetKeys] = useState<Record<Tab, number>>({
+    all: 0,
+    home: 0,
+    info: 0,
+    my: 0,
+    policy: 0,
+  });
   const [isTextLarge, setIsTextLarge] = useState(false);
   const isPanelView = activeView === "policy" || activeView === "my" || activeView === "info";
+  const activeViewResetKey = activeView === "search" ? 0 : viewResetKeys[activeView];
 
   useLayoutEffect(() => {
     resetNewsRollViewport();
-  }, [activeView]);
+  }, [activeView, activeViewResetKey]);
 
   function openSearch() {
     if (activeView !== "search") {
@@ -2987,6 +3012,15 @@ export function NewsHomeScreen() {
     }
 
     setActiveView("search");
+  }
+
+  function openDefaultTab(tab: Tab) {
+    setActiveView(tab);
+    setSearchBackView(tab);
+    setViewResetKeys((current) => ({
+      ...current,
+      [tab]: current[tab] + 1,
+    }));
   }
 
   return (
@@ -3001,9 +3035,10 @@ export function NewsHomeScreen() {
     >
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
+          key={`${activeView}-${activeViewResetKey}`}
           isTextLarge={isTextLarge}
           onCloseSearch={() => setActiveView(searchBackView)}
-          onOpenAllNews={() => setActiveView("all")}
+          onOpenAllNews={() => openDefaultTab("all")}
           onOpenSearch={openSearch}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
           view={activeView}
@@ -3019,7 +3054,7 @@ export function NewsHomeScreen() {
               icon={item.icon}
               key={item.label}
               label={item.label}
-              onClick={() => setActiveView(item.tab)}
+              onClick={() => openDefaultTab(item.tab)}
             />
           ))}
         </nav>
