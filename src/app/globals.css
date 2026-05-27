@@ -5636,7 +5636,8 @@
         line-height: var(--line-height-20);
     }
 
-    .wrapper_commentSummary .btn_commentMineFilter {
+    .wrapper_commentSummary .btn_commentMineFilter,
+    .newsroll_my_profile .btn_commentMineFilter {
         min-height: 40px;
         display: inline-flex;
         align-items: center;
@@ -5655,7 +5656,9 @@
     }
 
     .wrapper_commentSummary .btn_commentMineFilter:active,
-    .wrapper_commentSummary .btn_commentMineFilter[aria-pressed='true'] {
+    .wrapper_commentSummary .btn_commentMineFilter[aria-pressed='true'],
+    .newsroll_my_profile .btn_commentMineFilter:active,
+    .newsroll_my_profile .btn_commentMineFilter[aria-pressed='true'] {
         background: var(--color-cool-neutral-96);
     }
 
@@ -6534,6 +6537,56 @@
 
 .newsroll_all_press_tabMenu .newsroll_all_press_tabButton[aria-selected='true'] .newsroll_all_press_logo {
     background: var(--color-common-100);
+}
+
+.newsroll_my_screen,
+.newsroll_my_screen .newsroll_page_panelContent,
+.newsroll_my_screen .newsroll_my_profile,
+.newsroll_my_screen .newsroll_my_recent,
+.newsroll_my_screen .newsroll_my_recent_scroller,
+.newsroll_my_screen .newsroll_my_chip_group,
+.newsroll_my_screen .newsroll_my_chip_group + .newsroll_my_chip_group,
+.newsroll_my_screen .newsroll_my_chip_group > div,
+.newsroll_my_screen .newsroll_my_setting_group,
+.newsroll_my_screen .newsroll_my_setting_group h2,
+.newsroll_my_screen .newsroll_my_display_group {
+    margin: 0;
+    padding: 0;
+}
+
+.newsroll_my_screen .newsroll_page_panelContent,
+.newsroll_my_screen .newsroll_my_recent,
+.newsroll_my_screen .newsroll_my_chip_group,
+.newsroll_my_screen .newsroll_my_setting_group {
+    gap: var(--spacing-gap-vertical-24);
+}
+
+.newsroll_my_screen .newsroll_my_profile,
+.newsroll_my_screen .newsroll_my_recent_scroller,
+.newsroll_my_screen .newsroll_my_chip_tabs,
+.newsroll_my_screen .newsroll_my_setting_row {
+    gap: var(--spacing-gap-horizontal-24);
+}
+
+.newsroll_my_screen .newsroll_my_recent,
+.newsroll_my_screen .newsroll_my_chip_group,
+.newsroll_my_screen .newsroll_my_setting_group {
+    display: flex;
+    flex-direction: column;
+}
+
+.newsroll_my_screen .newsroll_my_recent_scroller {
+    width: 100%;
+}
+
+.newsroll_my_screen .newsroll_my_chip_tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-gap-horizontal-8);
+}
+
+.newsroll_my_screen .newsroll_my_chevron {
+    padding: 0;
 }
 
 .newsroll_divider {
