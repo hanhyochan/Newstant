@@ -25,6 +25,7 @@ import {
   NewsRollDivider,
   NewsRollDropdownArrow,
   NewsRollDropdownMenu,
+  NewsBlockItem,
   NewsViewToggle,
   PillTabMenu,
   ReactionButton,
@@ -563,26 +564,6 @@ function NewsToolbar({
         label="메뉴"
       />
     </div>
-  );
-}
-
-function HomeBlockItem({
-  article,
-  onClick,
-}: {
-  article: HomeArticle;
-  onClick: () => void;
-}) {
-  return (
-    <button className="btn_newsBlockItem" onClick={onClick} type="button">
-      <img alt="" src={article.image} />
-      <strong>{article.title}</strong>
-      <HomeArticleMeta
-        className="newsroll_blockMeta"
-        date={article.date}
-        showViewCount={false}
-      />
-    </button>
   );
 }
 
@@ -1899,10 +1880,14 @@ function HomeView({
         >
           <div className="wrapper_newsGridScroll">
             {homeArticles.map((article) => (
-              <HomeBlockItem
-                article={article}
+              <NewsBlockItem
+                dateLabel={article.date}
+                dateTime={defaultNewsDateTime}
+                imageAlt={article.imageAlt}
+                imageSrc={article.image}
                 key={article.title}
                 onClick={() => openHomeDetail(article)}
+                title={article.title}
               />
             ))}
           </div>
@@ -3152,18 +3137,14 @@ function MyPageView({
           <h2>최근 본 뉴스</h2>
           <div className="newsroll_my_recent_scroller">
             {recentItems.map((item, index) => (
-              <button
-                aria-pressed={selectedRecentIndex === index}
-                className="newsroll_my_recent_item"
+              <NewsBlockItem
+                ariaPressed={selectedRecentIndex === index}
+                dateLabel={item.time}
+                dateTime={item.dateTime}
+                imageSrc={item.image}
                 key={`${item.title}-${index}`}
-                type="button"
-              >
-                <img alt="" src={item.image} />
-                <strong>{item.title}</strong>
-                <NewsCreatedTime dateTime={item.dateTime}>
-                  {item.time}
-                </NewsCreatedTime>
-              </button>
+                title={item.title}
+              />
             ))}
           </div>
           <button

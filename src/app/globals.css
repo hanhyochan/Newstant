@@ -3559,7 +3559,7 @@
 
     .newsroll_my_recent_scroller {
         display: flex;
-        gap: var(--spacing-gap-horizontal-16);
+        gap: var(--spacing-gap-horizontal-24);
         width: calc(100% + var(--spacing-padding-horizontal-16));
         padding-top: 28px;
         overflow-x: auto;
@@ -3570,32 +3570,9 @@
         display: none;
     }
 
-    .newsroll_my_recent_item {
-        width: 141px;
-        flex: 0 0 141px;
-        display: grid;
-        gap: 8px;
-        text-align: left;
-    }
-
-    .newsroll_my_recent_item img {
-        width: 141px;
-        height: 75px;
-        border-radius: var(--radius-8);
-        object-fit: cover;
-    }
-
-    .newsroll_my_recent_item strong {
-        color: var(--color-label-strong);
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_my_recent_item span {
-        color: var(--color-neutral-60);
-        font-size: var(--font-size-12);
-        line-height: var(--line-height-16);
+    .newsroll_my_recent_scroller .btn_newsBlockItem {
+        width: 156px;
+        flex: 0 0 156px;
     }
 
     .newsroll_my_recent_full {
