@@ -257,11 +257,26 @@ export function useDockedPanelScroll({
   const routeDockedPanelScroll = (deltaY: number) => {
     const scroller = scrollerRef.current;
     const isDocked = rootRef.current?.classList.contains(dockedClassName) ?? false;
-    const activePanel = getActivePanel();
-    const panels = getPanels();
 
-    if (!scroller || !isDocked || !activePanel || panels.length === 0) {
+    if (!scroller || !isDocked) {
       return false;
+    }
+
+    const panels = getPanels();
+    const activePanel = getActivePanel();
+
+    if (!activePanel || panels.length === 0) {
+      const maxScroll = getScrollLimit(scroller);
+      const nextScrollTop = Math.max(0, Math.min(maxScroll, scroller.scrollTop + deltaY));
+
+      if (nextScrollTop === scroller.scrollTop) {
+        clearBoundary();
+        return false;
+      }
+
+      scroller.scrollTop = nextScrollTop;
+      clearBoundary();
+      return true;
     }
 
     const { nextPanel, previousPanel } = getAdjacentPanels(panels, activePanel);

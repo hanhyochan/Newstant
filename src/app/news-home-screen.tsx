@@ -575,9 +575,13 @@ function HomeBlockItem({
 }) {
   return (
     <button className="btn_newsBlockItem" onClick={onClick} type="button">
-      <strong>{article.title}</strong>
-      <HomeArticleMeta className="newsroll_blockMeta" date={article.date} />
       <img alt="" src={article.image} />
+      <strong>{article.title}</strong>
+      <HomeArticleMeta
+        className="newsroll_blockMeta"
+        date={article.date}
+        showViewCount={false}
+      />
     </button>
   );
 }
@@ -598,14 +602,16 @@ function NewsViewCount({
 function HomeArticleMeta({
   className = "newsroll_article_meta",
   date,
+  showViewCount = true,
 }: {
   className?: string;
   date: string;
+  showViewCount?: boolean;
 }) {
   return (
     <p className={className}>
       <NewsCreatedTime>{date}</NewsCreatedTime>
-      <NewsViewCount />
+      {showViewCount ? <NewsViewCount /> : null}
     </p>
   );
 }

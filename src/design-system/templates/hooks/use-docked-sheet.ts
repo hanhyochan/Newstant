@@ -171,14 +171,24 @@ export function useDockedSheet({
     const dockedControlsHeight = dockedControls?.getBoundingClientRect().height ?? 0;
     const measuredStopTop = Math.round(toolbarBottom + dockedGap + dockedControlsHeight + dockedGap);
     const measuredTopBottom = Math.round(topNode.getBoundingClientRect().bottom - screenTop);
-    const measuredInitialTop = Math.max(
+    const previousBounds = sheetBoundsRef.current;
+    const isFirstMeasure = !hasMeasuredRef.current;
+    const rawInitialTop = Math.max(
       minInitialTop ?? 0,
       measuredStopTop,
       measuredTopBottom + initialGap,
     );
-    const previousBounds = sheetBoundsRef.current;
-    const isFirstMeasure = !hasMeasuredRef.current;
-    const previousTop = sheetTopRef.current || previousBounds.initialTop || measuredInitialTop;
+    const previousTopBeforeMeasure =
+      sheetTopRef.current || previousBounds.initialTop || rawInitialTop;
+    const shouldPreserveDockedInitialTop =
+      !isFirstMeasure
+      && previousBounds.initialTop > rawInitialTop
+      && previousTopBeforeMeasure <= previousBounds.stopTop + SHEET_EDGE_THRESHOLD;
+    const measuredInitialTop =
+      shouldPreserveDockedInitialTop
+        ? previousBounds.initialTop
+        : rawInitialTop;
+    const previousTop = previousTopBeforeMeasure || measuredInitialTop;
     const wasDocked = previousTop <= previousBounds.stopTop + 1;
     const wasPartiallyLifted = previousTop < previousBounds.initialTop;
     let nextTop = measuredInitialTop;
