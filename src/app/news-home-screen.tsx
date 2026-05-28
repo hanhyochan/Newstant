@@ -1948,12 +1948,16 @@ function AllNewsMeta() {
 
 function AllNewsMoreButton({
   ariaLabel,
+  collapsedLabel = "더보기",
   expanded = false,
+  expandedLabel = "접기",
   onClick,
   tone = "light",
 }: {
   ariaLabel?: string;
+  collapsedLabel?: string;
   expanded?: boolean;
+  expandedLabel?: string;
   onClick?: () => void;
   tone?: "dark" | "light";
 }) {
@@ -1965,7 +1969,7 @@ function AllNewsMoreButton({
       onClick={onClick}
       type="button"
     >
-      <span>{expanded ? "접기" : "더보기"}</span>
+      <span>{expanded ? expandedLabel : collapsedLabel}</span>
       <img
         className="newsroll_all_more_icon"
         src="/icons/icon_chevron_right.svg"
@@ -3043,6 +3047,10 @@ const myCategoryGroups = [
   },
 ];
 
+function getMyCategoryOptionId(groupIndex: number, itemIndex: number) {
+  return `${groupIndex}-${itemIndex}`;
+}
+
 const mySummaryItems = [
   { count: 56, icon: "bookmark", label: "북마크", tone: "like", value: "bookmark" },
   { count: 54, icon: "question", label: "투표", tone: "dislike", value: "vote" },
@@ -3059,19 +3067,56 @@ function MyPageView({
   onToggleTextSize: () => void;
 }) {
   const activeSummary: "bookmark" | "vote" | "comment" | null = null;
-  const isRecentExpanded = false;
+  const [isRecentExpanded, setIsRecentExpanded] = useState(false);
+  const [selectedCategorySettings, setSelectedCategorySettings] = useState(
+    () =>
+      myCategoryGroups.map(
+        (group, groupIndex) =>
+          new Set(
+            group.items
+              .map((item, itemIndex) =>
+                group.active.has(item)
+                  ? getMyCategoryOptionId(groupIndex, itemIndex)
+                  : null,
+              )
+              .filter((item): item is string => Boolean(item)),
+          ),
+      ),
+  );
   const isProfileEditing = false;
   const notificationSettings: Record<string, boolean> = {
     "내 댓글에 좋아요, 답글": true,
     공지사항: true,
     속보: true,
   };
-  const preferredNewsType = "reels" as HomeViewMode;
   const selectedRecentIndex: number | null = null;
   const isDarkMode = false;
   const recentItems = isRecentExpanded
     ? [...myRecentNews, ...myRecentNews]
     : myRecentNews;
+  const toggleCategorySetting = (groupIndex: number, optionId: string) => {
+    setSelectedCategorySettings((current) =>
+      current.map((selectedItems, index) => {
+        if (index !== groupIndex) {
+          return selectedItems;
+        }
+
+        if (groupIndex === 1) {
+          return new Set([optionId]);
+        }
+
+        const nextItems = new Set(selectedItems);
+
+        if (nextItems.has(optionId)) {
+          nextItems.delete(optionId);
+        } else {
+          nextItems.add(optionId);
+        }
+
+        return nextItems;
+      }),
+    );
+  };
 
   return (
     <NewsRollCommonLayout
@@ -3147,13 +3192,13 @@ function MyPageView({
               />
             ))}
           </div>
-          <button
-            aria-expanded={isRecentExpanded}
-            className="newsroll_my_full_button"
-            type="button"
-          >
-            {isRecentExpanded ? "접기" : "전체 보기"}
-          </button>
+          <AllNewsMoreButton
+            ariaLabel={isRecentExpanded ? "최근 본 뉴스 접기" : "최근 본 뉴스 전체 보기"}
+            collapsedLabel="전체 보기"
+            expanded={isRecentExpanded}
+            expandedLabel="접기"
+            onClick={() => setIsRecentExpanded((current) => !current)}
+          />
         </section>
 
         {myCategoryGroups.map((group, groupIndex) => (
@@ -3163,19 +3208,31 @@ function MyPageView({
             aria-label={group.title}
           >
             <h2>{group.title}</h2>
-            <PillTabMenu
-              ariaLabel={group.title}
+            <div
+              aria-label={group.title}
               className="newsroll_all_category_tabs newsroll_policy_age_tabs newsroll_my_chip_tabs"
-              items={group.items.map((item, index) => ({
-                id: `${groupIndex}-${index}`,
-                label: item,
-              }))}
-              onChange={() => {}}
-              value={`${groupIndex}-${Math.max(
-                0,
-                group.items.findIndex((item) => group.active.has(item)),
-              )}`}
-            />
+              role={groupIndex === 1 ? "radiogroup" : "group"}
+            >
+              {group.items.map((item, itemIndex) => {
+                const optionId = getMyCategoryOptionId(groupIndex, itemIndex);
+                const isSelected =
+                  selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
+
+                return (
+                  <button
+                    aria-checked={groupIndex === 1 ? isSelected : undefined}
+                    aria-pressed={groupIndex === 1 ? undefined : isSelected}
+                    className={isSelected ? "is_active" : undefined}
+                    key={optionId}
+                    onClick={() => toggleCategorySetting(groupIndex, optionId)}
+                    role={groupIndex === 1 ? "radio" : undefined}
+                    type="button"
+                  >
+                    {item}
+                  </button>
+                );
+              })}
+            </div>
           </section>
         ))}
 
@@ -3195,15 +3252,8 @@ function MyPageView({
               />
             </button>
           ))}
-          <button
-            aria-pressed={preferredNewsType === "block"}
-            className="newsroll_my_setting_row"
-            type="button"
-          >
-            <span>뉴스 보기 타입</span>
-            <strong>
-              {preferredNewsType === "reels" ? "릴스형" : "블록형"}
-            </strong>
+          <button className="newsroll_my_setting_row" type="button">
+            <span>타임</span>
             <span className="newsroll_my_chevron" aria-hidden="true" />
           </button>
         </section>

@@ -3657,19 +3657,6 @@
         line-height: var(--line-height-16);
     }
 
-    .newsroll_my_full_button {
-        width: 100%;
-        min-height: 51px;
-        padding-top: 27px;
-        border: var(--border-1) solid var(--color-line-normal-normal);
-        border-radius: var(--radius-8);
-        color: var(--color-label-neutral);
-        background: var(--color-background-elevated-normal);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
-    }
-
     .newsroll_my_chip_group {
         padding-top: 25px;
         padding-bottom: 29px;
@@ -3722,6 +3709,7 @@
         align-items: center;
         justify-content: space-between;
         gap: var(--spacing-gap-horizontal-16);
+        padding: 0;
         color: var(--color-label-neutral);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
@@ -3736,7 +3724,7 @@
         align-items: center;
         justify-content: flex-start;
         flex: 0 0 auto;
-        padding: 2px;
+        padding: 0;
         border-radius: var(--radius-full);
         background: var(--color-neutral-95);
     }
@@ -3758,7 +3746,7 @@
     .newsroll_my_chevron {
         width: 10px;
         height: 10px;
-        padding-right: 17px;
+        padding: 0;
         border-top: var(--border-2) solid var(--color-label-neutral);
         border-right: var(--border-2) solid var(--color-label-neutral);
         transform: rotate(45deg);
@@ -6087,6 +6075,13 @@
         font-weight: var(--font-weight-400);
     }
 
+    .newsroll_my_chip_tabs button.is_active {
+        color: var(--color-common-100);
+        border-color: var(--color-common-0);
+        background: var(--color-common-0);
+        font-weight: var(--font-weight-700);
+    }
+
     .newsroll_all_press_tabs button {
         height: var(--size-52);
         min-height: var(--size-52);
@@ -6094,8 +6089,7 @@
         padding: 0 var(--spacing-padding-horizontal-16) 0 var(--spacing-padding-horizontal-12);
     }
 
-    .newsroll_all_more,
-    .newsroll_my_full_button {
+    .newsroll_all_more {
         min-height: var(--size-52);
     }
 
