@@ -1,27 +1,43 @@
 import type { KeyboardEvent } from "react";
+import type { ReactNode } from "react";
 
 export type PillTabItem<T extends string> = {
   id: T;
   label: string;
 };
 
+export type PillTabMenuRole = "group" | "radiogroup" | "tablist";
+export type PillTabMenuState = "active" | "default" | "selected";
+
 export type PillTabMenuProps<T extends string> = {
   ariaLabel: string;
   className: string;
+  getButtonClassName?: (id: T) => string | undefined;
+  getItemState?: (id: T) => PillTabMenuState;
+  getItemAriaLabel?: (id: T) => string | undefined;
   getPanelId?: (id: T) => string | undefined;
   getTabId?: (id: T) => string;
   items: PillTabItem<T>[];
+  keyboardNavigation?: boolean;
   onChange: (id: T) => void;
+  renderItemContent?: (item: PillTabItem<T>) => ReactNode;
+  role?: PillTabMenuRole;
   value: T;
 };
 
 export function PillTabMenu<T extends string>({
   ariaLabel,
   className,
+  getButtonClassName,
+  getItemAriaLabel,
+  getItemState,
   getPanelId,
   getTabId,
   items,
+  keyboardNavigation = true,
   onChange,
+  renderItemContent,
+  role = "tablist",
   value,
 }: PillTabMenuProps<T>) {
   const activeIndex = Math.max(
@@ -46,26 +62,40 @@ export function PillTabMenu<T extends string>({
     }
 
     event.preventDefault();
-    onChange(items[nextIndex].id);
+    if (keyboardNavigation) {
+      onChange(items[nextIndex].id);
+    }
   }
 
   return (
-    <div className={className} role="tablist" aria-label={ariaLabel} onKeyDown={handleKeyDown}>
+    <div
+      className={className}
+      role={role}
+      aria-label={ariaLabel}
+      onKeyDown={keyboardNavigation ? handleKeyDown : undefined}
+    >
       {items.map((item) => {
-        const selected = value === item.id;
+        const itemState = getItemState?.(item.id) ?? (value === item.id ? "active" : "default");
+        const isActive = itemState === "active";
+        const isSelected = itemState === "selected";
 
         return (
           <button
-            aria-controls={getPanelId?.(item.id)}
-            aria-selected={selected}
+            aria-checked={role === "radiogroup" ? isActive : undefined}
+            aria-controls={role === "tablist" ? getPanelId?.(item.id) : undefined}
+            aria-label={getItemAriaLabel?.(item.id)}
+            aria-pressed={role === "group" ? isActive || isSelected : undefined}
+            aria-selected={role === "tablist" ? isActive : undefined}
+            className={getButtonClassName?.(item.id)}
+            data-state={itemState}
             id={getTabId?.(item.id)}
             key={item.id}
             onClick={() => onChange(item.id)}
-            role="tab"
-            tabIndex={selected ? 0 : -1}
+            role={role === "tablist" ? "tab" : role === "radiogroup" ? "radio" : undefined}
+            tabIndex={role === "group" ? 0 : isActive ? 0 : -1}
             type="button"
           >
-            {item.label}
+            {renderItemContent?.(item) ?? item.label}
           </button>
         );
       })}

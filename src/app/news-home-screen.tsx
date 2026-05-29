@@ -3033,22 +3033,29 @@ const myCategoryGroups = [
   {
     items: ["정치", "경제", "사회", "문화", "국제", "지역", "스포츠", "IT과학"],
     title: "나의 관심 카테고리 설정",
-    active: new Set(["정치", "사회", "지역", "스포츠"]),
+    active: new Set(["정치"]),
   },
   {
     items: ["미성년", "청년", "중장년", "노년"],
     title: "나의 연령대 설정",
-    active: new Set(["청년"]),
+    active: new Set(["미성년"]),
   },
   {
     items: ["중앙일보", "국민일보", "중앙일보"],
     title: "관심 언론사 설정",
-    active: new Set(["국민일보"]),
+    active: new Set<string>(),
   },
 ];
 
 function getMyCategoryOptionId(groupIndex: number, itemIndex: number) {
   return `${groupIndex}-${itemIndex}`;
+}
+
+function getMyCategoryTabItems(groupIndex: number) {
+  return myCategoryGroups[groupIndex].items.map((item, itemIndex) => ({
+    id: getMyCategoryOptionId(groupIndex, itemIndex),
+    label: item,
+  }));
 }
 
 const mySummaryItems = [
@@ -3084,13 +3091,15 @@ function MyPageView({
       ),
   );
   const isProfileEditing = false;
-  const notificationSettings: Record<string, boolean> = {
+  const [notificationSettings, setNotificationSettings] = useState<
+    Record<string, boolean>
+  >({
     "내 댓글에 좋아요, 답글": true,
     공지사항: true,
     속보: true,
-  };
+  });
   const selectedRecentIndex: number | null = null;
-  const isDarkMode = false;
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const recentItems = isRecentExpanded
     ? [...myRecentNews, ...myRecentNews]
     : myRecentNews;
@@ -3202,47 +3211,47 @@ function MyPageView({
         </section>
 
         {myCategoryGroups.map((group, groupIndex) => (
-          <section
-            className="newsroll_my_chip_group"
-            key={group.title}
-            aria-label={group.title}
-          >
-            <h2>{group.title}</h2>
-            <div
-              aria-label={group.title}
+          <Fragment key={group.title}>
+            {groupIndex > 0 ? <NewsRollDivider className="newsroll_my_section_divider" /> : null}
+            <h2 className="newsroll_my_flat_title">{group.title}</h2>
+            <PillTabMenu
+              ariaLabel={group.title}
               className="newsroll_all_category_tabs newsroll_policy_age_tabs newsroll_my_chip_tabs"
-              role={groupIndex === 1 ? "radiogroup" : "group"}
-            >
-              {group.items.map((item, itemIndex) => {
-                const optionId = getMyCategoryOptionId(groupIndex, itemIndex);
+              getItemState={(optionId) => {
                 const isSelected =
                   selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
 
-                return (
-                  <button
-                    aria-checked={groupIndex === 1 ? isSelected : undefined}
-                    aria-pressed={groupIndex === 1 ? undefined : isSelected}
-                    className={isSelected ? "is_active" : undefined}
-                    key={optionId}
-                    onClick={() => toggleCategorySetting(groupIndex, optionId)}
-                    role={groupIndex === 1 ? "radio" : undefined}
-                    type="button"
-                  >
-                    {item}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
+                if (isSelected) {
+                  return "active";
+                }
+
+                return "default";
+              }}
+              items={getMyCategoryTabItems(groupIndex)}
+              keyboardNavigation={groupIndex === 1}
+              onChange={(optionId) => toggleCategorySetting(groupIndex, optionId)}
+              role={groupIndex === 1 ? "radiogroup" : "group"}
+              value={
+                Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
+                getMyCategoryOptionId(groupIndex, 0)
+              }
+            />
+          </Fragment>
         ))}
 
-        <section className="newsroll_my_setting_group" aria-label="알림 설정">
-          <h2>알림 설정</h2>
+        <NewsRollDivider className="newsroll_my_section_divider" />
+        <h2 className="newsroll_my_flat_title">알림 설정</h2>
           {["속보", "내 댓글에 좋아요, 답글", "공지사항"].map((label) => (
             <button
               aria-pressed={notificationSettings[label]}
               className="newsroll_my_setting_row"
               key={label}
+              onClick={() =>
+                setNotificationSettings((currentSettings) => ({
+                  ...currentSettings,
+                  [label]: !currentSettings[label],
+                }))
+              }
               type="button"
             >
               <span>{label}</span>
@@ -3253,19 +3262,16 @@ function MyPageView({
             </button>
           ))}
           <button className="newsroll_my_setting_row" type="button">
-            <span>타임</span>
+            <span>뉴스보기 타임</span>
             <span className="newsroll_my_chevron" aria-hidden="true" />
           </button>
-        </section>
 
-        <section
-          className="newsroll_my_setting_group newsroll_my_display_group"
-          aria-label="디스플레이 설정"
-        >
-          <h2>디스플레이 설정</h2>
+        <NewsRollDivider className="newsroll_my_section_divider" />
+        <h2 className="newsroll_my_flat_title">디스플레이 설정</h2>
           <button
             aria-pressed={isDarkMode}
             className="newsroll_my_setting_row"
+            onClick={() => setIsDarkMode((current) => !current)}
             type="button"
           >
             <span>다크모드</span>
@@ -3274,7 +3280,6 @@ function MyPageView({
               aria-hidden="true"
             />
           </button>
-        </section>
       </NewsRollPagePanel>
     </NewsRollCommonLayout>
   );

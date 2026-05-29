@@ -32,4 +32,9 @@ export type {
   NewsRollDropdownOption,
 } from "./navigation/dropdown-menu";
 export { PillTabMenu } from "./navigation/pill-tab-menu";
-export type { PillTabItem, PillTabMenuProps } from "./navigation/pill-tab-menu";
+export type {
+  PillTabItem,
+  PillTabMenuProps,
+  PillTabMenuRole,
+  PillTabMenuState,
+} from "./navigation/pill-tab-menu";

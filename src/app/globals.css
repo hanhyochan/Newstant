@@ -3704,12 +3704,14 @@
 
     .newsroll_my_setting_row {
         width: 100%;
-        min-height: 52px;
+        min-height: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: var(--spacing-gap-horizontal-16);
+        box-sizing: border-box;
         padding: 0;
+        overflow: visible;
         color: var(--color-label-neutral);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
@@ -3724,7 +3726,8 @@
         align-items: center;
         justify-content: flex-start;
         flex: 0 0 auto;
-        padding: 0;
+        box-sizing: border-box;
+        padding: 2px;
         border-radius: var(--radius-full);
         background: var(--color-neutral-95);
     }
@@ -3744,8 +3747,11 @@
     }
 
     .newsroll_my_chevron {
-        width: 10px;
-        height: 10px;
+        width: 12px;
+        height: 12px;
+        flex: 0 0 12px;
+        box-sizing: border-box;
+        margin-right: 8px;
         padding: 0;
         border-top: var(--border-2) solid var(--color-label-neutral);
         border-right: var(--border-2) solid var(--color-label-neutral);
@@ -6057,7 +6063,12 @@
     .newsroll_all_category_tabs button[aria-selected='true'],
     .newsroll_policy_age_tabs button[aria-selected='true'],
     .newsroll_info_tabs button[aria-selected='true'],
-    .wrapper_commentTabs button[aria-selected='true'] {
+    .wrapper_commentTabs button[aria-selected='true'],
+    .newsroll_all_press_tabs button[data-state='active'],
+    .newsroll_all_category_tabs button[data-state='active'],
+    .newsroll_policy_age_tabs button[data-state='active'],
+    .newsroll_info_tabs button[data-state='active'],
+    .wrapper_commentTabs button[data-state='active'] {
         color: var(--color-common-100);
         border-color: var(--color-common-0);
         background: var(--color-common-0);
@@ -6075,7 +6086,11 @@
         font-weight: var(--font-weight-400);
     }
 
-    .newsroll_my_chip_tabs button.is_active {
+    .newsroll_all_press_tabs button[data-state='selected'],
+    .newsroll_all_category_tabs button[data-state='selected'],
+    .newsroll_policy_age_tabs button[data-state='selected'],
+    .newsroll_info_tabs button[data-state='selected'],
+    .wrapper_commentTabs button[data-state='selected'] {
         color: var(--color-common-100);
         border-color: var(--color-common-0);
         background: var(--color-common-0);
@@ -6472,11 +6487,11 @@
 
 .newsroll_all_press_tabMenu {
     width: 100%;
-    min-height: calc(48px + var(--border-1) * 2);
+    min-height: calc(48px + var(--spacing-padding-vertical-8));
     display: flex;
     align-items: center;
     gap: var(--spacing-gap-horizontal-8);
-    padding-block: var(--border-1);
+    padding-block: var(--spacing-padding-vertical-4);
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
@@ -6489,7 +6504,17 @@
 .newsroll_all_press_tabMenu .newsroll_all_press_tabButton {
     min-width: auto;
     flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
+    border: var(--border-1) solid transparent;
+    border-radius: var(--radius-full);
+    color: inherit;
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+    cursor: pointer;
 }
 
 .newsroll_all_press_tabMenu .newsroll_all_press_tabButton[aria-selected='true'] {
@@ -6560,6 +6585,76 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-gap-horizontal-8);
+}
+
+.newsroll_my_flat_title {
+    width: 100%;
+    flex: 0 0 100%;
+    margin: 0;
+    padding: 0;
+    color: var(--color-label-neutral);
+    font-size: var(--font-size-18);
+    font-weight: var(--font-weight-600);
+    line-height: var(--line-height-24);
+}
+
+.newsroll_my_screen .newsroll_my_chip_tabs button {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0 var(--spacing-padding-horizontal-12);
+    border: var(--border-1) solid var(--newsroll-divider-color);
+    border-radius: var(--radius-full);
+    color: var(--color-label-strong);
+    background: var(--color-background-elevated-normal);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}
+
+.newsroll_my_screen .newsroll_my_chip_tabs button[data-state='active'] {
+    color: var(--color-common-100);
+    border-color: var(--color-common-0);
+    background: var(--color-common-0);
+    font-weight: var(--font-weight-700);
+}
+
+.newsroll_my_screen .newsroll_my_chip_tabs button[data-state='default'] {
+    color: var(--color-label-strong);
+    border-color: var(--newsroll-divider-color);
+    background: var(--color-background-elevated-normal);
+}
+
+.newsroll_my_screen .newsroll_my_chip_tabs button[data-state='selected'] {
+    color: var(--color-common-100);
+    border-color: var(--color-common-0);
+    background: var(--color-common-0);
+    font-weight: var(--font-weight-700);
+}
+
+.newsroll_my_section_divider {
+    margin: 0;
+    clear: both;
+}
+
+.newsroll_my_screen .newsroll_page_panelContent {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: var(--spacing-gap-vertical-24) var(--spacing-gap-horizontal-8);
+}
+
+.newsroll_my_screen .newsroll_my_profile,
+.newsroll_my_screen .newsroll_my_activity_summary,
+.newsroll_my_screen .newsroll_my_recent,
+.newsroll_my_screen .newsroll_my_chip_tabs,
+.newsroll_my_screen .newsroll_my_setting_row,
+.newsroll_my_screen .newsroll_my_section_divider {
+    width: 100%;
+    flex: 0 0 auto;
 }
 
 .newsroll_my_screen .newsroll_my_chevron {
