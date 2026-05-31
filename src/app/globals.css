@@ -2394,8 +2394,13 @@
     }
 
     .newsroll_icon_earth {
-        --newsroll-icon-outline-url: url('/icons/icon_earth_grid.svg');
-        --newsroll-icon-fill-url: url('/icons/icon_earth_grid_fill.svg');
+        --newsroll-icon-outline-url: url('/icons/icon_all_news.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_all_news_active.svg');
+    }
+
+    .newsroll_icon_allNews {
+        --newsroll-icon-outline-url: url('/icons/icon_all_news.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_all_news_active.svg');
     }
 
     .newsroll_icon_fourSquare {
@@ -2404,8 +2409,8 @@
     }
 
     .newsroll_icon_home {
-        --newsroll-icon-outline-url: url('/icons/icon_home_outline.svg');
-        --newsroll-icon-fill-url: url('/icons/icon_home.svg');
+        --newsroll-icon-outline-url: url('/icons/icon_home.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_home_active.svg');
     }
 
     .newsroll_icon_list {
@@ -2414,8 +2419,13 @@
     }
 
     .newsroll_icon_loudspeaker {
-        --newsroll-icon-outline-url: url('/icons/icon_loudspeaker_line.svg');
-        --newsroll-icon-fill-url: url('/icons/icon_loudspeaker_fill.svg');
+        --newsroll-icon-outline-url: url('/icons/icon_policy.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_policy_active.svg');
+    }
+
+    .newsroll_icon_policy {
+        --newsroll-icon-outline-url: url('/icons/icon_policy.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_policy_active.svg');
     }
 
     .newsroll_icon_menu {
@@ -2429,8 +2439,13 @@
     }
 
     .newsroll_icon_question {
-        --newsroll-icon-outline-url: url('/icons/icon_question_circle_outline.svg');
-        --newsroll-icon-fill-url: url('/icons/icon_question_circle_fill_mask.svg');
+        --newsroll-icon-outline-url: url('/icons/icon_information.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_information_active.svg');
+    }
+
+    .newsroll_icon_information {
+        --newsroll-icon-outline-url: url('/icons/icon_information.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_information_active.svg');
     }
 
     .newsroll_icon_search {
@@ -2464,8 +2479,13 @@
     }
 
     .newsroll_icon_user {
-        --newsroll-icon-outline-url: url('/icons/icon_user_outline.svg');
-        --newsroll-icon-fill-url: url('/icons/icon_user.svg');
+        --newsroll-icon-outline-url: url('/icons/icon_my_page.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_my_page_active.svg');
+    }
+
+    .newsroll_icon_myPage {
+        --newsroll-icon-outline-url: url('/icons/icon_my_page.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_my_page_active.svg');
     }
 
     @media (max-width: 430px) {
@@ -3444,13 +3464,6 @@
         padding: 0;
     }
 
-    .container_myDetailHeader {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-gap-vertical-24);
-        color: var(--color-common-100);
-    }
-
     .wrapper_myDetailControls {
         width: 100%;
         min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
@@ -4321,7 +4334,7 @@
         --newsroll-main-border-width: 1.5px;
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-gap-vertical-40);
+        gap: var(--spacing-gap-vertical-24);
         background: var(--color-newsroll-purple-20);
     }
 
@@ -4407,11 +4420,11 @@
     }
 
     .container_homeScreen.is_homeSheetDocked .container_home {
-        gap: var(--spacing-gap-vertical-16);
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .container_homeScreen.is_homeSheetDocked .container_hero {
-        gap: 0;
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .container_homeScreen.is_homeSheetDocked .container_hero > :not(.wrapper_homeDockedControls),
@@ -4445,11 +4458,14 @@
         min-height: auto;
     }
 
-    .newsroll_all_breakingHeader {
-        width: 100%;
+    .newsroll_headerTop {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-gap-vertical-40);
+        gap: var(--spacing-gap-vertical-24);
+    }
+
+    .newsroll_all_breakingHeader {
+        width: 100%;
     }
 
     .newsroll_all_breakingBody {
@@ -4633,7 +4649,7 @@
     .wrapper_breakingNews {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-gap-vertical-16);
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .text_greeting {
@@ -4825,7 +4841,7 @@
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_breakingHeader {
-        gap: var(--spacing-gap-vertical-16);
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_breaking_label,
@@ -6667,34 +6683,12 @@
     margin-top: 28px;
 }
 
-.container_myHeader,
-.newsroll_info_header {
-    display: grid;
-    align-content: start;
-    gap: var(--spacing-gap-vertical-24);
-    color: var(--color-common-100);
-}
-
-.newsroll_info_header {
-    display: flex;
-    flex-direction: column;
-}
-
 .newsroll_info_screen,
 .newsroll_info_sheet {
     display: flex;
     flex-direction: column;
 }
 
-.newsroll_policy_header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-gap-vertical-24);
-    color: var(--color-common-100);
-}
-
-.container_myHeader h1,
-.newsroll_info_header h1,
 .text_infoHeaderTitle,
 .text_panelHeaderTitle {
     margin: 0;
@@ -6911,8 +6905,8 @@
 .newsroll_all_category_tabs button:not([aria-selected='true']),
 .tab_myCategoryMenu button[data-state='default'],
 .newsroll_all_press_tabMenu .newsroll_all_press_tabButton:not([aria-selected='true']) {
-    border: 0;
-    background: var(--color-fill-normal);
+    border: var(--border-1) solid var(--newsroll-divider-color);
+    background: var(--color-background-elevated-normal);
 }
 
 .wrapper_newsViewToggle {
@@ -6930,15 +6924,21 @@
     padding: 0;
 }
 
+.btn_newsViewOption:not([aria-selected='true']) {
+    border: 0;
+    color: var(--color-common-100);
+    background: transparent;
+}
+
 .chip_articleCategory,
 .chip_policy,
 .badge_commentChoice,
 .newsroll_all_chip,
 .newsroll_policy_detail_tags .chip_policy {
-    min-height: 40px;
-    padding: 0 var(--spacing-padding-horizontal-16);
+    min-height: 32px;
+    padding: 0 var(--spacing-padding-horizontal-12);
     border-radius: var(--radius-full);
-    font-size: var(--font-size-15);
+    font-size: var(--font-size-14);
     font-weight: var(--font-weight-500);
     line-height: var(--line-height-20);
     cursor: default;

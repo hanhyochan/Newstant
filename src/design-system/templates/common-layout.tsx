@@ -73,7 +73,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   sheetRef,
   sheetScrollSelector,
   top,
-  topClassName,
+  topClassName = "container_home newsroll_sheetFrameTop",
   topProps,
   topRef,
   ...rootProps

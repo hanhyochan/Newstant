@@ -41,6 +41,7 @@ import {
   NewsRollCommonLayout,
   NewsRollDetailBackButton,
   NewsRollDockedControls,
+  NewsRollHeaderTop,
   NewsRollPagePanel,
   NewsRollSummaryHeroTop,
   useDockedPanelScroll,
@@ -234,10 +235,10 @@ const homeBreakingTitle =
 
 const navItems: { icon: IconName; label: string; tab: Tab }[] = [
   { icon: "home", label: "메인화면", tab: "home" },
-  { icon: "earth", label: "전체 뉴스", tab: "all" },
-  { icon: "loudspeaker", label: "국가정책", tab: "policy" },
-  { icon: "user", label: "마이페이지", tab: "my" },
-  { icon: "question", label: "인포메이션", tab: "info" },
+  { icon: "allNews", label: "전체 뉴스", tab: "all" },
+  { icon: "policy", label: "국가정책", tab: "policy" },
+  { icon: "myPage", label: "마이페이지", tab: "my" },
+  { icon: "information", label: "인포메이션", tab: "info" },
 ];
 
 const baseNoticeItems = [
@@ -620,8 +621,19 @@ function HomeMainHeader({
   const [isAlarmOn, setIsAlarmOn] = useState(false);
 
   return (
-    <>
       <NewsRollSummaryHeroTop
+        footer={
+          <div className="wrapper_breakingNews">
+            <BreakingNewsLink
+              href="#all-breaking-news"
+              onClick={(event) => {
+                event.preventDefault();
+                onOpenBreakingNews();
+              }}
+              title={homeBreakingTitle}
+            />
+          </div>
+        }
         toolbar={
           <NewsToolbar
             isTextLarge={isTextLarge}
@@ -665,18 +677,6 @@ function HomeMainHeader({
           unit: "개",
         }}
       />
-
-      <div className="wrapper_breakingNews">
-        <BreakingNewsLink
-          href="#all-breaking-news"
-          onClick={(event) => {
-            event.preventDefault();
-            onOpenBreakingNews();
-          }}
-          title={homeBreakingTitle}
-        />
-      </div>
-    </>
   );
 }
 
@@ -735,6 +735,7 @@ function HomeShell({
       dockedControlsSelector=".wrapper_homeDockedControls"
       dockedGap={homeSheetDockedGap}
       initialGap={homeSheetInitialGap}
+      minInitialTop={pagePanelInitialTop}
       movingSheet
       onTouchMoveCapture={dockedPanelScroll.handleTouchMove}
       onTouchStartCapture={dockedPanelScroll.handleTouchStart}
@@ -757,7 +758,6 @@ function HomeShell({
           onToggleTextSize={onToggleTextSize}
         />
       }
-      topClassName="container_home"
     >
       {children}
     </NewsRollCommonLayout>
@@ -1129,29 +1129,62 @@ function CommentReactionPanel({
     }
 
     const scrollRoot = panel.closest(".wrapper_articleCardContent");
+    const card = scrollRoot?.closest(".container_articleCard");
+    const feedScroller = card?.closest(".container_newsFeed");
     const updateComposerVisibility = () => {
-      const panelRect = panel.getBoundingClientRect();
-      const rootRect = scrollRoot?.getBoundingClientRect() ?? {
-        top: 0,
-        bottom: window.innerHeight,
-      };
-      const visibleHeight =
-        Math.min(panelRect.bottom, rootRect.bottom) -
-        Math.max(panelRect.top, rootRect.top);
-      const visibleRatio =
-        panelRect.height > 0 ? visibleHeight / panelRect.height : 0;
+      if (!(scrollRoot instanceof HTMLElement)) {
+        setIsComposerVisible(false);
+        return;
+      }
 
-      setIsComposerVisible(visibleRatio >= 0.05);
+      const panelRect = panel.getBoundingClientRect();
+      const rootRect = scrollRoot.getBoundingClientRect();
+      const cardRect = card?.getBoundingClientRect();
+      const feedRect = feedScroller?.getBoundingClientRect();
+      const hasVisibleOverlap =
+        panelRect.bottom > rootRect.top && panelRect.top < rootRect.bottom;
+      const cardVisibleHeight =
+        cardRect && feedRect
+          ? Math.min(cardRect.bottom, feedRect.bottom) -
+            Math.max(cardRect.top, feedRect.top)
+          : rootRect.height;
+      const cardVisibleRatio =
+        cardRect && cardRect.height > 0
+          ? Math.max(0, cardVisibleHeight) / cardRect.height
+          : 1;
+      const panelTop = scrollRoot.scrollTop + panelRect.top - rootRect.top;
+      const panelBottom = panelTop + panelRect.height;
+      const viewportCenter =
+        scrollRoot.scrollTop + scrollRoot.clientHeight * 0.5;
+
+      setIsComposerVisible(
+        cardVisibleRatio >= 0.5 &&
+          hasVisibleOverlap
+          && viewportCenter >= panelTop
+          && viewportCenter <= panelBottom,
+      );
     };
 
     updateComposerVisibility();
-    scrollRoot?.addEventListener("scroll", updateComposerVisibility, {
-      passive: true,
-    });
+    if (scrollRoot instanceof HTMLElement) {
+      scrollRoot.addEventListener("scroll", updateComposerVisibility, {
+        passive: true,
+      });
+    }
+    if (feedScroller instanceof HTMLElement && feedScroller !== scrollRoot) {
+      feedScroller.addEventListener("scroll", updateComposerVisibility, {
+        passive: true,
+      });
+    }
     window.addEventListener("resize", updateComposerVisibility);
 
     return () => {
-      scrollRoot?.removeEventListener("scroll", updateComposerVisibility);
+      if (scrollRoot instanceof HTMLElement) {
+        scrollRoot.removeEventListener("scroll", updateComposerVisibility);
+      }
+      if (feedScroller instanceof HTMLElement && feedScroller !== scrollRoot) {
+        feedScroller.removeEventListener("scroll", updateComposerVisibility);
+      }
       window.removeEventListener("resize", updateComposerVisibility);
     };
   }, []);
@@ -1746,7 +1779,7 @@ function HomeReelCard({
         <div className="wrapper_articleSourcePublisher">
           <img
             className="img_articlePublisherLogo"
-            src="/icons/icon_user.svg"
+            src="/icons/icon_my_page_active.svg"
             alt=""
             width={32}
             height={32}
@@ -2044,7 +2077,7 @@ function AllNewsLatestCard({
       onClick={onClick}
       type="button"
     >
-      <span className="chip chip_medium chip_filled chip_full newsroll_all_chip">
+      <span className="chip chip_small chip_filled chip_full newsroll_all_chip">
         {item.category}
       </span>
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
@@ -2131,6 +2164,8 @@ function AllNewsView({
     allNewsRelayCategories[0],
   );
   const latestScrollerRef = useRef<HTMLDivElement>(null);
+  const breakingBodyRef = useRef<HTMLDivElement>(null);
+  const collapsedBreakingBodyHeightRef = useRef<number | null>(null);
   const latestDragActiveRef = useRef(false);
   const latestDidDragRef = useRef(false);
   const latestDragStartRef = useRef({ scrollLeft: 0, x: 0 });
@@ -2145,6 +2180,7 @@ function AllNewsView({
   const [isBreakingAlarmOn, setIsBreakingAlarmOn] = useState(false);
   const [showAllBreaking, setShowAllBreaking] = useState(false);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
+  const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
   const breakingItems = showAllBreaking
     ? allNewsBreaking
     : allNewsBreaking.slice(0, 3);
@@ -2158,6 +2194,43 @@ function AllNewsView({
   const headlineItems = showAllHeadlines
     ? activeHeadlineItems
     : activeHeadlineItems.slice(0, 4);
+  const allNewsMinInitialTop = pagePanelInitialTop + allNewsBreakingOffset;
+
+  useLayoutEffect(() => {
+    const node = breakingBodyRef.current;
+
+    if (!node) {
+      return undefined;
+    }
+
+    const measureBreakingOffset = () => {
+      const currentHeight = Math.round(node.getBoundingClientRect().height);
+
+      if (!showAllBreaking) {
+        collapsedBreakingBodyHeightRef.current = currentHeight;
+        setAllNewsBreakingOffset(0);
+        return;
+      }
+
+      const collapsedHeight =
+        collapsedBreakingBodyHeightRef.current ?? currentHeight;
+      const expansionOffset = Math.max(
+        0,
+        currentHeight - collapsedHeight + 24,
+      );
+
+      setAllNewsBreakingOffset(expansionOffset);
+    };
+
+    measureBreakingOffset();
+    const frameId = window.requestAnimationFrame(measureBreakingOffset);
+    window.addEventListener("resize", measureBreakingOffset);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", measureBreakingOffset);
+    };
+  }, [showAllBreaking]);
 
   function isLatestScrollerEventTarget(target: EventTarget | null) {
     return (
@@ -2314,9 +2387,8 @@ function AllNewsView({
       aria-label="전체 뉴스"
       className="newsroll_sheetFrame"
       dockedGap={pagePanelDockedGap}
-      fixedInitialTop={pagePanelInitialTop}
       initialGap={pagePanelInitialGap}
-      minInitialTop={pagePanelInitialTop}
+      minInitialTop={allNewsMinInitialTop}
       movingSheet
       onTouchCancelCapture={resetLatestTouchIntent}
       onTouchEndCapture={resetLatestTouchIntent}
@@ -2334,7 +2406,7 @@ function AllNewsView({
         isDetailOpen ? ".container_newsFeed_detail" : ".newsroll_all_feed"
       }
       top={
-        <header className="container_homeToolbar newsroll_all_breakingHeader">
+        <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
             onOpenSearch={onOpenSearch}
@@ -2367,7 +2439,7 @@ function AllNewsView({
             <Icon name="alarm" />
             <span>속보</span>
           </div>
-          <div className="newsroll_all_breakingBody">
+          <div className="newsroll_all_breakingBody" ref={breakingBodyRef}>
             <div className="newsroll_all_breaking_stack" id="all-breaking-news">
               {breakingItems.map((item, index) => (
                 <button
@@ -2395,9 +2467,8 @@ function AllNewsView({
               tone="dark"
             />
           </div>
-        </header>
+        </NewsRollHeaderTop>
       }
-      topClassName="container_home newsroll_sheetFrameTop"
     >
       {detailArticle ? (
         <ArticleDetailContent article={detailArticle} />
@@ -2912,32 +2983,31 @@ function PolicyView({
       sheetScrollSelector={pagePanelContentSelector}
       top={
         <NewsRollSummaryHeroTop
-          toolbarClassName="newsroll_all_breakingHeader"
-          toolbar={
-            <>
-              <NewsToolbar
-                isTextLarge={isTextLarge}
-                onOpenSearch={onOpenSearch}
-                onToggleTextSize={onToggleTextSize}
-              />
-              <NewsRollDockedControls
-                className="newsroll_allDockedControls newsroll_panelHeaderRow"
-                isDetailOpen={isPolicyDetailOpen}
-              >
-                {isPolicyDetailOpen ? (
-                  <NewsRollDetailBackButton
-                    ariaLabel="국가정책 목록으로 돌아가기"
-                    onClick={() => setDetailItem(null)}
-                  />
-                ) : (
-                  <p className="text_panelHeaderTitle">국가정책</p>
-                )}
-                <DockedAlarmButton
-                  isPressed={isPolicyAlarmOn}
-                  onClick={() => setIsPolicyAlarmOn((current) => !current)}
+          controls={
+            <NewsRollDockedControls
+              className="newsroll_allDockedControls newsroll_panelHeaderRow"
+              isDetailOpen={isPolicyDetailOpen}
+            >
+              {isPolicyDetailOpen ? (
+                <NewsRollDetailBackButton
+                  ariaLabel="국가정책 목록으로 돌아가기"
+                  onClick={() => setDetailItem(null)}
                 />
-              </NewsRollDockedControls>
-            </>
+              ) : (
+                <p className="text_panelHeaderTitle">국가정책</p>
+              )}
+              <DockedAlarmButton
+                isPressed={isPolicyAlarmOn}
+                onClick={() => setIsPolicyAlarmOn((current) => !current)}
+              />
+            </NewsRollDockedControls>
+          }
+          toolbar={
+            <NewsToolbar
+              isTextLarge={isTextLarge}
+              onOpenSearch={onOpenSearch}
+              onToggleTextSize={onToggleTextSize}
+            />
           }
           hero={{
             ariaLabel: "맞춤 정책 요약",
@@ -2949,7 +3019,6 @@ function PolicyView({
           }}
         />
       }
-      topClassName="container_home newsroll_sheetFrameTop"
     >
       <NewsRollPagePanel
         ariaLabel="국가정책 콘텐츠 영역"
@@ -3236,7 +3305,7 @@ function MyPageView({
       sheetScrollSelector={pagePanelContentSelector}
       top={
         isNewsViewTimeOpen ? (
-          <header className="container_homeToolbar container_myDetailHeader">
+          <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
               onOpenSearch={onOpenSearch}
@@ -3256,9 +3325,9 @@ function MyPageView({
                 onClick={() => setIsMyAlarmOn((current) => !current)}
               />
             </NewsRollDockedControls>
-          </header>
+          </NewsRollHeaderTop>
         ) : (
-          <header className="container_homeToolbar container_myHeader">
+          <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
               onOpenSearch={onOpenSearch}
@@ -3271,10 +3340,9 @@ function MyPageView({
                 onClick={() => setIsMyAlarmOn((current) => !current)}
               />
             </NewsRollDockedControls>
-          </header>
+          </NewsRollHeaderTop>
         )
       }
-      topClassName="container_home newsroll_sheetFrameTop"
     >
       <NewsRollPagePanel
         ariaLabel={
@@ -3759,7 +3827,7 @@ function InfoView({
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_info_sheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
-        <header className="container_homeToolbar newsroll_info_header">
+        <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
             onOpenSearch={onOpenSearch}
@@ -3772,9 +3840,8 @@ function InfoView({
               onClick={() => setIsInfoAlarmOn((current) => !current)}
             />
           </NewsRollDockedControls>
-        </header>
+        </NewsRollHeaderTop>
       }
-      topClassName="container_home newsroll_sheetFrameTop"
     >
       <NewsRollPagePanel ariaLabel="인포메이션 콘텐츠 영역">
         <div className="container_infoContent">

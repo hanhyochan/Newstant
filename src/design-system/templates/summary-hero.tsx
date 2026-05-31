@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { NewsRollTopFrame } from "./top-frame";
+
 type NewsRollSummaryHeroProps = {
   ariaLabel: string;
   caption: string;
@@ -11,14 +13,12 @@ type NewsRollSummaryHeroProps = {
 };
 
 type NewsRollSummaryHeroTopProps = {
+  controls?: ReactNode;
+  footer?: ReactNode;
   hero: NewsRollSummaryHeroProps;
   toolbar: ReactNode;
   toolbarClassName?: string;
 };
-
-function mergeClassNames(...classNames: Array<string | undefined>) {
-  return classNames.filter(Boolean).join(" ");
-}
 
 export function NewsRollSummaryHero({
   ariaLabel,
@@ -45,16 +45,19 @@ export function NewsRollSummaryHero({
 }
 
 export function NewsRollSummaryHeroTop({
+  controls,
+  footer,
   hero,
   toolbar,
   toolbarClassName,
 }: NewsRollSummaryHeroTopProps) {
   return (
-    <>
-      <header className={mergeClassNames("container_homeToolbar", toolbarClassName)}>
-        {toolbar}
-      </header>
-      <NewsRollSummaryHero {...hero} />
-    </>
+    <NewsRollTopFrame
+      footer={footer}
+      headerClassName={toolbarClassName}
+      headerControls={controls}
+      hero={<NewsRollSummaryHero {...hero} />}
+      toolbar={toolbar}
+    />
   );
 }

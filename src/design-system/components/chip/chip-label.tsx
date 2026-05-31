@@ -21,7 +21,7 @@ export function ChipLabel({ children, kind }: ChipLabelProps) {
     <span
       className={cn(
         "chip",
-        "chip_medium",
+        "chip_small",
         "chip_filled",
         "chip_full",
         classNameByKind[kind],
