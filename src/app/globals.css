@@ -3839,51 +3839,6 @@
         box-sizing: border-box;
     }
 
-    .tab_infoMenu {
-        width: 100%;
-        min-width: 0;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--spacing-gap-horizontal-8);
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    .tab_infoMenu button {
-        min-width: auto;
-        min-height: var(--size-44);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 0 auto;
-        padding: 0 var(--spacing-padding-horizontal-16);
-        border: var(--border-1) solid var(--color-cool-neutral-96);
-        border-radius: var(--radius-full);
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-400);
-        line-height: var(--line-height-20);
-    }
-
-    .tab_infoMenu button[aria-selected='true'],
-    .tab_infoMenu button[data-state='active'],
-    .tab_infoMenu button[data-state='selected'] {
-        color: var(--color-common-100);
-        border-color: var(--color-common-0);
-        background: var(--color-common-0);
-        font-weight: var(--font-weight-700);
-    }
-
-    .tab_infoMenu button[data-state='default'],
-    .tab_infoMenu button:not([aria-selected='true']) {
-        color: var(--color-label-strong);
-        border-color: var(--color-cool-neutral-96);
-        background: var(--color-background-elevated-normal);
-    }
-
     .divider_infoSection {
         width: 100%;
         margin: 0;
@@ -6606,7 +6561,6 @@
     .wrapper_infoInquiry,
     .wrapper_infoField,
     .tab_myCategoryMenu,
-    .tab_infoMenu,
     .btn_mySettingRow,
     .btn_myTimeRow,
     .btn_infoNoticeItem,

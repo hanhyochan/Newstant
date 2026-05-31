@@ -3731,10 +3731,10 @@ function InfoView({
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
-  const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("faq");
+  const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("notice");
   const [isInfoAlarmOn, setIsInfoAlarmOn] = useState(false);
   const activeInfoTabLabel =
-    infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "FAQ";
+    infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "공지사항";
 
   return (
     <NewsRollCommonLayout
@@ -3768,7 +3768,7 @@ function InfoView({
         <div className="container_infoContent">
         <PillTabMenu
           ariaLabel="인포메이션 메뉴"
-          className="tab_infoMenu"
+          className="tab_myCategoryMenu"
           getPanelId={(id) =>
             id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
           }
@@ -3777,8 +3777,6 @@ function InfoView({
           onChange={setActiveInfoTab}
           value={activeInfoTab}
         />
-        <NewsRollDivider className="divider_infoSection" />
-
         <div
           aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
           className="container_infoPanel"
