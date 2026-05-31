@@ -15,6 +15,7 @@ type NewsRollCommonLayoutProps = HTMLAttributes<HTMLElement> & {
   dockedClassName?: string;
   dockedControlsSelector?: string;
   dockedGap?: number;
+  fixedInitialTop?: number;
   initialGap?: number;
   initiallyDocked?: boolean;
   lockSheetPosition?: boolean;
@@ -60,6 +61,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   dockedClassName = "is_newsrollSheetDocked",
   dockedControlsSelector,
   dockedGap = 16,
+  fixedInitialTop,
   initialGap = 40,
   initiallyDocked = false,
   lockSheetPosition = false,
@@ -88,6 +90,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
     children,
     dockedControlsSelector,
     dockedGap,
+    fixedInitialTop,
     initialGap,
     initiallyDocked,
     lockSheetPosition,

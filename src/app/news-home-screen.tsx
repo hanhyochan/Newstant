@@ -25,6 +25,7 @@ import {
   NewsRollDivider,
   NewsRollDropdownArrow,
   NewsRollDropdownMenu,
+  NewsRollSwitch,
   NewsBlockItem,
   NewsViewToggle,
   PillTabMenu,
@@ -44,7 +45,7 @@ import {
   NewsRollSummaryHeroTop,
   useDockedPanelScroll,
 } from "@/design-system/templates";
-import { myInfoFixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
+import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
@@ -132,13 +133,13 @@ function resetNewsRollViewport() {
 
   window.requestAnimationFrame(() => {
     const scrollTargets = [
-      document.scrollingElement,
-      document.documentElement,
-      document.body,
-      ...document.querySelectorAll<HTMLElement>(
-        ".newsroll_phone, .newsroll_policy_screen, .newsroll_my_screen, .newsroll_info_screen",
-      ),
-    ];
+        document.scrollingElement,
+        document.documentElement,
+        document.body,
+        ...document.querySelectorAll<HTMLElement>(
+          ".newsroll_phone, .newsroll_policy_screen, .container_myScreen, .newsroll_info_screen",
+        ),
+      ];
 
     scrollTargets.forEach((target) => {
       if (!target) {
@@ -533,10 +534,12 @@ const allNewsRelayByCategory: Record<
 function NewsToolbar({
   isTextLarge,
   onOpenSearch,
+  showSearch = true,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onOpenSearch: () => void;
+  showSearch?: boolean;
   onToggleTextSize: () => void;
 }) {
   return (
@@ -552,12 +555,14 @@ function NewsToolbar({
       >
         <Icon name="sizeIncrease" />
       </Button>
-      <IconButton
-        baseClassName="newsroll_toolbar_icon"
-        icon="search"
-        label="검색"
-        onClick={onOpenSearch}
-      />
+      {showSearch ? (
+        <IconButton
+          baseClassName="newsroll_toolbar_icon"
+          icon="search"
+          label="검색"
+          onClick={onOpenSearch}
+        />
+      ) : null}
       <IconButton
         baseClassName="newsroll_toolbar_icon"
         icon="menu"
@@ -2301,9 +2306,10 @@ function AllNewsView({
     <NewsRollCommonLayout
       aria-label="전체 뉴스"
       className="newsroll_sheetFrame"
-      dockedGap={40}
-      initialGap={40}
-      minInitialTop={492}
+      dockedGap={pagePanelDockedGap}
+      fixedInitialTop={pagePanelInitialTop}
+      initialGap={pagePanelInitialGap}
+      minInitialTop={pagePanelInitialTop}
       movingSheet
       onTouchCancelCapture={resetLatestTouchIntent}
       onTouchEndCapture={resetLatestTouchIntent}
@@ -2839,6 +2845,7 @@ function PolicyView({
 }) {
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
   const [detailItem, setDetailItem] = useState<PolicyItem | null>(null);
+  const [isPolicyAlarmOn, setIsPolicyAlarmOn] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
@@ -2906,7 +2913,7 @@ function PolicyView({
                 onToggleTextSize={onToggleTextSize}
               />
               <NewsRollDockedControls
-                className="newsroll_allDockedControls"
+                className="newsroll_allDockedControls newsroll_panelHeaderRow"
                 isDetailOpen={isPolicyDetailOpen}
               >
                 {isPolicyDetailOpen ? (
@@ -2914,7 +2921,13 @@ function PolicyView({
                     ariaLabel="국가정책 목록으로 돌아가기"
                     onClick={() => setDetailItem(null)}
                   />
-                ) : null}
+                ) : (
+                  <p className="text_panelHeaderTitle">국가정책</p>
+                )}
+                <DockedAlarmButton
+                  isPressed={isPolicyAlarmOn}
+                  onClick={() => setIsPolicyAlarmOn((current) => !current)}
+                />
               </NewsRollDockedControls>
             </>
           }
@@ -3063,6 +3076,27 @@ const mySummaryItems = [
   { count: 54, icon: "question", label: "투표", tone: "dislike", value: "vote" },
   { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
 ] as const;
+const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
+type MyPageDetailView = "newsViewTime" | null;
+
+const myNewsViewTimeSections = [
+  {
+    label: "아침",
+    times: ["06:00", "07:00", "08:00", "09:00"],
+  },
+  {
+    label: "점심",
+    times: ["11:00", "12:00", "13:00", "14:00"],
+  },
+  {
+    label: "저녁",
+    times: ["16:00", "17:00", "18:00", "19:00"],
+  },
+  {
+    label: "밤",
+    times: ["21:00", "22:00", "23:00"],
+  },
+] as const;
 
 function MyPageView({
   isTextLarge,
@@ -3074,6 +3108,9 @@ function MyPageView({
   onToggleTextSize: () => void;
 }) {
   const activeSummary: "bookmark" | "vote" | "comment" | null = null;
+  const [activeDetailView, setActiveDetailView] =
+    useState<MyPageDetailView>(null);
+  const [isMyAlarmOn, setIsMyAlarmOn] = useState(false);
   const [isRecentExpanded, setIsRecentExpanded] = useState(false);
   const [selectedCategorySettings, setSelectedCategorySettings] = useState(
     () =>
@@ -3100,9 +3137,38 @@ function MyPageView({
   });
   const selectedRecentIndex: number | null = null;
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
+    () => new Set(["07:00", "21:00"]),
+  );
+  const myPanelContentRef = useRef<HTMLDivElement>(null);
+  const myPageScrollTopRef = useRef(0);
+  const shouldRestoreMyPageScrollRef = useRef(false);
+  const isNewsViewTimeOpen = activeDetailView === "newsViewTime";
   const recentItems = isRecentExpanded
     ? [...myRecentNews, ...myRecentNews]
     : myRecentNews;
+
+  useLayoutEffect(() => {
+    const panelContent = myPanelContentRef.current;
+
+    if (!panelContent) {
+      return;
+    }
+
+    if (isNewsViewTimeOpen) {
+      panelContent.scrollTop = 0;
+      shouldRestoreMyPageScrollRef.current = true;
+      return;
+    }
+
+    if (!shouldRestoreMyPageScrollRef.current) {
+      return;
+    }
+
+    panelContent.scrollTop = myPageScrollTopRef.current;
+    shouldRestoreMyPageScrollRef.current = false;
+  }, [isNewsViewTimeOpen]);
+
   const toggleCategorySetting = (groupIndex: number, optionId: string) => {
     setSelectedCategorySettings((current) =>
       current.map((selectedItems, index) => {
@@ -3127,161 +3193,290 @@ function MyPageView({
     );
   };
 
+  const toggleNewsViewTime = (time: string) => {
+    setSelectedNewsViewTimes((current) => {
+      const next = new Set(current);
+
+      if (next.has(time)) {
+        next.delete(time);
+      } else {
+        next.add(time);
+      }
+
+      return next;
+    });
+  };
+
+  const openNewsViewTime = () => {
+    myPageScrollTopRef.current = myPanelContentRef.current?.scrollTop ?? 0;
+    setActiveDetailView("newsViewTime");
+  };
+
+  const closeActiveDetailView = () => {
+    setActiveDetailView(null);
+  };
+
   return (
     <NewsRollCommonLayout
       aria-label="마이페이지"
-      className="newsroll_sheetFrame newsroll_my_screen"
+      className="newsroll_sheetFrame container_myScreen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
-      {...myInfoFixedDockedPanelProps}
+      {...fixedDockedPanelProps}
       minInitialTop={pagePanelInitialTop}
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_my_sheet"
+      sheetClassName="newsroll_sheetFrameSheet container_homeSheet container_mySheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
-        <header className="container_homeToolbar newsroll_my_header">
-          <NewsToolbar
-            isTextLarge={isTextLarge}
-            onOpenSearch={onOpenSearch}
-            onToggleTextSize={onToggleTextSize}
-          />
-          <h1>마이페이지</h1>
-        </header>
+        isNewsViewTimeOpen ? (
+          <header className="container_homeToolbar container_myDetailHeader">
+            <NewsToolbar
+              isTextLarge={isTextLarge}
+              onOpenSearch={onOpenSearch}
+              onToggleTextSize={onToggleTextSize}
+              showSearch={false}
+            />
+            <NewsRollDockedControls
+              className="newsroll_allDockedControls newsroll_panelHeaderRow"
+              isDetailOpen
+            >
+              <NewsRollDetailBackButton
+                ariaLabel="뉴스 보기 타임 설정에서 마이페이지로 돌아가기"
+                onClick={closeActiveDetailView}
+              />
+              <DockedAlarmButton
+                isPressed={isMyAlarmOn}
+                onClick={() => setIsMyAlarmOn((current) => !current)}
+              />
+            </NewsRollDockedControls>
+          </header>
+        ) : (
+          <header className="container_homeToolbar container_myHeader">
+            <NewsToolbar
+              isTextLarge={isTextLarge}
+              onOpenSearch={onOpenSearch}
+              onToggleTextSize={onToggleTextSize}
+            />
+            <NewsRollDockedControls className="newsroll_allDockedControls newsroll_panelHeaderRow">
+              <p className="text_panelHeaderTitle">마이페이지</p>
+              <DockedAlarmButton
+                isPressed={isMyAlarmOn}
+                onClick={() => setIsMyAlarmOn((current) => !current)}
+              />
+            </NewsRollDockedControls>
+          </header>
+        )
       }
       topClassName="container_home newsroll_sheetFrameTop"
     >
-      <NewsRollPagePanel ariaLabel="마이페이지 콘텐츠 영역">
-        <section className="newsroll_my_profile" aria-label="프로필">
-          <strong>콩콩이님</strong>
-          <Button
-            className="btn_commentMineFilter"
-            classNameOnly
-            aria-pressed={isProfileEditing}
-            type="button"
-          >
-            {isProfileEditing ? "수정 닫기" : "개인정보 수정"}
-          </Button>
-          {isProfileEditing ? (
-            <p className="newsroll_my_profile_hint">
-              닉네임과 알림 정보를 수정할 수 있어요.
-            </p>
-          ) : null}
-        </section>
+      <NewsRollPagePanel
+        ariaLabel={
+          isNewsViewTimeOpen
+            ? "뉴스 보기 타임 설정 영역"
+            : "마이페이지 콘텐츠 영역"
+        }
+        contentRef={myPanelContentRef}
+      >
+        {isNewsViewTimeOpen ? (
+          <div className="container_myTimePage">
+            <h2 className="text_myTimeTitle">뉴스 보기 타임</h2>
+            {myNewsViewTimeSections.map((section, sectionIndex) => (
+              <Fragment key={section.label}>
+                {sectionIndex > 0 ? (
+                  <NewsRollDivider className="divider_mySection" />
+                ) : null}
+                <section
+                  aria-label={`${section.label} 시간 설정`}
+                  className="container_myTimeSection"
+                >
+                  <h3 className="text_myTimeSectionLabel">{section.label}</h3>
+                  <div className="wrapper_myTimeRows">
+                    {section.times.map((time) => {
+                      const isSelected = selectedNewsViewTimes.has(time);
 
-        <div
-          className="wrapper_articleReaction newsroll_my_activity_summary"
-          aria-label="활동 통계"
-          role="group"
-        >
-          {mySummaryItems.map((item) => (
-            <ReactionButton
-              aria-pressed={activeSummary === item.value}
-              icon={item.icon}
-              key={item.value}
-              tone={item.tone}
-              variant="article"
-            >
-              <strong>
-                {item.label} {item.count}
-              </strong>
-            </ReactionButton>
-          ))}
-        </div>
-
-        <section className="newsroll_my_recent" aria-label="최근 본 뉴스">
-          <h2>최근 본 뉴스</h2>
-          <div className="newsroll_my_recent_scroller">
-            {recentItems.map((item, index) => (
-              <NewsBlockItem
-                ariaPressed={selectedRecentIndex === index}
-                dateLabel={item.time}
-                dateTime={item.dateTime}
-                imageSrc={item.image}
-                key={`${item.title}-${index}`}
-                title={item.title}
-              />
+                      return (
+                        <button
+                          aria-pressed={isSelected}
+                          className="btn_myTimeRow"
+                          key={time}
+                          onClick={() => toggleNewsViewTime(time)}
+                          type="button"
+                        >
+                          <span className="text_myTimeValue">{time}</span>
+                          <NewsRollSwitch checked={isSelected} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              </Fragment>
             ))}
           </div>
-          <AllNewsMoreButton
-            ariaLabel={isRecentExpanded ? "최근 본 뉴스 접기" : "최근 본 뉴스 전체 보기"}
-            collapsedLabel="전체 보기"
-            expanded={isRecentExpanded}
-            expandedLabel="접기"
-            onClick={() => setIsRecentExpanded((current) => !current)}
-          />
-        </section>
-
-        {myCategoryGroups.map((group, groupIndex) => (
-          <Fragment key={group.title}>
-            {groupIndex > 0 ? <NewsRollDivider className="newsroll_my_section_divider" /> : null}
-            <h2 className="newsroll_my_flat_title">{group.title}</h2>
-            <PillTabMenu
-              ariaLabel={group.title}
-              className="newsroll_all_category_tabs newsroll_policy_age_tabs newsroll_my_chip_tabs"
-              getItemState={(optionId) => {
-                const isSelected =
-                  selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
-
-                if (isSelected) {
-                  return "active";
-                }
-
-                return "default";
-              }}
-              items={getMyCategoryTabItems(groupIndex)}
-              keyboardNavigation={groupIndex === 1}
-              onChange={(optionId) => toggleCategorySetting(groupIndex, optionId)}
-              role={groupIndex === 1 ? "radiogroup" : "group"}
-              value={
-                Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
-                getMyCategoryOptionId(groupIndex, 0)
-              }
-            />
-          </Fragment>
-        ))}
-
-        <NewsRollDivider className="newsroll_my_section_divider" />
-        <h2 className="newsroll_my_flat_title">알림 설정</h2>
-          {["속보", "내 댓글에 좋아요, 답글", "공지사항"].map((label) => (
-            <button
-              aria-pressed={notificationSettings[label]}
-              className="newsroll_my_setting_row"
-              key={label}
-              onClick={() =>
-                setNotificationSettings((currentSettings) => ({
-                  ...currentSettings,
-                  [label]: !currentSettings[label],
-                }))
-              }
+        ) : (
+          <div className="container_myContent">
+          <section className="container_myProfile" aria-label="프로필">
+            <strong>콩콩이님</strong>
+            <Button
+              className="btn_commentMineFilter"
+              classNameOnly
+              aria-pressed={isProfileEditing}
               type="button"
             >
-              <span>{label}</span>
-              <span
-                className={`newsroll_my_switch${notificationSettings[label] ? " is_on" : ""}`}
-                aria-hidden="true"
-              />
-            </button>
-          ))}
-          <button className="newsroll_my_setting_row" type="button">
-            <span>뉴스보기 타임</span>
-            <span className="newsroll_my_chevron" aria-hidden="true" />
-          </button>
+              {isProfileEditing ? "수정 닫기" : "개인정보 수정"}
+            </Button>
+            {isProfileEditing ? (
+              <p className="text_myProfileHint">
+                닉네임과 알림 정보를 수정할 수 있어요.
+              </p>
+            ) : null}
+          </section>
 
-        <NewsRollDivider className="newsroll_my_section_divider" />
-        <h2 className="newsroll_my_flat_title">디스플레이 설정</h2>
-          <button
-            aria-pressed={isDarkMode}
-            className="newsroll_my_setting_row"
-            onClick={() => setIsDarkMode((current) => !current)}
-            type="button"
+          <div
+            className="wrapper_articleReaction wrapper_myActivity"
+            aria-label="활동 통계"
+            role="group"
           >
-            <span>다크모드</span>
-            <span
-              className={`newsroll_my_switch${isDarkMode ? " is_on" : ""}`}
-              aria-hidden="true"
+            {mySummaryItems.map((item) => (
+              <ReactionButton
+                aria-pressed={activeSummary === item.value}
+                icon={item.icon}
+                key={item.value}
+                tone={item.tone}
+                variant="article"
+              >
+                <strong>
+                  {item.label} {item.count}
+                </strong>
+              </ReactionButton>
+            ))}
+          </div>
+
+          <section className="container_myRecent" aria-label="최근 본 뉴스">
+            <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
+            <div className="wrapper_myRecentScroller">
+              {recentItems.map((item, index) => (
+                <NewsBlockItem
+                  ariaPressed={selectedRecentIndex === index}
+                  dateLabel={item.time}
+                  dateTime={item.dateTime}
+                  imageSrc={item.image}
+                  key={`${item.title}-${index}`}
+                  showDate={false}
+                  title={item.title}
+                />
+              ))}
+            </div>
+            <AllNewsMoreButton
+              ariaLabel={isRecentExpanded ? "최근 본 뉴스 접기" : "최근 본 뉴스 전체 보기"}
+              collapsedLabel="전체 보기"
+              expanded={isRecentExpanded}
+              expandedLabel="접기"
+              onClick={() => setIsRecentExpanded((current) => !current)}
             />
-          </button>
+          </section>
+
+          {myCategoryGroups.map((group, groupIndex) => (
+            <section className="container_myCategorySection" key={group.title}>
+              {groupIndex > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
+              <h2 className="text_mySectionTitle">{group.title}</h2>
+              <PillTabMenu
+                ariaLabel={group.title}
+                className="tab_myCategoryMenu"
+                getItemState={(optionId) => {
+                  const isSelected =
+                    selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
+
+                  if (isSelected) {
+                    return "active";
+                  }
+
+                  return "default";
+                }}
+                items={getMyCategoryTabItems(groupIndex)}
+                keyboardNavigation={groupIndex === 1}
+                onChange={(optionId) => toggleCategorySetting(groupIndex, optionId)}
+                role={groupIndex === 1 ? "radiogroup" : "group"}
+                value={
+                  Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
+                  getMyCategoryOptionId(groupIndex, 0)
+                }
+              />
+            </section>
+          ))}
+
+          <section className="container_mySettingsSection">
+            <NewsRollDivider className="divider_mySection" />
+            <h2 className="text_mySectionTitle">알림 설정</h2>
+            <div className="wrapper_mySettingsList">
+              {myNotificationLabels.map((label) => (
+                <button
+                  aria-pressed={notificationSettings[label]}
+                  className="btn_mySettingRow"
+                  key={label}
+                  onClick={() =>
+                    setNotificationSettings((currentSettings) => ({
+                      ...currentSettings,
+                      [label]: !currentSettings[label],
+                    }))
+                  }
+                  type="button"
+                >
+                  <span className="text_mySettingLabel">{label}</span>
+                  <NewsRollSwitch checked={notificationSettings[label]} />
+                </button>
+              ))}
+              <button
+                className="btn_mySettingRow btn_mySettingRowLink"
+                onClick={openNewsViewTime}
+                type="button"
+              >
+                <span className="text_mySettingLabel">뉴스보기 타임</span>
+                <span className="icon_myChevron" aria-hidden="true" />
+              </button>
+            </div>
+          </section>
+
+          <section className="container_mySettingsSection">
+            <NewsRollDivider className="divider_mySection" />
+            <h2 className="text_mySectionTitle">디스플레이 설정</h2>
+            <div className="wrapper_mySettingsList">
+              <button
+                aria-pressed={isDarkMode}
+                className="btn_mySettingRow"
+                onClick={() => setIsDarkMode((current) => !current)}
+                type="button"
+              >
+                <span className="text_mySettingLabel">다크모드</span>
+                <NewsRollSwitch checked={isDarkMode} />
+              </button>
+            </div>
+          </section>
+          </div>
+        )}
       </NewsRollPagePanel>
     </NewsRollCommonLayout>
+  );
+}
+
+function DockedAlarmButton({
+  isPressed,
+  onClick,
+}: {
+  isPressed: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      aria-label="속보 알림"
+      aria-pressed={isPressed}
+      className="newsroll_homeDockedAlarm"
+      iconOnly
+      onClick={onClick}
+      radius="full"
+      size="large"
+      variant="outline"
+    >
+      <Icon name="alarm" />
+    </Button>
   );
 }
 function InfoNoticePanel() {
@@ -3402,6 +3597,131 @@ function InfoInquiryPanel() {
   );
 }
 
+function InfoNoticeSection() {
+  const [activeNoticeIndex, setActiveNoticeIndex] = useState<number | null>(
+    null,
+  );
+
+  return (
+    <section className="container_infoList" aria-label="공지사항">
+      {noticeItems.map((notice, index) => (
+        <Fragment key={notice.title}>
+          {index > 0 ? <NewsRollDivider className="divider_infoSection" /> : null}
+          <button
+            aria-pressed={activeNoticeIndex === index}
+            className="btn_infoNoticeItem"
+            onClick={() =>
+              setActiveNoticeIndex((current) =>
+                current === index ? null : index,
+              )
+            }
+            type="button"
+          >
+            <span className="text_infoMeta">{notice.date}</span>
+            <span className="text_infoItemTitle">{notice.title}</span>
+            <p className="text_infoBody">
+              {activeNoticeIndex === index
+                ? "선택한 공지의 상세 내용을 확인 중입니다."
+                : "업데이트된 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다."}
+            </p>
+          </button>
+        </Fragment>
+      ))}
+    </section>
+  );
+}
+
+function InfoFaqSection() {
+  const [openFaqIndexes, setOpenFaqIndexes] = useState(() => new Set([0]));
+
+  return (
+    <section className="container_infoList" aria-label="FAQ">
+      {faqItems.map((item, index) => (
+        <Fragment key={`${item.question}-${index}`}>
+          {index > 0 ? <NewsRollDivider className="divider_infoSection" /> : null}
+          <details
+            className="container_infoFaqItem"
+            onToggle={(event) => {
+              const isOpen = event.currentTarget.open;
+
+              setOpenFaqIndexes((current) => {
+                const next = new Set(current);
+
+                if (isOpen) {
+                  next.add(index);
+                } else {
+                  next.delete(index);
+                }
+
+                return next;
+              });
+            }}
+            open={openFaqIndexes.has(index)}
+          >
+            <summary className="btn_infoFaqSummary">
+              <span className="text_infoItemTitle">Q. {item.question}</span>
+              <span className="icon_infoChevron" aria-hidden="true" />
+            </summary>
+            <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
+          </details>
+        </Fragment>
+      ))}
+    </section>
+  );
+}
+
+function InfoInquirySection() {
+  return (
+    <form
+      className="wrapper_infoInquiry"
+      aria-label="1:1 문의"
+      onSubmit={(event) => event.preventDefault()}
+    >
+      <label className="wrapper_infoField">
+        <span className="text_infoFieldLabel">문의 유형</span>
+        <Select
+          aria-label="문의 유형"
+          defaultValue={inquiryTypes[0]}
+          options={inquiryOptions}
+          radius="rounded"
+          selectSize="large"
+        />
+      </label>
+      <NewsRollDivider className="divider_infoSection" />
+      <div className="wrapper_infoField">
+        <span className="text_infoFieldLabel">제목</span>
+        <TextInput
+          aria-label="문의 제목"
+          inputSize="large"
+          placeholder="문의 제목을 입력해주세요."
+          radius="rounded"
+          type="text"
+        />
+      </div>
+      <NewsRollDivider className="divider_infoSection" />
+      <div className="wrapper_infoField">
+        <span className="text_infoFieldLabel">내용</span>
+        <Textarea
+          aria-label="문의 내용"
+          placeholder="문의 내용을 자세히 작성해주세요."
+          radius="rounded"
+          rows={7}
+          textareaSize="large"
+        />
+      </div>
+      <NewsRollDivider className="divider_infoSection" />
+      <Button
+        className="btn_infoSubmit"
+        radius="rounded"
+        size="large"
+        type="submit"
+      >
+        문의하기
+      </Button>
+    </form>
+  );
+}
+
 function InfoView({
   isTextLarge,
   onOpenSearch,
@@ -3412,6 +3732,7 @@ function InfoView({
   onToggleTextSize: () => void;
 }) {
   const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("faq");
+  const [isInfoAlarmOn, setIsInfoAlarmOn] = useState(false);
   const activeInfoTabLabel =
     infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "FAQ";
 
@@ -3421,7 +3742,7 @@ function InfoView({
       className="newsroll_sheetFrame newsroll_info_screen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
-      {...myInfoFixedDockedPanelProps}
+      {...fixedDockedPanelProps}
       minInitialTop={pagePanelInitialTop}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_info_sheet"
       sheetScrollSelector={pagePanelContentSelector}
@@ -3432,15 +3753,22 @@ function InfoView({
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
-          <h1>{activeInfoTabLabel}</h1>
+          <NewsRollDockedControls className="newsroll_allDockedControls newsroll_panelHeaderRow">
+            <p className="text_panelHeaderTitle">{activeInfoTabLabel}</p>
+            <DockedAlarmButton
+              isPressed={isInfoAlarmOn}
+              onClick={() => setIsInfoAlarmOn((current) => !current)}
+            />
+          </NewsRollDockedControls>
         </header>
       }
       topClassName="container_home newsroll_sheetFrameTop"
     >
       <NewsRollPagePanel ariaLabel="인포메이션 콘텐츠 영역">
+        <div className="container_infoContent">
         <PillTabMenu
           ariaLabel="인포메이션 메뉴"
-          className="newsroll_info_tabs"
+          className="tab_infoMenu"
           getPanelId={(id) =>
             id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
           }
@@ -3449,15 +3777,18 @@ function InfoView({
           onChange={setActiveInfoTab}
           value={activeInfoTab}
         />
+        <NewsRollDivider className="divider_infoSection" />
 
         <div
           aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
+          className="container_infoPanel"
           id={`newsroll_info_panel_${activeInfoTab}`}
           role="tabpanel"
         >
-          {activeInfoTab === "notice" ? <InfoNoticePanel /> : null}
-          {activeInfoTab === "faq" ? <InfoFaqPanel /> : null}
-          {activeInfoTab === "inquiry" ? <InfoInquiryPanel /> : null}
+          {activeInfoTab === "notice" ? <InfoNoticeSection /> : null}
+          {activeInfoTab === "faq" ? <InfoFaqSection /> : null}
+          {activeInfoTab === "inquiry" ? <InfoInquirySection /> : null}
+        </div>
         </div>
       </NewsRollPagePanel>
     </NewsRollCommonLayout>

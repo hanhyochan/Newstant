@@ -15,6 +15,8 @@ export { NewsRollDivider } from "./shared/divider";
 export type { NewsRollDividerProps } from "./shared/divider";
 export { NewsBlockItem } from "./shared/news-block-item";
 export type { NewsBlockItemProps } from "./shared/news-block-item";
+export { NewsRollSwitch } from "./shared/switch";
+export type { NewsRollSwitchProps } from "./shared/switch";
 export { CommentComposerInput } from "./input/comment-composer-input";
 export type { CommentComposerInputProps } from "./input/comment-composer-input";
 export { Select } from "./input/select";

@@ -14,6 +14,7 @@ type UseDockedSheetOptions = {
   children: ReactNode;
   dockedControlsSelector?: string;
   dockedGap: number;
+  fixedInitialTop?: number;
   initialGap: number;
   initiallyDocked?: boolean;
   lockSheetPosition?: boolean;
@@ -38,6 +39,7 @@ export function useDockedSheet({
   children,
   dockedControlsSelector,
   dockedGap,
+  fixedInitialTop,
   initialGap,
   initiallyDocked = false,
   lockSheetPosition = false,
@@ -173,11 +175,11 @@ export function useDockedSheet({
     const measuredTopBottom = Math.round(topNode.getBoundingClientRect().bottom - screenTop);
     const previousBounds = sheetBoundsRef.current;
     const isFirstMeasure = !hasMeasuredRef.current;
-    const rawInitialTop = Math.max(
-      minInitialTop ?? 0,
-      measuredStopTop,
-      measuredTopBottom + initialGap,
-    );
+    const measuredContentInitialTop = Math.max(measuredStopTop, measuredTopBottom + initialGap);
+    const rawInitialTop =
+      fixedInitialTop != null
+        ? Math.max(measuredStopTop, fixedInitialTop)
+        : Math.max(minInitialTop ?? 0, measuredContentInitialTop);
     const previousTopBeforeMeasure =
       sheetTopRef.current || previousBounds.initialTop || rawInitialTop;
     const shouldPreserveDockedInitialTop =
@@ -370,6 +372,7 @@ export function useDockedSheet({
     children,
     dockedControlsSelector,
     dockedGap,
+    fixedInitialTop,
     initialGap,
     initiallyDocked,
     lockSheetPosition,

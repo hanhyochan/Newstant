@@ -7,6 +7,7 @@ export type NewsBlockItemProps = {
   imageAlt?: string;
   imageSrc: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  showDate?: boolean;
   title: string;
 };
 
@@ -17,6 +18,7 @@ export function NewsBlockItem({
   imageAlt = "",
   imageSrc,
   onClick,
+  showDate = true,
   title,
 }: NewsBlockItemProps) {
   return (
@@ -28,11 +30,13 @@ export function NewsBlockItem({
     >
       <img alt={imageAlt} src={imageSrc} />
       <strong>{title}</strong>
-      <p className="newsroll_blockMeta">
-        <time className="newsroll_createdTime" dateTime={dateTime}>
-          {dateLabel}
-        </time>
-      </p>
+      {showDate ? (
+        <p className="newsroll_blockMeta">
+          <time className="newsroll_createdTime" dateTime={dateTime}>
+            {dateLabel}
+          </time>
+        </p>
+      ) : null}
     </button>
   );
 }
