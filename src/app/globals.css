@@ -484,6 +484,8 @@
         --font-size-15: 15px;
         --font-size-16: 16px;
         --font-size-18: 18px;
+        --font-size-fixed-16: 16px;
+        --font-size-fixed-18: 18px;
         --font-size-20: 20px;
         --font-size-24: 24px;
         --font-size-28: 28px;
@@ -504,6 +506,8 @@
         --line-height-16: 16px;
         --line-height-20: 20px;
         --line-height-24: 24px;
+        --line-height-fixed-20: 20px;
+        --line-height-fixed-26: 26px;
         --line-height-32: 32px;
         --line-height-40: 40px;
         --line-height-44: 44px;
@@ -577,11 +581,12 @@
         }
 
         .newsroll_all_more_chevron {
-            width: var(--spacing-padding-horizontal-8);
-            height: var(--spacing-padding-vertical-8);
-            border-right: var(--border-2) solid currentColor;
-            border-bottom: var(--border-2) solid currentColor;
-            transform: rotate(45deg) translateY(-1px);
+            width: 8px;
+            height: 8px;
+            box-sizing: border-box;
+            border-right: var(--border-1) solid currentColor;
+            border-bottom: var(--border-1) solid currentColor;
+            transform: rotate(45deg) translateY(-2px);
         }
 
         .newsroll_all_panel {
@@ -603,14 +608,14 @@
         }
 
         .newsroll_all_section_title {
-            color: var(--color-label-neutral);
-            font-size: var(--font-size-18);
-            font-weight: var(--font-weight-500);
-            line-height: var(--line-height-20);
+            color: var(--color-label-strong);
+            font-size: var(--font-size-fixed-16);
+            font-weight: var(--font-weight-600);
+            line-height: var(--line-height-fixed-20);
         }
 
         .newsroll_all_section_title strong {
-            font-weight: var(--font-weight-700);
+            font-weight: inherit;
         }
 
         .newsroll_all_latest_scroller,
@@ -1237,7 +1242,7 @@
 
     .newsroll_article_title {
         color: inherit;
-        font-size: var(--font-size-20);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
         line-height: 26px;
         letter-spacing: 0;
@@ -2229,9 +2234,9 @@
     }
 
     .newsroll_article_title {
-        font-size: var(--font-size-20);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-40);
+        line-height: 26px;
         letter-spacing: 0;
     }
 
@@ -2578,7 +2583,7 @@
 
     .newsroll_article_title {
         color: inherit;
-        font-size: var(--font-size-20);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
         line-height: 26px;
         letter-spacing: 0;
@@ -2809,11 +2814,12 @@
     }
 
     .newsroll_all_more_chevron {
-        width: var(--spacing-padding-horizontal-8);
-        height: var(--spacing-padding-vertical-8);
-        border-right: var(--border-2) solid currentColor;
-        border-bottom: var(--border-2) solid currentColor;
-        transform: rotate(45deg) translateY(-1px);
+        width: 8px;
+        height: 8px;
+        box-sizing: border-box;
+        border-right: var(--border-1) solid currentColor;
+        border-bottom: var(--border-1) solid currentColor;
+        transform: rotate(45deg) translateY(-2px);
     }
 
     .newsroll_all_panel {
@@ -2874,14 +2880,14 @@
     }
 
     .newsroll_all_section_title {
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
+        color: var(--color-label-strong);
+        font-size: var(--font-size-fixed-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-fixed-20);
     }
 
     .newsroll_all_section_title strong {
-        font-weight: var(--font-weight-700);
+        font-weight: inherit;
     }
 
     .newsroll_all_latest_scroller,
@@ -3151,11 +3157,12 @@
     }
 
     .newsroll_all_detail_back span {
-        width: 12px;
-        height: 12px;
-        border-left: var(--border-2) solid currentColor;
-        border-bottom: var(--border-2) solid currentColor;
-        transform: rotate(45deg) translate(2px, -1px);
+        width: 8px;
+        height: 8px;
+        box-sizing: border-box;
+        border-left: var(--border-1) solid currentColor;
+        border-bottom: var(--border-1) solid currentColor;
+        transform: rotate(45deg) translate(1px, -1px);
     }
 
     .newsroll_screen {
@@ -3256,6 +3263,14 @@
         gap: 8px;
     }
 
+    .wrapper_policyItemContent {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
+    }
+
     .chip_policy {
         min-height: 31px;
         display: inline-flex;
@@ -3280,10 +3295,11 @@
     }
 
     .newsroll_policy_list_item h2 {
+        margin: 0;
         padding: 0;
         color: var(--color-label-strong);
         font-size: var(--font-size-18);
-        font-weight: var(--font-weight-700);
+        font-weight: var(--font-weight-600);
         line-height: 26px;
         letter-spacing: 0;
     }
@@ -3325,7 +3341,13 @@
     }
 
     .newsroll_policy_detail_body h1 {
+        margin: 0;
         padding: 0;
+        color: var(--color-label-strong);
+        font-size: var(--font-size-18);
+        font-weight: var(--font-weight-600);
+        line-height: 26px;
+        letter-spacing: 0;
     }
 
     .newsroll_policy_detail_summary {
@@ -3381,9 +3403,9 @@
     .newsroll_policy_detail_list dt {
         margin: 0;
         color: var(--color-label-strong);
-        font-size: var(--font-size-16);
+        font-size: var(--font-size-fixed-16);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-20);
+        line-height: var(--line-height-fixed-20);
     }
 
     .newsroll_policy_detail_list dd {
@@ -3582,10 +3604,10 @@
     .text_mySectionTitle {
         margin: 0;
         padding: 0;
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-18);
+        color: var(--color-label-strong);
+        font-size: var(--font-size-fixed-16);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-24);
+        line-height: var(--line-height-fixed-20);
     }
 
     .text_myTimeTitle {
@@ -3600,10 +3622,10 @@
     .text_myTimeSectionLabel {
         margin: 0;
         padding: 0;
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
+        color: var(--color-label-strong);
+        font-size: var(--font-size-fixed-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-fixed-20);
     }
 
     .wrapper_myRecentScroller {
@@ -3798,14 +3820,14 @@
     }
 
     .icon_myChevron {
-        width: 12px;
-        height: 12px;
+        width: 8px;
+        height: 8px;
         display: block;
-        flex: 0 0 12px;
+        flex: 0 0 8px;
         box-sizing: border-box;
         padding: 0;
-        border-top: var(--border-2) solid var(--color-label-neutral);
-        border-right: var(--border-2) solid var(--color-label-neutral);
+        border-top: var(--border-1) solid currentColor;
+        border-right: var(--border-1) solid currentColor;
         transform: rotate(45deg);
     }
 
@@ -3870,6 +3892,18 @@
         box-sizing: border-box;
     }
 
+    .btn_infoNoticeItem {
+        gap: var(--spacing-gap-vertical-16);
+    }
+
+    .wrapper_infoNoticeContent {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
+    }
+
     .text_infoMeta {
         color: var(--color-label-alternative);
         font-size: var(--font-size-14);
@@ -3893,6 +3927,13 @@
         line-height: var(--line-height-24);
     }
 
+    .text_lineClamp2 {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
     .btn_infoFaqSummary {
         width: 100%;
         min-width: 0;
@@ -3902,9 +3943,15 @@
         gap: var(--spacing-gap-horizontal-16);
         margin: 0;
         padding: 0;
+        overflow: visible;
         background: transparent;
         cursor: pointer;
         list-style: none;
+    }
+
+    .btn_infoFaqSummary .text_infoItemTitle {
+        min-width: 0;
+        flex: 1 1 auto;
     }
 
     .btn_infoFaqSummary::-webkit-details-marker {
@@ -3912,18 +3959,19 @@
     }
 
     .icon_infoChevron {
-        width: 11px;
-        height: 11px;
+        width: 8px;
+        height: 8px;
         display: block;
-        flex: 0 0 auto;
-        border-right: var(--border-2) solid var(--color-label-neutral);
-        border-bottom: var(--border-2) solid var(--color-label-neutral);
-        border-radius: 1px;
-        transform: rotate(-45deg);
+        flex: 0 0 8px;
+        box-sizing: border-box;
+        padding: 0;
+        border-top: var(--border-1) solid currentColor;
+        border-right: var(--border-1) solid currentColor;
+        transform: rotate(45deg);
     }
 
     .container_infoFaqItem[open] .icon_infoChevron {
-        transform: rotate(45deg);
+        transform: rotate(135deg);
     }
 
     .text_infoFaqBody {
@@ -3934,30 +3982,72 @@
         gap: var(--spacing-gap-vertical-8);
     }
 
+    .wrapper_infoSelectControl {
+        width: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
     .text_infoFieldLabel {
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-14);
+        color: var(--color-label-strong);
+        font-size: var(--font-size-fixed-16);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-20);
+        line-height: var(--line-height-fixed-20);
     }
 
     .wrapper_infoInquiry .text_input,
+    .wrapper_infoInquiry .input_commentComposer,
     .wrapper_infoInquiry .select,
     .wrapper_infoInquiry .textarea {
         width: 100%;
     }
 
-    .wrapper_infoInquiry input,
-    .wrapper_infoInquiry select,
-    .wrapper_infoInquiry textarea {
+    .wrapper_infoInquiry .select_infoField {
+        padding-block: 0;
+        padding-inline: var(--spacing-padding-horizontal-16);
+        padding-inline-end: 44px;
+        font-size: var(--font-size-15);
+        line-height: var(--line-height-20);
+    }
+
+    .wrapper_infoInquiry .select_infoField {
         width: 100%;
         border: var(--border-1) solid var(--color-line-normal-neutral);
         border-radius: var(--radius-8);
-        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
+        color: var(--color-label-strong);
+        background: var(--color-background-elevated-normal);
+    }
+
+    .wrapper_infoInquiry .textarea_infoComposer {
+        width: 100%;
+        min-height: 196px;
+        border: var(--newsroll-main-border-width) solid var(--color-newsroll-purple-50);
+        border-radius: var(--radius-8);
+        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-24);
         color: var(--color-label-strong);
         background: var(--color-background-elevated-normal);
         font-size: var(--font-size-16);
         line-height: var(--line-height-24);
+    }
+
+    .wrapper_infoInquiry .textarea_infoComposer::placeholder {
+        color: var(--color-cool-neutral-50);
+    }
+
+    .icon_infoSelectChevron {
+        position: absolute;
+        top: 50%;
+        right: var(--spacing-padding-horizontal-16);
+        display: block;
+        width: 8px;
+        height: 8px;
+        box-sizing: border-box;
+        border-right: var(--border-1) solid currentColor;
+        border-bottom: var(--border-1) solid currentColor;
+        transform: translateY(-50%) rotate(45deg);
+        color: var(--color-label-neutral);
+        pointer-events: none;
     }
 
     .wrapper_infoInquiry textarea {
@@ -4099,10 +4189,10 @@
 
     .newsroll_info_inquiry label span,
     .newsroll_info_field > span {
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-14);
+        color: var(--color-label-strong);
+        font-size: var(--font-size-fixed-16);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-20);
+        line-height: var(--line-height-fixed-20);
     }
 
     .newsroll_info_inquiry .text_input,
@@ -4958,9 +5048,9 @@
     }
 
     .newsroll_all_section_title {
-        font-size: var(--font-size-18);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
+        font-size: var(--font-size-fixed-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-fixed-20);
     }
 
     .newsroll_all_chip,
@@ -5089,22 +5179,19 @@
     }
 
     .newsroll_info_faq_item summary .newsroll_info_faq_chevron {
-        width: 11px;
-        height: 11px;
+        width: 8px;
+        height: 8px;
         display: block;
         flex: 0 0 auto;
-        border-right: var(--border-2) solid var(--color-label-neutral);
-        border-bottom: var(--border-2) solid var(--color-label-neutral);
-        border-radius: 1px;
-        color: inherit;
-        background: transparent;
-        font-size: 0;
-        line-height: 0;
-        transform: rotate(-45deg);
+        box-sizing: border-box;
+        border-top: var(--border-1) solid currentColor;
+        border-right: var(--border-1) solid currentColor;
+        color: var(--color-label-neutral);
+        transform: rotate(45deg);
     }
 
     .newsroll_info_faq_item[open] .newsroll_info_faq_chevron {
-        transform: rotate(45deg);
+        transform: rotate(135deg);
     }
 
     .newsroll_info_faq_item p {
@@ -5370,7 +5457,7 @@
 
     .container_articleCard :where(h1, h2) {
         color: var(--color-label-strong);
-        font-size: var(--font-size-20);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
         line-height: 26px;
         letter-spacing: 0;
@@ -5378,8 +5465,8 @@
     }
 
     .container_articleCard .newsroll_all_section_title {
-        font-size: 18px;
-        line-height: var(--line-height-20);
+        font-size: var(--font-size-fixed-16);
+        line-height: var(--line-height-fixed-20);
     }
 
     .container_articleCard time {
@@ -5919,8 +6006,8 @@
     }
 
     .newsroll_dropdownArrow {
-        width: 7px;
-        height: 7px;
+        width: 8px;
+        height: 8px;
         flex: 0 0 auto;
         border-right: var(--border-1) solid currentColor;
         border-bottom: var(--border-1) solid currentColor;
@@ -6788,4 +6875,85 @@
     width: var(--newsroll-divider-thickness);
     min-height: 100%;
     align-self: stretch;
+}
+
+.newsroll_policy_detail_list dt,
+.newsroll_all_section_title,
+.text_mySectionTitle,
+.text_myTimeSectionLabel,
+.text_infoFieldLabel,
+.newsroll_info_inquiry label span,
+.newsroll_info_field > span {
+    color: var(--color-label-strong);
+    font-size: var(--font-size-fixed-16);
+    font-weight: var(--font-weight-600);
+    line-height: var(--line-height-fixed-20);
+}
+
+.newsroll_all_section_title strong {
+    font-weight: inherit;
+}
+
+.wrapper_commentTabs button,
+.newsroll_all_category_tabs button,
+.tab_myCategoryMenu button,
+.newsroll_all_press_tabMenu .newsroll_all_press_tabButton {
+    min-width: 0;
+    min-height: 40px;
+    padding-inline: var(--spacing-padding-horizontal-16);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}
+
+.wrapper_commentTabs button:not([aria-selected='true']),
+.newsroll_all_category_tabs button:not([aria-selected='true']),
+.tab_myCategoryMenu button[data-state='default'],
+.newsroll_all_press_tabMenu .newsroll_all_press_tabButton:not([aria-selected='true']) {
+    border: 0;
+    background: var(--color-fill-normal);
+}
+
+.wrapper_newsViewToggle {
+    width: auto;
+    height: auto;
+    gap: var(--spacing-gap-horizontal-8);
+    padding: var(--spacing-padding-vertical-4);
+}
+
+.btn_newsViewOption {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+}
+
+.chip_articleCategory,
+.chip_policy,
+.badge_commentChoice,
+.newsroll_all_chip,
+.newsroll_policy_detail_tags .chip_policy {
+    min-height: 40px;
+    padding: 0 var(--spacing-padding-horizontal-16);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+    cursor: default;
+}
+
+.chip_articleCategory,
+.newsroll_all_chip {
+    width: fit-content;
+    min-width: 0;
+    height: auto;
+    display: inline-flex;
+    flex-direction: row;
+    gap: var(--spacing-gap-horizontal-8);
+}
+
+.badge_commentChoice {
+    white-space: normal;
 }

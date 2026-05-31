@@ -1,6 +1,8 @@
 import type { KeyboardEvent } from "react";
 import type { ReactNode } from "react";
 
+import { cn } from "../shared/utils";
+
 export type PillTabItem<T extends string> = {
   id: T;
   label: string;
@@ -86,7 +88,13 @@ export function PillTabMenu<T extends string>({
             aria-label={getItemAriaLabel?.(item.id)}
             aria-pressed={role === "group" ? isActive || isSelected : undefined}
             aria-selected={role === "tablist" ? isActive : undefined}
-            className={getButtonClassName?.(item.id)}
+            className={cn(
+              "tab",
+              "tab_medium",
+              "tab_filled",
+              "tab_full_rounded",
+              getButtonClassName?.(item.id),
+            )}
             data-state={itemState}
             id={getTabId?.(item.id)}
             key={item.id}

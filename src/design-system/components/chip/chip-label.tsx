@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { cn } from "../shared/utils";
+
 type ChipLabelKind = "articleCategory" | "commentChoice" | "policy" | "policyAccent";
 
 export type ChipLabelProps = {
@@ -15,5 +17,17 @@ export function ChipLabel({ children, kind }: ChipLabelProps) {
     policyAccent: "chip_policy chip_policyAccent",
   };
 
-  return <span className={classNameByKind[kind]}>{children}</span>;
+  return (
+    <span
+      className={cn(
+        "chip",
+        "chip_medium",
+        "chip_filled",
+        "chip_full",
+        classNameByKind[kind],
+      )}
+    >
+      {children}
+    </span>
+  );
 }

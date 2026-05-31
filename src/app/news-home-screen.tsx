@@ -240,7 +240,7 @@ const navItems: { icon: IconName; label: string; tab: Tab }[] = [
   { icon: "question", label: "인포메이션", tab: "info" },
 ];
 
-const noticeItems = [
+const baseNoticeItems = [
   {
     date: "2026.12.31",
     title: "NewsRoll 맞춤 알림 설정이 개선되었습니다.",
@@ -250,6 +250,11 @@ const noticeItems = [
     title: "개인정보 처리방침 개정 안내",
   },
 ];
+
+const noticeItems = Array.from({ length: 10 }, (_, index) => ({
+  ...baseNoticeItems[index % baseNoticeItems.length],
+  date: `2026.12.${String(31 - index).padStart(2, "0")}`,
+}));
 
 const infoTabs: { id: InfoTab; label: string }[] = [
   { id: "notice", label: "공지사항" },
@@ -2039,7 +2044,9 @@ function AllNewsLatestCard({
       onClick={onClick}
       type="button"
     >
-      <span className="newsroll_all_chip">{item.category}</span>
+      <span className="chip chip_medium chip_filled chip_full newsroll_all_chip">
+        {item.category}
+      </span>
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
       <span className="newsroll_all_latest_body">
         <strong>{item.title}</strong>
@@ -2461,16 +2468,14 @@ function AllNewsView({
                     <Button
                       aria-controls="all-news-headline-panel"
                       aria-selected={selected}
-                      className="newsroll_all_press_tabButton"
+                      className="tab tab_medium tab_filled tab_full_rounded newsroll_all_press_tabButton"
+                      classNameOnly
                       id={`all-news-press-tab-${index}`}
                       key={press}
                       onClick={() => setActivePress(press)}
-                      radius="full"
                       role="tab"
-                      size="large"
                       tabIndex={selected ? 0 : -1}
                       type="button"
-                      variant={selected ? "filled" : "outline"}
                     >
                       <div
                         className="newsroll_all_press_logo"
@@ -2761,12 +2766,15 @@ function PolicyListItem({
           </ChipLabel>
         ))}
       </div>
-      <h2>{item.title}</h2>
-      <div className="newsroll_policy_dates">
-        <span>
-          <strong>{policyDate.label}</strong>
-          {policyDate.date}
-        </span>
+      <div className="wrapper_policyItemContent">
+        <h2>{item.title}</h2>
+        <p className="text_infoBody text_lineClamp2">{item.summary}</p>
+        <div className="newsroll_policy_dates">
+          <span>
+            <strong>{policyDate.label}</strong>
+            {policyDate.date}
+          </span>
+        </div>
       </div>
     </button>
   );
@@ -3556,7 +3564,7 @@ function InfoInquiryPanel() {
       onSubmit={(event) => event.preventDefault()}
     >
       <label>
-        <span>문의 유형</span>
+        <span className="text_infoFieldLabel">문의 유형</span>
         <Select
           aria-label="문의 유형"
           defaultValue={inquiryTypes[0]}
@@ -3566,7 +3574,7 @@ function InfoInquiryPanel() {
         />
       </label>
       <div className="newsroll_info_field">
-        <span>제목</span>
+        <span className="text_infoFieldLabel">제목</span>
         <TextInput
           aria-label="문의 제목"
           inputSize="large"
@@ -3576,7 +3584,7 @@ function InfoInquiryPanel() {
         />
       </div>
       <div className="newsroll_info_field">
-        <span>내용</span>
+        <span className="text_infoFieldLabel">내용</span>
         <Textarea
           aria-label="문의 내용"
           placeholder="문의 내용을 자세히 작성해주세요."
@@ -3617,13 +3625,15 @@ function InfoNoticeSection() {
             }
             type="button"
           >
-            <span className="text_infoMeta">{notice.date}</span>
-            <span className="text_infoItemTitle">{notice.title}</span>
-            <p className="text_infoBody">
-              {activeNoticeIndex === index
+            <div className="wrapper_infoNoticeContent">
+              <span className="text_infoItemTitle">{notice.title}</span>
+              <p className="text_infoBody text_lineClamp2">
+                {activeNoticeIndex === index
                 ? "선택한 공지의 상세 내용을 확인 중입니다."
                 : "업데이트된 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다."}
-            </p>
+              </p>
+              <span className="text_infoMeta">{notice.date}</span>
+            </div>
           </button>
         </Fragment>
       ))}
@@ -3679,37 +3689,39 @@ function InfoInquirySection() {
     >
       <label className="wrapper_infoField">
         <span className="text_infoFieldLabel">문의 유형</span>
-        <Select
-          aria-label="문의 유형"
-          defaultValue={inquiryTypes[0]}
-          options={inquiryOptions}
-          radius="rounded"
-          selectSize="large"
-        />
+        <div className="wrapper_infoSelectControl">
+          <Select
+            aria-label="문의 유형"
+            className="select_infoField"
+            defaultValue={inquiryTypes[0]}
+            options={inquiryOptions}
+            radius="rounded"
+            selectSize="medium"
+          />
+          <span className="icon_infoSelectChevron" aria-hidden="true" />
+        </div>
       </label>
-      <NewsRollDivider className="divider_infoSection" />
       <div className="wrapper_infoField">
         <span className="text_infoFieldLabel">제목</span>
         <TextInput
           aria-label="문의 제목"
-          inputSize="large"
           placeholder="문의 제목을 입력해주세요."
-          radius="rounded"
           type="text"
+          wrapperClassNameOnly
+          wrapperClassName="input_commentComposer"
         />
       </div>
-      <NewsRollDivider className="divider_infoSection" />
       <div className="wrapper_infoField">
         <span className="text_infoFieldLabel">내용</span>
         <Textarea
           aria-label="문의 내용"
+          className="textarea_infoComposer"
           placeholder="문의 내용을 자세히 작성해주세요."
           radius="rounded"
           rows={7}
           textareaSize="large"
         />
       </div>
-      <NewsRollDivider className="divider_infoSection" />
       <Button
         className="btn_infoSubmit"
         radius="rounded"
