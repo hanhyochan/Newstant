@@ -1,6 +1,7 @@
 export type IconName =
   | "alarm"
   | "allNews"
+  | "arrow"
   | "bookmark"
   | "chevronRight"
   | "chat"

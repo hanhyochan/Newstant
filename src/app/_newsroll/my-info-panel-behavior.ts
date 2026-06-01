@@ -3,5 +3,3 @@ export const fixedDockedPanelProps = {
   lockSheetPosition: true,
   movingSheet: true,
 } as const;
-
-export const myInfoFixedDockedPanelProps = fixedDockedPanelProps;

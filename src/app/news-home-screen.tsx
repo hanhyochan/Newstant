@@ -34,7 +34,6 @@ import {
   TextInput,
   Textarea,
   type IconName,
-  type PillTabItem,
 } from "@/design-system/components";
 import {
   NewsRollArticleDetailPanel,
@@ -1945,10 +1944,10 @@ function SearchView({ onClose }: { onClose: () => void }) {
 
   return (
     <section className="newsroll_search_page" aria-label="검색">
-      <div className="newsroll_search_top">
+      <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
         <button
           aria-label="검색 닫기"
-          className="newsroll_search_close"
+          className="newsroll_toolbar_icon newsroll_search_close"
           onClick={onClose}
           type="button"
         >
@@ -1956,6 +1955,7 @@ function SearchView({ onClose }: { onClose: () => void }) {
         </button>
       </div>
 
+      <div className="wrapper_searchContent">
       <label className="newsroll_search_field">
         <span className="sr_only">검색어</span>
         <input
@@ -1973,9 +1973,13 @@ function SearchView({ onClose }: { onClose: () => void }) {
             <button onClick={() => setQuery(suggestion)} type="button">
               {index + 1}. {suggestion}
             </button>
+            {index < searchSuggestions.length - 1 ? (
+              <NewsRollDivider className="divider_searchSuggestion" />
+            ) : null}
           </li>
         ))}
       </ol>
+      </div>
     </section>
   );
 }
@@ -2851,7 +2855,15 @@ function PolicyListItem({
   );
 }
 
-function PolicyDetailContent({ item }: { item: PolicyItem }) {
+function PolicyDetailContent({
+  hideDetailList = false,
+  hideDetailToggle = false,
+  item,
+}: {
+  hideDetailList?: boolean;
+  hideDetailToggle?: boolean;
+  item: PolicyItem;
+}) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const policyDate = getPolicyDateDisplay(item);
@@ -2881,7 +2893,6 @@ function PolicyDetailContent({ item }: { item: PolicyItem }) {
             {policyDate.date}
           </span>
         </div>
-        <p className="newsroll_policy_detail_summary">{item.summary}</p>
       </div>
 
       <ArticleActionButtons
@@ -2892,23 +2903,55 @@ function PolicyDetailContent({ item }: { item: PolicyItem }) {
         onShare={() => setIsShared((current) => !current)}
       />
 
-      <dl className="newsroll_policy_detail_list">
-        {item.details.map((detail) => (
-          <div key={`${item.title}-${detail.label}`}>
-            <dt>{detail.label}</dt>
-            <dd>{detail.value}</dd>
-          </div>
-        ))}
-      </dl>
+      <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
 
-      <Button
-        className="newsroll_policy_detail_toggle"
-        size="large"
-        variant="filled"
+      <p className="newsroll_policy_detail_summary">{item.summary}</p>
+
+      {hideDetailList ? null : (
+        <dl className="newsroll_policy_detail_list">
+          {item.details.map((detail) => (
+            <div key={`${item.title}-${detail.label}`}>
+              <dt>{detail.label}</dt>
+              <dd>{detail.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {hideDetailToggle ? null : (
+        <Button
+          className="newsroll_policy_detail_toggle"
+          size="large"
+          variant="filled"
+        >
+          <Icon name="plus" />
+          상세보기
+        </Button>
+      )}
+
+      <NewsRollDivider className="newsroll_policy_detail_page_divider" />
+      <div
+        className="newsroll_policy_detail_pagination"
+        role="group"
+        aria-label="이전글 다음글"
       >
-        <Icon name="plus" />
-        상세보기
-      </Button>
+        <Button
+          className="btn_originalArticle newsroll_policy_detail_page_button"
+          classNameOnly
+          type="button"
+        >
+          <Icon name="arrow" />
+          이전글
+        </Button>
+        <Button
+          className="btn_originalArticle newsroll_policy_detail_page_button"
+          classNameOnly
+          type="button"
+        >
+          다음글
+          <Icon name="arrow" />
+        </Button>
+      </div>
     </>
   );
 }
@@ -3555,150 +3598,45 @@ function DockedAlarmButton({
     </Button>
   );
 }
-function InfoNoticePanel() {
-  const [activeNoticeIndex, setActiveNoticeIndex] = useState<number | null>(
-    null,
-  );
+function getNoticeDateLabel(date: string) {
+  const [year, month, day] = date.split(".");
 
-  return (
-    <section className="newsroll_info_list" aria-label="공지사항">
-      {noticeItems.map((notice, index) => (
-        <button
-          aria-pressed={activeNoticeIndex === index}
-          className="newsroll_info_notice_item"
-          key={notice.title}
-          onClick={() =>
-            setActiveNoticeIndex((current) =>
-              current === index ? null : index,
-            )
-          }
-          type="button"
-        >
-          <span>{notice.date}</span>
-          <strong>{notice.title}</strong>
-          <p>
-            {activeNoticeIndex === index
-              ? "선택한 공지의 상세 내용을 확인 중입니다."
-              : "더 나은 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다."}
-          </p>
-        </button>
-      ))}
-    </section>
-  );
+  return `${year}년 ${Number(month)}월 ${Number(day)}일`;
 }
 
-function InfoFaqPanel() {
-  const [openFaqIndexes, setOpenFaqIndexes] = useState(() => new Set([0]));
+function getNoticeDetailItem(notice: (typeof noticeItems)[number]): PolicyItem {
+  const noticeDate = getNoticeDateLabel(notice.date);
 
-  return (
-    <section className="newsroll_info_list" aria-label="FAQ">
-      {faqItems.map((item, index) => (
-        <details
-          className="newsroll_info_faq_item"
-          key={`${item.question}-${index}`}
-          onToggle={(event) => {
-            const isOpen = event.currentTarget.open;
-
-            setOpenFaqIndexes((current) => {
-              const next = new Set(current);
-
-              if (isOpen) {
-                next.add(index);
-              } else {
-                next.delete(index);
-              }
-
-              return next;
-            });
-          }}
-          open={openFaqIndexes.has(index)}
-        >
-          <summary>
-            <strong>Q. {item.question}</strong>
-            <span className="newsroll_info_faq_chevron" aria-hidden="true" />
-          </summary>
-          <p>{item.answer}</p>
-        </details>
-      ))}
-    </section>
-  );
+  return {
+    details: basePolicyDetails,
+    registeredAt: noticeDate,
+    summary:
+      "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
+    tags: ["공지사항", "안내", "업데이트"],
+    title: notice.title,
+    updatedAt: noticeDate,
+  };
 }
 
-function InfoInquiryPanel() {
-  return (
-    <form
-      className="newsroll_info_inquiry"
-      aria-label="1:1 문의"
-      onSubmit={(event) => event.preventDefault()}
-    >
-      <label>
-        <span className="text_infoFieldLabel">문의 유형</span>
-        <Select
-          aria-label="문의 유형"
-          defaultValue={inquiryTypes[0]}
-          options={inquiryOptions}
-          radius="rounded"
-          selectSize="large"
-        />
-      </label>
-      <div className="newsroll_info_field">
-        <span className="text_infoFieldLabel">제목</span>
-        <TextInput
-          aria-label="문의 제목"
-          inputSize="large"
-          placeholder="문의 제목을 입력해주세요."
-          radius="rounded"
-          type="text"
-        />
-      </div>
-      <div className="newsroll_info_field">
-        <span className="text_infoFieldLabel">내용</span>
-        <Textarea
-          aria-label="문의 내용"
-          placeholder="문의 내용을 자세히 작성해주세요."
-          radius="rounded"
-          rows={7}
-          textareaSize="large"
-        />
-      </div>
-      <Button
-        className="newsroll_info_submit"
-        radius="rounded"
-        size="large"
-        type="submit"
-      >
-        문의하기
-      </Button>
-    </form>
-  );
-}
-
-function InfoNoticeSection() {
-  const [activeNoticeIndex, setActiveNoticeIndex] = useState<number | null>(
-    null,
-  );
-
+function InfoNoticeSection({
+  onNoticeSelect,
+}: {
+  onNoticeSelect: (notice: (typeof noticeItems)[number]) => void;
+}) {
   return (
     <section className="container_infoList" aria-label="공지사항">
       {noticeItems.map((notice, index) => (
-        <Fragment key={notice.title}>
+        <Fragment key={`${notice.title}-${notice.date}-${index}`}>
           {index > 0 ? <NewsRollDivider className="divider_infoSection" /> : null}
           <button
-            aria-pressed={activeNoticeIndex === index}
             className="btn_infoNoticeItem"
-            onClick={() =>
-              setActiveNoticeIndex((current) =>
-                current === index ? null : index,
-              )
-            }
+            onClick={() => onNoticeSelect(notice)}
             type="button"
           >
             <div className="wrapper_infoNoticeContent">
               <span className="text_infoItemTitle">{notice.title}</span>
               <p className="text_infoBody text_lineClamp2">
-                {activeNoticeIndex === index
-                ? "선택한 공지의 상세 내용을 확인 중입니다."
-                : "업데이트된 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다."}
+                업데이트된 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다.
               </p>
               <span className="text_infoMeta">{notice.date}</span>
             </div>
@@ -3796,6 +3734,7 @@ function InfoInquirySection() {
         size="large"
         type="submit"
       >
+        <Icon name="submit" />
         문의하기
       </Button>
     </form>
@@ -3813,8 +3752,17 @@ function InfoView({
 }) {
   const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("notice");
   const [isInfoAlarmOn, setIsInfoAlarmOn] = useState(false);
+  const [noticeDetailItem, setNoticeDetailItem] = useState<PolicyItem | null>(
+    null,
+  );
+  const isNoticeDetailOpen = noticeDetailItem !== null;
   const activeInfoTabLabel =
     infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "공지사항";
+
+  function handleInfoTabChange(nextTab: InfoTab) {
+    setActiveInfoTab(nextTab);
+    setNoticeDetailItem(null);
+  }
 
   return (
     <NewsRollCommonLayout
@@ -3833,8 +3781,19 @@ function InfoView({
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
-          <NewsRollDockedControls className="newsroll_allDockedControls newsroll_panelHeaderRow">
-            <p className="text_panelHeaderTitle">{activeInfoTabLabel}</p>
+          <NewsRollDockedControls
+            className="newsroll_allDockedControls newsroll_panelHeaderRow"
+            isDetailOpen={isNoticeDetailOpen}
+          >
+            {isNoticeDetailOpen ? (
+              <NewsRollDetailBackButton
+                ariaLabel="공지사항 목록으로 돌아가기"
+                onClick={() => setNoticeDetailItem(null)}
+              />
+            ) : null}
+            {isNoticeDetailOpen ? null : (
+              <p className="text_panelHeaderTitle">{activeInfoTabLabel}</p>
+            )}
             <DockedAlarmButton
               isPressed={isInfoAlarmOn}
               onClick={() => setIsInfoAlarmOn((current) => !current)}
@@ -3844,29 +3803,43 @@ function InfoView({
       }
     >
       <NewsRollPagePanel ariaLabel="인포메이션 콘텐츠 영역">
-        <div className="container_infoContent">
-        <PillTabMenu
-          ariaLabel="인포메이션 메뉴"
-          className="tab_myCategoryMenu"
-          getPanelId={(id) =>
-            id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
-          }
-          getTabId={(id) => `newsroll_info_tab_${id}`}
-          items={infoTabs}
-          onChange={setActiveInfoTab}
-          value={activeInfoTab}
-        />
-        <div
-          aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
-          className="container_infoPanel"
-          id={`newsroll_info_panel_${activeInfoTab}`}
-          role="tabpanel"
-        >
-          {activeInfoTab === "notice" ? <InfoNoticeSection /> : null}
-          {activeInfoTab === "faq" ? <InfoFaqSection /> : null}
-          {activeInfoTab === "inquiry" ? <InfoInquirySection /> : null}
-        </div>
-        </div>
+        {noticeDetailItem ? (
+          <PolicyDetailContent
+            hideDetailList
+            hideDetailToggle
+            item={noticeDetailItem}
+          />
+        ) : (
+          <div className="container_infoContent">
+            <PillTabMenu
+              ariaLabel="인포메이션 메뉴"
+              className="tab_myCategoryMenu"
+              getPanelId={(id) =>
+                id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
+              }
+              getTabId={(id) => `newsroll_info_tab_${id}`}
+              items={infoTabs}
+              onChange={handleInfoTabChange}
+              value={activeInfoTab}
+            />
+            <div
+              aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
+              className="container_infoPanel"
+              id={`newsroll_info_panel_${activeInfoTab}`}
+              role="tabpanel"
+            >
+              {activeInfoTab === "notice" ? (
+                <InfoNoticeSection
+                  onNoticeSelect={(notice) =>
+                    setNoticeDetailItem(getNoticeDetailItem(notice))
+                  }
+                />
+              ) : null}
+              {activeInfoTab === "faq" ? <InfoFaqSection /> : null}
+              {activeInfoTab === "inquiry" ? <InfoInquirySection /> : null}
+            </div>
+          </div>
+        )}
       </NewsRollPagePanel>
     </NewsRollCommonLayout>
   );

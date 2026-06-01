@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from "react";
+import { useRef, type KeyboardEvent } from "react";
 import type { ReactNode } from "react";
 
 import { cn } from "../shared/utils";
@@ -46,6 +46,7 @@ export function PillTabMenu<T extends string>({
     0,
     items.findIndex((item) => item.id === value),
   );
+  const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const lastIndex = items.length - 1;
@@ -66,6 +67,7 @@ export function PillTabMenu<T extends string>({
     event.preventDefault();
     if (keyboardNavigation) {
       onChange(items[nextIndex].id);
+      buttonRefs.current[nextIndex]?.focus();
     }
   }
 
@@ -76,7 +78,7 @@ export function PillTabMenu<T extends string>({
       aria-label={ariaLabel}
       onKeyDown={keyboardNavigation ? handleKeyDown : undefined}
     >
-      {items.map((item) => {
+      {items.map((item, index) => {
         const itemState = getItemState?.(item.id) ?? (value === item.id ? "active" : "default");
         const isActive = itemState === "active";
         const isSelected = itemState === "selected";
@@ -99,6 +101,9 @@ export function PillTabMenu<T extends string>({
             id={getTabId?.(item.id)}
             key={item.id}
             onClick={() => onChange(item.id)}
+            ref={(node) => {
+              buttonRefs.current[index] = node;
+            }}
             role={role === "tablist" ? "tab" : role === "radiogroup" ? "radio" : undefined}
             tabIndex={role === "group" ? 0 : isActive ? 0 : -1}
             type="button"
