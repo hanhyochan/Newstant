@@ -30,7 +30,6 @@ import {
   NewsViewToggle,
   PillTabMenu,
   ReactionButton,
-  Select,
   TextInput,
   Textarea,
   type IconName,
@@ -306,10 +305,6 @@ const faqItems = [
 ];
 
 const inquiryTypes = ["서비스 이용", "뉴스 제보", "계정 문의", "오류 신고"];
-const inquiryOptions = inquiryTypes.map((type) => ({
-  label: type,
-  value: type,
-}));
 
 const searchSuggestions = [
   "예시텍스트",
@@ -2374,6 +2369,7 @@ function AllNewsView({
 
     event.preventDefault();
     setActivePress(allNewsPresses[nextIndex]);
+    document.getElementById(`all-news-press-tab-${nextIndex}`)?.focus();
   }
 
   function openAllNewsDetail(article: HomeArticle) {
@@ -2530,36 +2526,38 @@ function AllNewsView({
               role="tabpanel"
             >
               <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
-              <div
-                className="newsroll_all_press_tabMenu"
-                role="tablist"
-                aria-label="언론사 선택"
-                onKeyDown={handlePressTabKeyDown}
-              >
-                {allNewsPresses.map((press, index) => {
-                  const selected = activePress === press;
+              <div className="newsroll_all_tabSticky newsroll_all_press_tabMenu">
+                <div
+                  className="newsroll_all_press_tabScroller"
+                  role="tablist"
+                  aria-label="언론사 선택"
+                  onKeyDown={handlePressTabKeyDown}
+                >
+                  {allNewsPresses.map((press, index) => {
+                    const selected = activePress === press;
 
-                  return (
-                    <Button
-                      aria-controls="all-news-headline-panel"
-                      aria-selected={selected}
-                      className="tab tab_medium tab_filled tab_full_rounded newsroll_all_press_tabButton"
-                      classNameOnly
-                      id={`all-news-press-tab-${index}`}
-                      key={press}
-                      onClick={() => setActivePress(press)}
-                      role="tab"
-                      tabIndex={selected ? 0 : -1}
-                      type="button"
-                    >
-                      <div
-                        className="newsroll_all_press_logo"
-                        aria-hidden="true"
-                      />
-                      <span>{press}</span>
-                    </Button>
-                  );
-                })}
+                    return (
+                      <Button
+                        aria-controls="all-news-headline-panel"
+                        aria-selected={selected}
+                        className="tab tab_medium tab_filled tab_full_rounded newsroll_all_press_tabButton"
+                        classNameOnly
+                        id={`all-news-press-tab-${index}`}
+                        key={press}
+                        onClick={() => setActivePress(press)}
+                        role="tab"
+                        tabIndex={selected ? 0 : -1}
+                        type="button"
+                      >
+                        <div
+                          className="newsroll_all_press_logo"
+                          aria-hidden="true"
+                        />
+                        <span>{press}</span>
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
               {headlineItems.map((item, index) => (
                 <Fragment key={`${item.title}-${index}`}>
@@ -2598,24 +2596,26 @@ function AllNewsView({
               role="tabpanel"
             >
               <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
-              <PillTabMenu
-                ariaLabel="릴레이 뉴스 카테고리"
-                className="newsroll_all_category_tabs"
-                getPanelId={(category) =>
-                  category === activeRelayCategory
-                    ? `all-news-relay-panel-${allNewsRelayCategories.indexOf(category)}`
-                    : undefined
-                }
-                getTabId={(category) =>
-                  `all-news-relay-tab-${allNewsRelayCategories.indexOf(category)}`
-                }
-                items={allNewsRelayCategories.map((category) => ({
-                  id: category,
-                  label: category,
-                }))}
-                onChange={setActiveRelayCategory}
-                value={activeRelayCategory}
-              />
+              <div className="newsroll_all_tabSticky newsroll_all_category_tabSticky">
+                <PillTabMenu
+                  ariaLabel="릴레이 뉴스 카테고리"
+                  className="newsroll_all_category_tabs"
+                  getPanelId={(category) =>
+                    category === activeRelayCategory
+                      ? `all-news-relay-panel-${allNewsRelayCategories.indexOf(category)}`
+                      : undefined
+                  }
+                  getTabId={(category) =>
+                    `all-news-relay-tab-${allNewsRelayCategories.indexOf(category)}`
+                  }
+                  items={allNewsRelayCategories.map((category) => ({
+                    id: category,
+                    label: category,
+                  }))}
+                  onChange={setActiveRelayCategory}
+                  value={activeRelayCategory}
+                />
+              </div>
               {relayItems.map((item, index) => (
                 <Fragment key={`${item.title}-${index}`}>
                   {index > 0 ? (
@@ -3037,7 +3037,7 @@ function PolicyView({
                   onClick={() => setDetailItem(null)}
                 />
               ) : (
-                <p className="text_panelHeaderTitle">국가정책</p>
+                <h1 className="text_panelHeaderTitle">국가정책</h1>
               )}
               <DockedAlarmButton
                 isPressed={isPolicyAlarmOn}
@@ -3193,7 +3193,7 @@ function getMyCategoryTabItems(groupIndex: number) {
 
 const mySummaryItems = [
   { count: 56, icon: "bookmark", label: "북마크", tone: "like", value: "bookmark" },
-  { count: 54, icon: "question", label: "투표", tone: "dislike", value: "vote" },
+  { count: 54, icon: "vote", label: "투표", tone: "dislike", value: "vote" },
   { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
 ] as const;
 const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
@@ -3377,7 +3377,7 @@ function MyPageView({
               onToggleTextSize={onToggleTextSize}
             />
             <NewsRollDockedControls className="newsroll_allDockedControls newsroll_panelHeaderRow">
-              <p className="text_panelHeaderTitle">마이페이지</p>
+              <h1 className="text_panelHeaderTitle">마이페이지</h1>
               <DockedAlarmButton
                 isPressed={isMyAlarmOn}
                 onClick={() => setIsMyAlarmOn((current) => !current)}
@@ -3687,6 +3687,10 @@ function InfoFaqSection() {
 }
 
 function InfoInquirySection() {
+  const [selectedInquiryType, setSelectedInquiryType] = useState(inquiryTypes[0]);
+  const [isInquiryTypeOpen, setIsInquiryTypeOpen] = useState(false);
+  const inquiryTypeMenuId = "info-inquiry-type-menu";
+
   return (
     <form
       className="wrapper_infoInquiry"
@@ -3696,15 +3700,40 @@ function InfoInquirySection() {
       <label className="wrapper_infoField">
         <span className="text_infoFieldLabel">문의 유형</span>
         <div className="wrapper_infoSelectControl">
-          <Select
+          <button
+            aria-controls={isInquiryTypeOpen ? inquiryTypeMenuId : undefined}
+            aria-expanded={isInquiryTypeOpen}
+            aria-haspopup="listbox"
             aria-label="문의 유형"
-            className="select_infoField"
-            defaultValue={inquiryTypes[0]}
-            options={inquiryOptions}
-            radius="rounded"
-            selectSize="medium"
-          />
-          <span className="icon_infoSelectChevron" aria-hidden="true" />
+            className="btn_commentDropdown select_infoField"
+            onClick={() => setIsInquiryTypeOpen((current) => !current)}
+            type="button"
+          >
+            {selectedInquiryType}
+            <NewsRollDropdownArrow />
+          </button>
+          {isInquiryTypeOpen ? (
+            <div
+              className="listbox_commentDropdown listbox_infoInquiryType"
+              id={inquiryTypeMenuId}
+              role="listbox"
+            >
+              {inquiryTypes.map((type) => (
+                <button
+                  aria-selected={selectedInquiryType === type}
+                  key={type}
+                  onClick={() => {
+                    setSelectedInquiryType(type);
+                    setIsInquiryTypeOpen(false);
+                  }}
+                  role="option"
+                  type="button"
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
       </label>
       <div className="wrapper_infoField">
@@ -3792,7 +3821,7 @@ function InfoView({
               />
             ) : null}
             {isNoticeDetailOpen ? null : (
-              <p className="text_panelHeaderTitle">{activeInfoTabLabel}</p>
+              <h1 className="text_panelHeaderTitle">{activeInfoTabLabel}</h1>
             )}
             <DockedAlarmButton
               isPressed={isInfoAlarmOn}

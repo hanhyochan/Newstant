@@ -24,7 +24,8 @@ export type IconName =
   | "submit"
   | "thumbDown"
   | "thumbUp"
-  | "user";
+  | "user"
+  | "vote";
 
 export function Icon({ name }: { name: IconName }) {
   return <span aria-hidden="true" className={`newsroll_icon newsroll_icon_${name}`} />;
