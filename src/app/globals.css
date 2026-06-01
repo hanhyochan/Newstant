@@ -3253,6 +3253,14 @@
         background: var(--color-background-elevated-normal);
     }
 
+    .newsroll_policy_listContent {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
     .newsroll_policy_listSection {
         position: relative;
         display: flex;
@@ -6468,7 +6476,6 @@
 }
 
 .newsroll_policy_screen .newsroll_page_panelContent {
-    gap: 0;
     overflow-y: auto;
 }
 

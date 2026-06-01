@@ -3070,7 +3070,7 @@ function PolicyView({
         {detailItem ? (
           <PolicyDetailContent item={detailItem} />
         ) : (
-          <>
+          <div className="newsroll_policy_listContent">
             <PillTabMenu
               ariaLabel="연령 필터"
               className="newsroll_all_category_tabs newsroll_policy_age_tabs"
@@ -3146,7 +3146,7 @@ function PolicyView({
                 ))}
               </div>
             </div>
-          </>
+          </div>
         )}
       </NewsRollPagePanel>
     </NewsRollCommonLayout>
