@@ -5454,8 +5454,7 @@
         gap: var(--spacing-gap-horizontal-16);
     }
 
-    .newsroll_policy_detail_actions_divider,
-    .newsroll_policy_detail_page_divider {
+    .newsroll_policy_detail_actions_divider {
         width: 100%;
         flex: 0 0 auto;
     }
@@ -5466,6 +5465,11 @@
         padding-inline: 0;
         border: 0;
         background: transparent;
+    }
+
+    .newsroll_policy_detail_page_button:disabled {
+        color: var(--color-label-assistive);
+        cursor: default;
     }
 
     .newsroll_policy_detail_page_button .newsroll_icon_arrow {

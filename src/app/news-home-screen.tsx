@@ -2859,10 +2859,14 @@ function PolicyDetailContent({
   hideDetailList = false,
   hideDetailToggle = false,
   item,
+  onNextItem,
+  onPreviousItem,
 }: {
   hideDetailList?: boolean;
   hideDetailToggle?: boolean;
   item: PolicyItem;
+  onNextItem?: () => void;
+  onPreviousItem?: () => void;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isShared, setIsShared] = useState(false);
@@ -2929,7 +2933,6 @@ function PolicyDetailContent({
         </Button>
       )}
 
-      <NewsRollDivider className="newsroll_policy_detail_page_divider" />
       <div
         className="newsroll_policy_detail_pagination"
         role="group"
@@ -2938,6 +2941,8 @@ function PolicyDetailContent({
         <Button
           className="btn_originalArticle newsroll_policy_detail_page_button"
           classNameOnly
+          disabled={!onPreviousItem}
+          onClick={onPreviousItem}
           type="button"
         >
           <Icon name="arrow" />
@@ -2946,6 +2951,8 @@ function PolicyDetailContent({
         <Button
           className="btn_originalArticle newsroll_policy_detail_page_button"
           classNameOnly
+          disabled={!onNextItem}
+          onClick={onNextItem}
           type="button"
         >
           다음글
@@ -2978,8 +2985,22 @@ function PolicyView({
   const visiblePolicyItems =
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
   const activeAgeIndex = Math.max(0, policyAgeTabs.indexOf(activeAge));
+  const detailItemIndex = detailItem
+    ? visiblePolicyItems.findIndex((item) => item.title === detailItem.title)
+    : -1;
+  const previousPolicyItem =
+    detailItemIndex > 0 ? visiblePolicyItems[detailItemIndex - 1] : null;
+  const nextPolicyItem =
+    detailItemIndex >= 0 && detailItemIndex < visiblePolicyItems.length - 1
+      ? visiblePolicyItems[detailItemIndex + 1]
+      : null;
   const isPolicyDetailOpen = detailItem !== null;
   const policySortMenuId = "policy-sort-menu";
+
+  function openPolicyDetail(item: PolicyItem, index: number) {
+    setSelectedPolicyIndex(index);
+    setDetailItem(item);
+  }
 
   useEffect(() => {
     if (!isPolicySortOpen) {
@@ -3068,7 +3089,19 @@ function PolicyView({
         key={detailItem ? `policy-detail-${detailItem.title}` : "policy-list"}
       >
         {detailItem ? (
-          <PolicyDetailContent item={detailItem} />
+          <PolicyDetailContent
+            item={detailItem}
+            onNextItem={
+              nextPolicyItem
+                ? () => openPolicyDetail(nextPolicyItem, detailItemIndex + 1)
+                : undefined
+            }
+            onPreviousItem={
+              previousPolicyItem
+                ? () => openPolicyDetail(previousPolicyItem, detailItemIndex - 1)
+                : undefined
+            }
+          />
         ) : (
           <div className="newsroll_policy_listContent">
             <PillTabMenu
@@ -3137,10 +3170,7 @@ function PolicyView({
                     <PolicyListItem
                       isSelected={selectedPolicyIndex === index}
                       item={item}
-                      onSelect={() => {
-                        setSelectedPolicyIndex(index);
-                        setDetailItem(item);
-                      }}
+                      onSelect={() => openPolicyDetail(item, index)}
                     />
                   </Fragment>
                 ))}
