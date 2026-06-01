@@ -19,8 +19,6 @@ export { NewsRollSwitch } from "./shared/switch";
 export type { NewsRollSwitchProps } from "./shared/switch";
 export { CommentComposerInput } from "./input/comment-composer-input";
 export type { CommentComposerInputProps } from "./input/comment-composer-input";
-export { Select } from "./input/select";
-export type { SelectOption, SelectProps } from "./input/select";
 export { Textarea } from "./input/textarea";
 export type { TextareaProps } from "./input/textarea";
 export { TextInput } from "./input/text-input";
