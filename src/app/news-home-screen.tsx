@@ -3277,7 +3277,7 @@ function MyPageView({
           ),
       ),
   );
-  const isProfileEditing = false;
+  const [isProfileSettingActive, setIsProfileSettingActive] = useState(false);
   const [notificationSettings, setNotificationSettings] = useState<
     Record<string, boolean>
   >({
@@ -3464,19 +3464,15 @@ function MyPageView({
           <div className="container_myContent">
           <section className="container_myProfile" aria-label="프로필">
             <strong>콩콩이님</strong>
-            <Button
-              className="btn_commentMineFilter"
-              classNameOnly
-              aria-pressed={isProfileEditing}
-              type="button"
-            >
-              {isProfileEditing ? "수정 닫기" : "개인정보 수정"}
-            </Button>
-            {isProfileEditing ? (
-              <p className="text_myProfileHint">
-                닉네임과 알림 정보를 수정할 수 있어요.
-              </p>
-            ) : null}
+            <div className="wrapper_articleActions" aria-label="프로필 도구" role="group">
+              <IconButton
+                aria-pressed={isProfileSettingActive}
+                baseClassName="btn_articleTool"
+                icon="setting"
+                label="설정"
+                onClick={() => setIsProfileSettingActive((current) => !current)}
+              />
+            </div>
           </section>
 
           <div

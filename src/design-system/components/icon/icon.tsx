@@ -19,6 +19,7 @@ export type IconName =
   | "policy"
   | "question"
   | "search"
+  | "setting"
   | "share"
   | "sizeIncrease"
   | "submit"

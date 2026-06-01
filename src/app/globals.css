@@ -1389,6 +1389,7 @@
     }
 
     .btn:focus-visible,
+    .btn_articleTool:focus-visible,
     .btn_articleGuideOption:focus-visible,
     .btn_commentMineFilter:focus-visible,
     .btn_commentPanel:focus-visible,
@@ -2374,6 +2375,11 @@
     .newsroll_icon_search {
         --newsroll-icon-outline-url: url('/icons/icon_search_outline.svg');
         --newsroll-icon-fill-url: url('/icons/icon_search_active.svg');
+    }
+
+    .newsroll_icon_setting {
+        --newsroll-icon-outline-url: url('/icons/icon_setting.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_setting_active.svg');
     }
 
     .newsroll_icon_share {
@@ -3468,7 +3474,7 @@
         line-height: var(--line-height-32);
     }
 
-    .container_myProfile button {
+    .container_myProfile button:not(.btn_articleTool) {
         min-width: 119px;
         min-height: 42px;
         padding: 0 var(--spacing-padding-horizontal-16);
