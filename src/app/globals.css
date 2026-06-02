@@ -3431,7 +3431,9 @@
     }
 
     .container_myTimePage,
+    .container_mySettingsPage,
     .container_myTimeSection,
+    .container_mySettingsDetailSection,
     .wrapper_myTimeRows {
         width: 100%;
         min-width: 0;
@@ -3468,10 +3470,24 @@
         gap: var(--spacing-gap-horizontal-16);
     }
 
+    .wrapper_myProfileGreeting {
+        min-width: 0;
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--spacing-gap-horizontal-8);
+    }
+
     .container_myProfile strong {
-        font-size: var(--font-size-20);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-32);
+        line-height: 26px;
+    }
+
+    .wrapper_myProfileGreeting > span {
+        color: var(--color-label-strong);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-24);
     }
 
     .container_myProfile button:not(.btn_articleTool) {
@@ -3584,9 +3600,9 @@
         margin: 0;
         padding: 0;
         color: var(--color-label-strong);
-        font-size: var(--font-size-20);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-32);
+        line-height: 26px;
     }
 
     .text_myTimeSectionLabel {
@@ -5080,8 +5096,8 @@
     }
 
     .container_articleCard .newsroll_all_section_title {
-        font-size: var(--font-size-fixed-16);
-        line-height: var(--line-height-fixed-20);
+        font-size: var(--font-size-18);
+        line-height: 26px;
     }
 
     .container_articleCard time {
@@ -6059,13 +6075,6 @@
         color: var(--color-label-strong);
     }
 
-    .text_myProfileHint {
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
-    }
-
     .newsroll_policy_screen,
     .container_myScreen,
     .newsroll_info_screen,
@@ -6542,14 +6551,20 @@
 }
 
 .newsroll_policy_detail_list dt,
-.newsroll_all_section_title,
-.text_mySectionTitle,
 .text_myTimeSectionLabel,
 .text_infoFieldLabel {
     color: var(--color-label-strong);
     font-size: var(--font-size-fixed-16);
     font-weight: var(--font-weight-600);
     line-height: var(--line-height-fixed-20);
+}
+
+.newsroll_all_section_title,
+.text_mySectionTitle {
+    color: var(--color-label-strong);
+    font-size: var(--font-size-18);
+    font-weight: var(--font-weight-600);
+    line-height: 26px;
 }
 
 .newsroll_all_section_title strong {

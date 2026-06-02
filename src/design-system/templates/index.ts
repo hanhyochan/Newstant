@@ -6,5 +6,5 @@ export { NewsRollHeaderTop } from "./header-top";
 export { NewsRollPagePanel } from "./page-panel";
 export { NewsRollSummaryHero, NewsRollSummaryHeroTop } from "./summary-hero";
 export { NewsRollTopFrame } from "./top-frame";
-export { useDockedPanelScroll, useDockedSheet } from "./hooks";
+export { useDetailScrollRestore, useDockedPanelScroll, useDockedSheet } from "./hooks";
 

@@ -43,6 +43,7 @@ import {
   NewsRollPagePanel,
   NewsRollSummaryHeroTop,
   useDockedPanelScroll,
+  useDetailScrollRestore,
 } from "@/design-system/templates";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
@@ -54,7 +55,7 @@ type Reaction = "like" | "dislike" | "neutral" | null;
 type ReactionValue = Exclude<Reaction, null>;
 type CommentReactionValue = "like" | "dislike";
 type CommentSortOrder = "latest" | "popular";
-type CommentAction = "delete" | "edit";
+type CommentAction = "block" | "delete" | "hide" | "report";
 type SortOrder = "popular" | "latest";
 type GuideKind = "stacked" | "binary";
 type CommentScrollTarget = {
@@ -353,6 +354,7 @@ const commentTemplates: Omit<CommentItem, "choice">[] = [
     date: "2026.12.31 08:30",
     dislikes: 16,
     id: 1,
+    isMine: true,
     likes: 16,
     replies: 13,
   },
@@ -405,9 +407,14 @@ const commentSortOptions: { label: string; value: CommentSortOrder }[] = [
   { label: "최신순", value: "latest" },
 ];
 
-const commentActionOptions: { label: string; value: CommentAction }[] = [
+const myCommentActionOptions: { label: string; value: CommentAction }[] = [
   { label: "삭제", value: "delete" },
-  { label: "수정", value: "edit" },
+];
+
+const otherCommentActionOptions: { label: string; value: CommentAction }[] = [
+  { label: "신고", value: "report" },
+  { label: "차단", value: "block" },
+  { label: "숨김", value: "hide" },
 ];
 
 const allNewsAssets = {
@@ -1426,6 +1433,9 @@ function CommentReactionPanel({
                   const { dislikes: dislikeCount, likes: likeCount } =
                     getCommentReactionCounts(comment);
                   const actionMenuId = `${panelId}-comment-action-${comment.id}`;
+                  const commentActions = comment.isMine
+                    ? myCommentActionOptions
+                    : otherCommentActionOptions;
                   const replyToggleId = `${panelId}-reply-toggle-${comment.id}`;
                   const replyListId = `${panelId}-reply-list-${comment.id}`;
                   const isReplyListOpen = expandedReplyId === comment.id;
@@ -1487,7 +1497,7 @@ function CommentReactionPanel({
                                 id={actionMenuId}
                                 role="menu"
                               >
-                                {commentActionOptions.map((option) => (
+                                {commentActions.map((option) => (
                                   <button
                                     key={option.value}
                                     onClick={() =>
@@ -1570,6 +1580,9 @@ function CommentReactionPanel({
                             </Button>
                             {commentReplies.map((reply, replyIndex) => {
                               const replyActionMenuId = `${panelId}-reply-action-${reply.id}`;
+                              const replyActions = reply.isMine
+                                ? myCommentActionOptions
+                                : otherCommentActionOptions;
 
                               return (
                                 <Fragment key={reply.id}>
@@ -1616,7 +1629,7 @@ function CommentReactionPanel({
                                             id={replyActionMenuId}
                                             role="menu"
                                           >
-                                            {commentActionOptions.map(
+                                            {replyActions.map(
                                               (option) => (
                                                 <button
                                                   key={option.value}
@@ -2194,6 +2207,12 @@ function AllNewsView({
     ? activeHeadlineItems
     : activeHeadlineItems.slice(0, 4);
   const allNewsMinInitialTop = pagePanelInitialTop + allNewsBreakingOffset;
+  const isDetailOpen = detailArticle !== null;
+  const allNewsDetailScrollRestore = useDetailScrollRestore({
+    isDetailOpen,
+    nestedScrollSelector: allNewsDockedScrollSelectors.contentScroller,
+    scrollerRef: feedRef,
+  });
 
   useLayoutEffect(() => {
     const node = breakingBodyRef.current;
@@ -2373,14 +2392,14 @@ function AllNewsView({
   }
 
   function openAllNewsDetail(article: HomeArticle) {
+    allNewsDetailScrollRestore.captureScroll();
     setDetailArticle(article);
   }
 
   function closeAllNewsDetail() {
+    allNewsDetailScrollRestore.requestRestore();
     setDetailArticle(null);
   }
-
-  const isDetailOpen = detailArticle !== null;
 
   return (
     <NewsRollCommonLayout
@@ -2389,12 +2408,13 @@ function AllNewsView({
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       minInitialTop={allNewsMinInitialTop}
+      lockSheetPosition={isDetailOpen}
       movingSheet
       onTouchCancelCapture={resetLatestTouchIntent}
       onTouchEndCapture={resetLatestTouchIntent}
-      onTouchMoveCapture={handleAllNewsTouchMove}
-      onTouchStartCapture={handleAllNewsTouchStart}
-      onWheelCapture={dockedPanelScroll.handleWheel}
+      onTouchMoveCapture={isDetailOpen ? undefined : handleAllNewsTouchMove}
+      onTouchStartCapture={isDetailOpen ? undefined : handleAllNewsTouchStart}
+      onWheelCapture={isDetailOpen ? undefined : dockedPanelScroll.handleWheel}
       ref={screenRef}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_all_sheetFrameSheet"
       sheetNestedScrollResetSelector={
@@ -2978,6 +2998,7 @@ function PolicyView({
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
+  const policyPanelContentRef = useRef<HTMLDivElement>(null);
   const policyListSectionRef = useRef<HTMLDivElement>(null);
   const policyItems = fillPolicyListItems(
     policyItemsByAge[activeAge] ?? policyItemsByAge.전체,
@@ -2995,11 +3016,24 @@ function PolicyView({
       ? visiblePolicyItems[detailItemIndex + 1]
       : null;
   const isPolicyDetailOpen = detailItem !== null;
+  const policyDetailScrollRestore = useDetailScrollRestore({
+    isDetailOpen: isPolicyDetailOpen,
+    scrollerRef: policyPanelContentRef,
+  });
   const policySortMenuId = "policy-sort-menu";
 
   function openPolicyDetail(item: PolicyItem, index: number) {
+    if (!detailItem) {
+      policyDetailScrollRestore.captureScroll();
+    }
+
     setSelectedPolicyIndex(index);
     setDetailItem(item);
+  }
+
+  function closePolicyDetail() {
+    policyDetailScrollRestore.requestRestore();
+    setDetailItem(null);
   }
 
   useEffect(() => {
@@ -3055,7 +3089,7 @@ function PolicyView({
               {isPolicyDetailOpen ? (
                 <NewsRollDetailBackButton
                   ariaLabel="국가정책 목록으로 돌아가기"
-                  onClick={() => setDetailItem(null)}
+                  onClick={closePolicyDetail}
                 />
               ) : (
                 <h1 className="text_panelHeaderTitle">국가정책</h1>
@@ -3086,6 +3120,7 @@ function PolicyView({
     >
       <NewsRollPagePanel
         ariaLabel="국가정책 콘텐츠 영역"
+        contentRef={policyPanelContentRef}
         key={detailItem ? `policy-detail-${detailItem.title}` : "policy-list"}
       >
         {detailItem ? (
@@ -3227,7 +3262,7 @@ const mySummaryItems = [
   { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
 ] as const;
 const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
-type MyPageDetailView = "newsViewTime" | null;
+type MyPageDetailView = "newsViewTime" | "profileSettings" | null;
 
 const myNewsViewTimeSections = [
   {
@@ -3245,6 +3280,36 @@ const myNewsViewTimeSections = [
   {
     label: "밤",
     times: ["21:00", "22:00", "23:00"],
+  },
+] as const;
+
+const myProfileSettingSections = [
+  {
+    title: "계정",
+    items: ["내 정보 수정", "비밀번호 찾기 / 재설정"],
+  },
+  {
+    title: "동의 및 약관",
+    items: [
+      "약관 동의",
+      "개인정보 처리방침",
+      "서비스 이용약관",
+      "개인정보 수집·이용 동의",
+      "마케팅/알림 수신 동의",
+    ],
+  },
+  {
+    title: "활동 관리",
+    items: ["문의 내역", "신고 내역", "차단/숨김 설정"],
+  },
+  {
+    title: "NewsRoll",
+    items: [
+      "앱 정보",
+      "오픈소스 라이선스",
+      "개인정보 처리방침 변경 이력",
+      "서비스 약관 변경 이력",
+    ],
   },
 ] as const;
 
@@ -3277,7 +3342,6 @@ function MyPageView({
           ),
       ),
   );
-  const [isProfileSettingActive, setIsProfileSettingActive] = useState(false);
   const [notificationSettings, setNotificationSettings] = useState<
     Record<string, boolean>
   >({
@@ -3291,33 +3355,16 @@ function MyPageView({
     () => new Set(["07:00", "21:00"]),
   );
   const myPanelContentRef = useRef<HTMLDivElement>(null);
-  const myPageScrollTopRef = useRef(0);
-  const shouldRestoreMyPageScrollRef = useRef(false);
   const isNewsViewTimeOpen = activeDetailView === "newsViewTime";
+  const isProfileSettingsOpen = activeDetailView === "profileSettings";
+  const isMyDetailOpen = activeDetailView !== null;
+  const myDetailScrollRestore = useDetailScrollRestore({
+    isDetailOpen: isMyDetailOpen,
+    scrollerRef: myPanelContentRef,
+  });
   const recentItems = isRecentExpanded
     ? [...myRecentNews, ...myRecentNews]
     : myRecentNews;
-
-  useLayoutEffect(() => {
-    const panelContent = myPanelContentRef.current;
-
-    if (!panelContent) {
-      return;
-    }
-
-    if (isNewsViewTimeOpen) {
-      panelContent.scrollTop = 0;
-      shouldRestoreMyPageScrollRef.current = true;
-      return;
-    }
-
-    if (!shouldRestoreMyPageScrollRef.current) {
-      return;
-    }
-
-    panelContent.scrollTop = myPageScrollTopRef.current;
-    shouldRestoreMyPageScrollRef.current = false;
-  }, [isNewsViewTimeOpen]);
 
   const toggleCategorySetting = (groupIndex: number, optionId: string) => {
     setSelectedCategorySettings((current) =>
@@ -3358,13 +3405,24 @@ function MyPageView({
   };
 
   const openNewsViewTime = () => {
-    myPageScrollTopRef.current = myPanelContentRef.current?.scrollTop ?? 0;
+    myDetailScrollRestore.captureScroll();
     setActiveDetailView("newsViewTime");
   };
 
+  const openProfileSettings = () => {
+    myDetailScrollRestore.captureScroll();
+    setActiveDetailView("profileSettings");
+  };
+
   const closeActiveDetailView = () => {
+    myDetailScrollRestore.requestRestore();
     setActiveDetailView(null);
   };
+
+  const detailBackLabel =
+    activeDetailView === "profileSettings"
+      ? "설정에서 마이페이지로 돌아가기"
+      : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
 
   return (
     <NewsRollCommonLayout
@@ -3377,7 +3435,7 @@ function MyPageView({
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet container_mySheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
-        isNewsViewTimeOpen ? (
+        isMyDetailOpen ? (
           <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
@@ -3390,7 +3448,7 @@ function MyPageView({
               isDetailOpen
             >
               <NewsRollDetailBackButton
-                ariaLabel="뉴스 보기 타임 설정에서 마이페이지로 돌아가기"
+                ariaLabel={detailBackLabel}
                 onClick={closeActiveDetailView}
               />
               <DockedAlarmButton
@@ -3421,6 +3479,8 @@ function MyPageView({
         ariaLabel={
           isNewsViewTimeOpen
             ? "뉴스 보기 타임 설정 영역"
+            : isProfileSettingsOpen
+              ? "설정 콘텐츠 영역"
             : "마이페이지 콘텐츠 영역"
         }
         contentRef={myPanelContentRef}
@@ -3460,17 +3520,48 @@ function MyPageView({
               </Fragment>
             ))}
           </div>
+        ) : isProfileSettingsOpen ? (
+          <div className="container_mySettingsPage">
+            <h2 className="text_myTimeTitle">설정</h2>
+            {myProfileSettingSections.map((section, sectionIndex) => (
+              <Fragment key={section.title}>
+                {sectionIndex > 0 ? (
+                  <NewsRollDivider className="divider_mySection" />
+                ) : null}
+                <section
+                  aria-label={`${section.title} 설정`}
+                  className="container_mySettingsDetailSection"
+                >
+                  <div className="wrapper_mySettingsList">
+                    {section.items.map((item) => (
+                      <button
+                        className="btn_mySettingRow btn_mySettingRowLink"
+                        key={item}
+                        type="button"
+                      >
+                        <span className="text_mySettingLabel">{item}</span>
+                        <span className="icon_myChevron" aria-hidden="true" />
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              </Fragment>
+            ))}
+          </div>
         ) : (
           <div className="container_myContent">
           <section className="container_myProfile" aria-label="프로필">
-            <strong>콩콩이님</strong>
+            <span className="wrapper_myProfileGreeting">
+              <strong>콩콩이님</strong>
+              <span>안녕하세요</span>
+            </span>
             <div className="wrapper_articleActions" aria-label="프로필 도구" role="group">
               <IconButton
-                aria-pressed={isProfileSettingActive}
+                aria-pressed={isProfileSettingsOpen}
                 baseClassName="btn_articleTool"
                 icon="setting"
                 label="설정"
-                onClick={() => setIsProfileSettingActive((current) => !current)}
+                onClick={openProfileSettings}
               />
             </div>
           </section>
@@ -3810,12 +3901,27 @@ function InfoView({
   const [noticeDetailItem, setNoticeDetailItem] = useState<PolicyItem | null>(
     null,
   );
+  const infoPanelContentRef = useRef<HTMLDivElement>(null);
   const isNoticeDetailOpen = noticeDetailItem !== null;
+  const infoDetailScrollRestore = useDetailScrollRestore({
+    isDetailOpen: isNoticeDetailOpen,
+    scrollerRef: infoPanelContentRef,
+  });
   const activeInfoTabLabel =
     infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "공지사항";
 
   function handleInfoTabChange(nextTab: InfoTab) {
     setActiveInfoTab(nextTab);
+    setNoticeDetailItem(null);
+  }
+
+  function openNoticeDetail(notice: (typeof noticeItems)[number]) {
+    infoDetailScrollRestore.captureScroll();
+    setNoticeDetailItem(getNoticeDetailItem(notice));
+  }
+
+  function closeNoticeDetail() {
+    infoDetailScrollRestore.requestRestore();
     setNoticeDetailItem(null);
   }
 
@@ -3843,7 +3949,7 @@ function InfoView({
             {isNoticeDetailOpen ? (
               <NewsRollDetailBackButton
                 ariaLabel="공지사항 목록으로 돌아가기"
-                onClick={() => setNoticeDetailItem(null)}
+                onClick={closeNoticeDetail}
               />
             ) : null}
             {isNoticeDetailOpen ? null : (
@@ -3857,7 +3963,10 @@ function InfoView({
         </NewsRollHeaderTop>
       }
     >
-      <NewsRollPagePanel ariaLabel="인포메이션 콘텐츠 영역">
+      <NewsRollPagePanel
+        ariaLabel="인포메이션 콘텐츠 영역"
+        contentRef={infoPanelContentRef}
+      >
         {noticeDetailItem ? (
           <PolicyDetailContent
             hideDetailList
@@ -3884,11 +3993,7 @@ function InfoView({
               role="tabpanel"
             >
               {activeInfoTab === "notice" ? (
-                <InfoNoticeSection
-                  onNoticeSelect={(notice) =>
-                    setNoticeDetailItem(getNoticeDetailItem(notice))
-                  }
-                />
+                <InfoNoticeSection onNoticeSelect={openNoticeDetail} />
               ) : null}
               {activeInfoTab === "faq" ? <InfoFaqSection /> : null}
               {activeInfoTab === "inquiry" ? <InfoInquirySection /> : null}
