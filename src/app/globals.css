@@ -4216,6 +4216,8 @@
     }
 
     .container_homeScreen {
+        --newsroll-docked-pop-motion-duration: 260ms;
+        --newsroll-docked-pop-motion-easing: ease;
         --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
         height: 100dvh;
         min-height: 100dvh;
@@ -4241,6 +4243,14 @@
 
     .container_homeScreen.is_homeSheetDocked .container_hero {
         gap: var(--spacing-gap-vertical-16);
+    }
+
+    .container_homeScreen:not(.is_homeSheetDocked) .container_hero {
+        gap: 0;
+    }
+
+    .container_homeScreen:not(.is_homeSheetDocked) .wrapper_hero {
+        margin-top: var(--spacing-gap-vertical-16);
     }
 
     .container_homeScreen.is_homeSheetDocked .container_hero > :not(.wrapper_homeDockedControls),
@@ -4627,11 +4637,76 @@
         align-items: center;
     }
 
+    .newsroll_motion_dockedPop {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(16px);
+        transition:
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+        will-change: opacity, transform;
+    }
+
+    .newsroll_motion_dockedPop.is_motionVisible,
+    .is_motionVisible .newsroll_motion_dockedPop,
+    .container_homeScreen.is_homeSheetDocked .newsroll_motion_dockedPop {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+        transition:
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear 0ms;
+    }
+
+    .newsroll_motion_dockedPop.is_motionLeaving {
+        opacity: 0;
+        visibility: visible;
+        pointer-events: none;
+        transform: translateY(16px);
+        transition:
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+    }
+
+    .container_homeScreen .newsroll_homeDockedMotion {
+        width: 100%;
+        max-height: 0;
+        min-height: 0;
+        overflow: visible;
+        transition:
+            max-height var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+    }
+
     .container_homeScreen.is_homeSheetDocked .wrapper_homeDockedControls,
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_dockedControls.is_detailOpen {
         width: 100%;
         min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
         justify-content: space-between;
+    }
+
+    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedMotion {
+        max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+        transition:
+            max-height var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear 0ms;
+    }
+
+    .container_homeScreen .newsroll_homeDockedMotion.is_motionLeaving {
+        max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+        transition:
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
     }
 
     .newsroll_sheetFrame .newsroll_allDockedControls {
@@ -4675,8 +4750,8 @@
         flex: 0 0 auto;
     }
 
-    .container_hero .newsroll_homeDockedAlarm {
-        display: none;
+    .container_homeScreen .container_hero .newsroll_homeDockedAlarm {
+        display: inline-flex;
     }
 
     .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedAlarm {
@@ -5729,13 +5804,8 @@
     }
 
     .wrapper_commentItem {
-        display: grid;
-        grid-template-areas:
-            'header'
-            'choice'
-            'body'
-            'footer'
-            'replies';
+        display: flex;
+        flex-direction: column;
         gap: var(--spacing-gap-vertical-16);
         padding: 0;
     }
@@ -5747,7 +5817,6 @@
     }
 
     .wrapper_commentItem > header {
-        grid-area: header;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -5818,7 +5887,6 @@
     }
 
     .badge_commentChoice {
-        grid-area: choice;
         justify-self: start;
         width: fit-content;
         max-width: 100%;
@@ -5839,15 +5907,58 @@
     }
 
     .wrapper_commentItem > p {
-        grid-area: body;
         color: var(--color-cool-neutral-50);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
     }
 
+    .wrapper_commentEdit {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-16);
+        margin: 0;
+        padding: 0;
+    }
+
+    .textarea_commentEdit {
+        width: 100%;
+        min-height: 96px;
+        box-sizing: border-box;
+        resize: vertical;
+        color: var(--color-label-strong);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }
+
+    .wrapper_commentEditActions {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-16);
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrapper_commentEditActions .btn {
+        flex: 1 1 0;
+        color: var(--color-common-0);
+    }
+
+    .wrapper_commentEditActions .btn_commentEditSave {
+        border-color: var(--color-newsroll-purple-50);
+        background: var(--color-newsroll-purple-50);
+    }
+
+    .wrapper_commentEditActions .btn_commentEditCancel {
+        border-color: var(--color-cool-neutral-90);
+        background: var(--color-cool-neutral-90);
+    }
+
     .wrapper_commentItem > footer {
-        grid-area: footer;
         display: flex;
         align-items: center;
         gap: var(--spacing-gap-horizontal-16);
@@ -5908,7 +6019,6 @@
     }
 
     .wrapper_commentReplies {
-        grid-area: replies;
         display: none;
         overflow: hidden;
         border-radius: var(--radius-8);
@@ -5934,12 +6044,9 @@
     }
 
     .wrapper_commentReplyItem {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: var(--spacing-gap-vertical-16);
-    }
-
-    .wrapper_commentReplyItem .badge_commentChoice {
-        grid-area: auto;
     }
 
     .wrapper_commentReplyItem header {
@@ -6346,7 +6453,7 @@
     padding: 0;
     color: var(--color-common-100);
     font-size: var(--font-size-20);
-    font-weight: var(--font-weight-400);
+    font-weight: var(--font-weight-500);
     line-height: var(--line-height-28);
 }
 
@@ -6637,4 +6744,13 @@
 
 .badge_commentChoice {
     white-space: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .newsroll_motion_dockedPop,
+    .container_homeScreen .newsroll_homeDockedMotion,
+    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedMotion {
+        transition: none;
+        transform: none;
+    }
 }

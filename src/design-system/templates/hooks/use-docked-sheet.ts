@@ -170,7 +170,12 @@ export function useDockedSheet({
     const toolbarBottom = toolbarRect
       ? toolbarRect.bottom - screenTop
       : toolbarTop + DEFAULT_TOOLBAR_HEIGHT;
-    const dockedControlsHeight = dockedControls?.getBoundingClientRect().height ?? 0;
+    const dockedControlsHeight = dockedControls
+      ? Math.max(
+          dockedControls.getBoundingClientRect().height,
+          dockedControls.scrollHeight,
+        )
+      : 0;
     const measuredStopTop = Math.round(toolbarBottom + dockedGap + dockedControlsHeight + dockedGap);
     const measuredTopBottom = Math.round(topNode.getBoundingClientRect().bottom - screenTop);
     const previousBounds = sheetBoundsRef.current;

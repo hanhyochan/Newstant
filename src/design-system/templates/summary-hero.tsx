@@ -31,16 +31,34 @@ export function NewsRollSummaryHero({
 }: NewsRollSummaryHeroProps) {
   return (
     <section className={`container_hero${className ? ` ${className}` : ""}`} aria-label={ariaLabel}>
-      <p className="text_greeting">{greeting}</p>
-      <p className="wrapper_hero">
-        <strong>
-          {count}
-          <span className="text_heroUnit">{unit}</span>
-        </strong>
-        <span className="text_heroCaption">{caption}</span>
-      </p>
+      <NewsRollHeroTitle>{greeting}</NewsRollHeroTitle>
+      <NewsRollHeroSummary caption={caption} count={count} unit={unit} />
       {controls}
     </section>
+  );
+}
+
+export function NewsRollHeroTitle({ children }: { children: ReactNode }) {
+  return <p className="text_greeting">{children}</p>;
+}
+
+export function NewsRollHeroSummary({
+  caption,
+  count,
+  unit,
+}: {
+  caption: string;
+  count: string;
+  unit: string;
+}) {
+  return (
+    <p className="wrapper_hero">
+      <strong>
+        {count}
+        <span className="text_heroUnit">{unit}</span>
+      </strong>
+      <span className="text_heroCaption">{caption}</span>
+    </p>
   );
 }
 

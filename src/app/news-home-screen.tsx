@@ -44,6 +44,7 @@ import {
   NewsRollSummaryHeroTop,
   useDockedPanelScroll,
   useDetailScrollRestore,
+  useInlineTextEdit,
 } from "@/design-system/templates";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
@@ -55,7 +56,7 @@ type Reaction = "like" | "dislike" | "neutral" | null;
 type ReactionValue = Exclude<Reaction, null>;
 type CommentReactionValue = "like" | "dislike";
 type CommentSortOrder = "latest" | "popular";
-type CommentAction = "block" | "delete" | "hide" | "report";
+type CommentAction = "block" | "delete" | "edit" | "hide" | "report";
 type SortOrder = "popular" | "latest";
 type GuideKind = "stacked" | "binary";
 type CommentScrollTarget = {
@@ -73,6 +74,7 @@ type HomeArticle = {
 };
 
 type HomeHeaderControls = {
+  dockedControlsMotionClassName?: string;
   isDetailOpen?: boolean;
   isTextLarge: boolean;
   mode: HomeViewMode;
@@ -112,7 +114,7 @@ type CommentItem = {
 const articleImage = "/images/news-apartment.png";
 const defaultNewsDateTime = "2026-12-31T08:30:00";
 const defaultNewsDateLabel = "2026년 12월 31일 08:30";
-const homeSheetDockedGap = 16;
+const homeSheetDockedGap = 40;
 const homeSheetInitialGap = 40;
 const homeSheetScrollSelector = ".container_newsFeed, .wrapper_newsGridScroll";
 const pagePanelDockedGap = 40;
@@ -385,6 +387,7 @@ const commentReplyTemplates = [
     choice: "아모른직다",
     date: "2026.12.31 08:30",
     dislikes: 16,
+    isMine: true,
     likes: 16,
   },
   {
@@ -408,6 +411,7 @@ const commentSortOptions: { label: string; value: CommentSortOrder }[] = [
 ];
 
 const myCommentActionOptions: { label: string; value: CommentAction }[] = [
+  { label: "수정", value: "edit" },
   { label: "삭제", value: "delete" },
 ];
 
@@ -610,6 +614,7 @@ function HomeArticleMeta({
 }
 
 function HomeMainHeader({
+  dockedControlsMotionClassName = "",
   isDetailOpen = false,
   isTextLarge,
   mode,
@@ -646,7 +651,10 @@ function HomeMainHeader({
           ariaLabel: "홈 요약",
           caption: "새로운 소식이 있습니다.",
           controls: (
-            <NewsRollDockedControls isDetailOpen={isDetailOpen}>
+            <NewsRollDockedControls
+              className={`newsroll_motion_dockedPop newsroll_homeDockedMotion ${dockedControlsMotionClassName}`.trim()}
+              isDetailOpen={isDetailOpen}
+            >
               {isDetailOpen ? (
                 <NewsRollDetailBackButton
                   ariaLabel="블록형 뉴스 목록으로 돌아가기"
@@ -696,6 +704,10 @@ function HomeShell({
   const sheetRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
   const previousModeRef = useRef(mode);
+  const [dockedControlsMotionClassName, setDockedControlsMotionClassName] =
+    useState("");
+  const dockedControlsMotionClassRef = useRef("");
+  const dockedControlsExitTimerRef = useRef<number | null>(null);
   const dockedPanelScroll = useDockedPanelScroll({
     boundaryDelayMs: nextArticleRevealDelayMs,
     contentScrollerSelector: homeDockedScrollSelectors.contentScroller,
@@ -708,6 +720,62 @@ function HomeShell({
   const handleSheetScroll = () => {
     dockedPanelScroll.storeScrollTop();
   };
+
+  useEffect(() => {
+    const screen = screenRef.current;
+
+    if (!screen) {
+      return;
+    }
+
+    const setMotionClass = (nextClassName: string) => {
+      dockedControlsMotionClassRef.current = nextClassName;
+      setDockedControlsMotionClassName(nextClassName);
+    };
+    const clearExitTimer = () => {
+      if (dockedControlsExitTimerRef.current === null) {
+        return;
+      }
+
+      window.clearTimeout(dockedControlsExitTimerRef.current);
+      dockedControlsExitTimerRef.current = null;
+    };
+    const syncMotionState = () => {
+      const isDocked = screen.classList.contains("is_homeSheetDocked");
+
+      clearExitTimer();
+
+      if (isDocked) {
+        setMotionClass("is_motionVisible");
+        return;
+      }
+
+      if (dockedControlsMotionClassRef.current === "is_motionVisible") {
+        setMotionClass("is_motionLeaving");
+        dockedControlsExitTimerRef.current = window.setTimeout(() => {
+          setMotionClass("");
+          dockedControlsExitTimerRef.current = null;
+        }, nextArticleRevealDelayMs);
+        return;
+      }
+
+      if (dockedControlsMotionClassRef.current !== "is_motionLeaving") {
+        setMotionClass("");
+      }
+    };
+    const observer = new MutationObserver(syncMotionState);
+
+    syncMotionState();
+    observer.observe(screen, {
+      attributeFilter: ["class"],
+      attributes: true,
+    });
+
+    return () => {
+      observer.disconnect();
+      clearExitTimer();
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const nextScroller =
@@ -733,7 +801,6 @@ function HomeShell({
       aria-label="메인 뉴스"
       className="container_homeScreen"
       dockedClassName="is_homeSheetDocked"
-      dockedControlsSelector=".wrapper_homeDockedControls"
       dockedGap={homeSheetDockedGap}
       initialGap={homeSheetInitialGap}
       minInitialTop={pagePanelInitialTop}
@@ -751,6 +818,7 @@ function HomeShell({
         <HomeMainHeader
           isDetailOpen={isDetailOpen}
           isTextLarge={isTextLarge}
+          dockedControlsMotionClassName={dockedControlsMotionClassName}
           mode={mode}
           onCloseDetail={onCloseDetail}
           onModeChange={onModeChange}
@@ -903,6 +971,56 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
   );
 }
 
+function CommentInlineEditor({
+  ariaLabel,
+  onCancel,
+  onChange,
+  onSave,
+  value,
+}: {
+  ariaLabel: string;
+  onCancel: () => void;
+  onChange: (value: string) => void;
+  onSave: () => void;
+  value: string;
+}) {
+  return (
+    <div className="wrapper_commentEdit">
+      <Textarea
+        aria-label={ariaLabel}
+        className="textarea_commentEdit"
+        onChange={(event) => onChange(event.target.value)}
+        radius="rounded"
+        rows={4}
+        textareaSize="large"
+        value={value}
+      />
+      <div className="wrapper_commentEditActions">
+        <Button
+          className="btn_commentEditSave"
+          onClick={onSave}
+          radius="rounded"
+          size="large"
+          type="button"
+          variant="filled"
+        >
+          저장
+        </Button>
+        <Button
+          className="btn_commentEditCancel"
+          onClick={onCancel}
+          radius="rounded"
+          size="large"
+          type="button"
+          variant="filled"
+        >
+          취소
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function CommentReactionPanel({
   guideKind,
   id,
@@ -961,6 +1079,8 @@ function CommentReactionPanel({
   >({});
   const [pendingScrollTarget, setPendingScrollTarget] =
     useState<CommentScrollTarget | null>(null);
+  const commentEdit = useInlineTextEdit<number>();
+  const replyEdit = useInlineTextEdit<string>();
   const deletedCommentIdSet = useMemo(
     () => new Set(deletedCommentIds),
     [deletedCommentIds],
@@ -971,10 +1091,19 @@ function CommentReactionPanel({
   );
   const allComments = useMemo(
     () =>
-      [...defaultComments, ...userComments].filter(
-        (comment) => !deletedCommentIdSet.has(comment.id),
-      ),
-    [defaultComments, deletedCommentIdSet, userComments],
+      [...defaultComments, ...userComments]
+        .map((comment) => {
+          const editedBody = commentEdit.getEditedValue(comment.id);
+
+          return editedBody ? { ...comment, body: editedBody } : comment;
+        })
+        .filter((comment) => !deletedCommentIdSet.has(comment.id)),
+    [
+      commentEdit.editedValues,
+      defaultComments,
+      deletedCommentIdSet,
+      userComments,
+    ],
   );
   const getCommentReactionCounts = (comment: CommentItem) => {
     const selectedReaction = commentReactions[comment.id] ?? null;
@@ -1212,6 +1341,8 @@ function CommentReactionPanel({
 
     setComposerDraft("");
     setComposerMode("comment");
+    commentEdit.cancelEdit();
+    replyEdit.cancelEdit();
     setReplyTargetCommentId(null);
   }, [isComposerVisible]);
 
@@ -1234,7 +1365,52 @@ function CommentReactionPanel({
   function resetComposer() {
     setComposerDraft("");
     setComposerMode("comment");
+    commentEdit.cancelEdit();
+    replyEdit.cancelEdit();
     setReplyTargetCommentId(null);
+  }
+
+  function startEditComment(commentId: number) {
+    const targetComment = allComments.find(
+      (comment) => comment.id === commentId && comment.isMine,
+    );
+
+    if (!targetComment) {
+      return;
+    }
+
+    setReplyTargetCommentId(null);
+    replyEdit.cancelEdit();
+    commentEdit.beginEdit(commentId, targetComment.body);
+    setComposerMode("comment");
+    setComposerDraft("");
+  }
+
+  function cancelEditComment() {
+    commentEdit.cancelEdit();
+  }
+
+  function saveEditedComment() {
+    commentEdit.saveEdit();
+  }
+
+  function startEditReply(reply: CommentReplyItem, value: string) {
+    if (!reply.isMine) {
+      return;
+    }
+
+    commentEdit.cancelEdit();
+    replyEdit.beginEdit(reply.id, value);
+    setComposerMode("comment");
+    setComposerDraft("");
+  }
+
+  function cancelEditReply() {
+    replyEdit.cancelEdit();
+  }
+
+  function saveEditedReply() {
+    replyEdit.saveEdit();
   }
 
   function startReplyComposer(commentId: number) {
@@ -1242,6 +1418,8 @@ function CommentReactionPanel({
       return;
     }
 
+    commentEdit.cancelEdit();
+    replyEdit.cancelEdit();
     setReplyTargetCommentId(commentId);
     setExpandedReplyId(commentId);
     setComposerMode("reply");
@@ -1355,22 +1533,34 @@ function CommentReactionPanel({
       if (replyTargetCommentId === commentId) {
         resetComposer();
       }
+      commentEdit.clearEdit(commentId);
       setCommentReactions((currentReactions) => {
         const { [commentId]: _deletedReaction, ...nextReactions } =
           currentReactions;
 
         return nextReactions;
       });
+      return;
+    }
+
+    if (action === "edit") {
+      startEditComment(commentId);
     }
   }
 
-  function handleReplyAction(replyId: string, action: CommentAction) {
+  function handleReplyAction(reply: CommentReplyItem, action: CommentAction) {
     setOpenReplyActionId(null);
 
     if (action === "delete") {
       setDeletedReplyIds((currentIds) =>
-        currentIds.includes(replyId) ? currentIds : [...currentIds, replyId],
+        currentIds.includes(reply.id) ? currentIds : [...currentIds, reply.id],
       );
+      replyEdit.clearEdit(reply.id);
+      return;
+    }
+
+    if (action === "edit") {
+      startEditReply(reply, replyEdit.getEditedValue(reply.id) ?? reply.body);
     }
   }
 
@@ -1439,6 +1629,8 @@ function CommentReactionPanel({
                   const replyToggleId = `${panelId}-reply-toggle-${comment.id}`;
                   const replyListId = `${panelId}-reply-list-${comment.id}`;
                   const isReplyListOpen = expandedReplyId === comment.id;
+                  const isEditingComment =
+                    commentEdit.editingId === comment.id;
                   const templateReplies: CommentReplyItem[] = Array.from(
                     { length: Math.min(comment.replies, 3) },
                     (_, replyIndex) => ({
@@ -1519,7 +1711,17 @@ function CommentReactionPanel({
                         <ChipLabel kind="commentChoice">
                           {comment.choice}
                         </ChipLabel>
-                        <p>{comment.body}</p>
+                        {isEditingComment ? (
+                          <CommentInlineEditor
+                            ariaLabel="댓글 수정"
+                            onCancel={cancelEditComment}
+                            onChange={commentEdit.setDraft}
+                            onSave={saveEditedComment}
+                            value={commentEdit.draft}
+                          />
+                        ) : (
+                          <p>{comment.body}</p>
+                        )}
                         <footer>
                           <button
                             aria-controls={replyListId}
@@ -1583,6 +1785,11 @@ function CommentReactionPanel({
                               const replyActions = reply.isMine
                                 ? myCommentActionOptions
                                 : otherCommentActionOptions;
+                              const isEditingReply =
+                                replyEdit.editingId === reply.id;
+                              const replyBody =
+                                replyEdit.getEditedValue(reply.id) ??
+                                reply.body;
 
                               return (
                                 <Fragment key={reply.id}>
@@ -1635,7 +1842,7 @@ function CommentReactionPanel({
                                                   key={option.value}
                                                   onClick={() =>
                                                     handleReplyAction(
-                                                      reply.id,
+                                                      reply,
                                                       option.value,
                                                     )
                                                   }
@@ -1653,7 +1860,17 @@ function CommentReactionPanel({
                                     <ChipLabel kind="commentChoice">
                                       {reply.choice}
                                     </ChipLabel>
-                                    <p>{reply.body}</p>
+                                    {isEditingReply ? (
+                                      <CommentInlineEditor
+                                        ariaLabel="대댓글 수정"
+                                        onCancel={cancelEditReply}
+                                        onChange={replyEdit.setDraft}
+                                        onSave={saveEditedReply}
+                                        value={replyEdit.draft}
+                                      />
+                                    ) : (
+                                      <p>{replyBody}</p>
+                                    )}
                                     <footer>
                                       <span>
                                         <ReactionButton
@@ -2050,6 +2267,63 @@ function AllNewsPanelContent({
     <div className={classNames} {...props}>
       {children}
     </div>
+  );
+}
+
+type SeparatedListProps<T> = {
+  dividerClassName: string;
+  getKey: (item: T, index: number) => string;
+  items: T[];
+  renderItem: (item: T, index: number) => ReactNode;
+};
+
+function SeparatedList<T>({
+  dividerClassName,
+  getKey,
+  items,
+  renderItem,
+}: SeparatedListProps<T>) {
+  return (
+    <>
+      {items.map((item, index) => (
+        <Fragment key={getKey(item, index)}>
+          {index > 0 ? <NewsRollDivider className={dividerClassName} /> : null}
+          {renderItem(item, index)}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
+type AllNewsSectionPanelProps = {
+  ariaLabel: string;
+  children: ReactNode;
+  className: string;
+  contentProps?: AllNewsPanelContentProps;
+  headingLevel?: "h1" | "h2";
+  title: ReactNode;
+};
+
+function AllNewsSectionPanel({
+  ariaLabel,
+  children,
+  className,
+  contentProps,
+  headingLevel = "h2",
+  title,
+}: AllNewsSectionPanelProps) {
+  const Heading = headingLevel;
+
+  return (
+    <article
+      className={`container_articleCard newsroll_all_panel ${className}`}
+      aria-label={ariaLabel}
+    >
+      <AllNewsPanelContent {...contentProps}>
+        <Heading className="newsroll_all_section_title">{title}</Heading>
+        {children}
+      </AllNewsPanelContent>
+    </article>
   );
 }
 
@@ -2498,14 +2772,16 @@ function AllNewsView({
           aria-label="전체 뉴스 콘텐츠 영역"
           ref={feedRef}
         >
-          <article
-            className="container_articleCard newsroll_all_panel newsroll_all_latest_panel"
-            aria-label="최신 뉴스"
-          >
-            <AllNewsPanelContent>
-              <h1 className="newsroll_all_section_title">
+          <AllNewsSectionPanel
+            ariaLabel="최신 뉴스"
+            className="newsroll_all_latest_panel"
+            headingLevel="h1"
+            title={
+              <>
                 최신 뉴스 <strong>10</strong>
-              </h1>
+              </>
+            }
+          >
               <div
                 aria-label="최신 뉴스 목록"
                 className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
@@ -2533,19 +2809,18 @@ function AllNewsView({
                   />
                 ))}
               </div>
-            </AllNewsPanelContent>
-          </article>
+          </AllNewsSectionPanel>
 
-          <article
-            className="container_articleCard newsroll_all_panel newsroll_all_press_panel"
-            aria-label="언론사별 헤드라인"
+          <AllNewsSectionPanel
+            ariaLabel="언론사별 헤드라인"
+            className="newsroll_all_press_panel"
+            contentProps={{
+              "aria-labelledby": `all-news-press-tab-${activePressIndex}`,
+              id: "all-news-headline-panel",
+              role: "tabpanel",
+            }}
+            title="언론사별 헤드라인"
           >
-            <AllNewsPanelContent
-              aria-labelledby={`all-news-press-tab-${activePressIndex}`}
-              id="all-news-headline-panel"
-              role="tabpanel"
-            >
-              <h2 className="newsroll_all_section_title">언론사별 헤드라인</h2>
               <div className="newsroll_all_tabSticky newsroll_all_press_tabMenu">
                 <div
                   className="newsroll_all_press_tabScroller"
@@ -2579,11 +2854,11 @@ function AllNewsView({
                   })}
                 </div>
               </div>
-              {headlineItems.map((item, index) => (
-                <Fragment key={`${item.title}-${index}`}>
-                  {index > 0 ? (
-                    <NewsRollDivider className="newsroll_all_itemDivider" />
-                  ) : null}
+              <SeparatedList
+                dividerClassName="newsroll_all_itemDivider"
+                getKey={(item, index) => `${item.title}-${index}`}
+                items={headlineItems}
+                renderItem={(item, index) => (
                   <AllNewsHeadlineItem
                     item={item}
                     onClick={() =>
@@ -2592,8 +2867,8 @@ function AllNewsView({
                       )
                     }
                   />
-                </Fragment>
-              ))}
+                )}
+              />
               <AllNewsMoreButton
                 ariaLabel={
                   showAllHeadlines
@@ -2603,19 +2878,18 @@ function AllNewsView({
                 expanded={showAllHeadlines}
                 onClick={() => setShowAllHeadlines((current) => !current)}
               />
-            </AllNewsPanelContent>
-          </article>
+          </AllNewsSectionPanel>
 
-          <article
-            className="container_articleCard newsroll_all_panel newsroll_all_relay_panel"
-            aria-label="릴레이 뉴스"
+          <AllNewsSectionPanel
+            ariaLabel="릴레이 뉴스"
+            className="newsroll_all_relay_panel"
+            contentProps={{
+              "aria-labelledby": `all-news-relay-tab-${activeRelayIndex}`,
+              id: `all-news-relay-panel-${activeRelayIndex}`,
+              role: "tabpanel",
+            }}
+            title="릴레이 뉴스"
           >
-            <AllNewsPanelContent
-              aria-labelledby={`all-news-relay-tab-${activeRelayIndex}`}
-              id={`all-news-relay-panel-${activeRelayIndex}`}
-              role="tabpanel"
-            >
-              <h2 className="newsroll_all_section_title">릴레이 뉴스</h2>
               <div className="newsroll_all_tabSticky newsroll_all_category_tabSticky">
                 <PillTabMenu
                   ariaLabel="릴레이 뉴스 카테고리"
@@ -2636,11 +2910,11 @@ function AllNewsView({
                   value={activeRelayCategory}
                 />
               </div>
-              {relayItems.map((item, index) => (
-                <Fragment key={`${item.title}-${index}`}>
-                  {index > 0 ? (
-                    <NewsRollDivider className="newsroll_all_itemDivider" />
-                  ) : null}
+              <SeparatedList
+                dividerClassName="newsroll_all_itemDivider"
+                getKey={(item, index) => `${item.title}-${index}`}
+                items={relayItems}
+                renderItem={(item, index) => (
                   <AllNewsRelayItem
                     featured={index === 0 || index === 5}
                     item={item}
@@ -2650,10 +2924,9 @@ function AllNewsView({
                       )
                     }
                   />
-                </Fragment>
-              ))}
-            </AllNewsPanelContent>
-          </article>
+                )}
+              />
+          </AllNewsSectionPanel>
         </section>
       )}
     </NewsRollCommonLayout>
@@ -3091,9 +3364,7 @@ function PolicyView({
                   ariaLabel="국가정책 목록으로 돌아가기"
                   onClick={closePolicyDetail}
                 />
-              ) : (
-                <h1 className="text_panelHeaderTitle">국가정책</h1>
-              )}
+              ) : null}
               <DockedAlarmButton
                 isPressed={isPolicyAlarmOn}
                 onClick={() => setIsPolicyAlarmOn((current) => !current)}
@@ -3195,20 +3466,20 @@ function PolicyView({
                 </div>
               ) : null}
               <div className="newsroll_policy_items">
-                {visiblePolicyItems.map((item, index) => (
-                  <Fragment
-                    key={`${activeAge}-${sortOrder}-${item.title}-${index}`}
-                  >
-                    {index > 0 ? (
-                      <NewsRollDivider className="newsroll_policy_itemDivider" />
-                    ) : null}
+                <SeparatedList
+                  dividerClassName="newsroll_policy_itemDivider"
+                  getKey={(item, index) =>
+                    `${activeAge}-${sortOrder}-${item.title}-${index}`
+                  }
+                  items={visiblePolicyItems}
+                  renderItem={(item, index) => (
                     <PolicyListItem
                       isSelected={selectedPolicyIndex === index}
                       item={item}
                       onSelect={() => openPolicyDetail(item, index)}
                     />
-                  </Fragment>
-                ))}
+                  )}
+                />
               </div>
             </div>
           </div>
@@ -3263,6 +3534,35 @@ const mySummaryItems = [
 ] as const;
 const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
 type MyPageDetailView = "newsViewTime" | "profileSettings" | null;
+
+type MySettingRowProps = {
+  checked?: boolean;
+  label: string;
+  onClick?: () => void;
+  showChevron?: boolean;
+};
+
+function MySettingRow({
+  checked,
+  label,
+  onClick,
+  showChevron = false,
+}: MySettingRowProps) {
+  const className = `btn_mySettingRow${showChevron ? " btn_mySettingRowLink" : ""}`;
+
+  return (
+    <button
+      aria-pressed={checked}
+      className={className}
+      onClick={onClick}
+      type="button"
+    >
+      <span className="text_mySettingLabel">{label}</span>
+      {typeof checked === "boolean" ? <NewsRollSwitch checked={checked} /> : null}
+      {showChevron ? <span className="icon_myChevron" aria-hidden="true" /> : null}
+    </button>
+  );
+}
 
 const myNewsViewTimeSections = [
   {
@@ -3534,14 +3834,11 @@ function MyPageView({
                 >
                   <div className="wrapper_mySettingsList">
                     {section.items.map((item) => (
-                      <button
-                        className="btn_mySettingRow btn_mySettingRowLink"
+                      <MySettingRow
                         key={item}
-                        type="button"
-                      >
-                        <span className="text_mySettingLabel">{item}</span>
-                        <span className="icon_myChevron" aria-hidden="true" />
-                      </button>
+                        label={item}
+                        showChevron
+                      />
                     ))}
                   </div>
                 </section>
@@ -3644,30 +3941,23 @@ function MyPageView({
             <h2 className="text_mySectionTitle">알림 설정</h2>
             <div className="wrapper_mySettingsList">
               {myNotificationLabels.map((label) => (
-                <button
-                  aria-pressed={notificationSettings[label]}
-                  className="btn_mySettingRow"
+                <MySettingRow
+                  checked={notificationSettings[label]}
                   key={label}
+                  label={label}
                   onClick={() =>
                     setNotificationSettings((currentSettings) => ({
                       ...currentSettings,
                       [label]: !currentSettings[label],
                     }))
                   }
-                  type="button"
-                >
-                  <span className="text_mySettingLabel">{label}</span>
-                  <NewsRollSwitch checked={notificationSettings[label]} />
-                </button>
+                />
               ))}
-              <button
-                className="btn_mySettingRow btn_mySettingRowLink"
+              <MySettingRow
+                label="뉴스보기 타임"
                 onClick={openNewsViewTime}
-                type="button"
-              >
-                <span className="text_mySettingLabel">뉴스보기 타임</span>
-                <span className="icon_myChevron" aria-hidden="true" />
-              </button>
+                showChevron
+              />
             </div>
           </section>
 
@@ -3675,15 +3965,11 @@ function MyPageView({
             <NewsRollDivider className="divider_mySection" />
             <h2 className="text_mySectionTitle">디스플레이 설정</h2>
             <div className="wrapper_mySettingsList">
-              <button
-                aria-pressed={isDarkMode}
-                className="btn_mySettingRow"
+              <MySettingRow
+                checked={isDarkMode}
+                label="다크모드"
                 onClick={() => setIsDarkMode((current) => !current)}
-                type="button"
-              >
-                <span className="text_mySettingLabel">다크모드</span>
-                <NewsRollSwitch checked={isDarkMode} />
-              </button>
+              />
             </div>
           </section>
           </div>
@@ -3742,9 +4028,11 @@ function InfoNoticeSection({
 }) {
   return (
     <section className="container_infoList" aria-label="공지사항">
-      {noticeItems.map((notice, index) => (
-        <Fragment key={`${notice.title}-${notice.date}-${index}`}>
-          {index > 0 ? <NewsRollDivider className="divider_infoSection" /> : null}
+      <SeparatedList
+        dividerClassName="divider_infoSection"
+        getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
+        items={noticeItems}
+        renderItem={(notice) => (
           <button
             className="btn_infoNoticeItem"
             onClick={() => onNoticeSelect(notice)}
@@ -3758,8 +4046,8 @@ function InfoNoticeSection({
               <span className="text_infoMeta">{notice.date}</span>
             </div>
           </button>
-        </Fragment>
-      ))}
+        )}
+      />
     </section>
   );
 }
@@ -3769,9 +4057,11 @@ function InfoFaqSection() {
 
   return (
     <section className="container_infoList" aria-label="FAQ">
-      {faqItems.map((item, index) => (
-        <Fragment key={`${item.question}-${index}`}>
-          {index > 0 ? <NewsRollDivider className="divider_infoSection" /> : null}
+      <SeparatedList
+        dividerClassName="divider_infoSection"
+        getKey={(item, index) => `${item.question}-${index}`}
+        items={faqItems}
+        renderItem={(item, index) => (
           <details
             className="container_infoFaqItem"
             onToggle={(event) => {
@@ -3797,8 +4087,8 @@ function InfoFaqSection() {
             </summary>
             <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
           </details>
-        </Fragment>
-      ))}
+        )}
+      />
     </section>
   );
 }
