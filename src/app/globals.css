@@ -1401,6 +1401,7 @@
     .tab:focus-visible,
     .text_input:focus-within,
     .wrapper_articleCardContent:focus-visible,
+    .wrapper_myPageCommentThread:focus-visible,
     .textarea:focus-visible,
     .chip:focus-visible {
         outline: var(--border-2) solid var(--color-accent-foreground-blue);
@@ -2809,6 +2810,17 @@
 
     .newsroll_all_press_panel .newsroll_all_panelContent,
     .newsroll_all_relay_panel .newsroll_all_panelContent {
+        gap: 0;
+    }
+
+    .newsroll_all_press_panel .newsroll_all_section_title,
+    .newsroll_all_relay_panel .newsroll_all_section_title {
+        padding-bottom: var(--spacing-gap-vertical-24);
+    }
+
+    .wrapper_allTabPanelBody {
+        display: flex;
+        flex-direction: column;
         gap: var(--spacing-gap-vertical-24);
     }
 
@@ -3431,9 +3443,14 @@
     }
 
     .container_myTimePage,
+    .container_myBookmarkPage,
+    .container_myVotePage,
+    .container_myCommentPage,
     .container_mySettingsPage,
     .container_myTimeSection,
     .container_mySettingsDetailSection,
+    .wrapper_myVoteList,
+    .wrapper_myCommentList,
     .wrapper_myTimeRows {
         width: 100%;
         min-width: 0;
@@ -3444,6 +3461,47 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    .wrapper_myVoteItem {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-16);
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .wrapper_myVoteItem .btn_articleGuideOption {
+        width: 100%;
+    }
+
+    .wrapper_myCommentItem {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-16);
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .text_myCommentCreatedDate {
+        width: fit-content;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        color: var(--color-cool-neutral-50);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-24);
+    }
+
+    .wrapper_myPageCommentThread {
+        cursor: pointer;
     }
 
     .container_myProfile,
@@ -3634,6 +3692,12 @@
     .wrapper_myRecentScroller .btn_newsBlockItem {
         width: 156px;
         flex: 0 0 156px;
+    }
+
+    .wrapper_myPageRecentBlock .btn_newsBlockItem strong {
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
     }
 
     .newsroll_my_vote_result {
@@ -4285,6 +4349,7 @@
     }
 
     .newsroll_headerTop {
+        position: relative;
         display: flex;
         flex-direction: column;
         gap: var(--spacing-gap-vertical-16);
@@ -4485,13 +4550,6 @@
         line-height: var(--line-height-24);
     }
 
-    .text_greeting strong {
-        color: var(--color-common-100);
-        font-size: var(--font-size-15);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-20);
-    }
-
     .wrapper_hero {
         display: flex;
         flex-direction: column;
@@ -4528,6 +4586,15 @@
         color: var(--color-label-strong);
         background: var(--color-newsroll-purple-50);
         text-align: left;
+        animation: none;
+        transform: none;
+        transition: none;
+    }
+
+    .btn_link_breakingNews > * {
+        animation: none;
+        transform: none;
+        transition: none;
     }
 
     .btn_link_breakingNews > .newsroll_icon_alarm {
@@ -4642,16 +4709,14 @@
         visibility: hidden;
         pointer-events: none;
         transform: translateY(16px);
-        transition:
-            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+        transition: none;
         will-change: opacity, transform;
     }
 
     .newsroll_motion_dockedPop.is_motionVisible,
     .is_motionVisible .newsroll_motion_dockedPop,
-    .container_homeScreen.is_homeSheetDocked .newsroll_motion_dockedPop {
+    .container_homeScreen.is_homeSheetDocked .newsroll_motion_dockedPop,
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_motion_dockedPop {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
@@ -4662,27 +4727,12 @@
             visibility 0ms linear 0ms;
     }
 
-    .newsroll_motion_dockedPop.is_motionLeaving {
-        opacity: 0;
-        visibility: visible;
-        pointer-events: none;
-        transform: translateY(16px);
-        transition:
-            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
-    }
-
     .container_homeScreen .newsroll_homeDockedMotion {
         width: 100%;
         max-height: 0;
         min-height: 0;
         overflow: visible;
-        transition:
-            max-height var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+        transition: none;
     }
 
     .container_homeScreen.is_homeSheetDocked .wrapper_homeDockedControls,
@@ -4701,22 +4751,22 @@
             visibility 0ms linear 0ms;
     }
 
-    .container_homeScreen .newsroll_homeDockedMotion.is_motionLeaving {
-        max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
-        transition:
-            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
-            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
-    }
-
     .newsroll_sheetFrame .newsroll_allDockedControls {
         display: none;
+        transition: none;
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_allDockedControls {
         width: 100%;
+        max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+        min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
         display: flex;
         justify-content: flex-end;
+        transition:
+            max-height var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear 0ms;
     }
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_panelHeaderRow {
@@ -5277,10 +5327,14 @@
         border-left: var(--newsroll-divider-thickness) solid var(--newsroll-divider-color);
     }
 
-    .wrapper_articleReaction .newsroll_icon,
-    .btn_commentPanel .newsroll_icon {
+    .wrapper_articleReaction .newsroll_icon {
         width: 24px;
         height: 24px;
+    }
+
+    .btn_commentPanel .newsroll_icon {
+        width: 20px;
+        height: 20px;
     }
 
     .btn_articleReaction_like,
@@ -5570,6 +5624,23 @@
         background: var(--color-background-elevated-normal);
     }
 
+    .newsroll_motion_enterUp {
+        animation: newsroll_enterUp var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease) both;
+    }
+
+    @keyframes newsroll_enterUp {
+        from {
+            opacity: 0;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+    }
+
     .container_commentComposerFixed {
         position: fixed;
         bottom: var(--spacing-padding-vertical-60);
@@ -5579,6 +5650,7 @@
         box-sizing: border-box;
         padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
         background: var(--color-background-elevated-normal);
+        --newsroll-enter-up-base-transform: translateX(-50%);
         transform: translateX(-50%);
     }
 
@@ -6019,15 +6091,32 @@
     }
 
     .wrapper_commentReplies {
-        display: none;
+        display: grid;
+        grid-template-rows: 0fr;
         overflow: hidden;
         border-radius: var(--radius-8);
         background: transparent;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition:
+            grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
     }
 
     .wrapper_commentReplies.is_open {
-        display: grid;
+        grid-template-rows: 1fr;
         background: var(--color-cool-neutral-98);
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        transition:
+            grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear 0ms;
     }
 
     .wrapper_commentRepliesInner {
@@ -6037,10 +6126,18 @@
         gap: var(--spacing-gap-vertical-24);
         padding-block: 0;
         padding-inline: var(--spacing-padding-horizontal-16);
+        opacity: 0;
+        transform: translateY(-8px);
+        transition:
+            padding-block var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms) var(--newsroll-docked-pop-motion-easing, ease);
     }
 
     .wrapper_commentReplies.is_open .wrapper_commentRepliesInner {
         padding-block: var(--spacing-padding-vertical-24);
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .wrapper_commentReplyItem {
@@ -6407,6 +6504,9 @@
 
     .container_myContent,
     .container_myTimePage,
+    .container_myBookmarkPage,
+    .container_myVotePage,
+    .container_myCommentPage,
     .container_infoContent,
     .container_infoPanel,
     .container_infoList,
@@ -6418,6 +6518,8 @@
     .container_infoFaqItem,
     .wrapper_myRecentScroller,
     .wrapper_mySettingsList,
+    .wrapper_myVoteList,
+    .wrapper_myCommentList,
     .wrapper_myTimeRows,
     .wrapper_infoInquiry,
     .wrapper_infoField,
@@ -6747,9 +6849,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .newsroll_motion_enterUp {
+        animation: none;
+    }
+
     .newsroll_motion_dockedPop,
     .container_homeScreen .newsroll_homeDockedMotion,
-    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedMotion {
+    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedMotion,
+    .newsroll_sheetFrame .newsroll_allDockedControls,
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_allDockedControls,
+    .wrapper_commentReplies,
+    .wrapper_commentReplies.is_open,
+    .wrapper_commentRepliesInner {
         transition: none;
         transform: none;
     }

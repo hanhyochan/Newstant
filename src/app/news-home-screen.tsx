@@ -64,6 +64,15 @@ type CommentScrollTarget = {
   id: string;
 };
 
+type ArticleDetailOpenOptions = {
+  commentId?: number;
+};
+
+type OpenArticleDetail = (
+  article: HomeArticle,
+  options?: ArticleDetailOpenOptions,
+) => void;
+
 type HomeArticle = {
   category: string;
   date: string;
@@ -707,7 +716,6 @@ function HomeShell({
   const [dockedControlsMotionClassName, setDockedControlsMotionClassName] =
     useState("");
   const dockedControlsMotionClassRef = useRef("");
-  const dockedControlsExitTimerRef = useRef<number | null>(null);
   const dockedPanelScroll = useDockedPanelScroll({
     boundaryDelayMs: nextArticleRevealDelayMs,
     contentScrollerSelector: homeDockedScrollSelectors.contentScroller,
@@ -732,36 +740,15 @@ function HomeShell({
       dockedControlsMotionClassRef.current = nextClassName;
       setDockedControlsMotionClassName(nextClassName);
     };
-    const clearExitTimer = () => {
-      if (dockedControlsExitTimerRef.current === null) {
-        return;
-      }
-
-      window.clearTimeout(dockedControlsExitTimerRef.current);
-      dockedControlsExitTimerRef.current = null;
-    };
     const syncMotionState = () => {
       const isDocked = screen.classList.contains("is_homeSheetDocked");
-
-      clearExitTimer();
 
       if (isDocked) {
         setMotionClass("is_motionVisible");
         return;
       }
 
-      if (dockedControlsMotionClassRef.current === "is_motionVisible") {
-        setMotionClass("is_motionLeaving");
-        dockedControlsExitTimerRef.current = window.setTimeout(() => {
-          setMotionClass("");
-          dockedControlsExitTimerRef.current = null;
-        }, nextArticleRevealDelayMs);
-        return;
-      }
-
-      if (dockedControlsMotionClassRef.current !== "is_motionLeaving") {
-        setMotionClass("");
-      }
+      setMotionClass("");
     };
     const observer = new MutationObserver(syncMotionState);
 
@@ -773,7 +760,6 @@ function HomeShell({
 
     return () => {
       observer.disconnect();
-      clearExitTimer();
     };
   }, []);
 
@@ -892,6 +878,61 @@ function getVotePercentages(voteCounts: number[]) {
   return percentages;
 }
 
+type ArticleGuideOptionButtonProps = {
+  isBinary?: boolean;
+  isSelected: boolean;
+  label: string;
+  onClick?: () => void;
+  percent?: number;
+  showResult?: boolean;
+};
+
+function ArticleGuideOptionButton({
+  isBinary = false,
+  isSelected,
+  label,
+  onClick,
+  percent = 0,
+  showResult = false,
+}: ArticleGuideOptionButtonProps) {
+  const fillStyle = showResult
+    ? isBinary
+      ? { blockSize: `${percent}%` }
+      : { inlineSize: `${percent}%` }
+    : undefined;
+
+  return (
+    <button
+      aria-pressed={isSelected}
+      className="btn_articleGuideOption"
+      onClick={onClick}
+      type="button"
+    >
+      {showResult ? (
+        <span
+          className="bar_articleGuideResult"
+          style={fillStyle}
+          aria-hidden="true"
+        />
+      ) : null}
+      {!showResult && isBinary ? (
+        <img
+          alt=""
+          className="img_articleGuideBinaryIcon"
+          src={label === binaryGuideOptions[0] ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"}
+        />
+      ) : null}
+      {showResult && isBinary ? (
+        <strong className="text_articleGuidePercent">{percent}%</strong>
+      ) : null}
+      <span className="text_articleGuideOption">{label}</span>
+      {showResult && !isBinary ? (
+        <strong className="text_articleGuidePercent">{percent}%</strong>
+      ) : null}
+    </button>
+  );
+}
+
 function ArticleGuideSection({ kind }: { kind: GuideKind }) {
   const [selectedGuideOption, setSelectedGuideOption] = useState<number | null>(
     null,
@@ -923,44 +964,17 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
         {options.map((option, index) => {
           const percent = percentages[index];
           const isBinary = kind === "binary";
-          const fillStyle = isBinary
-            ? { blockSize: `${percent}%` }
-            : { inlineSize: `${percent}%` };
 
           return (
-            <Button
-              aria-pressed={selectedGuideOption === index}
-              classNameOnly
-              className="btn_articleGuideOption"
+            <ArticleGuideOptionButton
+              isBinary={isBinary}
+              isSelected={selectedGuideOption === index}
               key={option}
+              label={option}
               onClick={() => vote(index)}
-              size="large"
-              variant="filled"
-            >
-              {hasVoted ? (
-                <span
-                  className="bar_articleGuideResult"
-                  style={fillStyle}
-                  aria-hidden="true"
-                />
-              ) : null}
-              {!hasVoted && isBinary ? (
-                <img
-                  alt=""
-                  className="img_articleGuideBinaryIcon"
-                  src={
-                    index === 0 ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"
-                  }
-                />
-              ) : null}
-              {hasVoted && isBinary ? (
-                <strong className="text_articleGuidePercent">{percent}%</strong>
-              ) : null}
-              <span className="text_articleGuideOption">{option}</span>
-              {hasVoted && !isBinary ? (
-                <strong className="text_articleGuidePercent">{percent}%</strong>
-              ) : null}
-            </Button>
+              percent={percent}
+              showResult={hasVoted}
+            />
           );
         })}
       </div>
@@ -1024,9 +1038,11 @@ function CommentInlineEditor({
 function CommentReactionPanel({
   guideKind,
   id,
+  initialCommentId,
 }: {
   guideKind: GuideKind;
   id?: string;
+  initialCommentId?: number;
 }) {
   const guideChoices =
     guideKind === "binary" ? binaryGuideOptions : guideOptions;
@@ -1059,7 +1075,9 @@ function CommentReactionPanel({
   >({});
   const [deletedCommentIds, setDeletedCommentIds] = useState<number[]>([]);
   const [deletedReplyIds, setDeletedReplyIds] = useState<string[]>([]);
-  const [expandedReplyId, setExpandedReplyId] = useState<number | null>(null);
+  const [expandedReplyId, setExpandedReplyId] = useState<number | null>(
+    initialCommentId ?? null,
+  );
   const [isComposerVisible, setIsComposerVisible] = useState(false);
   const [myCommentsOnly, setMyCommentsOnly] = useState(false);
   const [isCommentSortOpen, setIsCommentSortOpen] = useState(false);
@@ -1326,13 +1344,22 @@ function CommentReactionPanel({
       return;
     }
 
-    const timeout = window.setTimeout(
-      scrollPanelTopToReadingPosition,
-      commentScrollDelayMs,
-    );
+    const timeout = window.setTimeout(() => {
+      if (initialCommentId != null) {
+        setExpandedReplyId(initialCommentId);
+        setIsComposerVisible(true);
+        scrollElementBottomIntoView(
+          `${panelId}-comment-${initialCommentId}`,
+          80,
+        );
+        return;
+      }
+
+      scrollPanelTopToReadingPosition();
+    }, commentScrollDelayMs);
 
     return () => window.clearTimeout(timeout);
-  }, []);
+  }, [initialCommentId, panelId]);
 
   useEffect(() => {
     if (isComposerVisible) {
@@ -1567,7 +1594,7 @@ function CommentReactionPanel({
   return (
     <>
       <section
-        className="wrapper_commentPanel"
+        className="wrapper_commentPanel newsroll_motion_enterUp"
         id={id}
         ref={panelRef}
         aria-label="댓글 반응"
@@ -1919,7 +1946,7 @@ function CommentReactionPanel({
       {isComposerVisible ? (
         <div
           aria-label={composerMode === "reply" ? "대댓글 작성" : "댓글 작성"}
-          className="container_commentComposerFixed"
+          className="container_commentComposerFixed newsroll_motion_enterUp"
           id={composerId}
           role="region"
         >
@@ -1955,14 +1982,18 @@ function HomeReelCard({
   framed = true,
   headingLevel = "h2",
   index,
+  initialCommentId,
 }: {
   article: HomeArticle;
   framed?: boolean;
   headingLevel?: "h1" | "h2";
   index: number | string;
+  initialCommentId?: number;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
+  const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(
+    initialCommentId != null,
+  );
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
   const numericIndex = typeof index === "number" ? index : 0;
@@ -1974,6 +2005,14 @@ function HomeReelCard({
   function handleCommentPanelToggle() {
     setIsCommentPanelOpen((current) => !current);
   }
+
+  useEffect(() => {
+    if (initialCommentId == null) {
+      return;
+    }
+
+    setIsCommentPanelOpen(true);
+  }, [initialCommentId]);
 
   const articleContent = (
     <div
@@ -2045,6 +2084,7 @@ function HomeReelCard({
         <CommentReactionPanel
           guideKind={article.guideKind ?? "stacked"}
           id={commentPanelId}
+          initialCommentId={initialCommentId}
         />
       ) : null}
     </div>
@@ -2064,10 +2104,12 @@ function HomeReelCard({
 function ArticleDetailContent({
   article,
   backLabel,
+  initialCommentId,
   onBack,
 }: {
   article: HomeArticle;
   backLabel?: string;
+  initialCommentId?: number;
   onBack?: () => void;
 }) {
   return (
@@ -2081,6 +2123,7 @@ function ArticleDetailContent({
         article={article}
         framed={false}
         headingLevel="h1"
+        initialCommentId={initialCommentId}
         index="detail"
       />
     </NewsRollArticleDetailPanel>
@@ -2707,7 +2750,7 @@ function AllNewsView({
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
-            className="newsroll_allDockedControls"
+            className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
             isDetailOpen={isDetailOpen}
           >
             {isDetailOpen ? (
@@ -2715,7 +2758,9 @@ function AllNewsView({
                 ariaLabel="전체 뉴스 목록으로 돌아가기"
                 onClick={closeAllNewsDetail}
               />
-            ) : null}
+            ) : (
+              <h1 className="text_panelHeaderTitle">전체 뉴스</h1>
+            )}
             <Button
               aria-label="속보 알림"
               aria-pressed={isBreakingAlarmOn}
@@ -2854,30 +2899,32 @@ function AllNewsView({
                   })}
                 </div>
               </div>
-              <SeparatedList
-                dividerClassName="newsroll_all_itemDivider"
-                getKey={(item, index) => `${item.title}-${index}`}
-                items={headlineItems}
-                renderItem={(item, index) => (
-                  <AllNewsHeadlineItem
-                    item={item}
-                    onClick={() =>
-                      openAllNewsDetail(
-                        createAllNewsArticle(item, activePress, index),
-                      )
-                    }
-                  />
-                )}
-              />
-              <AllNewsMoreButton
-                ariaLabel={
-                  showAllHeadlines
-                    ? "언론사별 헤드라인 접기"
-                    : "언론사별 헤드라인 더보기"
-                }
-                expanded={showAllHeadlines}
-                onClick={() => setShowAllHeadlines((current) => !current)}
-              />
+              <div className="wrapper_allTabPanelBody">
+                <SeparatedList
+                  dividerClassName="newsroll_all_itemDivider"
+                  getKey={(item, index) => `${item.title}-${index}`}
+                  items={headlineItems}
+                  renderItem={(item, index) => (
+                    <AllNewsHeadlineItem
+                      item={item}
+                      onClick={() =>
+                        openAllNewsDetail(
+                          createAllNewsArticle(item, activePress, index),
+                        )
+                      }
+                    />
+                  )}
+                />
+                <AllNewsMoreButton
+                  ariaLabel={
+                    showAllHeadlines
+                      ? "언론사별 헤드라인 접기"
+                      : "언론사별 헤드라인 더보기"
+                  }
+                  expanded={showAllHeadlines}
+                  onClick={() => setShowAllHeadlines((current) => !current)}
+                />
+              </div>
           </AllNewsSectionPanel>
 
           <AllNewsSectionPanel
@@ -2910,22 +2957,24 @@ function AllNewsView({
                   value={activeRelayCategory}
                 />
               </div>
-              <SeparatedList
-                dividerClassName="newsroll_all_itemDivider"
-                getKey={(item, index) => `${item.title}-${index}`}
-                items={relayItems}
-                renderItem={(item, index) => (
-                  <AllNewsRelayItem
-                    featured={index === 0 || index === 5}
-                    item={item}
-                    onClick={() =>
-                      openAllNewsDetail(
-                        createAllNewsArticle(item, activeRelayCategory, index),
-                      )
-                    }
-                  />
-                )}
-              />
+              <div className="wrapper_allTabPanelBody">
+                <SeparatedList
+                  dividerClassName="newsroll_all_itemDivider"
+                  getKey={(item, index) => `${item.title}-${index}`}
+                  items={relayItems}
+                  renderItem={(item, index) => (
+                    <AllNewsRelayItem
+                      featured={index === 0 || index === 5}
+                      item={item}
+                      onClick={() =>
+                        openAllNewsDetail(
+                          createAllNewsArticle(item, activeRelayCategory, index),
+                        )
+                      }
+                    />
+                  )}
+                />
+              </div>
           </AllNewsSectionPanel>
         </section>
       )}
@@ -3356,7 +3405,7 @@ function PolicyView({
         <NewsRollSummaryHeroTop
           controls={
             <NewsRollDockedControls
-              className="newsroll_allDockedControls newsroll_panelHeaderRow"
+              className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
               isDetailOpen={isPolicyDetailOpen}
             >
               {isPolicyDetailOpen ? (
@@ -3364,7 +3413,9 @@ function PolicyView({
                   ariaLabel="국가정책 목록으로 돌아가기"
                   onClick={closePolicyDetail}
                 />
-              ) : null}
+              ) : (
+                <h1 className="text_panelHeaderTitle">국가정책</h1>
+              )}
               <DockedAlarmButton
                 isPressed={isPolicyAlarmOn}
                 onClick={() => setIsPolicyAlarmOn((current) => !current)}
@@ -3533,7 +3584,66 @@ const mySummaryItems = [
   { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
 ] as const;
 const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
-type MyPageDetailView = "newsViewTime" | "profileSettings" | null;
+type MySummaryView = (typeof mySummaryItems)[number]["value"];
+type MyPageDetailView =
+  | "newsViewTime"
+  | "profileSettings"
+  | MySummaryView
+  | null;
+
+const myBookmarkItems = allNewsRelayByCategory[allNewsRelayCategories[0]] ?? [];
+const myVoteItems = [
+  {
+    article: createAllNewsArticle(allNewsLatest[0], allNewsLatest[0].category, 0),
+    category: allNewsLatest[0].category,
+    headline: allNewsLatest[0],
+    percent: 64,
+    selectedOption: guideOptions[0],
+    title: allNewsLatest[0].title,
+  },
+  {
+    article: createAllNewsArticle(allNewsLatest[1], allNewsLatest[1].category, 1),
+    category: allNewsLatest[1].category,
+    headline: allNewsLatest[1],
+    percent: 48,
+    selectedOption: guideOptions[1],
+    title: allNewsLatest[1].title,
+  },
+  {
+    article: createAllNewsArticle(allNewsLatest[2], allNewsLatest[2].category, 2),
+    category: allNewsLatest[2].category,
+    headline: allNewsLatest[2],
+    percent: 72,
+    selectedOption: guideOptions[2],
+    title: allNewsLatest[2].title,
+  },
+] as const;
+const myVoteCategoryTabs = Array.from(
+  new Set(myVoteItems.map((item) => item.category)),
+);
+const myCommentItems = allNewsPresses.map((press, index) => {
+  const fallbackHeadlines = allNewsHeadlinesByPress[allNewsPresses[0]] ?? [];
+  const item =
+    allNewsHeadlinesByPress[press]?.[index] ??
+    fallbackHeadlines[index] ??
+    fallbackHeadlines[0] ??
+    allNewsLatest[0];
+  const commentTemplate = commentTemplates[index % commentTemplates.length];
+
+  return {
+    article: createAllNewsArticle(item, press, index),
+    category: press,
+    comment: {
+      ...commentTemplate,
+      choice: guideOptions[index % guideOptions.length],
+      replies: 3,
+    },
+    headline: item,
+  };
+});
+const myCommentCategoryTabs = Array.from(
+  new Set(myCommentItems.map((item) => item.category)),
+);
 
 type MySettingRowProps = {
   checked?: boolean;
@@ -3561,6 +3671,329 @@ function MySettingRow({
       {typeof checked === "boolean" ? <NewsRollSwitch checked={checked} /> : null}
       {showChevron ? <span className="icon_myChevron" aria-hidden="true" /> : null}
     </button>
+  );
+}
+
+function MyBookmarkDetailPage({
+  onOpenArticle,
+}: {
+  onOpenArticle: OpenArticleDetail;
+}) {
+  const fallbackCategory = allNewsRelayCategories[0] ?? homeArticle.category;
+
+  return (
+    <div className="container_myBookmarkPage">
+      <h2 className="text_mySectionTitle">북마크</h2>
+      <SeparatedList
+        dividerClassName="newsroll_all_itemDivider"
+        getKey={(item, index) => `${item.title}-${index}`}
+        items={myBookmarkItems}
+        renderItem={(item, index) => (
+          <AllNewsRelayItem
+            featured={index === 0 || index === 5}
+            item={item}
+            onClick={() =>
+              onOpenArticle(createAllNewsArticle(item, fallbackCategory, index))
+            }
+          />
+        )}
+      />
+    </div>
+  );
+}
+
+function MyVoteDetailPage({
+  activeCategory,
+  onCategoryChange,
+  onOpenArticle,
+}: {
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+  onOpenArticle: OpenArticleDetail;
+}) {
+  const visibleVoteItems = myVoteItems.filter(
+    (item) => item.category === activeCategory,
+  );
+
+  return (
+    <div className="container_myVotePage">
+      <h2 className="text_mySectionTitle">투표</h2>
+      {myVoteCategoryTabs.length > 1 ? (
+        <PillTabMenu
+          ariaLabel="내가 참여한 투표 카테고리"
+          className="tab_myCategoryMenu"
+          items={myVoteCategoryTabs.map((category) => ({
+            id: category,
+            label: category,
+          }))}
+          onChange={onCategoryChange}
+          value={activeCategory}
+        />
+      ) : null}
+      <div className="wrapper_myVoteList">
+        <SeparatedList
+          dividerClassName="divider_mySection"
+          getKey={(item, index) => `${item.title}-${index}`}
+          items={visibleVoteItems}
+          renderItem={(item) => (
+            <article className="wrapper_myVoteItem">
+              <AllNewsHeadlineItem
+                item={item.headline}
+                onClick={() => onOpenArticle(item.article)}
+              />
+              <ArticleGuideOptionButton
+                isSelected
+                label={item.selectedOption}
+                onClick={() => onOpenArticle(item.article)}
+                percent={item.percent}
+                showResult
+              />
+            </article>
+          )}
+        />
+      </div>
+    </div>
+  );
+}
+
+function MyCommentCreatedDate({
+  children,
+  dateTime = defaultNewsDateTime,
+}: {
+  children: ReactNode;
+  dateTime?: string;
+}) {
+  return (
+    <time className="text_myCommentCreatedDate" dateTime={dateTime}>
+      {children}
+    </time>
+  );
+}
+
+function MyCommentThread({
+  comment,
+  instanceId,
+  onOpenComment,
+}: {
+  comment: CommentItem;
+  instanceId: string;
+  onOpenComment: () => void;
+}) {
+  const [isReplyListOpen, setIsReplyListOpen] = useState(false);
+  const [selectedReaction, setSelectedReaction] =
+    useState<CommentReactionValue | null>(null);
+  const replyToggleId = `${instanceId}-reply-toggle-${comment.id}`;
+  const replyListId = `${instanceId}-reply-list-${comment.id}`;
+  const commentReplies: CommentReplyItem[] = Array.from(
+    { length: Math.min(comment.replies, 3) },
+    (_, replyIndex) => ({
+      ...commentReplyTemplates[replyIndex % commentReplyTemplates.length],
+      id: `${comment.id}-${replyIndex}`,
+    }),
+  );
+  const likeCount = comment.likes + (selectedReaction === "like" ? 1 : 0);
+  const dislikeCount =
+    comment.dislikes + (selectedReaction === "dislike" ? 1 : 0);
+
+  function toggleReaction(reaction: CommentReactionValue) {
+    setSelectedReaction((current) => (current === reaction ? null : reaction));
+  }
+
+  function openCommentFromKeyboard(event: KeyboardEvent<HTMLElement>) {
+    const target = event.target;
+
+    if (target instanceof Element && target.closest("button")) {
+      return;
+    }
+
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+    onOpenComment();
+  }
+
+  return (
+    <article
+      aria-label="댓글이 달린 기사 본문으로 이동"
+      className="wrapper_commentItem wrapper_myPageCommentThread"
+      id={`${instanceId}-comment-${comment.id}`}
+      onClick={(event) => {
+        const target = event.target;
+
+        if (target instanceof Element && target.closest("button")) {
+          return;
+        }
+
+        onOpenComment();
+      }}
+      onKeyDown={openCommentFromKeyboard}
+      tabIndex={0}
+    >
+      <ChipLabel kind="commentChoice">{comment.choice}</ChipLabel>
+      <p>{comment.body}</p>
+      <footer>
+        <button
+          aria-controls={replyListId}
+          aria-expanded={isReplyListOpen}
+          id={replyToggleId}
+          onClick={() => setIsReplyListOpen((current) => !current)}
+          type="button"
+        >
+          대댓글 {commentReplies.length}
+        </button>
+        <span>
+          <ReactionButton
+            aria-label="댓글 좋아요"
+            aria-pressed={selectedReaction === "like"}
+            icon="thumbUp"
+            onClick={() => toggleReaction("like")}
+            tone="like"
+            variant="comment"
+          >
+            {likeCount}
+          </ReactionButton>
+          <ReactionButton
+            aria-label="댓글 싫어요"
+            aria-pressed={selectedReaction === "dislike"}
+            icon="thumbDown"
+            onClick={() => toggleReaction("dislike")}
+            tone="dislike"
+            variant="comment"
+          >
+            {dislikeCount}
+          </ReactionButton>
+        </span>
+      </footer>
+      <div
+        aria-hidden={!isReplyListOpen}
+        aria-labelledby={replyToggleId}
+        className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
+        id={replyListId}
+        role="region"
+      >
+        <div className="wrapper_commentRepliesInner">
+          <Button
+            aria-controls={`${instanceId}-composer`}
+            aria-pressed={false}
+            className="btn_originalArticle"
+            classNameOnly
+            onClick={() => setIsReplyListOpen(true)}
+            type="button"
+          >
+            대댓글 달기
+          </Button>
+          {commentReplies.map((reply, replyIndex) => (
+            <Fragment key={reply.id}>
+              <article
+                className="wrapper_commentReplyItem"
+                id={`${instanceId}-reply-${reply.id}`}
+              >
+                <header>
+                  <span className="wrapper_commentMeta">
+                    <strong>{reply.author}</strong>
+                    <NewsCreatedTime>{reply.date}</NewsCreatedTime>
+                  </span>
+                  <span className="wrapper_commentAction">
+                    <IconButton
+                      aria-expanded={false}
+                      aria-haspopup="menu"
+                      baseClassName="btn_commentAction"
+                      disabled
+                      icon="detail"
+                      label="대댓글 더보기"
+                    />
+                  </span>
+                </header>
+                <ChipLabel kind="commentChoice">{reply.choice}</ChipLabel>
+                <p>{reply.body}</p>
+                <footer>
+                  <span>
+                    <ReactionButton
+                      aria-label="대댓글 좋아요"
+                      disabled
+                      icon="thumbUp"
+                      tone="like"
+                      variant="comment"
+                    >
+                      {reply.likes}
+                    </ReactionButton>
+                    <ReactionButton
+                      aria-label="대댓글 싫어요"
+                      disabled
+                      icon="thumbDown"
+                      tone="dislike"
+                      variant="comment"
+                    >
+                      {reply.dislikes}
+                    </ReactionButton>
+                  </span>
+                </footer>
+              </article>
+              {replyIndex < commentReplies.length - 1 ? (
+                <span aria-hidden="true" className="divider_commentItem" />
+              ) : null}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function MyCommentDetailPage({
+  activeCategory,
+  onCategoryChange,
+  onOpenArticle,
+}: {
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+  onOpenArticle: OpenArticleDetail;
+}) {
+  const visibleCommentItems = myCommentItems.filter(
+    (item) => item.category === activeCategory,
+  );
+
+  return (
+    <div className="container_myCommentPage">
+      <h2 className="text_mySectionTitle">댓글</h2>
+      {myCommentCategoryTabs.length > 1 ? (
+        <PillTabMenu
+          ariaLabel="내 댓글 카테고리"
+          className="tab_myCategoryMenu"
+          items={myCommentCategoryTabs.map((category) => ({
+            id: category,
+            label: category,
+          }))}
+          onChange={onCategoryChange}
+          value={activeCategory}
+        />
+      ) : null}
+      <div className="wrapper_myCommentList">
+        <SeparatedList
+          dividerClassName="divider_mySection"
+          getKey={(item, index) => `${item.headline.title}-${index}`}
+          items={visibleCommentItems}
+          renderItem={(item, index) => (
+            <div className="wrapper_myCommentItem">
+              <MyCommentCreatedDate>{item.comment.date}</MyCommentCreatedDate>
+              <AllNewsHeadlineItem
+                item={item.headline}
+                onClick={() => onOpenArticle(item.article)}
+              />
+              <MyCommentThread
+                comment={item.comment}
+                instanceId={`my-comment-detail-${index}`}
+                onOpenComment={() =>
+                  onOpenArticle(item.article, { commentId: item.comment.id })
+                }
+              />
+            </div>
+          )}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -3622,9 +4055,18 @@ function MyPageView({
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
-  const activeSummary: "bookmark" | "vote" | "comment" | null = null;
   const [activeDetailView, setActiveDetailView] =
     useState<MyPageDetailView>(null);
+  const [myArticleDetail, setMyArticleDetail] = useState<{
+    article: HomeArticle;
+    commentId?: number;
+  } | null>(null);
+  const [activeVoteCategory, setActiveVoteCategory] = useState(
+    () => myVoteCategoryTabs[0] ?? "",
+  );
+  const [activeCommentCategory, setActiveCommentCategory] = useState(
+    () => myCommentCategoryTabs[0] ?? "",
+  );
   const [isMyAlarmOn, setIsMyAlarmOn] = useState(false);
   const [isRecentExpanded, setIsRecentExpanded] = useState(false);
   const [selectedCategorySettings, setSelectedCategorySettings] = useState(
@@ -3657,9 +4099,19 @@ function MyPageView({
   const myPanelContentRef = useRef<HTMLDivElement>(null);
   const isNewsViewTimeOpen = activeDetailView === "newsViewTime";
   const isProfileSettingsOpen = activeDetailView === "profileSettings";
+  const isBookmarkOpen = activeDetailView === "bookmark";
+  const isVoteOpen = activeDetailView === "vote";
+  const isCommentOpen = activeDetailView === "comment";
+  const isMyArticleDetailOpen = myArticleDetail !== null;
+  const activeSummary: MySummaryView | null =
+    isBookmarkOpen || isVoteOpen || isCommentOpen ? activeDetailView : null;
   const isMyDetailOpen = activeDetailView !== null;
   const myDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isMyDetailOpen,
+    scrollerRef: myPanelContentRef,
+  });
+  const myArticleDetailScrollRestore = useDetailScrollRestore({
+    isDetailOpen: isMyArticleDetailOpen,
     scrollerRef: myPanelContentRef,
   });
   const recentItems = isRecentExpanded
@@ -3714,15 +4166,40 @@ function MyPageView({
     setActiveDetailView("profileSettings");
   };
 
+  const openSummaryDetail = (view: MySummaryView) => {
+    myDetailScrollRestore.captureScroll();
+    setMyArticleDetail(null);
+    setActiveDetailView(view);
+  };
+
+  const openMyArticleDetail: OpenArticleDetail = (article, options) => {
+    myArticleDetailScrollRestore.captureScroll();
+    setMyArticleDetail({
+      article,
+      commentId: options?.commentId,
+    });
+  };
+
+  const closeMyArticleDetail = () => {
+    myArticleDetailScrollRestore.requestRestore();
+    setMyArticleDetail(null);
+  };
+
   const closeActiveDetailView = () => {
     myDetailScrollRestore.requestRestore();
+    setMyArticleDetail(null);
     setActiveDetailView(null);
   };
 
   const detailBackLabel =
-    activeDetailView === "profileSettings"
+    isMyArticleDetailOpen
+      ? "기사 본문에서 이전 목록으로 돌아가기"
+      : activeDetailView === "profileSettings"
       ? "설정에서 마이페이지로 돌아가기"
       : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
+  const handleMyDetailBack = isMyArticleDetailOpen
+    ? closeMyArticleDetail
+    : closeActiveDetailView;
 
   return (
     <NewsRollCommonLayout
@@ -3733,7 +4210,12 @@ function MyPageView({
       {...fixedDockedPanelProps}
       minInitialTop={pagePanelInitialTop}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet container_mySheet"
-      sheetScrollSelector={pagePanelContentSelector}
+      sheetNestedScrollResetSelector={
+        isMyArticleDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
+      }
+      sheetScrollSelector={
+        isMyArticleDetailOpen ? ".container_newsFeed_detail" : pagePanelContentSelector
+      }
       top={
         isMyDetailOpen ? (
           <NewsRollHeaderTop>
@@ -3744,12 +4226,12 @@ function MyPageView({
               showSearch={false}
             />
             <NewsRollDockedControls
-              className="newsroll_allDockedControls newsroll_panelHeaderRow"
+              className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
               isDetailOpen
             >
               <NewsRollDetailBackButton
                 ariaLabel={detailBackLabel}
-                onClick={closeActiveDetailView}
+                onClick={handleMyDetailBack}
               />
               <DockedAlarmButton
                 isPressed={isMyAlarmOn}
@@ -3764,7 +4246,7 @@ function MyPageView({
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
-            <NewsRollDockedControls className="newsroll_allDockedControls newsroll_panelHeaderRow">
+            <NewsRollDockedControls className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow">
               <h1 className="text_panelHeaderTitle">마이페이지</h1>
               <DockedAlarmButton
                 isPressed={isMyAlarmOn}
@@ -3775,17 +4257,43 @@ function MyPageView({
         )
       }
     >
-      <NewsRollPagePanel
-        ariaLabel={
-          isNewsViewTimeOpen
+      {myArticleDetail ? (
+        <ArticleDetailContent
+          article={myArticleDetail.article}
+          initialCommentId={myArticleDetail.commentId}
+        />
+      ) : (
+        <NewsRollPagePanel
+          ariaLabel={
+            isBookmarkOpen
+              ? "북마크 상세 콘텐츠 영역"
+            : isVoteOpen
+              ? "투표 상세 콘텐츠 영역"
+            : isCommentOpen
+              ? "댓글 상세 콘텐츠 영역"
+            : isNewsViewTimeOpen
             ? "뉴스 보기 타임 설정 영역"
             : isProfileSettingsOpen
               ? "설정 콘텐츠 영역"
             : "마이페이지 콘텐츠 영역"
-        }
-        contentRef={myPanelContentRef}
-      >
-        {isNewsViewTimeOpen ? (
+          }
+          contentRef={myPanelContentRef}
+        >
+          {isBookmarkOpen ? (
+            <MyBookmarkDetailPage onOpenArticle={openMyArticleDetail} />
+          ) : isVoteOpen ? (
+            <MyVoteDetailPage
+              activeCategory={activeVoteCategory}
+              onCategoryChange={setActiveVoteCategory}
+              onOpenArticle={openMyArticleDetail}
+            />
+          ) : isCommentOpen ? (
+            <MyCommentDetailPage
+              activeCategory={activeCommentCategory}
+              onCategoryChange={setActiveCommentCategory}
+              onOpenArticle={openMyArticleDetail}
+            />
+          ) : isNewsViewTimeOpen ? (
           <div className="container_myTimePage">
             <h2 className="text_myTimeTitle">뉴스 보기 타임</h2>
             {myNewsViewTimeSections.map((section, sectionIndex) => (
@@ -3873,6 +4381,7 @@ function MyPageView({
                 aria-pressed={activeSummary === item.value}
                 icon={item.icon}
                 key={item.value}
+                onClick={() => openSummaryDetail(item.value)}
                 tone={item.tone}
                 variant="article"
               >
@@ -3885,7 +4394,7 @@ function MyPageView({
 
           <section className="container_myRecent" aria-label="최근 본 뉴스">
             <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
-            <div className="wrapper_myRecentScroller">
+            <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
               {recentItems.map((item, index) => (
                 <NewsBlockItem
                   ariaPressed={selectedRecentIndex === index}
@@ -3975,6 +4484,7 @@ function MyPageView({
           </div>
         )}
       </NewsRollPagePanel>
+      )}
     </NewsRollCommonLayout>
   );
 }
@@ -4233,7 +4743,7 @@ function InfoView({
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
-            className="newsroll_allDockedControls newsroll_panelHeaderRow"
+            className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
             isDetailOpen={isNoticeDetailOpen}
           >
             {isNoticeDetailOpen ? (
