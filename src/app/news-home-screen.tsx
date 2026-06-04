@@ -3592,36 +3592,45 @@ type MyPageDetailView =
   | null;
 
 const myBookmarkItems = allNewsRelayByCategory[allNewsRelayCategories[0]] ?? [];
-const myVoteItems = [
-  {
-    article: createAllNewsArticle(allNewsLatest[0], allNewsLatest[0].category, 0),
-    category: allNewsLatest[0].category,
-    headline: allNewsLatest[0],
-    percent: 64,
-    selectedOption: guideOptions[0],
-    title: allNewsLatest[0].title,
-  },
-  {
-    article: createAllNewsArticle(allNewsLatest[1], allNewsLatest[1].category, 1),
-    category: allNewsLatest[1].category,
-    headline: allNewsLatest[1],
-    percent: 48,
-    selectedOption: guideOptions[1],
-    title: allNewsLatest[1].title,
-  },
-  {
-    article: createAllNewsArticle(allNewsLatest[2], allNewsLatest[2].category, 2),
-    category: allNewsLatest[2].category,
-    headline: allNewsLatest[2],
-    percent: 72,
-    selectedOption: guideOptions[2],
-    title: allNewsLatest[2].title,
-  },
-] as const;
-const myVoteCategoryTabs = Array.from(
-  new Set(myVoteItems.map((item) => item.category)),
-);
-const myCommentItems = allNewsPresses.map((press, index) => {
+const mySummaryAllTabLabel = "전체";
+const mySummaryListCount = 5;
+const myVotePercents = [64, 48, 72, 57, 81];
+
+function getUniqueValues<T extends string>(items: T[]) {
+  return Array.from(new Set(items));
+}
+
+function getMySummaryCategoryTabs(items: { category: string }[]) {
+  return [
+    mySummaryAllTabLabel,
+    ...getUniqueValues(items.map((item) => item.category)),
+  ];
+}
+
+function isMySummaryAllCategory(category: string) {
+  return category === mySummaryAllTabLabel;
+}
+
+function getMySummaryItemsByCategory<T extends { category: string }>(
+  items: T[],
+  category: string,
+) {
+  return isMySummaryAllCategory(category)
+    ? items
+    : items.filter((item) => item.category === category);
+}
+
+const myVoteItems = allNewsLatest.map((item, index) => ({
+  article: createAllNewsArticle(item, item.category, index),
+  category: item.category,
+  headline: item,
+  percent: myVotePercents[index % myVotePercents.length],
+  selectedOption: guideOptions[index % guideOptions.length],
+  title: item.title,
+}));
+const myVoteCategoryTabs = getMySummaryCategoryTabs(myVoteItems);
+const myCommentItems = Array.from({ length: mySummaryListCount }, (_, index) => {
+  const press = allNewsPresses[index % allNewsPresses.length];
   const fallbackHeadlines = allNewsHeadlinesByPress[allNewsPresses[0]] ?? [];
   const item =
     allNewsHeadlinesByPress[press]?.[index] ??
@@ -3641,9 +3650,7 @@ const myCommentItems = allNewsPresses.map((press, index) => {
     headline: item,
   };
 });
-const myCommentCategoryTabs = Array.from(
-  new Set(myCommentItems.map((item) => item.category)),
-);
+const myCommentCategoryTabs = getMySummaryCategoryTabs(myCommentItems);
 
 type MySettingRowProps = {
   checked?: boolean;
@@ -3711,8 +3718,9 @@ function MyVoteDetailPage({
   onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
 }) {
-  const visibleVoteItems = myVoteItems.filter(
-    (item) => item.category === activeCategory,
+  const visibleVoteItems = getMySummaryItemsByCategory(
+    myVoteItems,
+    activeCategory,
   );
 
   return (
@@ -3951,8 +3959,9 @@ function MyCommentDetailPage({
   onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
 }) {
-  const visibleCommentItems = myCommentItems.filter(
-    (item) => item.category === activeCategory,
+  const visibleCommentItems = getMySummaryItemsByCategory(
+    myCommentItems,
+    activeCategory,
   );
 
   return (
@@ -4091,7 +4100,6 @@ function MyPageView({
     공지사항: true,
     속보: true,
   });
-  const selectedRecentIndex: number | null = null;
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
     () => new Set(["07:00", "21:00"]),
@@ -4397,7 +4405,7 @@ function MyPageView({
             <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
               {recentItems.map((item, index) => (
                 <NewsBlockItem
-                  ariaPressed={selectedRecentIndex === index}
+                  ariaPressed={false}
                   dateLabel={item.time}
                   dateTime={item.dateTime}
                   imageSrc={item.image}

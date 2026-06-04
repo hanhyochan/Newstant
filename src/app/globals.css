@@ -3700,63 +3700,6 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_my_vote_result {
-        position: relative;
-        overflow: hidden;
-        min-height: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-12);
-        padding: 0 var(--spacing-padding-horizontal-14, 14px);
-        border-radius: var(--radius-8);
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
-    .newsroll_my_vote_result::before {
-        content: '';
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: var(--vote-percent);
-        border-radius: inherit;
-        background: var(--color-neutral-97);
-    }
-
-    .newsroll_my_vote_result span {
-        position: relative;
-        z-index: 1;
-        min-width: 0;
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-20);
-    }
-
-    .newsroll_my_vote_result strong {
-        position: relative;
-        z-index: 1;
-        color: var(--color-newsroll-purple-50);
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-24);
-    }
-
-    .newsroll_my_reply_parent {
-        display: grid;
-        gap: var(--spacing-gap-vertical-6, 6px);
-        padding: var(--spacing-padding-vertical-10, 10px) var(--spacing-padding-horizontal-12);
-        border-radius: var(--radius-8);
-        background: var(--color-neutral-97);
-    }
-
-    .newsroll_my_reply_parent span {
-        color: var(--color-label-alternative);
-        font-size: var(--font-size-12);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-16);
-    }
-
     .tab_myCategoryMenu {
         display: flex;
         flex-wrap: wrap;

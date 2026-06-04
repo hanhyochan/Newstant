@@ -121,7 +121,7 @@ export const PublicAssetGallery: Story = {
           key={fileName}
           style={{
             alignItems: "center",
-            border: "1px solid #e5e5e5",
+            border: "1px solid var(--color-line-solid-normal)",
             borderRadius: 8,
             display: "grid",
             gap: 8,
