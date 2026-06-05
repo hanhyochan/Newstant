@@ -3805,25 +3805,6 @@ function MySettingRow({
   );
 }
 
-function MyArticleListDetailPage({
-  children,
-  isLeaving = false,
-  title,
-}: {
-  children: ReactNode;
-  isLeaving?: boolean;
-  title: string;
-}) {
-  return (
-    <div
-      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
-    >
-      <h2 className="text_mySectionTitle">{title}</h2>
-      {children}
-    </div>
-  );
-}
-
 function createMyRecentArticle(
   item: (typeof myRecentNews)[number],
   index: number,
@@ -3847,7 +3828,10 @@ function MyRecentDetailPage({
   onOpenArticle: OpenArticleDetail;
 }) {
   return (
-    <MyArticleListDetailPage isLeaving={isLeaving} title="최근 본 뉴스">
+    <div
+      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
+      <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
       <SeparatedList
         dividerClassName="newsroll_all_itemDivider"
         getKey={(item, index) => `${item.title}-${index}`}
@@ -3860,7 +3844,7 @@ function MyRecentDetailPage({
           />
         )}
       />
-    </MyArticleListDetailPage>
+    </div>
   );
 }
 
@@ -3874,7 +3858,10 @@ function MyBookmarkDetailPage({
   const fallbackCategory = allNewsRelayCategories[0] ?? homeArticle.category;
 
   return (
-    <MyArticleListDetailPage isLeaving={isLeaving} title="북마크">
+    <div
+      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
+      <h2 className="text_mySectionTitle">북마크</h2>
       <SeparatedList
         dividerClassName="newsroll_all_itemDivider"
         getKey={(item, index) => `${item.title}-${index}`}
@@ -3889,7 +3876,7 @@ function MyBookmarkDetailPage({
           />
         )}
       />
-    </MyArticleListDetailPage>
+    </div>
   );
 }
 
