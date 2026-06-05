@@ -98,7 +98,7 @@
       "imageUrl": "/images/news-apartment.png",
       "reporterName": "김민준",
       "publishedAt": "2026-12-31T08:30:00+09:00",
-      "viewCount": 163
+      "viewCount": 168
     },
     {
       "id": "news-002",
@@ -325,49 +325,49 @@
       "id": "recent-f625c32f-1c3f-4a1a-b602-9d3ae4576e34",
       "userId": "user-kongkong",
       "newsId": "news-001",
-      "viewedAt": "2026-06-05T08:48:02.561Z"
+      "viewedAt": "2026-06-05T08:56:28.394Z"
     },
     {
       "id": "recent-04d0138f-5150-4970-a814-351ab629804f",
       "userId": "user-kongkong",
       "newsId": "news-002",
-      "viewedAt": "2026-06-05T08:48:02.560Z"
+      "viewedAt": "2026-06-05T08:56:22.561Z"
     },
     {
       "id": "recent-d0f76374-ae87-4552-8a9e-84ae92f75d17",
       "userId": "user-kongkong",
       "newsId": "news-003",
-      "viewedAt": "2026-06-05T08:48:02.562Z"
+      "viewedAt": "2026-06-05T08:56:22.562Z"
     },
     {
       "id": "recent-ede269ea-4f38-4836-95d2-ba0c936b9756",
       "userId": "user-kongkong",
       "newsId": "news-004",
-      "viewedAt": "2026-06-05T08:48:02.564Z"
+      "viewedAt": "2026-06-05T08:56:22.567Z"
     },
     {
       "id": "recent-d0a3f0a5-8938-466e-bd00-9b5eb26d7b4b",
       "userId": "user-kongkong",
       "newsId": "news-005",
-      "viewedAt": "2026-06-05T08:48:02.565Z"
+      "viewedAt": "2026-06-05T08:56:22.571Z"
     },
     {
       "id": "recent-41952597-9092-481d-a326-7cc66872c81d",
       "userId": "user-kongkong",
       "newsId": "news-006",
-      "viewedAt": "2026-06-05T08:48:02.566Z"
+      "viewedAt": "2026-06-05T08:56:22.572Z"
     },
     {
       "id": "recent-fe70ffe4-0246-4d5e-8320-645996da2555",
       "userId": "user-kongkong",
       "newsId": "news-007",
-      "viewedAt": "2026-06-05T08:48:02.580Z"
+      "viewedAt": "2026-06-05T08:56:22.580Z"
     },
     {
       "id": "recent-c938daf4-bd4c-4990-9a0a-dcd034686f1e",
       "userId": "user-kongkong",
       "newsId": "news-008",
-      "viewedAt": "2026-06-05T08:48:02.581Z"
+      "viewedAt": "2026-06-05T08:56:22.579Z"
     }
   ],
   "polls": [
@@ -422,7 +422,7 @@
       "pollId": "poll-001",
       "pollOptionId": "poll-option-003",
       "userId": "user-kongkong",
-      "createdAt": "2026-06-05T07:55:57.839Z"
+      "createdAt": "2026-06-05T08:56:01.768Z"
     }
   ],
   "comments": [
@@ -438,6 +438,19 @@
       "replyCount": 0,
       "createdAt": "2026-12-31T09:35:00+09:00",
       "updatedAt": "2026-12-31T09:35:00+09:00"
+    },
+    {
+      "id": "comment-fbda4a5f-b7d0-42de-8f02-0cd2ccfc6a78",
+      "newsId": "news-001",
+      "userId": "user-kongkong",
+      "parentId": null,
+      "pollOptionId": null,
+      "content": "안녕하세요",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-05T08:56:17.039Z",
+      "updatedAt": "2026-06-05T08:56:17.039Z"
     }
   ],
   "commentReactions": [],
