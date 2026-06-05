@@ -98,7 +98,7 @@
       "imageUrl": "/images/news-apartment.png",
       "reporterName": "김민준",
       "publishedAt": "2026-12-31T08:30:00+09:00",
-      "viewCount": 132
+      "viewCount": 163
     },
     {
       "id": "news-002",
@@ -110,7 +110,7 @@
       "imageUrl": "/images/news-apartment.png",
       "reporterName": "이서연",
       "publishedAt": "2026-12-31T08:30:00+09:00",
-      "viewCount": 132
+      "viewCount": 148
     },
     {
       "id": "news-003",
@@ -122,7 +122,7 @@
       "imageUrl": "/images/news-apartment.png",
       "reporterName": "박지훈",
       "publishedAt": "2026-12-31T08:30:00+09:00",
-      "viewCount": 98
+      "viewCount": 103
     },
     {
       "id": "news-004",
@@ -256,7 +256,9 @@
       "label": "바우처",
       "title": "청년동아리 활동비 지원사업",
       "summary": "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
-      "ageGroupIds": ["youth"],
+      "ageGroupIds": [
+        "youth"
+      ],
       "targetAge": "19세 ~ 45세",
       "supportContent": "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
       "institution": "경상남도 하동군 지역활력추진단",
@@ -280,7 +282,9 @@
       "label": "현금지원",
       "title": "청년 월세 한시 지원",
       "summary": "무주택 청년의 주거비 부담을 줄이기 위한 월세 지원 사업.",
-      "ageGroupIds": ["youth"],
+      "ageGroupIds": [
+        "youth"
+      ],
       "targetAge": "19세 ~ 34세",
       "supportContent": "월 최대 20만원까지 임차료 지원.",
       "institution": "국토교통부",
@@ -300,38 +304,70 @@
   ],
   "bookmarks": [
     {
-      "id": "bookmark-001",
+      "id": "bookmark-fb5d5dde-b001-40a0-972b-7a052a755c1e",
       "userId": "user-kongkong",
       "targetType": "news",
       "targetId": "news-001",
-      "createdAt": "2026-12-31T09:00:00+09:00"
-    },
+      "createdAt": "2026-06-05T06:37:48.580Z"
+    }
+  ],
+  "articleReactions": [
     {
-      "id": "bookmark-002",
+      "id": "article-reaction-7f26e66d-c318-4493-b4cd-ec0c80008612",
+      "newsId": "news-001",
       "userId": "user-kongkong",
-      "targetType": "welfarePolicy",
-      "targetId": "policy-001",
-      "createdAt": "2026-12-31T09:10:00+09:00"
+      "type": "neutral",
+      "createdAt": "2026-06-05T08:44:12.346Z"
     }
   ],
   "recentNewsViews": [
     {
-      "id": "recent-001",
+      "id": "recent-f625c32f-1c3f-4a1a-b602-9d3ae4576e34",
       "userId": "user-kongkong",
       "newsId": "news-001",
-      "viewedAt": "2026-12-31T10:10:00+09:00"
+      "viewedAt": "2026-06-05T08:48:02.561Z"
     },
     {
-      "id": "recent-002",
+      "id": "recent-04d0138f-5150-4970-a814-351ab629804f",
       "userId": "user-kongkong",
       "newsId": "news-002",
-      "viewedAt": "2026-12-31T10:00:00+09:00"
+      "viewedAt": "2026-06-05T08:48:02.560Z"
     },
     {
-      "id": "recent-003",
+      "id": "recent-d0f76374-ae87-4552-8a9e-84ae92f75d17",
       "userId": "user-kongkong",
       "newsId": "news-003",
-      "viewedAt": "2026-12-31T09:50:00+09:00"
+      "viewedAt": "2026-06-05T08:48:02.562Z"
+    },
+    {
+      "id": "recent-ede269ea-4f38-4836-95d2-ba0c936b9756",
+      "userId": "user-kongkong",
+      "newsId": "news-004",
+      "viewedAt": "2026-06-05T08:48:02.564Z"
+    },
+    {
+      "id": "recent-d0a3f0a5-8938-466e-bd00-9b5eb26d7b4b",
+      "userId": "user-kongkong",
+      "newsId": "news-005",
+      "viewedAt": "2026-06-05T08:48:02.565Z"
+    },
+    {
+      "id": "recent-41952597-9092-481d-a326-7cc66872c81d",
+      "userId": "user-kongkong",
+      "newsId": "news-006",
+      "viewedAt": "2026-06-05T08:48:02.566Z"
+    },
+    {
+      "id": "recent-fe70ffe4-0246-4d5e-8320-645996da2555",
+      "userId": "user-kongkong",
+      "newsId": "news-007",
+      "viewedAt": "2026-06-05T08:48:02.580Z"
+    },
+    {
+      "id": "recent-c938daf4-bd4c-4990-9a0a-dcd034686f1e",
+      "userId": "user-kongkong",
+      "newsId": "news-008",
+      "viewedAt": "2026-06-05T08:48:02.581Z"
     }
   ],
   "polls": [
@@ -340,6 +376,12 @@
       "newsId": "news-001",
       "title": "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
       "createdAt": "2026-12-31T08:30:00+09:00"
+    },
+    {
+      "id": "poll-7574a213-d545-4825-8a40-9bc08874a0ea",
+      "newsId": "news-002",
+      "title": "그렇다 / 아니다",
+      "createdAt": "2026-06-05T07:32:54.809Z"
     }
   ],
   "pollOptions": [
@@ -360,31 +402,30 @@
       "pollId": "poll-001",
       "label": "상황을 더 지켜본 뒤 판단해야 한다.",
       "order": 3
+    },
+    {
+      "id": "poll-option-93220d60-4a14-4cc2-a715-9b1a5da67db2",
+      "pollId": "poll-7574a213-d545-4825-8a40-9bc08874a0ea",
+      "label": "그렇다",
+      "order": 1
+    },
+    {
+      "id": "poll-option-5d7ca35d-c061-4057-a61b-37f4930bdd59",
+      "pollId": "poll-7574a213-d545-4825-8a40-9bc08874a0ea",
+      "label": "아니다",
+      "order": 2
     }
   ],
   "pollVotes": [
     {
-      "id": "poll-vote-001",
+      "id": "poll-vote-ad9c6141-0a10-4aa6-9e67-3bc686974f67",
       "pollId": "poll-001",
-      "pollOptionId": "poll-option-001",
+      "pollOptionId": "poll-option-003",
       "userId": "user-kongkong",
-      "createdAt": "2026-12-31T09:20:00+09:00"
+      "createdAt": "2026-06-05T07:55:57.839Z"
     }
   ],
   "comments": [
-    {
-      "id": "comment-001",
-      "newsId": "news-001",
-      "userId": "user-kongkong",
-      "parentId": null,
-      "pollOptionId": "poll-option-001",
-      "content": "저는 이 방향이 더 현실적이라고 봅니다.",
-      "likeCount": 12,
-      "dislikeCount": 1,
-      "replyCount": 1,
-      "createdAt": "2026-12-31T09:30:00+09:00",
-      "updatedAt": "2026-12-31T09:30:00+09:00"
-    },
     {
       "id": "comment-002",
       "newsId": "news-001",
@@ -397,30 +438,9 @@
       "replyCount": 0,
       "createdAt": "2026-12-31T09:35:00+09:00",
       "updatedAt": "2026-12-31T09:35:00+09:00"
-    },
-    {
-      "id": "comment-003",
-      "newsId": "news-001",
-      "userId": "user-kongkong",
-      "parentId": "comment-002",
-      "pollOptionId": null,
-      "content": "동의합니다. 세부 기준도 같이 봐야겠네요.",
-      "likeCount": 2,
-      "dislikeCount": 0,
-      "replyCount": 0,
-      "createdAt": "2026-12-31T09:40:00+09:00",
-      "updatedAt": "2026-12-31T09:40:00+09:00"
     }
   ],
-  "commentReactions": [
-    {
-      "id": "comment-reaction-001",
-      "commentId": "comment-002",
-      "userId": "user-kongkong",
-      "type": "like",
-      "createdAt": "2026-12-31T09:45:00+09:00"
-    }
-  ],
+  "commentReactions": [],
   "notificationSettings": [
     {
       "id": "notification-user-kongkong",
@@ -436,7 +456,12 @@
     {
       "id": "preference-user-kongkong",
       "userId": "user-kongkong",
-      "categoryIds": ["politics", "society", "local", "sports"],
+      "categoryIds": [
+        "politics",
+        "society",
+        "local",
+        "sports"
+      ],
       "pressIds": [],
       "ageGroupId": "youth",
       "updatedAt": "2026-12-31T09:00:00+09:00"
@@ -463,7 +488,10 @@
     {
       "id": "view-time-user-kongkong",
       "userId": "user-kongkong",
-      "optionIds": ["morning", "evening"],
+      "optionIds": [
+        "morning",
+        "evening"
+      ],
       "updatedAt": "2026-12-31T09:00:00+09:00"
     }
   ],

@@ -100,6 +100,16 @@ export type RecentNewsView = {
   viewedAt: string;
 };
 
+export type ArticleReactionType = "like" | "dislike" | "neutral";
+
+export type ArticleReaction = {
+  id: string;
+  newsId: string;
+  userId: string;
+  type: ArticleReactionType;
+  createdAt: string;
+};
+
 export type Comment = {
   id: string;
   newsId: string;
@@ -112,6 +122,16 @@ export type Comment = {
   replyCount: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CommentReactionType = "like" | "dislike";
+
+export type CommentReaction = {
+  id: string;
+  commentId: string;
+  userId: string;
+  type: CommentReactionType;
+  createdAt: string;
 };
 
 export type Poll = {
@@ -139,6 +159,7 @@ export type PollVote = {
 export type PollDetail = Poll & {
   options: PollOption[];
   currentUserVote?: PollVote;
+  votes: PollVote[];
 };
 
 export type NotificationSettings = {
@@ -184,6 +205,12 @@ export type UpdateCommentInput = {
   content: string;
 };
 
+export type AddCommentReactionInput = {
+  commentId: string;
+  userId: string;
+  type: CommentReactionType;
+};
+
 export type AddBookmarkInput = {
   userId: string;
   targetType: BookmarkTargetType;
@@ -195,10 +222,22 @@ export type AddRecentNewsViewInput = {
   newsId: string;
 };
 
+export type AddArticleReactionInput = {
+  newsId: string;
+  userId: string;
+  type: ArticleReactionType;
+};
+
 export type SubmitPollVoteInput = {
   pollId: string;
   pollOptionId: string;
   userId: string;
+};
+
+export type CreatePollInput = {
+  newsId: string;
+  title: string;
+  options: string[];
 };
 
 export type UpdateNotificationSettingsInput = Partial<

@@ -2,7 +2,10 @@ import { mockCurrentUserId } from "../mock-current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type {
+  AddArticleReactionInput,
   AddRecentNewsViewInput,
+  ArticleReaction,
+  ArticleReactionType,
   News,
   NewsCategory,
   NewsListItem,
@@ -36,6 +39,37 @@ export const newsApi = {
     }));
   },
   getNewsDetail,
+  async getNewsReaction(newsId: string, userId = mockCurrentUserId) {
+    const reactions = await apiClient.get<ArticleReaction[]>("/articleReactions", {
+      newsId,
+      userId,
+    });
+
+    return reactions[0] ?? null;
+  },
+  getNewsReactions(newsId: string) {
+    return apiClient.get<ArticleReaction[]>("/articleReactions", {
+      newsId,
+    });
+  },
+  addNewsReaction(input: AddArticleReactionInput) {
+    return apiClient.post<ArticleReaction, ArticleReaction>("/articleReactions", {
+      id: createMockId("article-reaction"),
+      newsId: input.newsId,
+      userId: input.userId,
+      type: input.type,
+      createdAt: createTimestamp(),
+    });
+  },
+  updateNewsReaction(reactionId: string, type: ArticleReactionType) {
+    return apiClient.patch<ArticleReaction, Pick<ArticleReaction, "type">>(
+      `/articleReactions/${reactionId}`,
+      { type },
+    );
+  },
+  removeNewsReaction(reactionId: string) {
+    return apiClient.delete(`/articleReactions/${reactionId}`);
+  },
   async increaseNewsViewCount(newsId: string) {
     const news = await getNewsDetail(newsId);
 
@@ -50,12 +84,26 @@ export const newsApi = {
       _order: "desc",
     });
   },
-  addRecentNewsView(input: AddRecentNewsViewInput) {
+  async addRecentNewsView(input: AddRecentNewsViewInput) {
+    const existingViews = await apiClient.get<RecentNewsView[]>("/recentNewsViews", {
+      newsId: input.newsId,
+      userId: input.userId,
+    });
+    const viewedAt = createTimestamp();
+    const existingView = existingViews[0];
+
+    if (existingView) {
+      return apiClient.patch<RecentNewsView, Pick<RecentNewsView, "viewedAt">>(
+        `/recentNewsViews/${existingView.id}`,
+        { viewedAt },
+      );
+    }
+
     return apiClient.post<RecentNewsView, RecentNewsView>("/recentNewsViews", {
       id: createMockId("recent"),
       userId: input.userId,
       newsId: input.newsId,
-      viewedAt: createTimestamp(),
+      viewedAt,
     });
   },
 };

@@ -3505,6 +3505,14 @@
         width: 100%;
     }
 
+    .text_myVoteQuestion {
+        display: block;
+        color: var(--color-label-strong);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-24);
+    }
+
     .wrapper_myCommentItem {
         width: 100%;
         min-width: 0;
@@ -5389,16 +5397,19 @@
         color: var(--color-label-strong);
     }
 
-    .btn_articleReaction_like .newsroll_icon {
+    .wrapper_articleCardContent .btn_articleReaction_like,
+    .wrapper_articleCardContent .btn_articleReaction_like .newsroll_icon {
+        color: var(--color-red-50);
+    }
+
+    .wrapper_articleCardContent .btn_articleReaction_dislike,
+    .wrapper_articleCardContent .btn_articleReaction_dislike .newsroll_icon {
         color: var(--color-blue-50);
     }
 
-    .btn_articleReaction_dislike .newsroll_icon {
-        color: var(--color-orange-50);
-    }
-
-    .btn_articleReaction_neutral .newsroll_icon {
-        color: var(--color-newsroll-purple-50);
+    .wrapper_articleCardContent .btn_articleReaction_neutral,
+    .wrapper_articleCardContent .btn_articleReaction_neutral .newsroll_icon {
+        color: var(--color-cool-neutral-50);
     }
 
     .wrapper_articleReaction > button[aria-pressed='true'] {
@@ -5477,13 +5488,14 @@
         line-height: var(--line-height-24);
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption {
+    .wrapper_articleGuide_binary .btn_articleGuideOption,
+    .btn_articleGuideOption_binary {
         min-height: 126px;
-        display: grid;
-        grid-template-rows: auto auto;
-        place-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        gap: var(--spacing-gap-vertical-12);
+        gap: var(--spacing-gap-vertical-8);
         padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-12);
         border: 0;
         border-radius: var(--radius-16);
@@ -5491,24 +5503,34 @@
         text-align: center;
     }
 
-    .bar_articleGuideResult {
+    .btn_articleGuideOption::before {
+        content: "";
         position: absolute;
         inset: 0 auto 0 0;
         z-index: 0;
+        display: none;
+        inline-size: var(--article-guide-result-size, 0%);
         border-radius: inherit;
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption:first-child .bar_articleGuideResult {
-        background: var(--color-blue-95);
+    .btn_articleGuideOption[data-result-visible='true']::before {
+        display: block;
+        background: var(--color-newsroll-purple-99);
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption:nth-child(2) .bar_articleGuideResult {
-        background: var(--color-red-95);
-    }
-
-    .wrapper_articleGuide_binary .bar_articleGuideResult {
+    .wrapper_articleGuide_binary .btn_articleGuideOption::before,
+    .btn_articleGuideOption_binary::before {
         inset: auto 0 0;
+        block-size: var(--article-guide-result-size, 0%);
         inline-size: 100%;
+    }
+
+    .btn_articleGuideOption[data-binary-tone='yes']::before {
+        background: var(--color-blue-80);
+    }
+
+    .btn_articleGuideOption[data-binary-tone='no']::before {
+        background: var(--color-red-80);
     }
 
     .text_articleGuideOption,
@@ -5518,20 +5540,25 @@
         z-index: 1;
     }
 
+    .text_articleGuideOption {
+        min-width: 0;
+        white-space: nowrap;
+    }
+
     .text_articleGuidePercent {
         color: var(--color-newsroll-purple-50);
-        font-size: var(--font-size-16);
+        font-size: var(--font-size-15);
         font-style: normal;
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-24);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption:first-child .text_articleGuidePercent {
-        color: var(--color-accent-foreground-blue);
+    .btn_articleGuideOption[data-binary-tone='yes'] .text_articleGuidePercent {
+        color: var(--color-blue-50);
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption:nth-child(2) .text_articleGuidePercent {
-        color: var(--color-status-negative);
+    .btn_articleGuideOption[data-binary-tone='no'] .text_articleGuidePercent {
+        color: var(--color-red-50);
     }
 
     .img_articleGuideBinaryIcon {
@@ -5542,21 +5569,17 @@
         object-fit: contain;
     }
 
-    .wrapper_articleGuide_binary .text_articleGuideOption {
-        color: var(--color-accent-foreground-blue);
+    .wrapper_articleGuide_binary .text_articleGuideOption,
+    .btn_articleGuideOption_binary .text_articleGuideOption {
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
     }
 
-    .wrapper_articleGuide_binary .btn_articleGuideOption:nth-child(2) .text_articleGuideOption {
-        color: var(--color-status-negative);
-    }
-
-    .wrapper_articleGuide_binary .text_articleGuidePercent {
-        align-self: end;
-        font-size: var(--font-size-20);
-        line-height: var(--line-height-24);
+    .wrapper_articleGuide_binary .text_articleGuidePercent,
+    .btn_articleGuideOption_binary .text_articleGuidePercent {
+        font-size: var(--font-size-15);
+        line-height: var(--line-height-20);
     }
 
     .btn_originalArticle {
@@ -5619,16 +5642,17 @@
         transform: rotate(180deg);
     }
 
-    .wrapper_articleGuide_stacked .bar_articleGuideResult {
+    .wrapper_articleGuide_stacked .btn_articleGuideOption::before,
+    .btn_articleGuideOption_stacked::before {
         inset: 0 auto 0 0;
         border-radius: var(--radius-8) 0 0 var(--radius-8);
         background: var(--color-cool-neutral-96);
     }
 
     .wrapper_articleGuide_stacked
-        .btn_articleGuideOption[aria-pressed='true']
-        .bar_articleGuideResult {
-        background: var(--color-newsroll-purple-50);
+        .btn_articleGuideOption[aria-pressed='true']::before,
+    .btn_articleGuideOption_stacked[aria-pressed='true']::before {
+        background: var(--color-newsroll-purple-80);
     }
 
     .text_articleGuideTotal {

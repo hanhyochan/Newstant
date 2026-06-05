@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "mock:api": "json-server --watch mock/db.json --port 4000",
+    "mock:api": "node mock/server.cjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

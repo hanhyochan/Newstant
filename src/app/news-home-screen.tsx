@@ -8,8 +8,10 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent,
+  type MouseEvent,
   type PointerEvent,
   type ReactNode,
   type TouchEvent,
@@ -43,20 +45,28 @@ import {
   NewsRollHeaderTop,
   NewsRollPagePanel,
   NewsRollSummaryHeroTop,
+  useDeferredDetailScroll,
   useDockedPanelScroll,
   useDetailScrollRestore,
   useInlineTextEdit,
 } from "@/design-system/templates";
 import {
+  bookmarkApi,
+  commentApi,
   infoApi,
   newsApi,
+  pollApi,
   welfareApi,
+  type ArticleReactionType,
+  type Comment,
+  type CommentReaction,
   type Faq,
   type InquiryType,
   type NewsListItem,
   type Notice,
   type WelfarePolicy,
 } from "./_newsroll/api";
+import { mockCurrentUserId } from "./_newsroll/mock-current-user";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
@@ -73,10 +83,14 @@ type GuideKind = "stacked" | "binary";
 type CommentScrollTarget = {
   bottomGap?: number;
   id: string;
+  stickToBottom?: boolean;
 };
+type CommentId = string;
 
 type ArticleDetailOpenOptions = {
-  commentId?: number;
+  commentId?: CommentId;
+  replyToCommentId?: CommentId;
+  scrollTarget?: "poll";
 };
 
 type OpenArticleDetail = (
@@ -105,6 +119,7 @@ type HomeHeaderControls = {
   isDetailOpen?: boolean;
   isTextLarge: boolean;
   mode: HomeViewMode;
+  newsCount: number;
   onCloseDetail?: () => void;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenBreakingNews: () => void;
@@ -139,9 +154,10 @@ type CommentItem = {
   author: string;
   body: string;
   choice: string;
+  createdAt?: string;
   date: string;
   dislikes: number;
-  id: number;
+  id: CommentId;
   isMine?: boolean;
   likes: number;
   replies: number;
@@ -220,6 +236,10 @@ function formatNewsDate(value: string) {
     month: "long",
     year: "numeric",
   }).format(date);
+}
+
+function formatHeroCount(count: number) {
+  return new Intl.NumberFormat("ko-KR").format(count);
 }
 
 function getHomeArticleGuideKind(index: number): GuideKind {
@@ -405,18 +425,47 @@ const guideOptions = [
   "정책 지원을 먼저 확대해야 한다.",
 ];
 
+const articleGuideQuestion =
+  "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?";
+
 const binaryGuideOptions = ["그렇다", "아니다"];
 
 const reactionItems: {
-  count: number;
   icon: IconName;
   label: string;
   value: ReactionValue;
 }[] = [
-  { count: 16, icon: "thumbUp", label: "좋아요", value: "like" },
-  { count: 12, icon: "thumbDown", label: "싫어요", value: "dislike" },
-  { count: 5, icon: "dots", label: "글쎄요", value: "neutral" },
+  { icon: "thumbUp", label: "좋아요", value: "like" },
+  { icon: "thumbDown", label: "싫어요", value: "dislike" },
+  { icon: "dots", label: "글쎄요", value: "neutral" },
 ];
+
+const emptyArticleReactionCounts: Record<ReactionValue, number> = {
+  dislike: 0,
+  like: 0,
+  neutral: 0,
+};
+
+const emptyCommentReactionCounts: Record<CommentReactionValue, number> = {
+  dislike: 0,
+  like: 0,
+};
+
+function getVisibleReactionCount(count: number) {
+  return count > 0 ? count : null;
+}
+
+function getArticleReactionCounts(
+  reactions: { type: ReactionValue }[],
+): Record<ReactionValue, number> {
+  return reactions.reduce<Record<ReactionValue, number>>(
+    (counts, reaction) => ({
+      ...counts,
+      [reaction.type]: counts[reaction.type] + 1,
+    }),
+    { ...emptyArticleReactionCounts },
+  );
+}
 
 const commentBodies = [
   "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트...",
@@ -429,28 +478,27 @@ const commentTemplates: Omit<CommentItem, "choice">[] = [
     author: "콩콩이",
     body: commentBodies[0],
     date: "2026.12.31 08:30",
-    dislikes: 16,
-    id: 1,
-    isMine: true,
-    likes: 16,
+    dislikes: 0,
+    id: "template-comment-1",
+    likes: 0,
     replies: 13,
   },
   {
     author: "콩콩이",
     body: commentBodies[1],
     date: "2026.12.31 08:30",
-    dislikes: 16,
-    id: 2,
-    likes: 16,
+    dislikes: 0,
+    id: "template-comment-2",
+    likes: 0,
     replies: 13,
   },
   {
     author: "콩콩이",
     body: commentBodies[2],
     date: "2026.12.31 08:30",
-    dislikes: 16,
-    id: 3,
-    likes: 16,
+    dislikes: 0,
+    id: "template-comment-3",
+    likes: 0,
     replies: 13,
   },
 ];
@@ -461,17 +509,17 @@ const commentReplyTemplates = [
     body: "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트~~",
     choice: "아모른직다",
     date: "2026.12.31 08:30",
-    dislikes: 16,
+    dislikes: 0,
     isMine: true,
-    likes: 16,
+    likes: 0,
   },
   {
     author: "콩콩이",
     body: "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트~~",
     choice: "아모른직다",
     date: "2026.12.31 08:30",
-    dislikes: 16,
-    likes: 16,
+    dislikes: 0,
+    likes: 0,
   },
 ];
 
@@ -495,6 +543,59 @@ const otherCommentActionOptions: { label: string; value: CommentAction }[] = [
   { label: "차단", value: "block" },
   { label: "숨김", value: "hide" },
 ];
+
+function formatCommentDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    day: "2-digit",
+    hour: "2-digit",
+    hour12: false,
+    minute: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
+}
+
+function getCommentAuthor(userId: string) {
+  return userId === mockCurrentUserId ? "콩콩이" : "홍길동";
+}
+
+function getCommentChoice(
+  comment: Comment,
+  guideChoices: string[],
+  pollOptionLabelById: Record<string, string>,
+) {
+  if (comment.pollOptionId && pollOptionLabelById[comment.pollOptionId]) {
+    return pollOptionLabelById[comment.pollOptionId];
+  }
+
+  return guideChoices[0] ?? "전체";
+}
+
+function getCommentItemFromApi(
+  comment: Comment,
+  guideChoices: string[],
+  pollOptionLabelById: Record<string, string>,
+  replyCount: number,
+): CommentItem {
+  return {
+    author: getCommentAuthor(comment.userId),
+    body: comment.content,
+    choice: getCommentChoice(comment, guideChoices, pollOptionLabelById),
+    createdAt: comment.createdAt,
+    date: formatCommentDate(comment.createdAt),
+    dislikes: comment.dislikeCount,
+    id: comment.id,
+    isMine: comment.userId === mockCurrentUserId,
+    likes: comment.likeCount,
+    replies: replyCount,
+  };
+}
 
 const allNewsAssets = {
   latest: articleImage,
@@ -700,6 +801,7 @@ function HomeMainHeader({
   isDetailOpen = false,
   isTextLarge,
   mode,
+  newsCount,
   onCloseDetail,
   onModeChange,
   onOpenBreakingNews,
@@ -759,7 +861,7 @@ function HomeMainHeader({
               </Button>
             </NewsRollDockedControls>
           ),
-          count: "11,343",
+          count: formatHeroCount(newsCount),
           greeting: (
             <>
               반갑습니다 <strong>콩콩이</strong>님!
@@ -777,6 +879,7 @@ function HomeShell({
   isDetailOpen = false,
   isTextLarge,
   mode,
+  newsCount,
   onCloseDetail,
   onModeChange,
   onOpenBreakingNews,
@@ -881,6 +984,7 @@ function HomeShell({
           isTextLarge={isTextLarge}
           dockedControlsMotionClassName={dockedControlsMotionClassName}
           mode={mode}
+          newsCount={newsCount}
           onCloseDetail={onCloseDetail}
           onModeChange={onModeChange}
           onOpenBreakingNews={onOpenBreakingNews}
@@ -896,10 +1000,12 @@ function HomeShell({
 
 function ReactionControls({
   className = "",
+  counts,
   reaction,
   onReactionChange,
 }: {
   className?: string;
+  counts: Record<ReactionValue, number>;
   reaction: Reaction;
   onReactionChange: (reaction: Reaction) => void;
 }) {
@@ -921,7 +1027,10 @@ function ReactionControls({
           variant="article"
         >
           <strong>
-            {item.label} {item.count}
+            {item.label}
+            {getVisibleReactionCount(counts[item.value]) == null
+              ? ""
+              : ` ${counts[item.value]}`}
           </strong>
         </ReactionButton>
       ))}
@@ -954,86 +1063,204 @@ function getVotePercentages(voteCounts: number[]) {
 }
 
 type ArticleGuideOptionButtonProps = {
-  isBinary?: boolean;
   isSelected: boolean;
   label: string;
   onClick?: () => void;
   percent?: number;
   showResult?: boolean;
+  variant?: GuideKind;
 };
 
 function ArticleGuideOptionButton({
-  isBinary = false,
   isSelected,
   label,
   onClick,
   percent = 0,
   showResult = false,
+  variant = "stacked",
 }: ArticleGuideOptionButtonProps) {
+  const isBinary = variant === "binary";
+  const binaryTone =
+    isBinary && label === binaryGuideOptions[0]
+      ? "yes"
+      : isBinary
+        ? "no"
+        : undefined;
   const fillStyle = showResult
-    ? isBinary
-      ? { blockSize: `${percent}%` }
-      : { inlineSize: `${percent}%` }
+    ? ({ "--article-guide-result-size": `${percent}%` } as CSSProperties)
     : undefined;
 
   return (
     <button
       aria-pressed={isSelected}
-      className="btn_articleGuideOption"
+      className={`btn_articleGuideOption btn_articleGuideOption_${variant}`}
+      data-binary-tone={binaryTone}
+      data-result-visible={showResult ? "true" : undefined}
       onClick={onClick}
+      style={fillStyle}
       type="button"
     >
-      {showResult ? (
-        <span
-          className="bar_articleGuideResult"
-          style={fillStyle}
-          aria-hidden="true"
-        />
-      ) : null}
-      {!showResult && isBinary ? (
+      {isBinary ? (
         <img
           alt=""
           className="img_articleGuideBinaryIcon"
           src={label === binaryGuideOptions[0] ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"}
         />
       ) : null}
-      {showResult && isBinary ? (
-        <strong className="text_articleGuidePercent">{percent}%</strong>
-      ) : null}
       <span className="text_articleGuideOption">{label}</span>
-      {showResult && !isBinary ? (
+      {showResult ? (
         <strong className="text_articleGuidePercent">{percent}%</strong>
       ) : null}
     </button>
   );
 }
 
-function ArticleGuideSection({ kind }: { kind: GuideKind }) {
+function ArticleGuideSection({
+  id,
+  kind,
+  newsId,
+}: {
+  id?: string;
+  kind: GuideKind;
+  newsId?: string;
+}) {
   const [selectedGuideOption, setSelectedGuideOption] = useState<number | null>(
     null,
   );
-  const options = kind === "binary" ? binaryGuideOptions : guideOptions;
+  const [currentPollVoteId, setCurrentPollVoteId] = useState<string | null>(null);
+  const fallbackOptions = useMemo(
+    () => (kind === "binary" ? binaryGuideOptions : guideOptions),
+    [kind],
+  );
+  const [pollDetail, setPollDetail] = useState<Awaited<ReturnType<typeof pollApi.getPoll>>>(null);
+  const options =
+    pollDetail?.options.map((option) => option.label) ?? fallbackOptions;
   const [voteCounts, setVoteCounts] = useState(() => options.map(() => 0));
   const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
   const percentages = getVotePercentages(voteCounts);
-  const hasVoted = totalVotes > 0;
+  const hasVoted = selectedGuideOption !== null;
 
-  function vote(index: number) {
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadPoll() {
+      if (!newsId) {
+        setPollDetail(null);
+        setSelectedGuideOption(null);
+        setCurrentPollVoteId(null);
+        setVoteCounts(fallbackOptions.map(() => 0));
+        return;
+      }
+
+      const nextPoll = await pollApi.getPoll(newsId);
+
+      if (ignore) {
+        return;
+      }
+
+      setPollDetail(nextPoll);
+      const nextOptions = nextPoll?.options ?? [];
+      const nextCounts =
+        nextOptions.length > 0
+          ? nextOptions.map(
+              (option) =>
+                nextPoll?.votes.filter((vote) => vote.pollOptionId === option.id)
+                  .length ?? 0,
+            )
+          : fallbackOptions.map(() => 0);
+      const currentVoteIndex = nextPoll?.currentUserVote
+        ? nextOptions.findIndex(
+            (option) => option.id === nextPoll.currentUserVote?.pollOptionId,
+          )
+        : -1;
+
+      setVoteCounts(nextCounts);
+      setSelectedGuideOption(currentVoteIndex >= 0 ? currentVoteIndex : null);
+      setCurrentPollVoteId(nextPoll?.currentUserVote?.id ?? null);
+    }
+
+    loadPoll().catch(() => {
+      if (!ignore) {
+        setPollDetail(null);
+        setSelectedGuideOption(null);
+        setCurrentPollVoteId(null);
+        setVoteCounts(fallbackOptions.map(() => 0));
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, [fallbackOptions, newsId]);
+
+  async function vote(index: number) {
+    if (selectedGuideOption === index) {
+      setSelectedGuideOption(null);
+      setVoteCounts((currentCounts) =>
+        currentCounts.map((count, countIndex) =>
+          countIndex === index ? Math.max(0, count - 1) : count,
+        ),
+      );
+
+      if (currentPollVoteId) {
+        const voteId = currentPollVoteId;
+
+        setCurrentPollVoteId(null);
+        await pollApi.removePollVote(voteId);
+      }
+
+      return;
+    }
+
+    let nextPollDetail = pollDetail;
+    let option = nextPollDetail?.options[index];
+
+    const previousSelectedIndex = selectedGuideOption;
+
     setSelectedGuideOption(index);
     setVoteCounts((currentCounts) =>
       currentCounts.map((count, countIndex) =>
-        countIndex === index ? count + 1 : count,
+        countIndex === index
+          ? count + 1
+          : countIndex === previousSelectedIndex
+            ? Math.max(0, count - 1)
+            : count,
       ),
     );
+
+    if (!nextPollDetail && newsId) {
+      nextPollDetail = await pollApi.createPoll({
+        newsId,
+        options: fallbackOptions,
+        title: articleGuideQuestion,
+      });
+      option = nextPollDetail.options[index];
+      setPollDetail(nextPollDetail);
+    }
+
+    if (nextPollDetail && option) {
+      if (currentPollVoteId) {
+        await pollApi.updatePollVote(currentPollVoteId, option.id);
+        return;
+      }
+
+      const nextVote = await pollApi.submitPollVote({
+          pollId: nextPollDetail.id,
+          pollOptionId: option.id,
+          userId: mockCurrentUserId,
+        });
+      setCurrentPollVoteId(nextVote.id);
+    }
   }
 
   return (
     <section
       className={`wrapper_articleGuide wrapper_articleGuide_${kind}`}
+      id={id}
       aria-label="안내 문구"
     >
       <h2 className="text_articleGuide">
-        예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?
+        {articleGuideQuestion}
       </h2>
       <div className="wrapper_articleGuideOptions">
         {options.map((option, index) => {
@@ -1042,13 +1269,13 @@ function ArticleGuideSection({ kind }: { kind: GuideKind }) {
 
           return (
             <ArticleGuideOptionButton
-              isBinary={isBinary}
               isSelected={selectedGuideOption === index}
               key={option}
               label={option}
               onClick={() => vote(index)}
               percent={percent}
               showResult={hasVoted}
+              variant={kind}
             />
           );
         })}
@@ -1114,10 +1341,14 @@ function CommentReactionPanel({
   guideKind,
   id,
   initialCommentId,
+  initialReplyTargetId,
+  newsId,
 }: {
   guideKind: GuideKind;
   id?: string;
-  initialCommentId?: number;
+  initialCommentId?: CommentId;
+  initialReplyTargetId?: CommentId;
+  newsId?: string;
 }) {
   const guideChoices =
     guideKind === "binary" ? binaryGuideOptions : guideOptions;
@@ -1132,48 +1363,64 @@ function CommentReactionPanel({
     ],
     [guideChoices],
   );
-  const defaultComments = useMemo(
-    () =>
-      commentTemplates.map((comment, index) => ({
-        ...comment,
-        choice: guideChoices[index % guideChoices.length],
-      })),
-    [guideChoices],
-  );
   const [activeChoice, setActiveChoice] = useState(commentTabs[0].id);
   const [composerDraft, setComposerDraft] = useState("");
   const [composerMode, setComposerMode] = useState<"comment" | "reply">(
     "comment",
   );
   const [commentReactions, setCommentReactions] = useState<
-    Record<number, CommentReactionValue | null>
+    Record<CommentId, CommentReactionValue | null>
   >({});
-  const [deletedCommentIds, setDeletedCommentIds] = useState<number[]>([]);
+  const [commentReactionRows, setCommentReactionRows] = useState<
+    Record<CommentId, CommentReaction>
+  >({});
+  const [commentReactionCounts, setCommentReactionCounts] = useState<
+    Record<CommentId, Record<CommentReactionValue, number>>
+  >({});
+  const [apiComments, setApiComments] = useState<Comment[]>([]);
+  const [pollOptionLabelById, setPollOptionLabelById] = useState<Record<string, string>>({});
+  const [deletedCommentIds, setDeletedCommentIds] = useState<CommentId[]>([]);
   const [deletedReplyIds, setDeletedReplyIds] = useState<string[]>([]);
-  const [expandedReplyId, setExpandedReplyId] = useState<number | null>(
+  const [expandedReplyId, setExpandedReplyId] = useState<CommentId | null>(
     initialCommentId ?? null,
   );
   const [isComposerVisible, setIsComposerVisible] = useState(false);
   const [myCommentsOnly, setMyCommentsOnly] = useState(false);
   const [isCommentSortOpen, setIsCommentSortOpen] = useState(false);
-  const [openCommentActionId, setOpenCommentActionId] = useState<number | null>(
-    null,
-  );
+  const [openCommentActionId, setOpenCommentActionId] =
+    useState<CommentId | null>(null);
   const [openReplyActionId, setOpenReplyActionId] = useState<string | null>(
     null,
   );
   const [replyTargetCommentId, setReplyTargetCommentId] = useState<
-    number | null
+    CommentId | null
   >(null);
   const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
-  const [userComments, setUserComments] = useState<CommentItem[]>([]);
-  const [userRepliesByCommentId, setUserRepliesByCommentId] = useState<
-    Record<number, CommentReplyItem[]>
-  >({});
   const [pendingScrollTarget, setPendingScrollTarget] =
     useState<CommentScrollTarget | null>(null);
-  const commentEdit = useInlineTextEdit<number>();
+  const commentEdit = useInlineTextEdit<CommentId>();
   const replyEdit = useInlineTextEdit<string>();
+  const initialCommentTargetId =
+    initialReplyTargetId != null
+      ? `${panelId}-reply-list-${initialReplyTargetId}`
+      : initialCommentId != null
+        ? `${panelId}-comment-${initialCommentId}`
+        : null;
+  const prepareInitialCommentScroll = useCallback(() => {
+    const targetCommentId = initialReplyTargetId ?? initialCommentId;
+
+    if (targetCommentId == null) {
+      return;
+    }
+
+    setExpandedReplyId(targetCommentId);
+    setIsComposerVisible(true);
+
+    if (initialReplyTargetId != null) {
+      setComposerMode("reply");
+      setReplyTargetCommentId(initialReplyTargetId);
+    }
+  }, [initialCommentId, initialReplyTargetId]);
   const deletedCommentIdSet = useMemo(
     () => new Set(deletedCommentIds),
     [deletedCommentIds],
@@ -1182,9 +1429,31 @@ function CommentReactionPanel({
     () => new Set(deletedReplyIds),
     [deletedReplyIds],
   );
+  const commentsByParentId = useMemo(() => {
+    const groups: Record<string, Comment[]> = {};
+
+    apiComments.forEach((comment) => {
+      if (!comment.parentId) {
+        return;
+      }
+
+      groups[comment.parentId] = [...(groups[comment.parentId] ?? []), comment];
+    });
+
+    return groups;
+  }, [apiComments]);
   const allComments = useMemo(
     () =>
-      [...defaultComments, ...userComments]
+      apiComments
+        .filter((comment) => !comment.parentId)
+        .map((comment) =>
+          getCommentItemFromApi(
+            comment,
+            guideChoices,
+            pollOptionLabelById,
+            commentsByParentId[comment.id]?.length ?? 0,
+          ),
+        )
         .map((comment) => {
           const editedBody = commentEdit.getEditedValue(comment.id);
 
@@ -1192,25 +1461,25 @@ function CommentReactionPanel({
         })
         .filter((comment) => !deletedCommentIdSet.has(comment.id)),
     [
+      apiComments,
       commentEdit.editedValues,
-      defaultComments,
+      commentsByParentId,
       deletedCommentIdSet,
-      userComments,
+      guideChoices,
+      pollOptionLabelById,
     ],
   );
-  const getCommentReactionCounts = (comment: CommentItem) => {
-    const selectedReaction = commentReactions[comment.id] ?? null;
+  const getCommentReactionCounts = (comment: { id: string }) => {
+    const counts = commentReactionCounts[comment.id] ?? emptyCommentReactionCounts;
 
     return {
-      dislikes: comment.dislikes + (selectedReaction === "dislike" ? 1 : 0),
-      likes: comment.likes + (selectedReaction === "like" ? 1 : 0),
+      dislikes: counts.dislike,
+      likes: counts.like,
     };
   };
   const getCommentPopularity = (comment: CommentItem) => {
     const { likes } = getCommentReactionCounts(comment);
-    const userReplyCount = userRepliesByCommentId[comment.id]?.length ?? 0;
-
-    return likes + comment.replies + userReplyCount;
+    return likes + comment.replies;
   };
   const visibleComments = useMemo(
     () =>
@@ -1221,20 +1490,24 @@ function CommentReactionPanel({
         )
         .sort((a, b) => {
           if (sortOrder === "latest") {
-            return b.id - a.id;
+            return (
+              new Date(b.createdAt ?? 0).getTime() -
+              new Date(a.createdAt ?? 0).getTime()
+            );
           }
 
           return (
-            getCommentPopularity(b) - getCommentPopularity(a) || b.id - a.id
+            getCommentPopularity(b) - getCommentPopularity(a) ||
+            new Date(b.createdAt ?? 0).getTime() -
+              new Date(a.createdAt ?? 0).getTime()
           );
         }),
     [
       activeChoice,
       allComments,
-      commentReactions,
+      commentReactionCounts,
       myCommentsOnly,
       sortOrder,
-      userRepliesByCommentId,
     ],
   );
 
@@ -1266,7 +1539,7 @@ function CommentReactionPanel({
     );
 
     if (!(articleScroller instanceof HTMLElement) || !target) {
-      return;
+      return false;
     }
 
     const scrollerRect = articleScroller.getBoundingClientRect();
@@ -1285,6 +1558,22 @@ function CommentReactionPanel({
     );
 
     scrollArticleTo(articleScroller, nextScrollTop);
+    return true;
+  }
+
+  function scrollArticleToBottom() {
+    const articleScroller = panelRef.current?.closest(
+      ".wrapper_articleCardContent",
+    );
+
+    if (!(articleScroller instanceof HTMLElement)) {
+      return;
+    }
+
+    scrollArticleTo(
+      articleScroller,
+      Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight),
+    );
   }
 
   function scrollPanelTopToReadingPosition() {
@@ -1307,6 +1596,73 @@ function CommentReactionPanel({
     scrollArticleTo(articleScroller, nextScrollTop);
     setIsComposerVisible(true);
   }
+
+  const reloadComments = useCallback(async () => {
+    if (!newsId) {
+      setApiComments([]);
+      setCommentReactions({});
+      setCommentReactionRows({});
+      setCommentReactionCounts({});
+      setPollOptionLabelById({});
+      return;
+    }
+
+    const [nextComments, userReactions, allReactions, pollDetail] = await Promise.all([
+      commentApi.getCommentsByNewsId(newsId),
+      commentApi.getCommentReactionsByUserId(mockCurrentUserId),
+      commentApi.getCommentReactions(),
+      pollApi.getPoll(newsId),
+    ]);
+    const commentIdSet = new Set(nextComments.map((comment) => comment.id));
+    const reactionRows = Object.fromEntries(
+      userReactions
+        .filter((reaction) => commentIdSet.has(reaction.commentId))
+        .map((reaction) => [reaction.commentId, reaction]),
+    );
+    const reactionCounts = allReactions
+      .filter((reaction) => commentIdSet.has(reaction.commentId))
+      .reduce<Record<CommentId, Record<CommentReactionValue, number>>>(
+        (counts, reaction) => {
+          const currentCounts = counts[reaction.commentId] ?? {
+            ...emptyCommentReactionCounts,
+          };
+
+          counts[reaction.commentId] = {
+            ...currentCounts,
+            [reaction.type]: currentCounts[reaction.type] + 1,
+          };
+
+          return counts;
+        },
+        {},
+      );
+    const reactionValues = Object.fromEntries(
+      Object.entries(reactionRows).map(([commentId, reaction]) => [
+        commentId,
+        reaction.type,
+      ]),
+    );
+
+    setApiComments(nextComments);
+    setCommentReactionRows(reactionRows);
+    setCommentReactionCounts(reactionCounts);
+    setCommentReactions(reactionValues);
+    setPollOptionLabelById(
+      Object.fromEntries(
+        pollDetail?.options.map((option) => [option.id, option.label]) ?? [],
+      ),
+    );
+  }, [newsId]);
+
+  useEffect(() => {
+    reloadComments().catch(() => {
+      setApiComments([]);
+      setCommentReactions({});
+      setCommentReactionRows({});
+      setCommentReactionCounts({});
+      setPollOptionLabelById({});
+    });
+  }, [reloadComments]);
 
   useEffect(() => {
     function closeCommentDropdowns(event: globalThis.PointerEvent) {
@@ -1412,29 +1768,27 @@ function CommentReactionPanel({
     };
   }, []);
 
-  useEffect(() => {
-    const panel = panelRef.current;
+  useDeferredDetailScroll({
+    bottomGap: 80,
+    delayMs: commentScrollDelayMs,
+    enabled: initialCommentTargetId != null,
+    onBeforeScroll: prepareInitialCommentScroll,
+    resetKey: `${newsId ?? ""}:${initialCommentTargetId ?? ""}`,
+    targetId: initialCommentTargetId,
+    watch: [apiComments.length, expandedReplyId],
+  });
 
-    if (!panel) {
+  useEffect(() => {
+    if (initialCommentTargetId != null) {
       return;
     }
 
     const timeout = window.setTimeout(() => {
-      if (initialCommentId != null) {
-        setExpandedReplyId(initialCommentId);
-        setIsComposerVisible(true);
-        scrollElementBottomIntoView(
-          `${panelId}-comment-${initialCommentId}`,
-          80,
-        );
-        return;
-      }
-
       scrollPanelTopToReadingPosition();
     }, commentScrollDelayMs);
 
     return () => window.clearTimeout(timeout);
-  }, [initialCommentId, panelId]);
+  }, [initialCommentTargetId]);
 
   useEffect(() => {
     if (isComposerVisible) {
@@ -1454,10 +1808,14 @@ function CommentReactionPanel({
     }
 
     const timeout = window.setTimeout(() => {
-      scrollElementBottomIntoView(
-        pendingScrollTarget.id,
-        pendingScrollTarget.bottomGap,
-      );
+      if (pendingScrollTarget.stickToBottom) {
+        scrollArticleToBottom();
+      } else {
+        scrollElementBottomIntoView(
+          pendingScrollTarget.id,
+          pendingScrollTarget.bottomGap,
+        );
+      }
       setPendingScrollTarget(null);
     }, commentScrollDelayMs);
 
@@ -1472,7 +1830,7 @@ function CommentReactionPanel({
     setReplyTargetCommentId(null);
   }
 
-  function startEditComment(commentId: number) {
+  function startEditComment(commentId: CommentId) {
     const targetComment = allComments.find(
       (comment) => comment.id === commentId && comment.isMine,
     );
@@ -1492,8 +1850,17 @@ function CommentReactionPanel({
     commentEdit.cancelEdit();
   }
 
-  function saveEditedComment() {
+  async function saveEditedComment() {
+    const commentId = commentEdit.editingId;
+    const content = commentEdit.draft.trim();
+
+    if (!commentId || !content) {
+      return;
+    }
+
+    await commentApi.updateComment(commentId, { content });
     commentEdit.saveEdit();
+    await reloadComments();
   }
 
   function startEditReply(reply: CommentReplyItem, value: string) {
@@ -1511,11 +1878,20 @@ function CommentReactionPanel({
     replyEdit.cancelEdit();
   }
 
-  function saveEditedReply() {
+  async function saveEditedReply() {
+    const replyId = replyEdit.editingId;
+    const content = replyEdit.draft.trim();
+
+    if (!replyId || !content) {
+      return;
+    }
+
+    await commentApi.updateComment(replyId, { content });
     replyEdit.saveEdit();
+    await reloadComments();
   }
 
-  function startReplyComposer(commentId: number) {
+  function startReplyComposer(commentId: CommentId) {
     if (!isComposerVisible) {
       return;
     }
@@ -1528,7 +1904,7 @@ function CommentReactionPanel({
     setComposerDraft("");
   }
 
-  function toggleReplyList(commentId: number) {
+  function toggleReplyList(commentId: CommentId) {
     const isClosing = expandedReplyId === commentId;
 
     if (!isClosing) {
@@ -1542,10 +1918,10 @@ function CommentReactionPanel({
     }
   }
 
-  function submitComposer() {
+  async function submitComposer() {
     const body = composerDraft.trim();
 
-    if (!body) {
+    if (!body || !newsId) {
       return;
     }
 
@@ -1559,71 +1935,129 @@ function CommentReactionPanel({
         return;
       }
 
-      const reply: CommentReplyItem = {
-        author: "나",
-        body,
-        choice: activeChoice === "all" ? targetComment.choice : activeChoice,
-        date: "방금 전",
-        dislikes: 0,
-        id: `user-${Date.now()}`,
-        isMine: true,
-        likes: 0,
-      };
+      const createdReply = await commentApi.createComment({
+        content: body,
+        newsId,
+        parentId: targetComment.id,
+        userId: mockCurrentUserId,
+      });
 
       setPendingScrollTarget({
         bottomGap: 0,
-        id: `${panelId}-reply-${reply.id}`,
+        id: `${panelId}-reply-${createdReply.id}`,
+        stickToBottom: true,
       });
-      setUserRepliesByCommentId((currentReplies) => ({
-        ...currentReplies,
-        [targetComment.id]: [
-          ...(currentReplies[targetComment.id] ?? []),
-          reply,
-        ],
-      }));
       setExpandedReplyId(targetComment.id);
       resetComposer();
+      await reloadComments();
       return;
     }
 
-    const commentId = Date.now();
+    const selectedPollOptionId = Object.entries(pollOptionLabelById).find(
+      ([, label]) => label === activeChoice,
+    )?.[0];
+    const createdComment = await commentApi.createComment({
+      content: body,
+      newsId,
+      pollOptionId: selectedPollOptionId ?? null,
+      userId: mockCurrentUserId,
+    });
 
     setPendingScrollTarget({
       bottomGap: 0,
-      id: `${panelId}-comment-${commentId}`,
+      id: `${panelId}-comment-${createdComment.id}`,
+      stickToBottom: true,
     });
-    setUserComments((currentComments) => [
-      ...currentComments,
-      {
-        author: "나",
-        body,
-        choice: activeChoice === "all" ? guideChoices[0] : activeChoice,
-        date: "방금 전",
-        dislikes: 0,
-        id: commentId,
-        isMine: true,
-        likes: 0,
-        replies: 0,
-      },
-    ]);
     resetComposer();
+    await reloadComments();
   }
 
   function toggleCommentReaction(
-    commentId: number,
+    commentId: CommentId,
     reaction: CommentReactionValue,
   ) {
+    const targetComment = apiComments.find((comment) => comment.id === commentId);
+    const currentReaction = commentReactionRows[commentId] ?? null;
+
+    if (!targetComment) {
+      return;
+    }
+
+    const nextReaction = currentReaction?.type === reaction ? null : reaction;
+    const likeDelta =
+      (nextReaction === "like" ? 1 : 0) -
+      (currentReaction?.type === "like" ? 1 : 0);
+    const dislikeDelta =
+      (nextReaction === "dislike" ? 1 : 0) -
+      (currentReaction?.type === "dislike" ? 1 : 0);
+    const currentReactionCounts = commentReactionCounts[commentId] ?? {
+      ...emptyCommentReactionCounts,
+    };
+    const nextLikeCount = Math.max(
+      0,
+      currentReactionCounts.like + likeDelta,
+    );
+    const nextDislikeCount = Math.max(
+      0,
+      currentReactionCounts.dislike + dislikeDelta,
+    );
+
     setCommentReactions((currentReactions) => ({
       ...currentReactions,
-      [commentId]: currentReactions[commentId] === reaction ? null : reaction,
+      [commentId]: nextReaction,
     }));
+    setCommentReactionCounts((currentCounts) => {
+      const currentCommentCounts = currentCounts[commentId] ?? {
+        ...emptyCommentReactionCounts,
+      };
+
+      return {
+        ...currentCounts,
+        [commentId]: {
+          dislike: Math.max(0, currentCommentCounts.dislike + dislikeDelta),
+          like: Math.max(0, currentCommentCounts.like + likeDelta),
+        },
+      };
+    });
+    setApiComments((currentComments) =>
+      currentComments.map((comment) =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              dislikeCount: Math.max(0, comment.dislikeCount + dislikeDelta),
+              likeCount: Math.max(0, comment.likeCount + likeDelta),
+            }
+          : comment,
+      ),
+    );
+
+    void (async () => {
+      if (!nextReaction && currentReaction) {
+        await commentApi.removeCommentReaction(currentReaction.id);
+      } else if (nextReaction && currentReaction) {
+        await commentApi.updateCommentReaction(currentReaction.id, nextReaction);
+      } else if (nextReaction) {
+        await commentApi.addCommentReaction({
+          commentId,
+          type: nextReaction,
+          userId: mockCurrentUserId,
+        });
+      }
+
+      await commentApi.updateCommentReactionCounts(commentId, {
+        dislikeCount: nextDislikeCount,
+        likeCount: nextLikeCount,
+      });
+      await reloadComments();
+    })();
   }
 
-  function handleCommentAction(commentId: number, action: CommentAction) {
+  function handleCommentAction(commentId: CommentId, action: CommentAction) {
     setOpenCommentActionId(null);
     setOpenReplyActionId(null);
 
     if (action === "delete") {
+      void commentApi.deleteComment(commentId).then(reloadComments);
       setDeletedCommentIds((currentIds) =>
         currentIds.includes(commentId)
           ? currentIds
@@ -1654,6 +2088,7 @@ function CommentReactionPanel({
     setOpenReplyActionId(null);
 
     if (action === "delete") {
+      void commentApi.deleteComment(reply.id).then(reloadComments);
       setDeletedReplyIds((currentIds) =>
         currentIds.includes(reply.id) ? currentIds : [...currentIds, reply.id],
       );
@@ -1680,7 +2115,10 @@ function CommentReactionPanel({
             aria-pressed={myCommentsOnly}
             className="btn_commentMineFilter"
             classNameOnly
-            onClick={() => setMyCommentsOnly((current) => !current)}
+            onClick={() => {
+              setMyCommentsOnly((current) => !current);
+              setActiveChoice(commentTabs[0].id);
+            }}
             type="button"
           >
             나의 댓글
@@ -1733,19 +2171,22 @@ function CommentReactionPanel({
                   const isReplyListOpen = expandedReplyId === comment.id;
                   const isEditingComment =
                     commentEdit.editingId === comment.id;
-                  const templateReplies: CommentReplyItem[] = Array.from(
-                    { length: Math.min(comment.replies, 3) },
-                    (_, replyIndex) => ({
-                      ...commentReplyTemplates[
-                        replyIndex % commentReplyTemplates.length
-                      ],
-                      id: `${comment.id}-${replyIndex}`,
-                    }),
-                  ).filter((reply) => !deletedReplyIdSet.has(reply.id));
-                  const userReplies = (
-                    userRepliesByCommentId[comment.id] ?? []
-                  ).filter((reply) => !deletedReplyIdSet.has(reply.id));
-                  const commentReplies = [...templateReplies, ...userReplies];
+                  const commentReplies = (commentsByParentId[comment.id] ?? [])
+                    .map((reply) => ({
+                      author: getCommentAuthor(reply.userId),
+                      body: reply.content,
+                      choice: getCommentChoice(
+                        reply,
+                        guideChoices,
+                        pollOptionLabelById,
+                      ),
+                      date: formatCommentDate(reply.createdAt),
+                      dislikes: reply.dislikeCount,
+                      id: reply.id,
+                      isMine: reply.userId === mockCurrentUserId,
+                      likes: reply.likeCount,
+                    }))
+                    .filter((reply) => !deletedReplyIdSet.has(reply.id));
 
                   return (
                     <Fragment key={comment.id}>
@@ -1845,7 +2286,7 @@ function CommentReactionPanel({
                               tone="like"
                               variant="comment"
                             >
-                              {likeCount}
+                              {getVisibleReactionCount(likeCount)}
                             </ReactionButton>
                             <ReactionButton
                               aria-label="댓글 싫어요"
@@ -1857,7 +2298,7 @@ function CommentReactionPanel({
                               tone="dislike"
                               variant="comment"
                             >
-                              {dislikeCount}
+                              {getVisibleReactionCount(dislikeCount)}
                             </ReactionButton>
                           </span>
                         </footer>
@@ -1892,6 +2333,12 @@ function CommentReactionPanel({
                               const replyBody =
                                 replyEdit.getEditedValue(reply.id) ??
                                 reply.body;
+                              const selectedReplyReaction =
+                                commentReactions[reply.id] ?? null;
+                              const {
+                                dislikes: replyDislikeCount,
+                                likes: replyLikeCount,
+                              } = getCommentReactionCounts(reply);
 
                               return (
                                 <Fragment key={reply.id}>
@@ -1977,21 +2424,34 @@ function CommentReactionPanel({
                                       <span>
                                         <ReactionButton
                                           aria-label="대댓글 좋아요"
-                                          disabled={!isReplyListOpen}
+                                          aria-pressed={
+                                            selectedReplyReaction === "like"
+                                          }
                                           icon="thumbUp"
+                                          onClick={() =>
+                                            toggleCommentReaction(reply.id, "like")
+                                          }
                                           tone="like"
                                           variant="comment"
                                         >
-                                          {reply.likes}
+                                          {getVisibleReactionCount(replyLikeCount)}
                                         </ReactionButton>
                                         <ReactionButton
                                           aria-label="대댓글 싫어요"
-                                          disabled={!isReplyListOpen}
+                                          aria-pressed={
+                                            selectedReplyReaction === "dislike"
+                                          }
                                           icon="thumbDown"
+                                          onClick={() =>
+                                            toggleCommentReaction(
+                                              reply.id,
+                                              "dislike",
+                                            )
+                                          }
                                           tone="dislike"
                                           variant="comment"
                                         >
-                                          {reply.dislikes}
+                                          {getVisibleReactionCount(replyDislikeCount)}
                                         </ReactionButton>
                                       </span>
                                     </footer>
@@ -2058,22 +2518,37 @@ function HomeReelCard({
   headingLevel = "h2",
   index,
   initialCommentId,
+  initialReplyTargetId,
+  initialScrollTarget,
+  recordRecentOnView = true,
 }: {
   article: HomeArticle;
   framed?: boolean;
   headingLevel?: "h1" | "h2";
   index: number | string;
-  initialCommentId?: number;
+  initialCommentId?: CommentId;
+  initialReplyTargetId?: CommentId;
+  initialScrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
+  recordRecentOnView?: boolean;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState<string | null>(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(
-    initialCommentId != null,
+    initialCommentId != null || initialReplyTargetId != null,
   );
   const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
+  const [articleReactionId, setArticleReactionId] = useState<string | null>(null);
+  const [articleReactionCounts, setArticleReactionCounts] = useState<
+    Record<ReactionValue, number>
+  >({ ...emptyArticleReactionCounts });
+  const [visibleViewCount, setVisibleViewCount] = useState(article.viewCount);
+  const cardRef = useRef<HTMLElement>(null);
+  const hasTrackedViewRef = useRef(false);
   const numericIndex = typeof index === "number" ? index : 0;
   const commentPanelId = `home-comment-panel-${index}`;
   const articleContentId = `home-article-content-${index}`;
+  const articleGuideId = `home-article-guide-${index}`;
   const articleTitleId = `home-article-title-${index}`;
   const ArticleTitle = headingLevel;
 
@@ -2082,12 +2557,190 @@ function HomeReelCard({
   }
 
   useEffect(() => {
-    if (initialCommentId == null) {
+    let ignore = false;
+
+    async function loadUserArticleState() {
+      if (!article.id) {
+        setIsBookmarked(false);
+        setBookmarkId(null);
+        setReaction(null);
+        setArticleReactionId(null);
+        setArticleReactionCounts({ ...emptyArticleReactionCounts });
+        return;
+      }
+
+      const [bookmarks, nextReaction, nextReactions] = await Promise.all([
+        bookmarkApi.getBookmarks(mockCurrentUserId),
+        newsApi.getNewsReaction(article.id, mockCurrentUserId),
+        newsApi.getNewsReactions(article.id),
+      ]);
+      const bookmark = bookmarks.find(
+        (item) => item.targetType === "news" && item.targetId === article.id,
+      );
+
+      if (!ignore) {
+        setIsBookmarked(Boolean(bookmark));
+        setBookmarkId(bookmark?.id ?? null);
+        setReaction(nextReaction?.type ?? null);
+        setArticleReactionId(nextReaction?.id ?? null);
+        setArticleReactionCounts(getArticleReactionCounts(nextReactions));
+      }
+    }
+
+    loadUserArticleState().catch(() => {
+      if (!ignore) {
+        setIsBookmarked(false);
+        setBookmarkId(null);
+        setReaction(null);
+        setArticleReactionId(null);
+        setArticleReactionCounts({ ...emptyArticleReactionCounts });
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, [article.id]);
+
+  useEffect(() => {
+    hasTrackedViewRef.current = false;
+    setVisibleViewCount(article.viewCount);
+  }, [article.id, article.viewCount]);
+
+  useEffect(() => {
+    if (!article.id || hasTrackedViewRef.current) {
+      return;
+    }
+
+    function trackView() {
+      if (!article.id || hasTrackedViewRef.current) {
+        return;
+      }
+
+      hasTrackedViewRef.current = true;
+      const recentViewRequest = recordRecentOnView
+        ? newsApi.addRecentNewsView({
+            newsId: article.id,
+            userId: mockCurrentUserId,
+          })
+        : Promise.resolve(undefined);
+
+      Promise.all([newsApi.increaseNewsViewCount(article.id), recentViewRequest])
+        .then(([nextArticle]) => setVisibleViewCount(nextArticle.viewCount))
+        .catch(() => undefined);
+    }
+
+    if (!framed) {
+      trackView();
+      return;
+    }
+
+    const target = cardRef.current;
+
+    if (!target || typeof IntersectionObserver === "undefined") {
+      trackView();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.5)) {
+          trackView();
+          observer.disconnect();
+        }
+      },
+      { threshold: [0.5] },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [article.id, framed, recordRecentOnView]);
+
+  async function toggleBookmark() {
+    if (!article.id) {
+      return;
+    }
+
+    if (isBookmarked && bookmarkId) {
+      setIsBookmarked(false);
+      setBookmarkId(null);
+      await bookmarkApi.removeBookmark(bookmarkId);
+      return;
+    }
+
+    const bookmark = await bookmarkApi.addBookmark({
+      targetId: article.id,
+      targetType: "news",
+      userId: mockCurrentUserId,
+    });
+
+    setIsBookmarked(true);
+    setBookmarkId(bookmark.id);
+  }
+
+  async function toggleArticleReaction(nextReaction: Reaction) {
+    if (!article.id) {
+      return;
+    }
+
+    const previousReaction = reaction;
+
+    setReaction(nextReaction);
+    setArticleReactionCounts((currentCounts) => {
+      const nextCounts = { ...currentCounts };
+
+      if (previousReaction) {
+        nextCounts[previousReaction] = Math.max(0, nextCounts[previousReaction] - 1);
+      }
+      if (nextReaction) {
+        nextCounts[nextReaction] += 1;
+      }
+
+      return nextCounts;
+    });
+
+    if (nextReaction === null) {
+      if (articleReactionId) {
+        setArticleReactionId(null);
+        await newsApi.removeNewsReaction(articleReactionId);
+      }
+      return;
+    }
+
+    if (articleReactionId) {
+      await newsApi.updateNewsReaction(
+        articleReactionId,
+        nextReaction as ArticleReactionType,
+      );
+      return;
+    }
+
+    const createdReaction = await newsApi.addNewsReaction({
+      newsId: article.id,
+      type: nextReaction as ArticleReactionType,
+      userId: mockCurrentUserId,
+    });
+
+    setArticleReactionId(createdReaction.id);
+  }
+
+  useEffect(() => {
+    if (initialCommentId == null && initialReplyTargetId == null) {
       return;
     }
 
     setIsCommentPanelOpen(true);
-  }, [initialCommentId]);
+  }, [initialCommentId, initialReplyTargetId]);
+  useDeferredDetailScroll({
+    bottomGap: 80,
+    delayMs: commentScrollDelayMs,
+    enabled: initialScrollTarget === "poll",
+    resetKey: article.id ?? article.title,
+    targetId: initialScrollTarget === "poll" ? articleGuideId : null,
+  });
 
   const articleContent = (
     <div
@@ -2105,13 +2758,15 @@ function HomeReelCard({
         <HomeArticleMeta
           date={article.date}
           dateTime={article.dateTime}
-          viewCount={article.viewCount}
+          viewCount={visibleViewCount}
         />
       </div>
       <ArticleActionButtons
         isBookmarked={isBookmarked}
         isShared={isShared}
-        onBookmark={() => setIsBookmarked((current) => !current)}
+        onBookmark={() => {
+          void toggleBookmark();
+        }}
         onShare={() => setIsShared((current) => !current)}
       />
       <img alt={article.imageAlt} src={article.image} />
@@ -2146,9 +2801,19 @@ function HomeReelCard({
         기사 원문 보기
       </Button>
 
-      <ReactionControls reaction={reaction} onReactionChange={setReaction} />
+      <ReactionControls
+        counts={articleReactionCounts}
+        reaction={reaction}
+        onReactionChange={(nextReaction) => {
+          void toggleArticleReaction(nextReaction);
+        }}
+      />
 
-      <ArticleGuideSection kind={article.guideKind ?? "stacked"} />
+      <ArticleGuideSection
+        id={articleGuideId}
+        kind={article.guideKind ?? "stacked"}
+        newsId={article.id}
+      />
 
       <Button
         aria-controls={isCommentPanelOpen ? commentPanelId : undefined}
@@ -2167,6 +2832,8 @@ function HomeReelCard({
           guideKind={article.guideKind ?? "stacked"}
           id={commentPanelId}
           initialCommentId={initialCommentId}
+          initialReplyTargetId={initialReplyTargetId}
+          newsId={article.id}
         />
       ) : null}
     </div>
@@ -2177,7 +2844,11 @@ function HomeReelCard({
   }
 
   return (
-    <article aria-labelledby={articleTitleId} className="container_articleCard">
+    <article
+      aria-labelledby={articleTitleId}
+      className="container_articleCard"
+      ref={cardRef}
+    >
       {articleContent}
     </article>
   );
@@ -2187,12 +2858,16 @@ function ArticleDetailContent({
   article,
   backLabel,
   initialCommentId,
+  initialReplyTargetId,
+  initialScrollTarget,
   isLeaving = false,
   onBack,
 }: {
   article: HomeArticle;
   backLabel?: string;
-  initialCommentId?: number;
+  initialCommentId?: CommentId;
+  initialReplyTargetId?: CommentId;
+  initialScrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
   isLeaving?: boolean;
   onBack?: () => void;
 }) {
@@ -2209,6 +2884,8 @@ function ArticleDetailContent({
         framed={false}
         headingLevel="h1"
         initialCommentId={initialCommentId}
+        initialReplyTargetId={initialReplyTargetId}
+        initialScrollTarget={initialScrollTarget}
         index="detail"
       />
     </NewsRollArticleDetailPanel>
@@ -2253,6 +2930,7 @@ function HomeView({
   const [articles, setArticles] = useState<HomeArticle[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
+  const homeReelsRecentKeyRef = useRef("");
   const closeHomeDetailImmediately = useCallback(() => {
     setDetailOpen(false);
   }, []);
@@ -2297,6 +2975,31 @@ function HomeView({
     };
   }, []);
 
+  useEffect(() => {
+    if (homeViewMode !== "reels" || detailOpen || articles.length === 0) {
+      return;
+    }
+
+    const articleIds = articles
+      .map((article) => article.id)
+      .filter((id): id is string => Boolean(id));
+    const recentKey = articleIds.join("|");
+
+    if (!recentKey || homeReelsRecentKeyRef.current === recentKey) {
+      return;
+    }
+
+    homeReelsRecentKeyRef.current = recentKey;
+    articleIds.forEach((newsId) => {
+      newsApi
+        .addRecentNewsView({
+          newsId,
+          userId: mockCurrentUserId,
+        })
+        .catch(() => undefined);
+    });
+  }, [articles, detailOpen, homeViewMode]);
+
   const hasArticles = articles.length > 0;
   const breakingTitle = articles[0]?.title ?? homeBreakingTitle;
 
@@ -2306,6 +3009,7 @@ function HomeView({
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
+      newsCount={articles.length}
       onCloseDetail={homeDetailExitMotion.closeWithMotion}
       onModeChange={(nextMode) => {
         setDetailOpen(false);
@@ -2343,6 +3047,7 @@ function HomeView({
                 article={article}
                 index={index}
                 key={article.id ?? `${article.title}-${index}`}
+                recordRecentOnView={false}
               />
             ))
           ) : (
@@ -3741,6 +4446,7 @@ function PolicyView({
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
   const [policyApiItems, setPolicyApiItems] = useState<PolicyItem[]>([]);
+  const [policyTotalCount, setPolicyTotalCount] = useState(0);
   const policyPanelContentRef = useRef<HTMLDivElement>(null);
   const policyListSectionRef = useRef<HTMLDivElement>(null);
   const policyItems = fillPolicyListItems(policyApiItems);
@@ -3776,10 +4482,14 @@ function PolicyView({
 
     async function loadPolicies() {
       const ageGroupId = policyAgeIdByLabel[activeAge] ?? "all";
-      const nextPolicies = await welfareApi.getWelfarePolicyList(ageGroupId);
+      const [nextPolicies, allPolicies] = await Promise.all([
+        welfareApi.getWelfarePolicyList(ageGroupId),
+        welfareApi.getWelfarePolicyList("all"),
+      ]);
 
       if (!ignore) {
         setPolicyApiItems(nextPolicies.map(getPolicyItemFromWelfarePolicy));
+        setPolicyTotalCount(allPolicies.length);
         setSelectedPolicyIndex(0);
       }
     }
@@ -3787,6 +4497,7 @@ function PolicyView({
     loadPolicies().catch(() => {
       if (!ignore) {
         setPolicyApiItems([]);
+        setPolicyTotalCount(0);
       }
     });
 
@@ -3881,7 +4592,7 @@ function PolicyView({
             ariaLabel: "맞춤 정책 요약",
             caption: "국가정책 정보가 있습니다.",
             className: "newsroll_policy_hero",
-            count: "11,343",
+            count: formatHeroCount(policyTotalCount),
             greeting: "콩콩이님을 위한",
             unit: "개",
           }}
@@ -3997,6 +4708,9 @@ const myRecentNews = Array.from({ length: 12 }, (_, index) => ({
       ? "용인 수지, 강남·분당 가격 동조화로..."
       : "용인 수지, 강남·분당 가격 동조화로...",
 }));
+type MyRecentSummaryItem = (typeof myRecentNews)[number] & {
+  article: HomeArticle;
+};
 const myRecentPreviewLimit = 10;
 
 const myCategoryGroups = [
@@ -4042,10 +4756,14 @@ type MyPageDetailView =
   | MySummaryView
   | null;
 
-const myBookmarkItems = allNewsRelayByCategory[allNewsRelayCategories[0]] ?? [];
 const mySummaryAllTabLabel = "전체";
 const mySummaryListCount = 5;
 const myVotePercents = [64, 48, 72, 57, 81];
+const myCommentTabs = [
+  { id: "all", label: "전체" },
+  { id: "comment", label: "댓글" },
+  { id: "reply", label: "대댓글" },
+] as const;
 
 function getUniqueValues<T extends string>(items: T[]) {
   return Array.from(new Set(items));
@@ -4075,11 +4793,16 @@ const myVoteItems = allNewsLatest.map((item, index) => ({
   article: createAllNewsArticle(item, item.category, index),
   category: item.category,
   headline: item,
+  isBinary: false,
   percent: myVotePercents[index % myVotePercents.length],
+  pollTitle: item.title,
   selectedOption: guideOptions[index % guideOptions.length],
   title: item.title,
 }));
 const myVoteCategoryTabs = getMySummaryCategoryTabs(myVoteItems);
+type MyBookmarkSummaryItem = AllNewsArticlePreview & { category: string };
+type MyVoteSummaryItem = (typeof myVoteItems)[number];
+type MyCommentKind = (typeof myCommentTabs)[number]["id"];
 const myCommentItems = Array.from({ length: mySummaryListCount }, (_, index) => {
   const press = allNewsPresses[index % allNewsPresses.length];
   const fallbackHeadlines = allNewsHeadlinesByPress[allNewsPresses[0]] ?? [];
@@ -4098,10 +4821,23 @@ const myCommentItems = Array.from({ length: mySummaryListCount }, (_, index) => 
       choice: guideOptions[index % guideOptions.length],
       replies: 3,
     },
+    commentKind: "comment" as const,
     headline: item,
+    targetCommentId: commentTemplate.id,
   };
 });
-const myCommentCategoryTabs = getMySummaryCategoryTabs(myCommentItems);
+type MyCommentSummaryItem = (typeof myCommentItems)[number] & {
+  commentKind: Exclude<MyCommentKind, "all">;
+  targetCommentId: CommentId;
+};
+
+function hasMultipleMySummaryCategories(items: { category: string }[]) {
+  return getUniqueValues(items.map((item) => item.category)).length > 1;
+}
+
+function hasMultipleMyCommentKinds(items: { commentKind: Exclude<MyCommentKind, "all"> }[]) {
+  return getUniqueValues(items.map((item) => item.commentKind)).length > 1;
+}
 
 type MySettingRowProps = {
   checked?: boolean;
@@ -4133,24 +4869,27 @@ function MySettingRow({
 }
 
 function createMyRecentArticle(
-  item: (typeof myRecentNews)[number],
+  item: MyRecentSummaryItem,
   index: number,
 ): HomeArticle {
   const fallbackArticle = homeArticles[index % homeArticles.length] ?? homeArticle;
 
   return {
     ...fallbackArticle,
+    ...item.article,
     date: item.time,
     image: item.image,
-    imageAlt: fallbackArticle.imageAlt,
+    imageAlt: item.article.imageAlt,
     title: item.title,
   };
 }
 
 function MyRecentDetailPage({
+  items,
   isLeaving = false,
   onOpenArticle,
 }: {
+  items: MyRecentSummaryItem[];
   isLeaving?: boolean;
   onOpenArticle: OpenArticleDetail;
 }) {
@@ -4162,7 +4901,7 @@ function MyRecentDetailPage({
       <SeparatedList
         dividerClassName="newsroll_all_itemDivider"
         getKey={(item, index) => `${item.title}-${index}`}
-        items={myRecentNews}
+        items={items}
         renderItem={(item, index) => (
           <AllNewsRelayItem
             featured={index === 0 || index === 5}
@@ -4176,29 +4915,54 @@ function MyRecentDetailPage({
 }
 
 function MyBookmarkDetailPage({
+  activeCategory,
+  items,
   isLeaving = false,
+  onCategoryChange,
   onOpenArticle,
+  showTabs,
+  tabs,
 }: {
+  activeCategory: string;
+  items: MyBookmarkSummaryItem[];
   isLeaving?: boolean;
+  onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
+  showTabs: boolean;
+  tabs: string[];
 }) {
-  const fallbackCategory = allNewsRelayCategories[0] ?? homeArticle.category;
+  const visibleBookmarkItems = getMySummaryItemsByCategory(
+    items,
+    activeCategory,
+  );
 
   return (
     <div
       className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">북마크</h2>
+      {showTabs ? (
+        <PillTabMenu
+          ariaLabel="북마크 뉴스 카테고리"
+          className="tab_myCategoryMenu"
+          items={tabs.map((category) => ({
+            id: category,
+            label: category,
+          }))}
+          onChange={onCategoryChange}
+          value={activeCategory}
+        />
+      ) : null}
       <SeparatedList
         dividerClassName="newsroll_all_itemDivider"
         getKey={(item, index) => `${item.title}-${index}`}
-        items={myBookmarkItems}
+        items={visibleBookmarkItems}
         renderItem={(item, index) => (
           <AllNewsRelayItem
             featured={index === 0 || index === 5}
             item={item}
             onClick={() =>
-              onOpenArticle(createAllNewsArticle(item, fallbackCategory, index))
+              onOpenArticle(createAllNewsArticle(item, item.category, index))
             }
           />
         )}
@@ -4209,17 +4973,23 @@ function MyBookmarkDetailPage({
 
 function MyVoteDetailPage({
   activeCategory,
+  items,
   isLeaving = false,
   onCategoryChange,
   onOpenArticle,
+  showTabs,
+  tabs,
 }: {
   activeCategory: string;
+  items: MyVoteSummaryItem[];
   isLeaving?: boolean;
   onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
+  showTabs: boolean;
+  tabs: string[];
 }) {
   const visibleVoteItems = getMySummaryItemsByCategory(
-    myVoteItems,
+    items,
     activeCategory,
   );
 
@@ -4228,11 +4998,11 @@ function MyVoteDetailPage({
       className={`container_myVotePage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">투표</h2>
-      {myVoteCategoryTabs.length > 1 ? (
+      {showTabs ? (
         <PillTabMenu
           ariaLabel="내가 참여한 투표 카테고리"
           className="tab_myCategoryMenu"
-          items={myVoteCategoryTabs.map((category) => ({
+          items={tabs.map((category) => ({
             id: category,
             label: category,
           }))}
@@ -4249,14 +5019,20 @@ function MyVoteDetailPage({
             <article className="wrapper_myVoteItem">
               <AllNewsHeadlineItem
                 item={item.headline}
-                onClick={() => onOpenArticle(item.article)}
+                onClick={() =>
+                  onOpenArticle(item.article, { scrollTarget: "poll" })
+                }
               />
+              <strong className="text_myVoteQuestion">{item.pollTitle}</strong>
               <ArticleGuideOptionButton
                 isSelected
                 label={item.selectedOption}
-                onClick={() => onOpenArticle(item.article)}
+                onClick={() =>
+                  onOpenArticle(item.article, { scrollTarget: "poll" })
+                }
                 percent={item.percent}
                 showResult
+                variant={item.isBinary ? "binary" : "stacked"}
               />
             </article>
           )}
@@ -4280,7 +5056,7 @@ function MyCommentCreatedDate({
   );
 }
 
-function MyCommentThread({
+function MyCommentPreviewThread({
   comment,
   instanceId,
   onOpenComment,
@@ -4289,9 +5065,6 @@ function MyCommentThread({
   instanceId: string;
   onOpenComment: () => void;
 }) {
-  const [isReplyListOpen, setIsReplyListOpen] = useState(false);
-  const [selectedReaction, setSelectedReaction] =
-    useState<CommentReactionValue | null>(null);
   const replyToggleId = `${instanceId}-reply-toggle-${comment.id}`;
   const replyListId = `${instanceId}-reply-list-${comment.id}`;
   const commentReplies: CommentReplyItem[] = Array.from(
@@ -4301,21 +5074,15 @@ function MyCommentThread({
       id: `${comment.id}-${replyIndex}`,
     }),
   );
-  const likeCount = comment.likes + (selectedReaction === "like" ? 1 : 0);
-  const dislikeCount =
-    comment.dislikes + (selectedReaction === "dislike" ? 1 : 0);
+  const likeCount = comment.likes;
+  const dislikeCount = comment.dislikes;
 
-  function toggleReaction(reaction: CommentReactionValue) {
-    setSelectedReaction((current) => (current === reaction ? null : reaction));
+  function openCommentFromControl(event: MouseEvent<HTMLElement>) {
+    event.stopPropagation();
+    onOpenComment();
   }
 
   function openCommentFromKeyboard(event: KeyboardEvent<HTMLElement>) {
-    const target = event.target;
-
-    if (target instanceof Element && target.closest("button")) {
-      return;
-    }
-
     if (event.key !== "Enter" && event.key !== " ") {
       return;
     }
@@ -4329,15 +5096,7 @@ function MyCommentThread({
       aria-label="댓글이 달린 기사 본문으로 이동"
       className="wrapper_commentItem wrapper_myPageCommentThread"
       id={`${instanceId}-comment-${comment.id}`}
-      onClick={(event) => {
-        const target = event.target;
-
-        if (target instanceof Element && target.closest("button")) {
-          return;
-        }
-
-        onOpenComment();
-      }}
+      onClick={onOpenComment}
       onKeyDown={openCommentFromKeyboard}
       tabIndex={0}
     >
@@ -4346,9 +5105,9 @@ function MyCommentThread({
       <footer>
         <button
           aria-controls={replyListId}
-          aria-expanded={isReplyListOpen}
+          aria-expanded={false}
           id={replyToggleId}
-          onClick={() => setIsReplyListOpen((current) => !current)}
+          onClick={openCommentFromControl}
           type="button"
         >
           대댓글 {commentReplies.length}
@@ -4356,30 +5115,30 @@ function MyCommentThread({
         <span>
           <ReactionButton
             aria-label="댓글 좋아요"
-            aria-pressed={selectedReaction === "like"}
+            aria-pressed={false}
             icon="thumbUp"
-            onClick={() => toggleReaction("like")}
+            onClick={openCommentFromControl}
             tone="like"
             variant="comment"
           >
-            {likeCount}
+            {getVisibleReactionCount(likeCount)}
           </ReactionButton>
           <ReactionButton
             aria-label="댓글 싫어요"
-            aria-pressed={selectedReaction === "dislike"}
+            aria-pressed={false}
             icon="thumbDown"
-            onClick={() => toggleReaction("dislike")}
+            onClick={openCommentFromControl}
             tone="dislike"
             variant="comment"
           >
-            {dislikeCount}
+            {getVisibleReactionCount(dislikeCount)}
           </ReactionButton>
         </span>
       </footer>
       <div
-        aria-hidden={!isReplyListOpen}
+        aria-hidden="true"
         aria-labelledby={replyToggleId}
-        className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
+        className="wrapper_commentReplies"
         id={replyListId}
         role="region"
       >
@@ -4389,7 +5148,7 @@ function MyCommentThread({
             aria-pressed={false}
             className="btn_originalArticle"
             classNameOnly
-            onClick={() => setIsReplyListOpen(true)}
+            onClick={openCommentFromControl}
             type="button"
           >
             대댓글 달기
@@ -4427,7 +5186,7 @@ function MyCommentThread({
                       tone="like"
                       variant="comment"
                     >
-                      {reply.likes}
+                      {getVisibleReactionCount(reply.likes)}
                     </ReactionButton>
                     <ReactionButton
                       aria-label="대댓글 싫어요"
@@ -4436,7 +5195,7 @@ function MyCommentThread({
                       tone="dislike"
                       variant="comment"
                     >
-                      {reply.dislikes}
+                      {getVisibleReactionCount(reply.dislikes)}
                     </ReactionButton>
                   </span>
                 </footer>
@@ -4454,35 +5213,45 @@ function MyCommentThread({
 
 function MyCommentDetailPage({
   activeCategory,
+  items,
   isLeaving = false,
   onCategoryChange,
   onOpenArticle,
+  showTabs,
+  tabs,
 }: {
   activeCategory: string;
+  items: MyCommentSummaryItem[];
   isLeaving?: boolean;
-  onCategoryChange: (category: string) => void;
+  onCategoryChange: (category: MyCommentKind) => void;
   onOpenArticle: OpenArticleDetail;
+  showTabs: boolean;
+  tabs: readonly { id: MyCommentKind; label: string }[];
 }) {
-  const visibleCommentItems = getMySummaryItemsByCategory(
-    myCommentItems,
-    activeCategory,
-  );
+  const activeCommentKind = myCommentTabs.some(
+    (tab) => tab.id === activeCategory,
+  )
+    ? (activeCategory as MyCommentKind)
+    : "all";
+  const visibleCommentItems =
+    activeCommentKind === "all"
+      ? items
+      : items.filter((item) => item.commentKind === activeCommentKind);
 
   return (
     <div
       className={`container_myCommentPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">댓글</h2>
-      {myCommentCategoryTabs.length > 1 ? (
+      {showTabs ? (
         <PillTabMenu
           ariaLabel="내 댓글 카테고리"
           className="tab_myCategoryMenu"
-          items={myCommentCategoryTabs.map((category) => ({
-            id: category,
-            label: category,
-          }))}
-          onChange={onCategoryChange}
-          value={activeCategory}
+          items={[...tabs]}
+          onChange={(nextCategory) =>
+            onCategoryChange(nextCategory as MyCommentKind)
+          }
+          value={activeCommentKind}
         />
       ) : null}
       <div className="wrapper_myCommentList">
@@ -4497,11 +5266,11 @@ function MyCommentDetailPage({
                 item={item.headline}
                 onClick={() => onOpenArticle(item.article)}
               />
-              <MyCommentThread
+              <MyCommentPreviewThread
                 comment={item.comment}
                 instanceId={`my-comment-detail-${index}`}
                 onOpenComment={() =>
-                  onOpenArticle(item.article, { commentId: item.comment.id })
+                  onOpenArticle(item.article, { commentId: item.targetCommentId })
                 }
               />
             </div>
@@ -4574,14 +5343,33 @@ function MyPageView({
     useState<MyPageDetailView>(null);
   const [myArticleDetail, setMyArticleDetail] = useState<{
     article: HomeArticle;
-    commentId?: number;
+    commentId?: CommentId;
+    replyToCommentId?: CommentId;
+    scrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
   } | null>(null);
   const [activeVoteCategory, setActiveVoteCategory] = useState(
     () => myVoteCategoryTabs[0] ?? "",
   );
-  const [activeCommentCategory, setActiveCommentCategory] = useState(
-    () => myCommentCategoryTabs[0] ?? "",
+  const [activeBookmarkCategory, setActiveBookmarkCategory] = useState(
+    () => mySummaryAllTabLabel,
   );
+  const [activeCommentCategory, setActiveCommentCategory] = useState<MyCommentKind>(
+    () => "all",
+  );
+  const [myDynamicCommentItems, setMyDynamicCommentItems] = useState<
+    MyCommentSummaryItem[]
+  >([]);
+  const [myDynamicBookmarkItems, setMyDynamicBookmarkItems] = useState<
+    MyBookmarkSummaryItem[]
+  >([]);
+  const [myDynamicVoteItems, setMyDynamicVoteItems] = useState<
+    MyVoteSummaryItem[]
+  >([]);
+  const [myDynamicRecentItems, setMyDynamicRecentItems] = useState<
+    MyRecentSummaryItem[]
+  >([]);
+  const [myBookmarkCount, setMyBookmarkCount] = useState(0);
+  const [myVoteCount, setMyVoteCount] = useState(0);
   const [isMyAlarmOn, setIsMyAlarmOn] = useState(false);
   const [selectedCategorySettings, setSelectedCategorySettings] = useState(
     () =>
@@ -4617,6 +5405,46 @@ function MyPageView({
   const isVoteOpen = activeDetailView === "vote";
   const isCommentOpen = activeDetailView === "comment";
   const isMyArticleDetailOpen = myArticleDetail !== null;
+  const dynamicCommentCategoryTabs = useMemo(
+    () => myCommentTabs,
+    [],
+  );
+  const dynamicBookmarkCategoryTabs = useMemo(
+    () => getMySummaryCategoryTabs(myDynamicBookmarkItems),
+    [myDynamicBookmarkItems],
+  );
+  const dynamicVoteCategoryTabs = useMemo(
+    () => getMySummaryCategoryTabs(myDynamicVoteItems),
+    [myDynamicVoteItems],
+  );
+  const shouldShowBookmarkCategoryTabs = useMemo(
+    () => hasMultipleMySummaryCategories(myDynamicBookmarkItems),
+    [myDynamicBookmarkItems],
+  );
+  const shouldShowVoteCategoryTabs = useMemo(
+    () => hasMultipleMySummaryCategories(myDynamicVoteItems),
+    [myDynamicVoteItems],
+  );
+  const shouldShowCommentKindTabs = useMemo(
+    () => hasMultipleMyCommentKinds(myDynamicCommentItems),
+    [myDynamicCommentItems],
+  );
+  const myActivityCounts = useMemo(
+    () =>
+      Object.fromEntries(
+        mySummaryItems.map((item) => [
+          item.value,
+          item.value === "comment"
+            ? myDynamicCommentItems.length
+            : item.value === "bookmark"
+              ? myBookmarkCount
+              : item.value === "vote"
+                ? myVoteCount
+                : 0,
+        ]),
+      ) as Record<MySummaryView, number>,
+    [myBookmarkCount, myDynamicCommentItems.length, myVoteCount],
+  );
   const activeSummary: MySummaryView | null =
     isBookmarkOpen || isVoteOpen || isCommentOpen ? activeDetailView : null;
   const isMyDetailOpen = activeDetailView !== null;
@@ -4645,6 +5473,198 @@ function MyPageView({
     isOpen: isMyDetailOpen && !isMyArticleDetailOpen,
     onClose: closeActiveDetailViewImmediately,
   });
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadMyActivity() {
+      const [
+        nextComments,
+        allComments,
+        allCommentReactions,
+        nextNews,
+        nextBookmarks,
+        nextUserVotes,
+        nextPolls,
+        nextPollOptions,
+        nextPollVotes,
+        nextRecentViews,
+      ] = await Promise.all([
+        commentApi.getCommentsByUserId(mockCurrentUserId),
+        commentApi.getComments(),
+        commentApi.getCommentReactions(),
+        newsApi.getNewsList(),
+        bookmarkApi.getBookmarks(mockCurrentUserId),
+        pollApi.getPollVotesByUserId(mockCurrentUserId),
+        pollApi.getPolls(),
+        pollApi.getPollOptions(),
+        pollApi.getPollVotes(),
+        newsApi.getRecentNewsViews(mockCurrentUserId),
+      ]);
+      const newsById = new Map(nextNews.map((news) => [news.id, news]));
+      const pollById = new Map(nextPolls.map((poll) => [poll.id, poll]));
+      const optionById = new Map(
+        nextPollOptions.map((option) => [option.id, option]),
+      );
+      const replyCountByParentId = allComments.reduce<Record<string, number>>(
+        (counts, comment) => {
+          if (!comment.parentId) {
+            return counts;
+          }
+
+          counts[comment.parentId] = (counts[comment.parentId] ?? 0) + 1;
+
+          return counts;
+        },
+        {},
+      );
+      const commentReactionCountById = allCommentReactions.reduce<
+        Record<string, Record<CommentReactionValue, number>>
+      >((counts, reaction) => {
+        const currentCounts = counts[reaction.commentId] ?? {
+          ...emptyCommentReactionCounts,
+        };
+
+        counts[reaction.commentId] = {
+          ...currentCounts,
+          [reaction.type]: currentCounts[reaction.type] + 1,
+        };
+
+        return counts;
+      }, {});
+      const nextItems = nextComments
+        .map((comment, index) => {
+          const news = newsById.get(comment.newsId);
+
+          if (!news) {
+            return null;
+          }
+
+          const article = getHomeArticleFromNews(news, index);
+          const headline = getAllNewsPreviewFromArticle(article);
+
+          return {
+            article,
+            category: article.category,
+            comment: {
+              ...getCommentItemFromApi(
+                comment,
+                guideOptions,
+                {},
+                replyCountByParentId[comment.id] ?? 0,
+              ),
+              dislikes:
+                commentReactionCountById[comment.id]?.dislike ??
+                emptyCommentReactionCounts.dislike,
+              likes:
+                commentReactionCountById[comment.id]?.like ??
+                emptyCommentReactionCounts.like,
+            },
+            commentKind: comment.parentId ? "reply" : "comment",
+            headline,
+            targetCommentId: comment.parentId ?? comment.id,
+          };
+        })
+        .filter((item): item is MyCommentSummaryItem => Boolean(item));
+      const nextBookmarkItems = nextBookmarks
+        .filter((bookmark) => bookmark.targetType === "news")
+        .map((bookmark) => {
+          const news = newsById.get(bookmark.targetId);
+
+          return news ? getAllNewsPreviewFromArticle(getHomeArticleFromNews(news, 0)) : null;
+        })
+        .filter((item): item is MyBookmarkSummaryItem => Boolean(item));
+      const nextRecentItems = nextRecentViews
+        .map((view, index) => {
+          const news = newsById.get(view.newsId);
+
+          if (!news) {
+            return null;
+          }
+
+          const article = getHomeArticleFromNews(news, index);
+
+          return {
+            article,
+            dateTime: view.viewedAt,
+            image: article.image,
+            time: formatNewsDate(view.viewedAt),
+            title: article.title,
+          };
+        })
+        .filter((item): item is MyRecentSummaryItem => Boolean(item));
+      const nextVoteItems = nextUserVotes
+        .map((vote, index) => {
+          const poll = pollById.get(vote.pollId);
+          const option = optionById.get(vote.pollOptionId);
+          const news = poll ? newsById.get(poll.newsId) : undefined;
+
+          if (!poll || !option || !news) {
+            return null;
+          }
+
+          const article = getHomeArticleFromNews(news, index);
+          const headline = getAllNewsPreviewFromArticle(article);
+          const votesInPoll = nextPollVotes.filter((item) => item.pollId === poll.id);
+          const optionsInPoll = nextPollOptions.filter((item) => item.pollId === poll.id);
+          const selectedVotes = votesInPoll.filter(
+            (item) => item.pollOptionId === option.id,
+          );
+          const isBinaryPoll =
+            optionsInPoll.length === 2 &&
+            binaryGuideOptions.every((label) =>
+              optionsInPoll.some((pollOption) => pollOption.label === label),
+            );
+          const percent =
+            votesInPoll.length > 0
+              ? Math.round((selectedVotes.length / votesInPoll.length) * 100)
+              : 0;
+
+          return {
+            article,
+            category: article.category,
+            headline,
+            isBinary: isBinaryPoll,
+            percent,
+            pollTitle: poll.title,
+            selectedOption: option.label,
+            title: article.title,
+          };
+        })
+        .filter((item): item is MyVoteSummaryItem => Boolean(item));
+
+      if (!ignore) {
+        setMyDynamicCommentItems(nextItems);
+        setMyDynamicBookmarkItems(nextBookmarkItems);
+        setMyDynamicRecentItems(nextRecentItems);
+        setMyDynamicVoteItems(nextVoteItems);
+        setMyBookmarkCount(nextBookmarkItems.length);
+        setMyVoteCount(nextVoteItems.length);
+        setActiveCommentCategory("all");
+        setActiveBookmarkCategory(
+          getMySummaryCategoryTabs(nextBookmarkItems)[0] ?? mySummaryAllTabLabel,
+        );
+        if (nextVoteItems.length > 0) {
+          setActiveVoteCategory(getMySummaryCategoryTabs(nextVoteItems)[0] ?? "");
+        }
+      }
+    }
+
+    loadMyActivity().catch(() => {
+      if (!ignore) {
+        setMyDynamicCommentItems([]);
+        setMyDynamicBookmarkItems([]);
+        setMyDynamicRecentItems([]);
+        setMyDynamicVoteItems([]);
+        setMyBookmarkCount(0);
+        setMyVoteCount(0);
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
   const toggleCategorySetting = (groupIndex: number, optionId: string) => {
     setSelectedCategorySettings((current) =>
       current.map((selectedItems, index) => {
@@ -4710,6 +5730,8 @@ function MyPageView({
     setMyArticleDetail({
       article,
       commentId: options?.commentId,
+      replyToCommentId: options?.replyToCommentId,
+      scrollTarget: options?.scrollTarget,
     });
   };
 
@@ -4783,6 +5805,8 @@ function MyPageView({
         <ArticleDetailContent
           article={myArticleDetail.article}
           initialCommentId={myArticleDetail.commentId}
+          initialReplyTargetId={myArticleDetail.replyToCommentId}
+          initialScrollTarget={myArticleDetail.scrollTarget}
           isLeaving={myArticleDetailExitMotion.isLeaving}
         />
       ) : (
@@ -4806,27 +5830,39 @@ function MyPageView({
         >
           {isRecentOpen ? (
             <MyRecentDetailPage
+              items={myDynamicRecentItems}
               isLeaving={myDetailExitMotion.isLeaving}
               onOpenArticle={openMyArticleDetail}
             />
           ) : isBookmarkOpen ? (
             <MyBookmarkDetailPage
+              activeCategory={activeBookmarkCategory}
+              items={myDynamicBookmarkItems}
               isLeaving={myDetailExitMotion.isLeaving}
+              onCategoryChange={setActiveBookmarkCategory}
               onOpenArticle={openMyArticleDetail}
+              showTabs={shouldShowBookmarkCategoryTabs}
+              tabs={dynamicBookmarkCategoryTabs}
             />
           ) : isVoteOpen ? (
             <MyVoteDetailPage
               activeCategory={activeVoteCategory}
+              items={myDynamicVoteItems}
               isLeaving={myDetailExitMotion.isLeaving}
               onCategoryChange={setActiveVoteCategory}
               onOpenArticle={openMyArticleDetail}
+              showTabs={shouldShowVoteCategoryTabs}
+              tabs={dynamicVoteCategoryTabs}
             />
           ) : isCommentOpen ? (
             <MyCommentDetailPage
               activeCategory={activeCommentCategory}
+              items={myDynamicCommentItems}
               isLeaving={myDetailExitMotion.isLeaving}
               onCategoryChange={setActiveCommentCategory}
               onOpenArticle={openMyArticleDetail}
+              showTabs={shouldShowCommentKindTabs}
+              tabs={dynamicCommentCategoryTabs}
             />
           ) : isNewsViewTimeOpen ? (
           <div
@@ -4925,7 +5961,7 @@ function MyPageView({
                 variant="article"
               >
                 <strong>
-                  {item.label} {item.count}
+                  {item.label} {myActivityCounts[item.value]}
                 </strong>
               </ReactionButton>
             ))}
@@ -4934,13 +5970,14 @@ function MyPageView({
           <section className="container_myRecent" aria-label="최근 본 뉴스">
             <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
             <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
-              {myRecentNews.slice(0, myRecentPreviewLimit).map((item, index) => (
+              {myDynamicRecentItems.slice(0, myRecentPreviewLimit).map((item, index) => (
                 <NewsBlockItem
                   ariaPressed={false}
                   dateLabel={item.time}
                   dateTime={item.dateTime}
                   imageSrc={item.image}
                   key={`${item.title}-${index}`}
+                  onClick={() => openMyArticleDetail(createMyRecentArticle(item, index))}
                   showDate={false}
                   title={item.title}
                 />

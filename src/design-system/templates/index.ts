@@ -8,6 +8,7 @@ export { NewsRollSummaryHero, NewsRollSummaryHeroTop } from "./summary-hero";
 export { NewsRollTopFrame } from "./top-frame";
 export {
   useDetailScrollRestore,
+  useDeferredDetailScroll,
   useDockedPanelScroll,
   useDockedSheet,
   useInlineTextEdit,
