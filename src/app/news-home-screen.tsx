@@ -2,6 +2,7 @@
 
 import {
   Fragment,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -131,6 +132,7 @@ const pagePanelInitialGap = 40;
 const pagePanelInitialTop = 492;
 const commentScrollDelayMs = 120;
 const nextArticleRevealDelayMs = 260;
+const detailExitMotionEventName = "newsroll:detail-exit";
 const homeDockedScrollSelectors = {
   contentScroller: ".wrapper_articleCardContent",
   panel: ".container_articleCard",
@@ -2105,17 +2107,20 @@ function ArticleDetailContent({
   article,
   backLabel,
   initialCommentId,
+  isLeaving = false,
   onBack,
 }: {
   article: HomeArticle;
   backLabel?: string;
   initialCommentId?: number;
+  isLeaving?: boolean;
   onBack?: () => void;
 }) {
   return (
     <NewsRollArticleDetailPanel
       ariaLabel="기사 상세"
       backLabel={backLabel}
+      className={getEnterFromRightMotionClassName(isLeaving)}
       labelledBy="home-article-title-detail"
       onBack={onBack}
     >
@@ -2144,6 +2149,13 @@ function HomeView({
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedDetailArticle, setSelectedDetailArticle] =
     useState<HomeArticle>(homeArticle);
+  const closeHomeDetailImmediately = useCallback(() => {
+    setDetailOpen(false);
+  }, []);
+  const homeDetailExitMotion = useEnterFromRightExitMotion({
+    isOpen: detailOpen,
+    onClose: closeHomeDetailImmediately,
+  });
 
   function openHomeDetail(article: HomeArticle) {
     setSelectedDetailArticle(article);
@@ -2155,7 +2167,7 @@ function HomeView({
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
-      onCloseDetail={() => setDetailOpen(false)}
+      onCloseDetail={homeDetailExitMotion.closeWithMotion}
       onModeChange={(nextMode) => {
         setDetailOpen(false);
         setHomeViewMode(nextMode);
@@ -2165,7 +2177,10 @@ function HomeView({
       onToggleTextSize={onToggleTextSize}
     >
       {detailOpen ? (
-        <ArticleDetailContent article={selectedDetailArticle} />
+        <ArticleDetailContent
+          article={selectedDetailArticle}
+          isLeaving={homeDetailExitMotion.isLeaving}
+        />
       ) : homeViewMode === "reels" ? (
         <section
           className="container_newsFeed"
@@ -2530,6 +2545,14 @@ function AllNewsView({
     nestedScrollSelector: allNewsDockedScrollSelectors.contentScroller,
     scrollerRef: feedRef,
   });
+  const closeAllNewsDetailImmediately = useCallback(() => {
+    allNewsDetailScrollRestore.requestRestore();
+    setDetailArticle(null);
+  }, [allNewsDetailScrollRestore]);
+  const allNewsDetailExitMotion = useEnterFromRightExitMotion({
+    isOpen: isDetailOpen,
+    onClose: closeAllNewsDetailImmediately,
+  });
 
   useLayoutEffect(() => {
     const node = breakingBodyRef.current;
@@ -2713,10 +2736,7 @@ function AllNewsView({
     setDetailArticle(article);
   }
 
-  function closeAllNewsDetail() {
-    allNewsDetailScrollRestore.requestRestore();
-    setDetailArticle(null);
-  }
+  const closeAllNewsDetail = allNewsDetailExitMotion.closeWithMotion;
 
   return (
     <NewsRollCommonLayout
@@ -2810,7 +2830,10 @@ function AllNewsView({
       }
     >
       {detailArticle ? (
-        <ArticleDetailContent article={detailArticle} />
+        <ArticleDetailContent
+          article={detailArticle}
+          isLeaving={allNewsDetailExitMotion.isLeaving}
+        />
       ) : (
         <section
           className="container_newsFeed newsroll_all_feed"
@@ -3200,12 +3223,14 @@ function PolicyListItem({
 function PolicyDetailContent({
   hideDetailList = false,
   hideDetailToggle = false,
+  isLeaving = false,
   item,
   onNextItem,
   onPreviousItem,
 }: {
   hideDetailList?: boolean;
   hideDetailToggle?: boolean;
+  isLeaving?: boolean;
   item: PolicyItem;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
@@ -3219,7 +3244,9 @@ function PolicyDetailContent({
   }, []);
 
   return (
-    <>
+    <div
+      className={`newsroll_policy_detail_content ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
       <div className="newsroll_policy_detail_tags">
         {item.tags.map((tag, index) => (
           <ChipLabel
@@ -3301,8 +3328,93 @@ function PolicyDetailContent({
           <Icon name="arrow" />
         </Button>
       </div>
-    </>
+    </div>
   );
+}
+
+function getEnterFromRightMotionClassName(isLeaving = false) {
+  return `newsroll_motion_enterFromRight${isLeaving ? " is_motionLeaving" : ""}`;
+}
+
+function hasActiveEnterFromRightMotion() {
+  return Boolean(document.querySelector(".newsroll_motion_enterFromRight"));
+}
+
+function requestEnterFromRightExitMotion() {
+  window.dispatchEvent(new Event(detailExitMotionEventName));
+}
+
+function useEnterFromRightExitMotion({
+  isOpen,
+  listenForGlobalExit = true,
+  onClose,
+}: {
+  isOpen: boolean;
+  listenForGlobalExit?: boolean;
+  onClose: () => void;
+}) {
+  const [isLeaving, setIsLeaving] = useState(false);
+  const closeRef = useRef(onClose);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    closeRef.current = onClose;
+  }, [onClose]);
+
+  const clearExitTimer = useCallback(() => {
+    if (timeoutRef.current === null) {
+      return;
+    }
+
+    window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
+  }, []);
+
+  const closeWithMotion = useCallback(() => {
+    if (!isOpen) {
+      closeRef.current();
+      return;
+    }
+
+    if (timeoutRef.current !== null) {
+      return;
+    }
+
+    setIsLeaving(true);
+    timeoutRef.current = window.setTimeout(() => {
+      timeoutRef.current = null;
+      setIsLeaving(false);
+      closeRef.current();
+    }, nextArticleRevealDelayMs);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+
+    clearExitTimer();
+    setIsLeaving(false);
+  }, [clearExitTimer, isOpen]);
+
+  useEffect(() => {
+    if (!listenForGlobalExit || !isOpen) {
+      return;
+    }
+
+    window.addEventListener(detailExitMotionEventName, closeWithMotion);
+
+    return () => {
+      window.removeEventListener(detailExitMotionEventName, closeWithMotion);
+    };
+  }, [closeWithMotion, isOpen, listenForGlobalExit]);
+
+  useEffect(() => clearExitTimer, [clearExitTimer]);
+
+  return {
+    closeWithMotion,
+    isLeaving,
+  };
 }
 
 function PolicyView({
@@ -3342,6 +3454,14 @@ function PolicyView({
     isDetailOpen: isPolicyDetailOpen,
     scrollerRef: policyPanelContentRef,
   });
+  const closePolicyDetailImmediately = useCallback(() => {
+    policyDetailScrollRestore.requestRestore();
+    setDetailItem(null);
+  }, [policyDetailScrollRestore]);
+  const policyDetailExitMotion = useEnterFromRightExitMotion({
+    isOpen: isPolicyDetailOpen,
+    onClose: closePolicyDetailImmediately,
+  });
   const policySortMenuId = "policy-sort-menu";
 
   function openPolicyDetail(item: PolicyItem, index: number) {
@@ -3353,10 +3473,7 @@ function PolicyView({
     setDetailItem(item);
   }
 
-  function closePolicyDetail() {
-    policyDetailScrollRestore.requestRestore();
-    setDetailItem(null);
-  }
+  const closePolicyDetail = policyDetailExitMotion.closeWithMotion;
 
   useEffect(() => {
     if (!isPolicySortOpen) {
@@ -3447,6 +3564,7 @@ function PolicyView({
       >
         {detailItem ? (
           <PolicyDetailContent
+            isLeaving={policyDetailExitMotion.isLeaving}
             item={detailItem}
             onNextItem={
               nextPolicyItem
@@ -3682,14 +3800,18 @@ function MySettingRow({
 }
 
 function MyBookmarkDetailPage({
+  isLeaving = false,
   onOpenArticle,
 }: {
+  isLeaving?: boolean;
   onOpenArticle: OpenArticleDetail;
 }) {
   const fallbackCategory = allNewsRelayCategories[0] ?? homeArticle.category;
 
   return (
-    <div className="container_myBookmarkPage">
+    <div
+      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
       <h2 className="text_mySectionTitle">북마크</h2>
       <SeparatedList
         dividerClassName="newsroll_all_itemDivider"
@@ -3711,10 +3833,12 @@ function MyBookmarkDetailPage({
 
 function MyVoteDetailPage({
   activeCategory,
+  isLeaving = false,
   onCategoryChange,
   onOpenArticle,
 }: {
   activeCategory: string;
+  isLeaving?: boolean;
   onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
 }) {
@@ -3724,7 +3848,9 @@ function MyVoteDetailPage({
   );
 
   return (
-    <div className="container_myVotePage">
+    <div
+      className={`container_myVotePage ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
       <h2 className="text_mySectionTitle">투표</h2>
       {myVoteCategoryTabs.length > 1 ? (
         <PillTabMenu
@@ -3952,10 +4078,12 @@ function MyCommentThread({
 
 function MyCommentDetailPage({
   activeCategory,
+  isLeaving = false,
   onCategoryChange,
   onOpenArticle,
 }: {
   activeCategory: string;
+  isLeaving?: boolean;
   onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
 }) {
@@ -3965,7 +4093,9 @@ function MyCommentDetailPage({
   );
 
   return (
-    <div className="container_myCommentPage">
+    <div
+      className={`container_myCommentPage ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
       <h2 className="text_mySectionTitle">댓글</h2>
       {myCommentCategoryTabs.length > 1 ? (
         <PillTabMenu
@@ -4122,6 +4252,23 @@ function MyPageView({
     isDetailOpen: isMyArticleDetailOpen,
     scrollerRef: myPanelContentRef,
   });
+  const closeMyArticleDetailImmediately = useCallback(() => {
+    myArticleDetailScrollRestore.requestRestore();
+    setMyArticleDetail(null);
+  }, [myArticleDetailScrollRestore]);
+  const closeActiveDetailViewImmediately = useCallback(() => {
+    myDetailScrollRestore.requestRestore();
+    setMyArticleDetail(null);
+    setActiveDetailView(null);
+  }, [myDetailScrollRestore]);
+  const myArticleDetailExitMotion = useEnterFromRightExitMotion({
+    isOpen: isMyArticleDetailOpen,
+    onClose: closeMyArticleDetailImmediately,
+  });
+  const myDetailExitMotion = useEnterFromRightExitMotion({
+    isOpen: isMyDetailOpen && !isMyArticleDetailOpen,
+    onClose: closeActiveDetailViewImmediately,
+  });
   const recentItems = isRecentExpanded
     ? [...myRecentNews, ...myRecentNews]
     : myRecentNews;
@@ -4188,17 +4335,6 @@ function MyPageView({
     });
   };
 
-  const closeMyArticleDetail = () => {
-    myArticleDetailScrollRestore.requestRestore();
-    setMyArticleDetail(null);
-  };
-
-  const closeActiveDetailView = () => {
-    myDetailScrollRestore.requestRestore();
-    setMyArticleDetail(null);
-    setActiveDetailView(null);
-  };
-
   const detailBackLabel =
     isMyArticleDetailOpen
       ? "기사 본문에서 이전 목록으로 돌아가기"
@@ -4206,8 +4342,8 @@ function MyPageView({
       ? "설정에서 마이페이지로 돌아가기"
       : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
   const handleMyDetailBack = isMyArticleDetailOpen
-    ? closeMyArticleDetail
-    : closeActiveDetailView;
+    ? myArticleDetailExitMotion.closeWithMotion
+    : myDetailExitMotion.closeWithMotion;
 
   return (
     <NewsRollCommonLayout
@@ -4269,6 +4405,7 @@ function MyPageView({
         <ArticleDetailContent
           article={myArticleDetail.article}
           initialCommentId={myArticleDetail.commentId}
+          isLeaving={myArticleDetailExitMotion.isLeaving}
         />
       ) : (
         <NewsRollPagePanel
@@ -4288,21 +4425,28 @@ function MyPageView({
           contentRef={myPanelContentRef}
         >
           {isBookmarkOpen ? (
-            <MyBookmarkDetailPage onOpenArticle={openMyArticleDetail} />
+            <MyBookmarkDetailPage
+              isLeaving={myDetailExitMotion.isLeaving}
+              onOpenArticle={openMyArticleDetail}
+            />
           ) : isVoteOpen ? (
             <MyVoteDetailPage
               activeCategory={activeVoteCategory}
+              isLeaving={myDetailExitMotion.isLeaving}
               onCategoryChange={setActiveVoteCategory}
               onOpenArticle={openMyArticleDetail}
             />
           ) : isCommentOpen ? (
             <MyCommentDetailPage
               activeCategory={activeCommentCategory}
+              isLeaving={myDetailExitMotion.isLeaving}
               onCategoryChange={setActiveCommentCategory}
               onOpenArticle={openMyArticleDetail}
             />
           ) : isNewsViewTimeOpen ? (
-          <div className="container_myTimePage">
+          <div
+            className={`container_myTimePage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
+          >
             <h2 className="text_myTimeTitle">뉴스 보기 타임</h2>
             {myNewsViewTimeSections.map((section, sectionIndex) => (
               <Fragment key={section.label}>
@@ -4337,7 +4481,9 @@ function MyPageView({
             ))}
           </div>
         ) : isProfileSettingsOpen ? (
-          <div className="container_mySettingsPage">
+          <div
+            className={`container_mySettingsPage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
+          >
             <h2 className="text_myTimeTitle">설정</h2>
             {myProfileSettingSections.map((section, sectionIndex) => (
               <Fragment key={section.title}>
@@ -4542,7 +4688,7 @@ function getNoticeDetailItem(notice: (typeof noticeItems)[number]): PolicyItem {
 function InfoNoticeSection({
   onNoticeSelect,
 }: {
-  onNoticeSelect: (notice: (typeof noticeItems)[number]) => void;
+  onNoticeSelect: (notice: (typeof noticeItems)[number], index: number) => void;
 }) {
   return (
     <section className="container_infoList" aria-label="공지사항">
@@ -4550,10 +4696,10 @@ function InfoNoticeSection({
         dividerClassName="divider_infoSection"
         getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
         items={noticeItems}
-        renderItem={(notice) => (
+        renderItem={(notice, index) => (
           <button
             className="btn_infoNoticeItem"
-            onClick={() => onNoticeSelect(notice)}
+            onClick={() => onNoticeSelect(notice, index)}
             type="button"
           >
             <div className="wrapper_infoNoticeContent">
@@ -4709,11 +4855,31 @@ function InfoView({
   const [noticeDetailItem, setNoticeDetailItem] = useState<PolicyItem | null>(
     null,
   );
+  const [noticeDetailIndex, setNoticeDetailIndex] = useState<number | null>(
+    null,
+  );
   const infoPanelContentRef = useRef<HTMLDivElement>(null);
   const isNoticeDetailOpen = noticeDetailItem !== null;
+  const previousNotice =
+    noticeDetailIndex !== null && noticeDetailIndex > 0
+      ? noticeItems[noticeDetailIndex - 1]
+      : null;
+  const nextNotice =
+    noticeDetailIndex !== null && noticeDetailIndex < noticeItems.length - 1
+      ? noticeItems[noticeDetailIndex + 1]
+      : null;
   const infoDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isNoticeDetailOpen,
     scrollerRef: infoPanelContentRef,
+  });
+  const closeNoticeDetailImmediately = useCallback(() => {
+    infoDetailScrollRestore.requestRestore();
+    setNoticeDetailItem(null);
+    setNoticeDetailIndex(null);
+  }, [infoDetailScrollRestore]);
+  const noticeDetailExitMotion = useEnterFromRightExitMotion({
+    isOpen: isNoticeDetailOpen,
+    onClose: closeNoticeDetailImmediately,
   });
   const activeInfoTabLabel =
     infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "공지사항";
@@ -4721,17 +4887,24 @@ function InfoView({
   function handleInfoTabChange(nextTab: InfoTab) {
     setActiveInfoTab(nextTab);
     setNoticeDetailItem(null);
+    setNoticeDetailIndex(null);
   }
 
-  function openNoticeDetail(notice: (typeof noticeItems)[number]) {
+  function openNoticeDetail(
+    notice: (typeof noticeItems)[number],
+    index: number,
+  ) {
     infoDetailScrollRestore.captureScroll();
     setNoticeDetailItem(getNoticeDetailItem(notice));
+    setNoticeDetailIndex(index);
   }
 
-  function closeNoticeDetail() {
-    infoDetailScrollRestore.requestRestore();
-    setNoticeDetailItem(null);
+  function moveNoticeDetail(notice: (typeof noticeItems)[number], index: number) {
+    setNoticeDetailItem(getNoticeDetailItem(notice));
+    setNoticeDetailIndex(index);
   }
+
+  const closeNoticeDetail = noticeDetailExitMotion.closeWithMotion;
 
   return (
     <NewsRollCommonLayout
@@ -4779,7 +4952,19 @@ function InfoView({
           <PolicyDetailContent
             hideDetailList
             hideDetailToggle
+            isLeaving={noticeDetailExitMotion.isLeaving}
             item={noticeDetailItem}
+            key={`notice-detail-${noticeDetailIndex ?? "unknown"}`}
+            onNextItem={
+              nextNotice && noticeDetailIndex !== null
+                ? () => moveNoticeDetail(nextNotice, noticeDetailIndex + 1)
+                : undefined
+            }
+            onPreviousItem={
+              previousNotice && noticeDetailIndex !== null
+                ? () => moveNoticeDetail(previousNotice, noticeDetailIndex - 1)
+                : undefined
+            }
           />
         ) : (
           <div className="container_infoContent">
@@ -4885,6 +5070,7 @@ function ActiveView({
 export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("home");
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
+  const viewNavigationTimerRef = useRef<number | null>(null);
   const [viewResetKeys, setViewResetKeys] = useState<Record<Tab, number>>({
     all: 0,
     home: 0,
@@ -4902,6 +5088,16 @@ export function NewsHomeScreen() {
     resetNewsRollViewport();
   }, [activeView, activeViewResetKey]);
 
+  useEffect(() => {
+    return () => {
+      if (viewNavigationTimerRef.current === null) {
+        return;
+      }
+
+      window.clearTimeout(viewNavigationTimerRef.current);
+    };
+  }, []);
+
   function openSearch() {
     if (activeView !== "search") {
       setSearchBackView(activeView);
@@ -4911,12 +5107,31 @@ export function NewsHomeScreen() {
   }
 
   function openDefaultTab(tab: Tab) {
-    setActiveView(tab);
-    setSearchBackView(tab);
-    setViewResetKeys((current) => ({
-      ...current,
-      [tab]: current[tab] + 1,
-    }));
+    const moveToTab = () => {
+      setActiveView(tab);
+      setSearchBackView(tab);
+      setViewResetKeys((current) => ({
+        ...current,
+        [tab]: current[tab] + 1,
+      }));
+    };
+
+    if (hasActiveEnterFromRightMotion()) {
+      requestEnterFromRightExitMotion();
+
+      if (viewNavigationTimerRef.current !== null) {
+        window.clearTimeout(viewNavigationTimerRef.current);
+      }
+
+      viewNavigationTimerRef.current = window.setTimeout(() => {
+        viewNavigationTimerRef.current = null;
+        moveToTab();
+      }, nextArticleRevealDelayMs);
+
+      return;
+    }
+
+    moveToTab();
   }
 
   return (
