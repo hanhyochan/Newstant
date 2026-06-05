@@ -1,0 +1,577 @@
+{
+  "appState": {
+    "mockCurrentUserId": "user-kongkong"
+  },
+  "users": [
+    {
+      "id": "user-kongkong",
+      "nickname": "콩콩이",
+      "email": "kongkong@example.com",
+      "ageGroupId": "youth",
+      "createdAt": "2026-01-01T00:00:00+09:00"
+    },
+    {
+      "id": "user-hong",
+      "nickname": "홍길동",
+      "email": "hong@example.com",
+      "ageGroupId": "middle",
+      "createdAt": "2026-01-02T00:00:00+09:00"
+    }
+  ],
+  "userAgeGroups": [
+    {
+      "id": "minor",
+      "label": "미성년"
+    },
+    {
+      "id": "youth",
+      "label": "청년"
+    },
+    {
+      "id": "middle",
+      "label": "중장년"
+    },
+    {
+      "id": "senior",
+      "label": "노년"
+    }
+  ],
+  "newsCategories": [
+    {
+      "id": "politics",
+      "label": "정치"
+    },
+    {
+      "id": "economy",
+      "label": "경제"
+    },
+    {
+      "id": "society",
+      "label": "사회"
+    },
+    {
+      "id": "culture",
+      "label": "문화"
+    },
+    {
+      "id": "world",
+      "label": "국제"
+    },
+    {
+      "id": "local",
+      "label": "지역"
+    },
+    {
+      "id": "sports",
+      "label": "스포츠"
+    },
+    {
+      "id": "science",
+      "label": "IT과학"
+    }
+  ],
+  "presses": [
+    {
+      "id": "joongang",
+      "name": "중앙일보",
+      "logoUrl": ""
+    },
+    {
+      "id": "kukmin",
+      "name": "국민일보",
+      "logoUrl": ""
+    },
+    {
+      "id": "hani",
+      "name": "한겨레",
+      "logoUrl": ""
+    }
+  ],
+  "news": [
+    {
+      "id": "news-001",
+      "categoryId": "politics",
+      "pressId": "joongang",
+      "title": "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
+      "summary": "수도권 주요 주거지의 가격 흐름이 다시 주목받고 있습니다.",
+      "body": "용인 수지 일대 아파트 가격이 강남과 분당의 가격 흐름에 맞춰 상승세를 보이고 있습니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "김민준",
+      "publishedAt": "2026-12-31T08:30:00+09:00",
+      "viewCount": 132
+    },
+    {
+      "id": "news-002",
+      "categoryId": "economy",
+      "pressId": "kukmin",
+      "title": "'APEC, 국익에 도움됐다' 74%... 국힘 지지층도 인정",
+      "summary": "국제 행사의 경제 효과를 둘러싼 여론 조사 결과가 나왔습니다.",
+      "body": "APEC 개최 효과를 두고 국민 다수가 긍정적으로 평가한 것으로 나타났습니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "이서연",
+      "publishedAt": "2026-12-31T08:30:00+09:00",
+      "viewCount": 132
+    },
+    {
+      "id": "news-003",
+      "categoryId": "society",
+      "pressId": "hani",
+      "title": "여야, 예산안 세부 쟁점 두고 막판 협상",
+      "summary": "국회 예산안 처리를 앞두고 여야 협상이 이어지고 있습니다.",
+      "body": "주요 복지 예산과 지역 현안 예산을 둘러싼 조율이 막바지에 접어들었습니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "박지훈",
+      "publishedAt": "2026-12-31T08:30:00+09:00",
+      "viewCount": 98
+    },
+    {
+      "id": "news-004",
+      "categoryId": "culture",
+      "pressId": "joongang",
+      "title": "지역 문화재단, 청년 예술 활동 지원 확대",
+      "summary": "청년 예술인을 위한 지원 사업이 확대될 예정입니다.",
+      "body": "지역 문화재단은 내년부터 청년 예술 활동비와 공간 지원을 늘릴 계획입니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "최유진",
+      "publishedAt": "2026-12-30T18:20:00+09:00",
+      "viewCount": 76
+    },
+    {
+      "id": "news-005",
+      "categoryId": "world",
+      "pressId": "kukmin",
+      "title": "주요국 정상회의, 공급망 안정 협력 논의",
+      "summary": "공급망 안정과 기술 협력이 주요 의제로 다뤄졌습니다.",
+      "body": "각국 대표단은 핵심 자원의 안정적 공급과 기술 교류 확대 방안을 논의했습니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "정하늘",
+      "publishedAt": "2026-12-30T15:00:00+09:00",
+      "viewCount": 54
+    },
+    {
+      "id": "news-006",
+      "categoryId": "local",
+      "pressId": "hani",
+      "title": "지역 버스 노선 개편안 발표",
+      "summary": "출퇴근 시간대 배차 간격을 줄이는 방안이 포함됐습니다.",
+      "body": "지자체는 주민 의견 수렴을 거쳐 최종 노선 개편안을 확정할 예정입니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "강도윤",
+      "publishedAt": "2026-12-30T11:10:00+09:00",
+      "viewCount": 44
+    },
+    {
+      "id": "news-007",
+      "categoryId": "sports",
+      "pressId": "joongang",
+      "title": "프로리그 신인 드래프트, 지역 유망주 대거 지명",
+      "summary": "신인 선수들의 프로 무대 진출이 확정됐습니다.",
+      "body": "올해 드래프트에서는 지역 리그 출신 선수들이 다수 지명되며 주목받았습니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "윤태오",
+      "publishedAt": "2026-12-29T20:00:00+09:00",
+      "viewCount": 35
+    },
+    {
+      "id": "news-008",
+      "categoryId": "science",
+      "pressId": "kukmin",
+      "title": "AI 서비스 접근성 개선 가이드 공개",
+      "summary": "공공 서비스의 AI 접근성을 높이기 위한 가이드가 발표됐습니다.",
+      "body": "이번 가이드는 사용자 안내, 오류 대응, 개인정보 처리 기준 등을 포함합니다.",
+      "imageUrl": "/images/news-apartment.png",
+      "reporterName": "한서준",
+      "publishedAt": "2026-12-29T09:30:00+09:00",
+      "viewCount": 88
+    }
+  ],
+  "newsPlacements": [
+    {
+      "id": "placement-home-001",
+      "area": "home-feed",
+      "newsId": "news-001",
+      "order": 1
+    },
+    {
+      "id": "placement-home-002",
+      "area": "home-feed",
+      "newsId": "news-002",
+      "order": 2
+    },
+    {
+      "id": "placement-all-headline-001",
+      "area": "all-headline",
+      "newsId": "news-002",
+      "pressId": "kukmin",
+      "order": 1
+    },
+    {
+      "id": "placement-all-headline-002",
+      "area": "all-headline",
+      "newsId": "news-003",
+      "pressId": "hani",
+      "order": 2
+    },
+    {
+      "id": "placement-relay-001",
+      "area": "relay",
+      "newsId": "news-004",
+      "categoryId": "culture",
+      "order": 1
+    },
+    {
+      "id": "placement-breaking-001",
+      "area": "breaking",
+      "newsId": "news-003",
+      "order": 1
+    }
+  ],
+  "welfarePolicyAgeGroups": [
+    {
+      "id": "all",
+      "label": "전체"
+    },
+    {
+      "id": "minor",
+      "label": "미성년"
+    },
+    {
+      "id": "youth",
+      "label": "청년"
+    },
+    {
+      "id": "middle",
+      "label": "중장년"
+    },
+    {
+      "id": "senior",
+      "label": "노년"
+    }
+  ],
+  "welfarePolicies": [
+    {
+      "id": "policy-001",
+      "category": "복지문화",
+      "subcategory": "문화활동",
+      "label": "바우처",
+      "title": "청년동아리 활동비 지원사업",
+      "summary": "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
+      "ageGroupIds": ["youth"],
+      "targetAge": "19세 ~ 45세",
+      "supportContent": "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
+      "institution": "경상남도 하동군 지역활력추진단",
+      "region": "경상남도 하동군",
+      "businessStartDate": "2026-01-01",
+      "businessEndDate": "2026-12-31",
+      "applicationStartDate": "2025-10-01",
+      "applicationEndDate": "2025-10-10",
+      "applicationMethod": "양산시 청년 정보 플랫폼 청년카까 온라인 신청.",
+      "selectionMethod": "지원 자격 충족자 대상 선착순 선정 후 개별 통보.",
+      "documents": "사업자등록 사실 여부 증명서, 시험 응시 확인 서류, 응시료 결제 영수증, 통장 사본 등.",
+      "status": "open",
+      "registeredAt": "2026-12-31T00:00:00+09:00",
+      "updatedAt": "2026-12-31T00:00:00+09:00",
+      "sourceUrl": "https://example.com/policy"
+    },
+    {
+      "id": "policy-002",
+      "category": "주거",
+      "subcategory": "임차지원",
+      "label": "현금지원",
+      "title": "청년 월세 한시 지원",
+      "summary": "무주택 청년의 주거비 부담을 줄이기 위한 월세 지원 사업.",
+      "ageGroupIds": ["youth"],
+      "targetAge": "19세 ~ 34세",
+      "supportContent": "월 최대 20만원까지 임차료 지원.",
+      "institution": "국토교통부",
+      "region": "전국",
+      "businessStartDate": "2026-01-01",
+      "businessEndDate": "2026-12-31",
+      "applicationStartDate": "2026-02-01",
+      "applicationEndDate": "2026-11-30",
+      "applicationMethod": "복지로 온라인 신청.",
+      "selectionMethod": "소득 및 주거 요건 심사 후 선정.",
+      "documents": "임대차계약서, 월세 이체 증빙, 가족관계증명서.",
+      "status": "open",
+      "registeredAt": "2026-12-20T00:00:00+09:00",
+      "updatedAt": "2026-12-28T00:00:00+09:00",
+      "sourceUrl": "https://example.com/policy"
+    }
+  ],
+  "bookmarks": [
+    {
+      "id": "bookmark-001",
+      "userId": "user-kongkong",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-12-31T09:00:00+09:00"
+    },
+    {
+      "id": "bookmark-002",
+      "userId": "user-kongkong",
+      "targetType": "welfarePolicy",
+      "targetId": "policy-001",
+      "createdAt": "2026-12-31T09:10:00+09:00"
+    }
+  ],
+  "recentNewsViews": [
+    {
+      "id": "recent-001",
+      "userId": "user-kongkong",
+      "newsId": "news-001",
+      "viewedAt": "2026-12-31T10:10:00+09:00"
+    },
+    {
+      "id": "recent-002",
+      "userId": "user-kongkong",
+      "newsId": "news-002",
+      "viewedAt": "2026-12-31T10:00:00+09:00"
+    },
+    {
+      "id": "recent-003",
+      "userId": "user-kongkong",
+      "newsId": "news-003",
+      "viewedAt": "2026-12-31T09:50:00+09:00"
+    }
+  ],
+  "polls": [
+    {
+      "id": "poll-001",
+      "newsId": "news-001",
+      "title": "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
+      "createdAt": "2026-12-31T08:30:00+09:00"
+    }
+  ],
+  "pollOptions": [
+    {
+      "id": "poll-option-001",
+      "pollId": "poll-001",
+      "label": "그렇다",
+      "order": 1
+    },
+    {
+      "id": "poll-option-002",
+      "pollId": "poll-001",
+      "label": "아니다",
+      "order": 2
+    },
+    {
+      "id": "poll-option-003",
+      "pollId": "poll-001",
+      "label": "상황을 더 지켜본 뒤 판단해야 한다.",
+      "order": 3
+    }
+  ],
+  "pollVotes": [
+    {
+      "id": "poll-vote-001",
+      "pollId": "poll-001",
+      "pollOptionId": "poll-option-001",
+      "userId": "user-kongkong",
+      "createdAt": "2026-12-31T09:20:00+09:00"
+    }
+  ],
+  "comments": [
+    {
+      "id": "comment-001",
+      "newsId": "news-001",
+      "userId": "user-kongkong",
+      "parentId": null,
+      "pollOptionId": "poll-option-001",
+      "content": "저는 이 방향이 더 현실적이라고 봅니다.",
+      "likeCount": 12,
+      "dislikeCount": 1,
+      "replyCount": 1,
+      "createdAt": "2026-12-31T09:30:00+09:00",
+      "updatedAt": "2026-12-31T09:30:00+09:00"
+    },
+    {
+      "id": "comment-002",
+      "newsId": "news-001",
+      "userId": "user-hong",
+      "parentId": null,
+      "pollOptionId": "poll-option-002",
+      "content": "정책 지원을 먼저 확대해야 한다고 생각합니다.",
+      "likeCount": 8,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-12-31T09:35:00+09:00",
+      "updatedAt": "2026-12-31T09:35:00+09:00"
+    },
+    {
+      "id": "comment-003",
+      "newsId": "news-001",
+      "userId": "user-kongkong",
+      "parentId": "comment-002",
+      "pollOptionId": null,
+      "content": "동의합니다. 세부 기준도 같이 봐야겠네요.",
+      "likeCount": 2,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-12-31T09:40:00+09:00",
+      "updatedAt": "2026-12-31T09:40:00+09:00"
+    }
+  ],
+  "commentReactions": [
+    {
+      "id": "comment-reaction-001",
+      "commentId": "comment-002",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-12-31T09:45:00+09:00"
+    }
+  ],
+  "notificationSettings": [
+    {
+      "id": "notification-user-kongkong",
+      "userId": "user-kongkong",
+      "breakingNews": true,
+      "commentReplies": true,
+      "notices": true,
+      "darkMode": false,
+      "updatedAt": "2026-12-31T09:00:00+09:00"
+    }
+  ],
+  "userPreferences": [
+    {
+      "id": "preference-user-kongkong",
+      "userId": "user-kongkong",
+      "categoryIds": ["politics", "society", "local", "sports"],
+      "pressIds": [],
+      "ageGroupId": "youth",
+      "updatedAt": "2026-12-31T09:00:00+09:00"
+    }
+  ],
+  "newsViewTimeOptions": [
+    {
+      "id": "morning",
+      "label": "아침",
+      "time": "08:00"
+    },
+    {
+      "id": "lunch",
+      "label": "점심",
+      "time": "12:00"
+    },
+    {
+      "id": "evening",
+      "label": "저녁",
+      "time": "18:00"
+    }
+  ],
+  "userNewsViewTimes": [
+    {
+      "id": "view-time-user-kongkong",
+      "userId": "user-kongkong",
+      "optionIds": ["morning", "evening"],
+      "updatedAt": "2026-12-31T09:00:00+09:00"
+    }
+  ],
+  "notices": [
+    {
+      "id": "notice-001",
+      "title": "NewsRoll 맞춤 알림 설정이 개선되었습니다.",
+      "summary": "맞춤 알림 수신 범위를 더 세밀하게 설정할 수 있습니다.",
+      "content": "이제 속보, 댓글 반응, 공지사항 알림을 각각 설정할 수 있습니다.",
+      "registeredAt": "2026-12-31T00:00:00+09:00",
+      "updatedAt": "2026-12-31T00:00:00+09:00"
+    },
+    {
+      "id": "notice-002",
+      "title": "서비스 점검 안내",
+      "summary": "더 안정적인 서비스를 위해 시스템 점검이 진행됩니다.",
+      "content": "점검 시간 동안 일부 기능 이용이 제한될 수 있습니다.",
+      "registeredAt": "2026-12-30T00:00:00+09:00",
+      "updatedAt": "2026-12-30T00:00:00+09:00"
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq-001",
+      "question": "Q. 어쩌구 저쩌구 궁금합니다?",
+      "answer": "자주 묻는 질문에 대한 예시 답변입니다.",
+      "order": 1
+    },
+    {
+      "id": "faq-002",
+      "question": "Q. 알림 설정은 어디서 바꾸나요?",
+      "answer": "마이페이지 설정에서 알림 항목을 변경할 수 있습니다.",
+      "order": 2
+    }
+  ],
+  "inquiryTypes": [
+    {
+      "id": "service",
+      "label": "서비스 이용"
+    },
+    {
+      "id": "news-tip",
+      "label": "뉴스 제보"
+    },
+    {
+      "id": "account",
+      "label": "계정 문의"
+    },
+    {
+      "id": "bug",
+      "label": "오류 신고"
+    }
+  ],
+  "inquiries": [
+    {
+      "id": "inquiry-001",
+      "userId": "user-kongkong",
+      "typeId": "service",
+      "title": "서비스 이용 문의",
+      "content": "문의 내용 예시입니다.",
+      "status": "received",
+      "createdAt": "2026-12-31T09:00:00+09:00",
+      "updatedAt": "2026-12-31T09:00:00+09:00"
+    }
+  ],
+  "searchSuggestions": [
+    {
+      "id": "suggestion-001",
+      "keyword": "예시텍스트",
+      "order": 1
+    },
+    {
+      "id": "suggestion-002",
+      "keyword": "국가정책",
+      "order": 2
+    },
+    {
+      "id": "suggestion-003",
+      "keyword": "청년 지원",
+      "order": 3
+    }
+  ],
+  "searchHistories": [
+    {
+      "id": "search-history-001",
+      "userId": "user-kongkong",
+      "keyword": "청년 지원",
+      "searchedAt": "2026-12-31T08:55:00+09:00"
+    }
+  ],
+  "termsAgreements": [
+    {
+      "id": "terms-user-kongkong",
+      "userId": "user-kongkong",
+      "serviceTerms": true,
+      "privacyPolicy": true,
+      "personalDataCollection": true,
+      "marketingNotification": false,
+      "updatedAt": "2026-12-31T09:00:00+09:00"
+    }
+  ],
+  "commentReports": [
+    {
+      "id": "comment-report-001",
+      "commentId": "comment-002",
+      "userId": "user-kongkong",
+      "type": "hide",
+      "createdAt": "2026-12-31T09:50:00+09:00"
+    }
+  ]
+}

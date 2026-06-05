@@ -5201,6 +5201,20 @@
         min-height: 100%;
     }
 
+    .newsroll_homeStateCard {
+        flex: 1 0 100%;
+        block-size: 100%;
+        min-height: 100%;
+    }
+
+    .newsroll_homeStateContent {
+        flex: 1 1 auto;
+        align-items: center;
+        justify-content: center;
+        min-height: 320px;
+        text-align: center;
+    }
+
     .wrapper_articleCardContent {
         display: flex;
         flex-direction: column;

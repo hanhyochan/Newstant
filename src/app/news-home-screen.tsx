@@ -47,6 +47,16 @@ import {
   useDetailScrollRestore,
   useInlineTextEdit,
 } from "@/design-system/templates";
+import {
+  infoApi,
+  newsApi,
+  welfareApi,
+  type Faq,
+  type InquiryType,
+  type NewsListItem,
+  type Notice,
+  type WelfarePolicy,
+} from "./_newsroll/api";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
@@ -75,15 +85,22 @@ type OpenArticleDetail = (
 ) => void;
 
 type HomeArticle = {
+  body?: string;
   category: string;
   date: string;
+  dateTime?: string;
   image: string;
   imageAlt: string;
   guideKind?: GuideKind;
+  id?: string;
+  pressName?: string;
+  reporterName?: string;
   title: string;
+  viewCount?: number;
 };
 
 type HomeHeaderControls = {
+  breakingTitle?: string;
   dockedControlsMotionClassName?: string;
   isDetailOpen?: boolean;
   isTextLarge: boolean;
@@ -105,6 +122,15 @@ type PolicyItem = {
   registeredAt: string;
   summary: string;
   tags: string[];
+  title: string;
+  updatedAt: string;
+};
+
+type InfoNoticeItem = {
+  content: string;
+  date: string;
+  id: string;
+  summary: string;
   title: string;
   updatedAt: string;
 };
@@ -177,6 +203,44 @@ function NewsCreatedTime({
       {children}
     </time>
   );
+}
+
+function formatNewsDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return defaultNewsDateLabel;
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    day: "2-digit",
+    hour: "2-digit",
+    hour12: false,
+    minute: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function getHomeArticleGuideKind(index: number): GuideKind {
+  return index % 2 === 0 ? "stacked" : "binary";
+}
+
+function getHomeArticleFromNews(item: NewsListItem, index: number): HomeArticle {
+  return {
+    body: item.body,
+    category: item.category?.label ?? item.categoryId,
+    date: formatNewsDate(item.publishedAt),
+    dateTime: item.publishedAt,
+    guideKind: getHomeArticleGuideKind(index),
+    id: item.id,
+    image: item.imageUrl,
+    imageAlt: item.title,
+    pressName: item.press?.name,
+    reporterName: item.reporterName,
+    title: item.title,
+    viewCount: item.viewCount,
+  };
 }
 
 const homeArticle: HomeArticle = {
@@ -596,13 +660,15 @@ function NewsToolbar({
 
 function NewsViewCount({
   className = "newsroll_viewCount",
+  count = 132,
 }: {
   className?: string;
+  count?: number;
 }) {
   return (
     <span className={className} aria-label="조회수">
       <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
-      132
+      {count.toLocaleString("ko-KR")}
     </span>
   );
 }
@@ -610,21 +676,26 @@ function NewsViewCount({
 function HomeArticleMeta({
   className = "newsroll_article_meta",
   date,
+  dateTime = defaultNewsDateTime,
   showViewCount = true,
+  viewCount,
 }: {
   className?: string;
   date: string;
+  dateTime?: string;
   showViewCount?: boolean;
+  viewCount?: number;
 }) {
   return (
     <p className={className}>
-      <NewsCreatedTime>{date}</NewsCreatedTime>
-      {showViewCount ? <NewsViewCount /> : null}
+      <NewsCreatedTime dateTime={dateTime}>{date}</NewsCreatedTime>
+      {showViewCount ? <NewsViewCount count={viewCount} /> : null}
     </p>
   );
 }
 
 function HomeMainHeader({
+  breakingTitle = homeBreakingTitle,
   dockedControlsMotionClassName = "",
   isDetailOpen = false,
   isTextLarge,
@@ -647,7 +718,7 @@ function HomeMainHeader({
                 event.preventDefault();
                 onOpenBreakingNews();
               }}
-              title={homeBreakingTitle}
+              title={breakingTitle}
             />
           </div>
         }
@@ -701,6 +772,7 @@ function HomeMainHeader({
 }
 
 function HomeShell({
+  breakingTitle,
   children,
   isDetailOpen = false,
   isTextLarge,
@@ -804,6 +876,7 @@ function HomeShell({
       sheetScrollSelector={homeSheetScrollSelector}
       top={
         <HomeMainHeader
+          breakingTitle={breakingTitle}
           isDetailOpen={isDetailOpen}
           isTextLarge={isTextLarge}
           dockedControlsMotionClassName={dockedControlsMotionClassName}
@@ -2029,7 +2102,11 @@ function HomeReelCard({
       <div className="wrapper_articleSummary">
         <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
         <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
-        <HomeArticleMeta date={article.date} />
+        <HomeArticleMeta
+          date={article.date}
+          dateTime={article.dateTime}
+          viewCount={article.viewCount}
+        />
       </div>
       <ArticleActionButtons
         isBookmarked={isBookmarked}
@@ -2038,7 +2115,7 @@ function HomeReelCard({
         onShare={() => setIsShared((current) => !current)}
       />
       <img alt={article.imageAlt} src={article.image} />
-      <p className="text_articleBody">{articleBody}</p>
+      <p className="text_articleBody">{article.body ?? articleBody}</p>
 
       <div className="wrapper_articleSource">
         <div className="wrapper_articleSourcePublisher">
@@ -2050,10 +2127,13 @@ function HomeReelCard({
             height={32}
           />
           <span className="text_articlePublisherName">
-            {numericIndex % 2 === 0 ? "국민일보" : "중앙일보"}
+            {article.pressName ??
+              (numericIndex % 2 === 0 ? "국민일보" : "중앙일보")}
           </span>
         </div>
-        <span className="text_articleReporter">홍길동 기자</span>
+        <span className="text_articleReporter">
+          {article.reporterName ?? "홍길동 기자"}
+        </span>
       </div>
 
       <Button
@@ -2134,6 +2214,27 @@ function ArticleDetailContent({
     </NewsRollArticleDetailPanel>
   );
 }
+
+function HomeNewsStateCard({
+  children,
+  role,
+}: {
+  children: ReactNode;
+  role?: "alert" | "status";
+}) {
+  return (
+    <article className="container_articleCard newsroll_homeStateCard">
+      <div
+        className="wrapper_articleCardContent newsroll_homeStateContent"
+        role={role}
+        tabIndex={0}
+      >
+        <p className="text_commentEmpty">{children}</p>
+      </div>
+    </article>
+  );
+}
+
 function HomeView({
   isTextLarge,
   onOpenBreakingNews,
@@ -2148,7 +2249,10 @@ function HomeView({
   const [homeViewMode, setHomeViewMode] = useState<HomeViewMode>("reels");
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedDetailArticle, setSelectedDetailArticle] =
-    useState<HomeArticle>(homeArticle);
+    useState<HomeArticle | null>(null);
+  const [articles, setArticles] = useState<HomeArticle[]>([]);
+  const [isNewsLoading, setIsNewsLoading] = useState(true);
+  const [newsError, setNewsError] = useState<string | null>(null);
   const closeHomeDetailImmediately = useCallback(() => {
     setDetailOpen(false);
   }, []);
@@ -2162,8 +2266,43 @@ function HomeView({
     setDetailOpen(true);
   }
 
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadHomeNews() {
+      setIsNewsLoading(true);
+      setNewsError(null);
+
+      try {
+        const nextNews = await newsApi.getNewsList();
+
+        if (!ignore) {
+          setArticles(nextNews.map(getHomeArticleFromNews));
+        }
+      } catch {
+        if (!ignore) {
+          setNewsError("뉴스를 불러오지 못했습니다.");
+        }
+      } finally {
+        if (!ignore) {
+          setIsNewsLoading(false);
+        }
+      }
+    }
+
+    loadHomeNews();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const hasArticles = articles.length > 0;
+  const breakingTitle = articles[0]?.title ?? homeBreakingTitle;
+
   return (
     <HomeShell
+      breakingTitle={breakingTitle}
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
@@ -2177,10 +2316,12 @@ function HomeView({
       onToggleTextSize={onToggleTextSize}
     >
       {detailOpen ? (
-        <ArticleDetailContent
-          article={selectedDetailArticle}
-          isLeaving={homeDetailExitMotion.isLeaving}
-        />
+        selectedDetailArticle ? (
+          <ArticleDetailContent
+            article={selectedDetailArticle}
+            isLeaving={homeDetailExitMotion.isLeaving}
+          />
+        ) : null
       ) : homeViewMode === "reels" ? (
         <section
           className="container_newsFeed"
@@ -2188,13 +2329,25 @@ function HomeView({
           role="tabpanel"
           aria-labelledby="home-news-view-tab-reels"
         >
-          {homeArticles.map((article, index) => (
-            <HomeReelCard
-              article={article}
-              index={index}
-              key={`${article.title}-${index}`}
-            />
-          ))}
+          {isNewsLoading ? (
+            <HomeNewsStateCard role="status">
+              뉴스를 불러오는 중입니다.
+            </HomeNewsStateCard>
+          ) : newsError ? (
+            <HomeNewsStateCard role="alert">
+              {newsError}
+            </HomeNewsStateCard>
+          ) : hasArticles ? (
+            articles.map((article, index) => (
+              <HomeReelCard
+                article={article}
+                index={index}
+                key={article.id ?? `${article.title}-${index}`}
+              />
+            ))
+          ) : (
+            <HomeNewsStateCard>표시할 뉴스가 없습니다.</HomeNewsStateCard>
+          )}
         </section>
       ) : (
         <section
@@ -2204,17 +2357,29 @@ function HomeView({
           aria-labelledby="home-news-view-tab-block"
         >
           <div className="wrapper_newsGridScroll">
-            {homeArticles.map((article) => (
-              <NewsBlockItem
-                dateLabel={article.date}
-                dateTime={defaultNewsDateTime}
-                imageAlt={article.imageAlt}
-                imageSrc={article.image}
-                key={article.title}
-                onClick={() => openHomeDetail(article)}
-                title={article.title}
-              />
-            ))}
+            {isNewsLoading ? (
+              <HomeNewsStateCard role="status">
+                뉴스를 불러오는 중입니다.
+              </HomeNewsStateCard>
+            ) : newsError ? (
+              <HomeNewsStateCard role="alert">
+                {newsError}
+              </HomeNewsStateCard>
+            ) : hasArticles ? (
+              articles.map((article) => (
+                <NewsBlockItem
+                  dateLabel={article.date}
+                  dateTime={article.dateTime ?? defaultNewsDateTime}
+                  imageAlt={article.imageAlt}
+                  imageSrc={article.image}
+                  key={article.id ?? article.title}
+                  onClick={() => openHomeDetail(article)}
+                  title={article.title}
+                />
+              ))
+            ) : (
+              <HomeNewsStateCard>표시할 뉴스가 없습니다.</HomeNewsStateCard>
+            )}
           </div>
         </section>
       )}
@@ -2390,6 +2555,7 @@ function AllNewsSectionPanel({
 }
 
 type AllNewsArticlePreview = {
+  article?: HomeArticle;
   category?: string;
   guideKind?: GuideKind;
   image: string;
@@ -2401,6 +2567,10 @@ function createAllNewsArticle(
   fallbackCategory: string,
   index: number,
 ): HomeArticle {
+  if (preview.article) {
+    return preview.article;
+  }
+
   return {
     category: preview.category ?? fallbackCategory,
     date: homeArticle.date,
@@ -2411,11 +2581,40 @@ function createAllNewsArticle(
   };
 }
 
+function getAllNewsPreviewFromArticle(article: HomeArticle): AllNewsArticlePreview {
+  return {
+    article,
+    category: article.category,
+    image: article.image,
+    title: article.title,
+  };
+}
+
+function groupAllNewsByValue(
+  articles: HomeArticle[],
+  getValue: (article: HomeArticle) => string | undefined,
+) {
+  return articles.reduce<Record<string, AllNewsArticlePreview[]>>(
+    (groups, article) => {
+      const value = getValue(article);
+
+      if (!value) {
+        return groups;
+      }
+
+      groups[value] = [...(groups[value] ?? []), getAllNewsPreviewFromArticle(article)];
+
+      return groups;
+    },
+    {},
+  );
+}
+
 function AllNewsLatestCard({
   item,
   onClick,
 }: {
-  item: (typeof allNewsLatest)[number];
+  item: AllNewsArticlePreview;
   onClick: () => void;
 }) {
   return (
@@ -2441,7 +2640,7 @@ function AllNewsHeadlineItem({
   item,
   onClick,
 }: {
-  item: (typeof allNewsHeadlinesByPress)[string][number];
+  item: AllNewsArticlePreview;
   onClick: () => void;
 }) {
   return (
@@ -2466,7 +2665,7 @@ function AllNewsRelayItem({
   onClick,
 }: {
   featured?: boolean;
-  item: (typeof allNewsRelayByCategory)[string][number];
+  item: AllNewsArticlePreview;
   onClick: () => void;
 }) {
   return (
@@ -2525,20 +2724,41 @@ function AllNewsView({
   } | null>(null);
   const [isLatestDragging, setIsLatestDragging] = useState(false);
   const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
+  const [allNewsArticles, setAllNewsArticles] = useState<HomeArticle[]>([]);
   const [isBreakingAlarmOn, setIsBreakingAlarmOn] = useState(false);
   const [showAllBreaking, setShowAllBreaking] = useState(false);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
+  const allNewsLatestItems = useMemo(
+    () => allNewsArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
+    [allNewsArticles],
+  );
+  const allNewsHeadlinesByActivePress = useMemo(
+    () => groupAllNewsByValue(allNewsArticles, (article) => article.pressName),
+    [allNewsArticles],
+  );
+  const currentAllNewsPresses = useMemo(
+    () => Object.keys(allNewsHeadlinesByActivePress),
+    [allNewsHeadlinesByActivePress],
+  );
+  const allNewsRelayByActiveCategory = useMemo(
+    () => groupAllNewsByValue(allNewsArticles, (article) => article.category),
+    [allNewsArticles],
+  );
+  const currentAllNewsRelayCategories = useMemo(
+    () => Object.keys(allNewsRelayByActiveCategory),
+    [allNewsRelayByActiveCategory],
+  );
   const breakingItems = showAllBreaking
-    ? allNewsBreaking
-    : allNewsBreaking.slice(0, 3);
-  const relayItems = allNewsRelayByCategory[activeRelayCategory] ?? [];
-  const activePressIndex = Math.max(0, allNewsPresses.indexOf(activePress));
+    ? allNewsArticles.map((article) => article.title)
+    : allNewsArticles.map((article) => article.title).slice(0, 3);
+  const relayItems = allNewsRelayByActiveCategory[activeRelayCategory] ?? [];
+  const activePressIndex = Math.max(0, currentAllNewsPresses.indexOf(activePress));
   const activeRelayIndex = Math.max(
     0,
-    allNewsRelayCategories.indexOf(activeRelayCategory),
+    currentAllNewsRelayCategories.indexOf(activeRelayCategory),
   );
-  const activeHeadlineItems = allNewsHeadlinesByPress[activePress] ?? [];
+  const activeHeadlineItems = allNewsHeadlinesByActivePress[activePress] ?? [];
   const headlineItems = showAllHeadlines
     ? activeHeadlineItems
     : activeHeadlineItems.slice(0, 4);
@@ -2557,6 +2777,43 @@ function AllNewsView({
     isOpen: isDetailOpen,
     onClose: closeAllNewsDetailImmediately,
   });
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadAllNews() {
+      const nextNews = await newsApi.getNewsList();
+
+      if (!ignore) {
+        setAllNewsArticles(nextNews.map(getHomeArticleFromNews));
+      }
+    }
+
+    loadAllNews().catch(() => {
+      if (!ignore) {
+        setAllNewsArticles([]);
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentAllNewsPresses.length > 0 && !currentAllNewsPresses.includes(activePress)) {
+      setActivePress(currentAllNewsPresses[0]);
+    }
+  }, [activePress, currentAllNewsPresses]);
+
+  useEffect(() => {
+    if (
+      currentAllNewsRelayCategories.length > 0 &&
+      !currentAllNewsRelayCategories.includes(activeRelayCategory)
+    ) {
+      setActiveRelayCategory(currentAllNewsRelayCategories[0]);
+    }
+  }, [activeRelayCategory, currentAllNewsRelayCategories]);
 
   useLayoutEffect(() => {
     const node = breakingBodyRef.current;
@@ -2715,7 +2972,7 @@ function AllNewsView({
   }
 
   function handlePressTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const lastIndex = allNewsPresses.length - 1;
+    const lastIndex = currentAllNewsPresses.length - 1;
     const nextIndexByKey: Record<string, number> = {
       ArrowDown: activePressIndex === lastIndex ? 0 : activePressIndex + 1,
       ArrowLeft: activePressIndex === 0 ? lastIndex : activePressIndex - 1,
@@ -2731,7 +2988,7 @@ function AllNewsView({
     }
 
     event.preventDefault();
-    setActivePress(allNewsPresses[nextIndex]);
+    setActivePress(currentAllNewsPresses[nextIndex]);
     document.getElementById(`all-news-press-tab-${nextIndex}`)?.focus();
   }
 
@@ -2850,7 +3107,7 @@ function AllNewsView({
             headingLevel="h1"
             title={
               <>
-                최신 뉴스 <strong>10</strong>
+                최신 뉴스 <strong>{allNewsLatestItems.length}</strong>
               </>
             }
           >
@@ -2865,7 +3122,7 @@ function AllNewsView({
                 ref={latestScrollerRef}
                 role="group"
               >
-                {allNewsLatest.map((item, index) => (
+                {allNewsLatestItems.map((item, index) => (
                   <AllNewsLatestCard
                     item={item}
                     key={`${item.title}-${index}`}
@@ -2875,7 +3132,7 @@ function AllNewsView({
                       }
 
                       openAllNewsDetail(
-                        createAllNewsArticle(item, item.category, index),
+                        createAllNewsArticle(item, item.category ?? homeArticle.category, index),
                       );
                     }}
                   />
@@ -2900,7 +3157,7 @@ function AllNewsView({
                   aria-label="언론사 선택"
                   onKeyDown={handlePressTabKeyDown}
                 >
-                  {allNewsPresses.map((press, index) => {
+                  {currentAllNewsPresses.map((press, index) => {
                     const selected = activePress === press;
 
                     return (
@@ -2970,13 +3227,13 @@ function AllNewsView({
                   className="newsroll_all_category_tabs"
                   getPanelId={(category) =>
                     category === activeRelayCategory
-                      ? `all-news-relay-panel-${allNewsRelayCategories.indexOf(category)}`
+                      ? `all-news-relay-panel-${currentAllNewsRelayCategories.indexOf(category)}`
                       : undefined
                   }
                   getTabId={(category) =>
-                    `all-news-relay-tab-${allNewsRelayCategories.indexOf(category)}`
+                    `all-news-relay-tab-${currentAllNewsRelayCategories.indexOf(category)}`
                   }
-                  items={allNewsRelayCategories.map((category) => ({
+                  items={currentAllNewsRelayCategories.map((category) => ({
                     id: category,
                     label: category,
                   }))}
@@ -3010,6 +3267,13 @@ function AllNewsView({
 }
 
 const policyAgeTabs = ["전체", "미성년", "청년", "중장년", "노년"];
+const policyAgeIdByLabel: Record<string, string> = {
+  노년: "senior",
+  미성년: "minor",
+  전체: "all",
+  중장년: "middle",
+  청년: "youth",
+};
 const basePolicyDetails: PolicyDetailItem[] = [
   { label: "지원 대상 연령", value: "19세 ~ 45세" },
   {
@@ -3161,6 +3425,46 @@ const policySortOptions: { label: string; value: SortOrder }[] = [
   { label: policySortLabels.latest, value: "latest" },
 ];
 const policyListTargetCount = 10;
+
+function formatPolicyDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function getPolicyItemFromWelfarePolicy(policy: WelfarePolicy): PolicyItem {
+  return {
+    details: [
+      { label: "지원 대상 연령", value: policy.targetAge },
+      { label: "지원 내용", value: policy.supportContent },
+      { label: "지원 기관", value: policy.institution },
+      {
+        label: "사업 기간",
+        value: `${policy.businessStartDate} ~ ${policy.businessEndDate}`,
+      },
+      {
+        label: "신청 기간",
+        value: `${policy.applicationStartDate} ~ ${policy.applicationEndDate}`,
+      },
+      { label: "신청 방법", value: policy.applicationMethod },
+      { label: "선발 방식", value: policy.selectionMethod },
+      { label: "제출 서류", value: policy.documents },
+    ],
+    registeredAt: formatPolicyDate(policy.registeredAt),
+    summary: policy.summary,
+    tags: [policy.category, policy.subcategory, policy.label],
+    title: policy.title,
+    updatedAt: formatPolicyDate(policy.updatedAt),
+  };
+}
 
 function fillPolicyListItems(items: PolicyItem[]) {
   if (items.length === 0 || items.length >= policyListTargetCount) {
@@ -3436,11 +3740,10 @@ function PolicyView({
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
+  const [policyApiItems, setPolicyApiItems] = useState<PolicyItem[]>([]);
   const policyPanelContentRef = useRef<HTMLDivElement>(null);
   const policyListSectionRef = useRef<HTMLDivElement>(null);
-  const policyItems = fillPolicyListItems(
-    policyItemsByAge[activeAge] ?? policyItemsByAge.전체,
-  );
+  const policyItems = fillPolicyListItems(policyApiItems);
   const visiblePolicyItems =
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
   const activeAgeIndex = Math.max(0, policyAgeTabs.indexOf(activeAge));
@@ -3467,6 +3770,30 @@ function PolicyView({
     onClose: closePolicyDetailImmediately,
   });
   const policySortMenuId = "policy-sort-menu";
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadPolicies() {
+      const ageGroupId = policyAgeIdByLabel[activeAge] ?? "all";
+      const nextPolicies = await welfareApi.getWelfarePolicyList(ageGroupId);
+
+      if (!ignore) {
+        setPolicyApiItems(nextPolicies.map(getPolicyItemFromWelfarePolicy));
+        setSelectedPolicyIndex(0);
+      }
+    }
+
+    loadPolicies().catch(() => {
+      if (!ignore) {
+        setPolicyApiItems([]);
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, [activeAge]);
 
   function openPolicyDetail(item: PolicyItem, index: number) {
     if (!detailItem) {
@@ -4723,36 +5050,50 @@ function DockedAlarmButton({
   );
 }
 function getNoticeDateLabel(date: string) {
+  if (date.includes("T")) {
+    return formatPolicyDate(date);
+  }
+
   const [year, month, day] = date.split(".");
 
   return `${year}년 ${Number(month)}월 ${Number(day)}일`;
 }
 
-function getNoticeDetailItem(notice: (typeof noticeItems)[number]): PolicyItem {
-  const noticeDate = getNoticeDateLabel(notice.date);
-
+function getInfoNoticeItem(notice: Notice): InfoNoticeItem {
   return {
-    details: basePolicyDetails,
-    registeredAt: noticeDate,
-    summary:
-      "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
+    content: notice.content,
+    date: getNoticeDateLabel(notice.registeredAt),
+    id: notice.id,
+    summary: notice.summary,
+    title: notice.title,
+    updatedAt: getNoticeDateLabel(notice.updatedAt),
+  };
+}
+
+function getNoticeDetailItem(notice: InfoNoticeItem): PolicyItem {
+  return {
+    details: [],
+    registeredAt: notice.date,
+    summary: notice.content || notice.summary,
     tags: ["공지사항", "안내", "업데이트"],
     title: notice.title,
-    updatedAt: noticeDate,
+    updatedAt: notice.updatedAt,
   };
 }
 
 function InfoNoticeSection({
+  items,
   onNoticeSelect,
 }: {
-  onNoticeSelect: (notice: (typeof noticeItems)[number], index: number) => void;
+  items: InfoNoticeItem[];
+  onNoticeSelect: (notice: InfoNoticeItem, index: number) => void;
 }) {
   return (
     <section className="container_infoList" aria-label="공지사항">
       <SeparatedList
         dividerClassName="divider_infoSection"
         getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
-        items={noticeItems}
+        items={items}
         renderItem={(notice, index) => (
           <button
             className="btn_infoNoticeItem"
@@ -4762,7 +5103,7 @@ function InfoNoticeSection({
             <div className="wrapper_infoNoticeContent">
               <span className="text_infoItemTitle">{notice.title}</span>
               <p className="text_infoBody text_lineClamp2">
-                업데이트된 뉴스 경험을 위해 서비스 화면과 알림 기능을 정리했습니다.
+                {notice.summary}
               </p>
               <span className="text_infoMeta">{notice.date}</span>
             </div>
@@ -4773,7 +5114,7 @@ function InfoNoticeSection({
   );
 }
 
-function InfoFaqSection() {
+function InfoFaqSection({ items }: { items: Faq[] }) {
   const [openFaqIndexes, setOpenFaqIndexes] = useState<Set<number>>(
     () => new Set(),
   );
@@ -4783,7 +5124,7 @@ function InfoFaqSection() {
       <SeparatedList
         dividerClassName="divider_infoSection"
         getKey={(item, index) => `${item.question}-${index}`}
-        items={faqItems}
+        items={items}
         renderItem={(item, index) => (
           <details
             className="container_infoFaqItem"
@@ -4816,10 +5157,18 @@ function InfoFaqSection() {
   );
 }
 
-function InfoInquirySection() {
-  const [selectedInquiryType, setSelectedInquiryType] = useState(inquiryTypes[0]);
+function InfoInquirySection({ items }: { items: InquiryType[] }) {
+  const [selectedInquiryType, setSelectedInquiryType] = useState(
+    items[0]?.label ?? "",
+  );
   const [isInquiryTypeOpen, setIsInquiryTypeOpen] = useState(false);
   const inquiryTypeMenuId = "info-inquiry-type-menu";
+
+  useEffect(() => {
+    if (items.length > 0 && !items.some((item) => item.label === selectedInquiryType)) {
+      setSelectedInquiryType(items[0].label);
+    }
+  }, [items, selectedInquiryType]);
 
   return (
     <form
@@ -4848,18 +5197,18 @@ function InfoInquirySection() {
               id={inquiryTypeMenuId}
               role="listbox"
             >
-              {inquiryTypes.map((type) => (
+              {items.map((type) => (
                 <button
-                  aria-selected={selectedInquiryType === type}
-                  key={type}
+                  aria-selected={selectedInquiryType === type.label}
+                  key={type.id}
                   onClick={() => {
-                    setSelectedInquiryType(type);
+                    setSelectedInquiryType(type.label);
                     setIsInquiryTypeOpen(false);
                   }}
                   role="option"
                   type="button"
                 >
-                  {type}
+                  {type.label}
                 </button>
               ))}
             </div>
@@ -4917,15 +5266,18 @@ function InfoView({
   const [noticeDetailIndex, setNoticeDetailIndex] = useState<number | null>(
     null,
   );
+  const [infoNotices, setInfoNotices] = useState<InfoNoticeItem[]>([]);
+  const [infoFaqs, setInfoFaqs] = useState<Faq[]>([]);
+  const [infoInquiryTypes, setInfoInquiryTypes] = useState<InquiryType[]>([]);
   const infoPanelContentRef = useRef<HTMLDivElement>(null);
   const isNoticeDetailOpen = noticeDetailItem !== null;
   const previousNotice =
     noticeDetailIndex !== null && noticeDetailIndex > 0
-      ? noticeItems[noticeDetailIndex - 1]
+      ? infoNotices[noticeDetailIndex - 1]
       : null;
   const nextNotice =
-    noticeDetailIndex !== null && noticeDetailIndex < noticeItems.length - 1
-      ? noticeItems[noticeDetailIndex + 1]
+    noticeDetailIndex !== null && noticeDetailIndex < infoNotices.length - 1
+      ? infoNotices[noticeDetailIndex + 1]
       : null;
   const infoDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isNoticeDetailOpen,
@@ -4943,6 +5295,36 @@ function InfoView({
   const activeInfoTabLabel =
     infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "공지사항";
 
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadInfoData() {
+      const [nextNotices, nextFaqs, nextInquiryTypes] = await Promise.all([
+        infoApi.getNotices(),
+        infoApi.getFaqs(),
+        infoApi.getInquiryTypes(),
+      ]);
+
+      if (!ignore) {
+        setInfoNotices(nextNotices.map(getInfoNoticeItem));
+        setInfoFaqs(nextFaqs);
+        setInfoInquiryTypes(nextInquiryTypes);
+      }
+    }
+
+    loadInfoData().catch(() => {
+      if (!ignore) {
+        setInfoNotices([]);
+        setInfoFaqs([]);
+        setInfoInquiryTypes([]);
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   function handleInfoTabChange(nextTab: InfoTab) {
     setActiveInfoTab(nextTab);
     setNoticeDetailItem(null);
@@ -4950,7 +5332,7 @@ function InfoView({
   }
 
   function openNoticeDetail(
-    notice: (typeof noticeItems)[number],
+    notice: InfoNoticeItem,
     index: number,
   ) {
     infoDetailScrollRestore.captureScroll();
@@ -4958,7 +5340,7 @@ function InfoView({
     setNoticeDetailIndex(index);
   }
 
-  function moveNoticeDetail(notice: (typeof noticeItems)[number], index: number) {
+  function moveNoticeDetail(notice: InfoNoticeItem, index: number) {
     setNoticeDetailItem(getNoticeDetailItem(notice));
     setNoticeDetailIndex(index);
   }
@@ -5045,10 +5427,15 @@ function InfoView({
               role="tabpanel"
             >
               {activeInfoTab === "notice" ? (
-                <InfoNoticeSection onNoticeSelect={openNoticeDetail} />
+                <InfoNoticeSection
+                  items={infoNotices}
+                  onNoticeSelect={openNoticeDetail}
+                />
               ) : null}
-              {activeInfoTab === "faq" ? <InfoFaqSection /> : null}
-              {activeInfoTab === "inquiry" ? <InfoInquirySection /> : null}
+              {activeInfoTab === "faq" ? <InfoFaqSection items={infoFaqs} /> : null}
+              {activeInfoTab === "inquiry" ? (
+                <InfoInquirySection items={infoInquiryTypes} />
+              ) : null}
             </div>
           </div>
         )}
