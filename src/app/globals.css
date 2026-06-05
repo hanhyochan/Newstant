@@ -453,6 +453,8 @@
         --border-3: 3px;
         --newsroll-divider-color: var(--color-cool-neutral-96);
         --newsroll-divider-thickness: var(--newsroll-main-border-width, var(--border-1));
+        --newsroll-chevron-size: 8px;
+        --newsroll-chevron-transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 
         /* shadow: position */
         --shadow-y-3: 8px;
@@ -581,12 +583,14 @@
         }
 
         .newsroll_all_more_chevron {
-            width: 8px;
-            height: 8px;
+            width: var(--newsroll-chevron-size);
+            height: var(--newsroll-chevron-size);
+            flex: 0 0 var(--newsroll-chevron-size);
             box-sizing: border-box;
             border-right: var(--border-1) solid currentColor;
             border-bottom: var(--border-1) solid currentColor;
             transform: rotate(45deg) translateY(-2px);
+            transition: var(--newsroll-chevron-transition);
         }
 
         .newsroll_all_panel {
@@ -715,7 +719,6 @@
             align-items: center;
             justify-content: flex-end;
             gap: var(--spacing-gap-horizontal-8);
-            margin-left: auto;
             text-align: right;
             white-space: nowrap;
         }
@@ -849,7 +852,7 @@
             position: absolute;
             inset: 1px 0;
             border-radius: 50%;
-            background: var(--color-label-assistive);
+            background: currentColor;
         }
 
         .newsroll_all_stat_icon_eye::after {
@@ -2286,6 +2289,7 @@
     .newsroll_icon_bookmark {
         --newsroll-icon-outline-url: url('/icons/icon_bookmark_line.svg');
         --newsroll-icon-fill-url: url('/icons/icon_bookmark_active.svg');
+        color: var(--color-cool-neutral-50);
     }
 
     .newsroll_icon_arrow {
@@ -2386,6 +2390,7 @@
     .newsroll_icon_share {
         --newsroll-icon-outline-url: url('/icons/icon_share_nodes_outline.svg');
         --newsroll-icon-fill-url: url('/icons/icon_share_nodes_active.svg');
+        color: var(--color-cool-neutral-50);
     }
 
     .newsroll_icon_sizeIncrease {
@@ -2573,7 +2578,7 @@
         min-height: 100dvh;
         position: relative;
         left: calc(var(--spacing-padding-horizontal-16) * -1);
-        padding: var(--size-52) var(--spacing-padding-horizontal-16)
+        padding: 48px var(--spacing-padding-horizontal-16)
             var(--spacing-padding-vertical-60);
         color: var(--color-common-100);
         background: var(--color-newsroll-purple-20);
@@ -2581,6 +2586,9 @@
 
     .newsroll_search_top {
         width: 100%;
+        justify-content: flex-end;
+        gap: var(--spacing-gap-horizontal-16);
+        padding: 0;
     }
 
     .newsroll_search_close {
@@ -2779,12 +2787,14 @@
     }
 
     .newsroll_all_more_chevron {
-        width: 8px;
-        height: 8px;
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
+        flex: 0 0 var(--newsroll-chevron-size);
         box-sizing: border-box;
         border-right: var(--border-1) solid currentColor;
         border-bottom: var(--border-1) solid currentColor;
         transform: rotate(45deg) translateY(-2px);
+        transition: var(--newsroll-chevron-transition);
     }
 
     .newsroll_all_panel {
@@ -2986,7 +2996,6 @@
         align-items: center;
         justify-content: flex-end;
         gap: var(--spacing-gap-horizontal-8);
-        margin-left: auto;
         text-align: right;
         white-space: nowrap;
     }
@@ -3000,7 +3009,7 @@
     }
 
     .newsroll_all_stat_icon_eye {
-        background: var(--color-label-assistive);
+        background: currentColor;
     }
 
     .newsroll_all_stat_icon_comment {
@@ -3831,10 +3840,10 @@
     }
 
     .icon_myChevron {
-        width: 8px;
-        height: 8px;
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
         display: block;
-        flex: 0 0 8px;
+        flex: 0 0 var(--newsroll-chevron-size);
         box-sizing: border-box;
         padding: 0;
         border-top: var(--border-1) solid currentColor;
@@ -3975,8 +3984,12 @@
     .btn_infoFaqSummary .text_infoItemTitle {
         width: fit-content;
         min-width: auto;
-        max-width: calc(100% - 28px);
+        max-width: calc(100% - 24px);
         flex: 0 1 auto;
+    }
+
+    .btn_infoFaqSummary::marker {
+        content: "";
     }
 
     .btn_infoFaqSummary::-webkit-details-marker {
@@ -3984,20 +3997,20 @@
     }
 
     .icon_infoChevron {
-        width: 12px;
-        height: 12px;
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
         display: block;
-        flex: 0 0 12px;
+        flex: 0 0 var(--newsroll-chevron-size);
         box-sizing: border-box;
-        margin-right: 2px;
         padding: 0;
-        border-top: var(--border-1) solid currentColor;
         border-right: var(--border-1) solid currentColor;
-        transform: rotate(45deg);
+        border-bottom: var(--border-1) solid currentColor;
+        transform: translateX(-2px) rotate(45deg);
+        transition: var(--newsroll-chevron-transition);
     }
 
     .container_infoFaqItem[open] .icon_infoChevron {
-        transform: rotate(135deg);
+        transform: translateX(-2px) rotate(225deg);
     }
 
     .text_infoFaqBody {
@@ -4275,7 +4288,7 @@
     }
 
     .container_homeScreen:not(.is_homeSheetDocked) .wrapper_hero {
-        margin-top: var(--spacing-gap-vertical-16);
+        padding-top: var(--spacing-gap-vertical-16);
     }
 
     .container_homeScreen.is_homeSheetDocked .container_hero > :not(.wrapper_homeDockedControls),
@@ -4343,10 +4356,13 @@
     }
 
     .newsroll_all_breakingHeader .newsroll_all_more_icon {
-        width: 4px;
-        height: 16px;
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
+        flex: 0 0 var(--newsroll-chevron-size);
+        object-fit: contain;
         filter: brightness(0) invert(1);
         transform: rotate(90deg);
+        transition: var(--newsroll-chevron-transition);
     }
 
     .newsroll_all_sheetFrameSheet {
@@ -4460,9 +4476,12 @@
     }
 
     .newsroll_all_more_icon {
-        width: 4px;
-        height: 16px;
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
+        flex: 0 0 var(--newsroll-chevron-size);
+        object-fit: contain;
         transform: rotate(90deg);
+        transition: var(--newsroll-chevron-transition);
     }
 
     .newsroll_all_press_panel .newsroll_all_more {
@@ -4618,7 +4637,6 @@
         align-items: center;
         justify-content: flex-end;
         gap: var(--spacing-gap-horizontal-8);
-        margin-left: auto;
         color: var(--color-cool-neutral-50);
         font-size: var(--font-size-15);
         font-weight: var(--font-weight-400);
@@ -4630,7 +4648,7 @@
         display: flex;
         justify-content: flex-end;
         gap: var(--spacing-gap-horizontal-16);
-        color: var(--color-label-assistive);
+        color: var(--color-cool-neutral-50);
     }
 
     .wrapper_articleActions .btn_articleTool {
@@ -5875,12 +5893,17 @@
     }
 
     .newsroll_dropdownArrow {
-        width: 8px;
-        height: 8px;
-        flex: 0 0 auto;
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
+        flex: 0 0 var(--newsroll-chevron-size);
         border-right: var(--border-1) solid currentColor;
         border-bottom: var(--border-1) solid currentColor;
         transform: rotate(45deg) translateY(-2px);
+        transition: var(--newsroll-chevron-transition);
+    }
+
+    .btn_commentDropdown[aria-expanded='true'] .newsroll_dropdownArrow {
+        transform: rotate(225deg) translate(-1px, -1px);
     }
 
     .listbox_commentDropdown {
@@ -6274,7 +6297,7 @@
     }
 
     .newsroll_all_more[aria-expanded='true'] .newsroll_all_more_icon {
-        transform: rotate(-90deg);
+        transform: rotate(270deg);
     }
 
     .newsroll_all_press_tabs button[aria-selected='true'],
@@ -6374,7 +6397,6 @@
         align-items: center;
         justify-content: flex-end;
         gap: var(--spacing-gap-horizontal-16);
-        margin-top: 48px;
         padding-right: 0;
         padding-top: 0;
         padding-bottom: 0;
@@ -6392,7 +6414,7 @@
         left: auto;
         width: 100%;
         gap: var(--spacing-gap-vertical-16);
-        padding-top: 0;
+        padding-top: 48px;
     }
 
     .newsroll_all_breaking_stack,
@@ -6480,8 +6502,6 @@
     .newsroll_screen_all .newsroll_phone {
         width: 100%;
         max-width: var(--newsroll-max-width);
-        margin-right: auto;
-        margin-left: auto;
         overflow-x: hidden;
     }
 
@@ -6584,12 +6604,12 @@
     }
 
 
-.container_homeToolbar > .newsroll_toolbar[aria-label='상단 도구'] {
-    margin-top: 48px;
+.container_homeToolbar {
+    padding-top: 48px;
 }
 
 .container_homeToolbar > .newsroll_toolbar {
-    margin-top: 28px;
+    padding-top: 0;
 }
 
 .newsroll_info_screen,

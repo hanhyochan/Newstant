@@ -2282,6 +2282,7 @@ function AllNewsMoreButton({
   expanded = false,
   expandedLabel = "접기",
   onClick,
+  showIcon = true,
   tone = "light",
 }: {
   ariaLabel?: string;
@@ -2289,23 +2290,26 @@ function AllNewsMoreButton({
   expanded?: boolean;
   expandedLabel?: string;
   onClick?: () => void;
+  showIcon?: boolean;
   tone?: "dark" | "light";
 }) {
   return (
     <button
       aria-label={ariaLabel}
-      aria-expanded={expanded}
+      aria-expanded={showIcon ? expanded : undefined}
       className={`btn_originalArticle newsroll_all_more newsroll_all_more_${tone}`}
       onClick={onClick}
       type="button"
     >
       <span>{expanded ? expandedLabel : collapsedLabel}</span>
-      <img
-        className="newsroll_all_more_icon"
-        src="/icons/icon_chevron_right.svg"
-        alt=""
-        aria-hidden="true"
-      />
+      {showIcon ? (
+        <img
+          className="newsroll_all_more_icon"
+          src="/icons/icon_chevron_right.svg"
+          alt=""
+          aria-hidden="true"
+        />
+      ) : null}
     </button>
   );
 }
@@ -3657,7 +3661,7 @@ function PolicyView({
     </NewsRollCommonLayout>
   );
 }
-const myRecentNews = Array.from({ length: 4 }, (_, index) => ({
+const myRecentNews = Array.from({ length: 12 }, (_, index) => ({
   dateTime: defaultNewsDateTime,
   image: articleImage,
   time: defaultNewsDateLabel,
@@ -3666,6 +3670,7 @@ const myRecentNews = Array.from({ length: 4 }, (_, index) => ({
       ? "용인 수지, 강남·분당 가격 동조화로..."
       : "용인 수지, 강남·분당 가격 동조화로...",
 }));
+const myRecentPreviewLimit = 10;
 
 const myCategoryGroups = [
   {
@@ -3704,6 +3709,7 @@ const mySummaryItems = [
 const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
 type MySummaryView = (typeof mySummaryItems)[number]["value"];
 type MyPageDetailView =
+  | "recent"
   | "newsViewTime"
   | "profileSettings"
   | MySummaryView
@@ -3799,6 +3805,65 @@ function MySettingRow({
   );
 }
 
+function MyArticleListDetailPage({
+  children,
+  isLeaving = false,
+  title,
+}: {
+  children: ReactNode;
+  isLeaving?: boolean;
+  title: string;
+}) {
+  return (
+    <div
+      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
+    >
+      <h2 className="text_mySectionTitle">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+function createMyRecentArticle(
+  item: (typeof myRecentNews)[number],
+  index: number,
+): HomeArticle {
+  const fallbackArticle = homeArticles[index % homeArticles.length] ?? homeArticle;
+
+  return {
+    ...fallbackArticle,
+    date: item.time,
+    image: item.image,
+    imageAlt: fallbackArticle.imageAlt,
+    title: item.title,
+  };
+}
+
+function MyRecentDetailPage({
+  isLeaving = false,
+  onOpenArticle,
+}: {
+  isLeaving?: boolean;
+  onOpenArticle: OpenArticleDetail;
+}) {
+  return (
+    <MyArticleListDetailPage isLeaving={isLeaving} title="최근 본 뉴스">
+      <SeparatedList
+        dividerClassName="newsroll_all_itemDivider"
+        getKey={(item, index) => `${item.title}-${index}`}
+        items={myRecentNews}
+        renderItem={(item, index) => (
+          <AllNewsRelayItem
+            featured={index === 0 || index === 5}
+            item={item}
+            onClick={() => onOpenArticle(createMyRecentArticle(item, index))}
+          />
+        )}
+      />
+    </MyArticleListDetailPage>
+  );
+}
+
 function MyBookmarkDetailPage({
   isLeaving = false,
   onOpenArticle,
@@ -3809,10 +3874,7 @@ function MyBookmarkDetailPage({
   const fallbackCategory = allNewsRelayCategories[0] ?? homeArticle.category;
 
   return (
-    <div
-      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
-    >
-      <h2 className="text_mySectionTitle">북마크</h2>
+    <MyArticleListDetailPage isLeaving={isLeaving} title="북마크">
       <SeparatedList
         dividerClassName="newsroll_all_itemDivider"
         getKey={(item, index) => `${item.title}-${index}`}
@@ -3827,7 +3889,7 @@ function MyBookmarkDetailPage({
           />
         )}
       />
-    </div>
+    </MyArticleListDetailPage>
   );
 }
 
@@ -4207,7 +4269,6 @@ function MyPageView({
     () => myCommentCategoryTabs[0] ?? "",
   );
   const [isMyAlarmOn, setIsMyAlarmOn] = useState(false);
-  const [isRecentExpanded, setIsRecentExpanded] = useState(false);
   const [selectedCategorySettings, setSelectedCategorySettings] = useState(
     () =>
       myCategoryGroups.map(
@@ -4235,6 +4296,7 @@ function MyPageView({
     () => new Set(["07:00", "21:00"]),
   );
   const myPanelContentRef = useRef<HTMLDivElement>(null);
+  const isRecentOpen = activeDetailView === "recent";
   const isNewsViewTimeOpen = activeDetailView === "newsViewTime";
   const isProfileSettingsOpen = activeDetailView === "profileSettings";
   const isBookmarkOpen = activeDetailView === "bookmark";
@@ -4269,10 +4331,6 @@ function MyPageView({
     isOpen: isMyDetailOpen && !isMyArticleDetailOpen,
     onClose: closeActiveDetailViewImmediately,
   });
-  const recentItems = isRecentExpanded
-    ? [...myRecentNews, ...myRecentNews]
-    : myRecentNews;
-
   const toggleCategorySetting = (groupIndex: number, optionId: string) => {
     setSelectedCategorySettings((current) =>
       current.map((selectedItems, index) => {
@@ -4325,6 +4383,12 @@ function MyPageView({
     myDetailScrollRestore.captureScroll();
     setMyArticleDetail(null);
     setActiveDetailView(view);
+  };
+
+  const openRecentDetail = () => {
+    myDetailScrollRestore.captureScroll();
+    setMyArticleDetail(null);
+    setActiveDetailView("recent");
   };
 
   const openMyArticleDetail: OpenArticleDetail = (article, options) => {
@@ -4410,7 +4474,9 @@ function MyPageView({
       ) : (
         <NewsRollPagePanel
           ariaLabel={
-            isBookmarkOpen
+            isRecentOpen
+              ? "최근 본 뉴스 상세 콘텐츠 영역"
+            : isBookmarkOpen
               ? "북마크 상세 콘텐츠 영역"
             : isVoteOpen
               ? "투표 상세 콘텐츠 영역"
@@ -4424,7 +4490,12 @@ function MyPageView({
           }
           contentRef={myPanelContentRef}
         >
-          {isBookmarkOpen ? (
+          {isRecentOpen ? (
+            <MyRecentDetailPage
+              isLeaving={myDetailExitMotion.isLeaving}
+              onOpenArticle={openMyArticleDetail}
+            />
+          ) : isBookmarkOpen ? (
             <MyBookmarkDetailPage
               isLeaving={myDetailExitMotion.isLeaving}
               onOpenArticle={openMyArticleDetail}
@@ -4549,7 +4620,7 @@ function MyPageView({
           <section className="container_myRecent" aria-label="최근 본 뉴스">
             <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
             <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
-              {recentItems.map((item, index) => (
+              {myRecentNews.slice(0, myRecentPreviewLimit).map((item, index) => (
                 <NewsBlockItem
                   ariaPressed={false}
                   dateLabel={item.time}
@@ -4562,11 +4633,10 @@ function MyPageView({
               ))}
             </div>
             <AllNewsMoreButton
-              ariaLabel={isRecentExpanded ? "최근 본 뉴스 접기" : "최근 본 뉴스 전체 보기"}
+              ariaLabel="최근 본 뉴스 전체 보기"
               collapsedLabel="전체 보기"
-              expanded={isRecentExpanded}
-              expandedLabel="접기"
-              onClick={() => setIsRecentExpanded((current) => !current)}
+              onClick={openRecentDetail}
+              showIcon={false}
             />
           </section>
 
@@ -4717,7 +4787,9 @@ function InfoNoticeSection({
 }
 
 function InfoFaqSection() {
-  const [openFaqIndexes, setOpenFaqIndexes] = useState(() => new Set([0]));
+  const [openFaqIndexes, setOpenFaqIndexes] = useState<Set<number>>(
+    () => new Set(),
+  );
 
   return (
     <section className="container_infoList" aria-label="FAQ">
