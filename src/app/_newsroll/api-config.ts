@@ -1,10 +1,7 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
 export function getApiBaseUrl() {
-  if (!apiBaseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not set");
-  }
-
   return apiBaseUrl.replace(/\/$/, "");
 }
 

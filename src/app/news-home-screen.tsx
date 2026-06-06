@@ -16,6 +16,7 @@ import {
   type ReactNode,
   type TouchEvent,
 } from "react";
+import { createPortal } from "react-dom";
 
 import {
   ArticleActionButtons,
@@ -82,6 +83,7 @@ type SortOrder = "popular" | "latest";
 type GuideKind = "stacked" | "binary";
 type CommentScrollTarget = {
   bottomGap?: number;
+  delayMs?: number;
   id: string;
   stickToBottom?: boolean;
 };
@@ -1377,14 +1379,16 @@ function CommentReactionPanel({
   const [commentReactionCounts, setCommentReactionCounts] = useState<
     Record<CommentId, Record<CommentReactionValue, number>>
   >({});
+  const [commentLoadFailed, setCommentLoadFailed] = useState(false);
   const [apiComments, setApiComments] = useState<Comment[]>([]);
   const [pollOptionLabelById, setPollOptionLabelById] = useState<Record<string, string>>({});
   const [deletedCommentIds, setDeletedCommentIds] = useState<CommentId[]>([]);
   const [deletedReplyIds, setDeletedReplyIds] = useState<string[]>([]);
   const [expandedReplyId, setExpandedReplyId] = useState<CommentId | null>(
-    initialCommentId ?? null,
+    null,
   );
   const [isComposerVisible, setIsComposerVisible] = useState(false);
+  const [composerHeight, setComposerHeight] = useState(0);
   const [myCommentsOnly, setMyCommentsOnly] = useState(false);
   const [isCommentSortOpen, setIsCommentSortOpen] = useState(false);
   const [openCommentActionId, setOpenCommentActionId] =
@@ -1400,12 +1404,21 @@ function CommentReactionPanel({
     useState<CommentScrollTarget | null>(null);
   const commentEdit = useInlineTextEdit<CommentId>();
   const replyEdit = useInlineTextEdit<string>();
+  const initialCommentScrollKeyRef = useRef<string | null>(null);
   const initialCommentTargetId =
-    initialReplyTargetId != null
-      ? `${panelId}-reply-list-${initialReplyTargetId}`
-      : initialCommentId != null
-        ? `${panelId}-comment-${initialCommentId}`
-        : null;
+    initialCommentId != null || initialReplyTargetId != null
+      ? `${panelId}-comment-${initialCommentId ?? initialReplyTargetId}`
+      : null;
+  const initialCommentScrollKey =
+    initialCommentTargetId != null
+      ? `${newsId ?? ""}:${initialCommentTargetId}`
+      : null;
+  const commentListStyle = {
+    "--newsroll-comment-composer-height": isComposerVisible
+      ? `${composerHeight}px`
+      : "0px",
+  } as CSSProperties;
+  const commentListId = `${panelId}-comment-list`;
   const prepareInitialCommentScroll = useCallback(() => {
     const targetCommentId = initialReplyTargetId ?? initialCommentId;
 
@@ -1413,13 +1426,7 @@ function CommentReactionPanel({
       return;
     }
 
-    setExpandedReplyId(targetCommentId);
     setIsComposerVisible(true);
-
-    if (initialReplyTargetId != null) {
-      setComposerMode("reply");
-      setReplyTargetCommentId(initialReplyTargetId);
-    }
   }, [initialCommentId, initialReplyTargetId]);
   const deletedCommentIdSet = useMemo(
     () => new Set(deletedCommentIds),
@@ -1532,11 +1539,37 @@ function CommentReactionPanel({
     }
   }
 
+  function getCommentScrollRoot() {
+    const panel = panelRef.current;
+
+    if (!panel) {
+      return null;
+    }
+
+    const candidates = [
+      panel.closest(".wrapper_articleCardContent"),
+      panel.closest(".newsroll_page_panelContent"),
+      panel.closest(".container_newsFeed_detail"),
+      panel.closest(".container_newsFeed"),
+    ];
+
+    return (
+      candidates.find(
+        (candidate): candidate is HTMLElement =>
+          candidate instanceof HTMLElement &&
+          candidate.scrollHeight > candidate.clientHeight,
+      ) ??
+      candidates.find(
+        (candidate): candidate is HTMLElement =>
+          candidate instanceof HTMLElement,
+      ) ??
+      null
+    );
+  }
+
   function scrollElementBottomIntoView(targetId: string, bottomGap = 24) {
     const target = document.getElementById(targetId);
-    const articleScroller = panelRef.current?.closest(
-      ".wrapper_articleCardContent",
-    );
+    const articleScroller = getCommentScrollRoot();
 
     if (!(articleScroller instanceof HTMLElement) || !target) {
       return false;
@@ -1562,9 +1595,7 @@ function CommentReactionPanel({
   }
 
   function scrollArticleToBottom() {
-    const articleScroller = panelRef.current?.closest(
-      ".wrapper_articleCardContent",
-    );
+    const articleScroller = getCommentScrollRoot();
 
     if (!(articleScroller instanceof HTMLElement)) {
       return;
@@ -1578,7 +1609,7 @@ function CommentReactionPanel({
 
   function scrollPanelTopToReadingPosition() {
     const panel = panelRef.current;
-    const articleScroller = panel?.closest(".wrapper_articleCardContent");
+    const articleScroller = getCommentScrollRoot();
 
     if (!(articleScroller instanceof HTMLElement) || !panel) {
       return;
@@ -1604,6 +1635,7 @@ function CommentReactionPanel({
       setCommentReactionRows({});
       setCommentReactionCounts({});
       setPollOptionLabelById({});
+      setCommentLoadFailed(false);
       return;
     }
 
@@ -1647,6 +1679,7 @@ function CommentReactionPanel({
     setCommentReactionRows(reactionRows);
     setCommentReactionCounts(reactionCounts);
     setCommentReactions(reactionValues);
+    setCommentLoadFailed(false);
     setPollOptionLabelById(
       Object.fromEntries(
         pollDetail?.options.map((option) => [option.id, option.label]) ?? [],
@@ -1661,6 +1694,7 @@ function CommentReactionPanel({
       setCommentReactionRows({});
       setCommentReactionCounts({});
       setPollOptionLabelById({});
+      setCommentLoadFailed(true);
     });
   }, [reloadComments]);
 
@@ -1768,15 +1802,71 @@ function CommentReactionPanel({
     };
   }, []);
 
-  useDeferredDetailScroll({
-    bottomGap: 80,
-    delayMs: commentScrollDelayMs,
-    enabled: initialCommentTargetId != null,
-    onBeforeScroll: prepareInitialCommentScroll,
-    resetKey: `${newsId ?? ""}:${initialCommentTargetId ?? ""}`,
-    targetId: initialCommentTargetId,
-    watch: [apiComments.length, expandedReplyId],
-  });
+  useEffect(() => {
+    if (initialCommentTargetId == null || initialCommentScrollKey == null) {
+      return;
+    }
+
+    if (initialCommentScrollKeyRef.current === initialCommentScrollKey) {
+      return;
+    }
+
+    prepareInitialCommentScroll();
+
+    if (composerHeight <= 0) {
+      return;
+    }
+
+    let isCancelled = false;
+    let retryTimeout = 0;
+
+    const tryScrollToInitialComment = (attempt = 0) => {
+      if (isCancelled) {
+        return;
+      }
+
+      const didScroll = scrollElementBottomIntoView(
+        initialCommentTargetId,
+        0,
+      );
+
+      if (didScroll) {
+        initialCommentScrollKeyRef.current = initialCommentScrollKey;
+        return;
+      }
+
+      if (attempt >= 12) {
+        return;
+      }
+
+      retryTimeout = window.setTimeout(() => {
+        window.requestAnimationFrame(() => {
+          tryScrollToInitialComment(attempt + 1);
+        });
+      }, 80);
+    };
+
+    const timeout = window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          tryScrollToInitialComment();
+        });
+      });
+    }, commentScrollDelayMs);
+
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(timeout);
+      window.clearTimeout(retryTimeout);
+    };
+  }, [
+    apiComments.length,
+    composerHeight,
+    expandedReplyId,
+    initialCommentScrollKey,
+    initialCommentTargetId,
+    prepareInitialCommentScroll,
+  ]);
 
   useEffect(() => {
     if (initialCommentTargetId != null) {
@@ -1795,6 +1885,7 @@ function CommentReactionPanel({
       return;
     }
 
+    setComposerHeight(0);
     setComposerDraft("");
     setComposerMode("comment");
     commentEdit.cancelEdit();
@@ -1802,22 +1893,87 @@ function CommentReactionPanel({
     setReplyTargetCommentId(null);
   }, [isComposerVisible]);
 
+  useLayoutEffect(() => {
+    if (!isComposerVisible) {
+      setComposerHeight(0);
+      return undefined;
+    }
+
+    let animationFrame = 0;
+
+    const measureComposer = () => {
+      const composer = document.getElementById(composerId);
+      const nextHeight = composer
+        ? Math.ceil(composer.getBoundingClientRect().height)
+        : 0;
+
+      setComposerHeight((current) =>
+        current === nextHeight ? current : nextHeight,
+      );
+    };
+
+    animationFrame = window.requestAnimationFrame(measureComposer);
+    window.addEventListener("resize", measureComposer);
+
+    const composer = document.getElementById(composerId);
+    const resizeObserver =
+      composer && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measureComposer)
+        : null;
+
+    if (composer && resizeObserver) {
+      resizeObserver.observe(composer);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("resize", measureComposer);
+      resizeObserver?.disconnect();
+    };
+  }, [composerId, isComposerVisible]);
+
+  useEffect(() => {
+    if (
+      !isComposerVisible ||
+      composerHeight <= 0 ||
+      initialCommentTargetId != null ||
+      visibleComments.length === 0
+    ) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        scrollElementBottomIntoView(commentListId, 0);
+      });
+    }, commentScrollDelayMs);
+
+    return () => window.clearTimeout(timeout);
+  }, [
+    commentListId,
+    composerHeight,
+    initialCommentTargetId,
+    isComposerVisible,
+    visibleComments.length,
+  ]);
+
   useEffect(() => {
     if (!pendingScrollTarget) {
       return;
     }
 
+    const scrollTarget = pendingScrollTarget;
     const timeout = window.setTimeout(() => {
-      if (pendingScrollTarget.stickToBottom) {
+      if (scrollTarget.stickToBottom) {
         scrollArticleToBottom();
       } else {
         scrollElementBottomIntoView(
-          pendingScrollTarget.id,
-          pendingScrollTarget.bottomGap,
+          scrollTarget.id,
+          scrollTarget.bottomGap,
         );
       }
       setPendingScrollTarget(null);
-    }, commentScrollDelayMs);
+    }, scrollTarget.delayMs ?? commentScrollDelayMs);
 
     return () => window.clearTimeout(timeout);
   }, [pendingScrollTarget]);
@@ -1902,13 +2058,22 @@ function CommentReactionPanel({
     setExpandedReplyId(commentId);
     setComposerMode("reply");
     setComposerDraft("");
+    setPendingScrollTarget({
+      bottomGap: 0,
+      delayMs: nextArticleRevealDelayMs,
+      id: `${panelId}-reply-list-${commentId}`,
+    });
   }
 
   function toggleReplyList(commentId: CommentId) {
     const isClosing = expandedReplyId === commentId;
 
     if (!isClosing) {
-      setPendingScrollTarget({ id: `${panelId}-reply-list-${commentId}` });
+      setPendingScrollTarget({
+        bottomGap: 0,
+        delayMs: nextArticleRevealDelayMs,
+        id: `${panelId}-reply-list-${commentId}`,
+      });
     }
 
     setExpandedReplyId(isClosing ? null : commentId);
@@ -2156,7 +2321,11 @@ function CommentReactionPanel({
               value={sortOrder}
             />
 
-            <div className="wrapper_commentList">
+            <div
+              className="wrapper_commentList"
+              id={commentListId}
+              style={commentListStyle}
+            >
               {visibleComments.length > 0 ? (
                 visibleComments.map((comment, index) => {
                   const selectedReaction = commentReactions[comment.id] ?? null;
@@ -2471,6 +2640,8 @@ function CommentReactionPanel({
                     </Fragment>
                   );
                 })
+              ) : commentLoadFailed ? (
+                <DataUnavailableMessage target="댓글" />
               ) : (
                 <p className="text_commentEmpty">표시할 댓글이 없습니다.</p>
               )}
@@ -2479,37 +2650,53 @@ function CommentReactionPanel({
         </section>
       </section>
       {isComposerVisible ? (
-        <div
-          aria-label={composerMode === "reply" ? "대댓글 작성" : "댓글 작성"}
-          className="container_commentComposerFixed newsroll_motion_enterUp"
-          id={composerId}
-          role="region"
-        >
-          <form
-            className="form_commentComposer"
-            onSubmit={(event) => {
-              event.preventDefault();
-              submitComposer();
-            }}
+        <ClientPortal>
+          <div
+            aria-label={composerMode === "reply" ? "대댓글 작성" : "댓글 작성"}
+            className="container_commentComposerFixed newsroll_motion_enterUp"
+            id={composerId}
+            role="region"
           >
-            <CommentComposerInput
-              label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
-              onChange={(event) => setComposerDraft(event.target.value)}
-              placeholder={
-                composerMode === "reply"
-                  ? "대댓글을 입력해 주세요."
-                  : "홍길동님은 어떻게 생각하시나요?"
-              }
-              submitLabel={
-                composerMode === "reply" ? "대댓글 등록" : "댓글 등록"
-              }
-              value={composerDraft}
-            />
-          </form>
-        </div>
+            <form
+              className="form_commentComposer"
+              onSubmit={(event) => {
+                event.preventDefault();
+                submitComposer();
+              }}
+            >
+              <CommentComposerInput
+                label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
+                onChange={(event) => setComposerDraft(event.target.value)}
+                placeholder={
+                  composerMode === "reply"
+                    ? "대댓글을 입력해 주세요."
+                    : "홍길동님은 어떻게 생각하시나요?"
+                }
+                submitLabel={
+                  composerMode === "reply" ? "대댓글 등록" : "댓글 등록"
+                }
+                value={composerDraft}
+              />
+            </form>
+          </div>
+        </ClientPortal>
       ) : null}
     </>
   );
+}
+
+function ClientPortal({ children }: { children: ReactNode }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return createPortal(children, document.body);
 }
 
 function HomeReelCard({
@@ -2745,9 +2932,7 @@ function HomeReelCard({
   const articleContent = (
     <div
       aria-labelledby={articleTitleId}
-      className={`wrapper_articleCardContent${
-        isCommentPanelOpen ? " is_commentComposerSpaceReserved" : ""
-      }`}
+      className="wrapper_articleCardContent"
       id={articleContentId}
       role="region"
       tabIndex={0}
@@ -2892,7 +3077,25 @@ function ArticleDetailContent({
   );
 }
 
-function HomeNewsStateCard({
+function getDataUnavailableMessage(target: string, particle = "을") {
+  return `${target}${particle} 불러오지 못했습니다.`;
+}
+
+function DataUnavailableMessage({
+  particle,
+  target,
+}: {
+  particle?: string;
+  target: string;
+}) {
+  return (
+    <p className="text_commentEmpty">
+      {getDataUnavailableMessage(target, particle)}
+    </p>
+  );
+}
+
+function NewsRollStateCard({
   children,
   role,
 }: {
@@ -2906,7 +3109,7 @@ function HomeNewsStateCard({
         role={role}
         tabIndex={0}
       >
-        <p className="text_commentEmpty">{children}</p>
+        {children}
       </div>
     </article>
   );
@@ -2959,7 +3162,7 @@ function HomeView({
         }
       } catch {
         if (!ignore) {
-          setNewsError("뉴스를 불러오지 못했습니다.");
+          setNewsError(getDataUnavailableMessage("뉴스", "를"));
         }
       } finally {
         if (!ignore) {
@@ -3028,19 +3231,19 @@ function HomeView({
         ) : null
       ) : homeViewMode === "reels" ? (
         <section
-          className="container_newsFeed"
+          className={`container_newsFeed${isNewsLoading || newsError || !hasArticles ? " is_emptyState" : ""}`}
           id="home-news-reels-panel"
           role="tabpanel"
           aria-labelledby="home-news-view-tab-reels"
         >
           {isNewsLoading ? (
-            <HomeNewsStateCard role="status">
-              뉴스를 불러오는 중입니다.
-            </HomeNewsStateCard>
+            <NewsRollStateCard role="status">
+              <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>
+            </NewsRollStateCard>
           ) : newsError ? (
-            <HomeNewsStateCard role="alert">
-              {newsError}
-            </HomeNewsStateCard>
+            <NewsRollStateCard role="alert">
+              <p className="text_commentEmpty">{newsError}</p>
+            </NewsRollStateCard>
           ) : hasArticles ? (
             articles.map((article, index) => (
               <HomeReelCard
@@ -3051,7 +3254,9 @@ function HomeView({
               />
             ))
           ) : (
-            <HomeNewsStateCard>표시할 뉴스가 없습니다.</HomeNewsStateCard>
+            <NewsRollStateCard>
+              <p className="text_commentEmpty">표시할 뉴스가 없습니다.</p>
+            </NewsRollStateCard>
           )}
         </section>
       ) : (
@@ -3063,13 +3268,13 @@ function HomeView({
         >
           <div className="wrapper_newsGridScroll">
             {isNewsLoading ? (
-              <HomeNewsStateCard role="status">
-                뉴스를 불러오는 중입니다.
-              </HomeNewsStateCard>
+              <NewsRollStateCard role="status">
+                <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>
+              </NewsRollStateCard>
             ) : newsError ? (
-              <HomeNewsStateCard role="alert">
-                {newsError}
-              </HomeNewsStateCard>
+              <NewsRollStateCard role="alert">
+                <p className="text_commentEmpty">{newsError}</p>
+              </NewsRollStateCard>
             ) : hasArticles ? (
               articles.map((article) => (
                 <NewsBlockItem
@@ -3083,7 +3288,9 @@ function HomeView({
                 />
               ))
             ) : (
-              <HomeNewsStateCard>표시할 뉴스가 없습니다.</HomeNewsStateCard>
+              <NewsRollStateCard>
+                <p className="text_commentEmpty">표시할 뉴스가 없습니다.</p>
+              </NewsRollStateCard>
             )}
           </div>
         </section>
@@ -3446,6 +3653,8 @@ function AllNewsView({
     () => Object.keys(allNewsHeadlinesByActivePress),
     [allNewsHeadlinesByActivePress],
   );
+  const visibleAllNewsPresses =
+    currentAllNewsPresses.length > 0 ? currentAllNewsPresses : allNewsPresses;
   const allNewsRelayByActiveCategory = useMemo(
     () => groupAllNewsByValue(allNewsArticles, (article) => article.category),
     [allNewsArticles],
@@ -3454,14 +3663,18 @@ function AllNewsView({
     () => Object.keys(allNewsRelayByActiveCategory),
     [allNewsRelayByActiveCategory],
   );
+  const visibleAllNewsRelayCategories =
+    currentAllNewsRelayCategories.length > 0
+      ? currentAllNewsRelayCategories
+      : allNewsRelayCategories;
   const breakingItems = showAllBreaking
     ? allNewsArticles.map((article) => article.title)
     : allNewsArticles.map((article) => article.title).slice(0, 3);
   const relayItems = allNewsRelayByActiveCategory[activeRelayCategory] ?? [];
-  const activePressIndex = Math.max(0, currentAllNewsPresses.indexOf(activePress));
+  const activePressIndex = Math.max(0, visibleAllNewsPresses.indexOf(activePress));
   const activeRelayIndex = Math.max(
     0,
-    currentAllNewsRelayCategories.indexOf(activeRelayCategory),
+    visibleAllNewsRelayCategories.indexOf(activeRelayCategory),
   );
   const activeHeadlineItems = allNewsHeadlinesByActivePress[activePress] ?? [];
   const headlineItems = showAllHeadlines
@@ -3506,19 +3719,16 @@ function AllNewsView({
   }, []);
 
   useEffect(() => {
-    if (currentAllNewsPresses.length > 0 && !currentAllNewsPresses.includes(activePress)) {
-      setActivePress(currentAllNewsPresses[0]);
+    if (!visibleAllNewsPresses.includes(activePress)) {
+      setActivePress(visibleAllNewsPresses[0]);
     }
-  }, [activePress, currentAllNewsPresses]);
+  }, [activePress, visibleAllNewsPresses]);
 
   useEffect(() => {
-    if (
-      currentAllNewsRelayCategories.length > 0 &&
-      !currentAllNewsRelayCategories.includes(activeRelayCategory)
-    ) {
-      setActiveRelayCategory(currentAllNewsRelayCategories[0]);
+    if (!visibleAllNewsRelayCategories.includes(activeRelayCategory)) {
+      setActiveRelayCategory(visibleAllNewsRelayCategories[0]);
     }
-  }, [activeRelayCategory, currentAllNewsRelayCategories]);
+  }, [activeRelayCategory, visibleAllNewsRelayCategories]);
 
   useLayoutEffect(() => {
     const node = breakingBodyRef.current;
@@ -3599,7 +3809,6 @@ function AllNewsView({
       }
 
       if (latestTouchIntent.axis === "horizontal") {
-        event.preventDefault();
         event.stopPropagation();
         return;
       }
@@ -3677,7 +3886,7 @@ function AllNewsView({
   }
 
   function handlePressTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const lastIndex = currentAllNewsPresses.length - 1;
+    const lastIndex = visibleAllNewsPresses.length - 1;
     const nextIndexByKey: Record<string, number> = {
       ArrowDown: activePressIndex === lastIndex ? 0 : activePressIndex + 1,
       ArrowLeft: activePressIndex === 0 ? lastIndex : activePressIndex - 1,
@@ -3693,7 +3902,7 @@ function AllNewsView({
     }
 
     event.preventDefault();
-    setActivePress(currentAllNewsPresses[nextIndex]);
+    setActivePress(visibleAllNewsPresses[nextIndex]);
     document.getElementById(`all-news-press-tab-${nextIndex}`)?.focus();
   }
 
@@ -3766,24 +3975,28 @@ function AllNewsView({
           </div>
           <div className="newsroll_all_breakingBody" ref={breakingBodyRef}>
             <div className="newsroll_all_breaking_stack" id="all-breaking-news">
-              {breakingItems.map((item, index) => (
-                <button
-                  className="newsroll_all_breaking_card"
-                  key={item}
-                  onClick={() =>
-                    openAllNewsDetail(
-                      createAllNewsArticle(
-                        { image: allNewsAssets.latest, title: item },
-                        homeArticle.category,
-                        index,
-                      ),
-                    )
-                  }
-                  type="button"
-                >
-                  {item}
-                </button>
-              ))}
+              {breakingItems.length > 0 ? (
+                breakingItems.map((item, index) => (
+                  <button
+                    className="newsroll_all_breaking_card"
+                    key={item}
+                    onClick={() =>
+                      openAllNewsDetail(
+                        createAllNewsArticle(
+                          { image: allNewsAssets.latest, title: item },
+                          homeArticle.category,
+                          index,
+                        ),
+                      )
+                    }
+                    type="button"
+                  >
+                    {item}
+                  </button>
+                ))
+              ) : (
+                <DataUnavailableMessage target="속보" />
+              )}
             </div>
             <AllNewsMoreButton
               ariaLabel={showAllBreaking ? "속보 접기" : "속보 더보기"}
@@ -3827,21 +4040,25 @@ function AllNewsView({
                 ref={latestScrollerRef}
                 role="group"
               >
-                {allNewsLatestItems.map((item, index) => (
-                  <AllNewsLatestCard
-                    item={item}
-                    key={`${item.title}-${index}`}
-                    onClick={() => {
-                      if (latestDidDragRef.current) {
-                        return;
-                      }
+                {allNewsLatestItems.length > 0 ? (
+                  allNewsLatestItems.map((item, index) => (
+                    <AllNewsLatestCard
+                      item={item}
+                      key={`${item.title}-${index}`}
+                      onClick={() => {
+                        if (latestDidDragRef.current) {
+                          return;
+                        }
 
-                      openAllNewsDetail(
-                        createAllNewsArticle(item, item.category ?? homeArticle.category, index),
-                      );
-                    }}
-                  />
-                ))}
+                        openAllNewsDetail(
+                          createAllNewsArticle(item, item.category ?? homeArticle.category, index),
+                        );
+                      }}
+                    />
+                  ))
+                ) : (
+                  <DataUnavailableMessage target="전체 뉴스" />
+                )}
               </div>
           </AllNewsSectionPanel>
 
@@ -3862,7 +4079,7 @@ function AllNewsView({
                   aria-label="언론사 선택"
                   onKeyDown={handlePressTabKeyDown}
                 >
-                  {currentAllNewsPresses.map((press, index) => {
+                  {visibleAllNewsPresses.map((press, index) => {
                     const selected = activePress === press;
 
                     return (
@@ -3904,15 +4121,19 @@ function AllNewsView({
                     />
                   )}
                 />
-                <AllNewsMoreButton
-                  ariaLabel={
-                    showAllHeadlines
-                      ? "언론사별 헤드라인 접기"
-                      : "언론사별 헤드라인 더보기"
-                  }
-                  expanded={showAllHeadlines}
-                  onClick={() => setShowAllHeadlines((current) => !current)}
-                />
+                {headlineItems.length === 0 ? (
+                  <DataUnavailableMessage target="언론사별 헤드라인" />
+                ) : (
+                  <AllNewsMoreButton
+                    ariaLabel={
+                      showAllHeadlines
+                        ? "언론사별 헤드라인 접기"
+                        : "언론사별 헤드라인 더보기"
+                    }
+                    expanded={showAllHeadlines}
+                    onClick={() => setShowAllHeadlines((current) => !current)}
+                  />
+                )}
               </div>
           </AllNewsSectionPanel>
 
@@ -3932,13 +4153,13 @@ function AllNewsView({
                   className="newsroll_all_category_tabs"
                   getPanelId={(category) =>
                     category === activeRelayCategory
-                      ? `all-news-relay-panel-${currentAllNewsRelayCategories.indexOf(category)}`
+                      ? `all-news-relay-panel-${visibleAllNewsRelayCategories.indexOf(category)}`
                       : undefined
                   }
                   getTabId={(category) =>
-                    `all-news-relay-tab-${currentAllNewsRelayCategories.indexOf(category)}`
+                    `all-news-relay-tab-${visibleAllNewsRelayCategories.indexOf(category)}`
                   }
-                  items={currentAllNewsRelayCategories.map((category) => ({
+                  items={visibleAllNewsRelayCategories.map((category) => ({
                     id: category,
                     label: category,
                   }))}
@@ -3963,6 +4184,9 @@ function AllNewsView({
                     />
                   )}
                 />
+                {relayItems.length === 0 ? (
+                  <DataUnavailableMessage target="릴레이 뉴스" />
+                ) : null}
               </div>
           </AllNewsSectionPanel>
         </section>
@@ -4447,6 +4671,7 @@ function PolicyView({
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
   const [policyApiItems, setPolicyApiItems] = useState<PolicyItem[]>([]);
   const [policyTotalCount, setPolicyTotalCount] = useState(0);
+  const [policyLoadFailed, setPolicyLoadFailed] = useState(false);
   const policyPanelContentRef = useRef<HTMLDivElement>(null);
   const policyListSectionRef = useRef<HTMLDivElement>(null);
   const policyItems = fillPolicyListItems(policyApiItems);
@@ -4481,6 +4706,7 @@ function PolicyView({
     let ignore = false;
 
     async function loadPolicies() {
+      setPolicyLoadFailed(false);
       const ageGroupId = policyAgeIdByLabel[activeAge] ?? "all";
       const [nextPolicies, allPolicies] = await Promise.all([
         welfareApi.getWelfarePolicyList(ageGroupId),
@@ -4498,6 +4724,7 @@ function PolicyView({
       if (!ignore) {
         setPolicyApiItems([]);
         setPolicyTotalCount(0);
+        setPolicyLoadFailed(true);
       }
     });
 
@@ -4677,20 +4904,24 @@ function PolicyView({
                 </div>
               ) : null}
               <div className="newsroll_policy_items">
-                <SeparatedList
-                  dividerClassName="newsroll_policy_itemDivider"
-                  getKey={(item, index) =>
-                    `${activeAge}-${sortOrder}-${item.title}-${index}`
-                  }
-                  items={visiblePolicyItems}
-                  renderItem={(item, index) => (
-                    <PolicyListItem
-                      isSelected={selectedPolicyIndex === index}
-                      item={item}
-                      onSelect={() => openPolicyDetail(item, index)}
-                    />
-                  )}
-                />
+                {policyLoadFailed ? (
+                  <DataUnavailableMessage target="국가정책" />
+                ) : (
+                  <SeparatedList
+                    dividerClassName="newsroll_policy_itemDivider"
+                    getKey={(item, index) =>
+                      `${activeAge}-${sortOrder}-${item.title}-${index}`
+                    }
+                    items={visiblePolicyItems}
+                    renderItem={(item, index) => (
+                      <PolicyListItem
+                        isSelected={selectedPolicyIndex === index}
+                        item={item}
+                        onSelect={() => openPolicyDetail(item, index)}
+                      />
+                    )}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -4898,18 +5129,22 @@ function MyRecentDetailPage({
       className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
-      <SeparatedList
-        dividerClassName="newsroll_all_itemDivider"
-        getKey={(item, index) => `${item.title}-${index}`}
-        items={items}
-        renderItem={(item, index) => (
-          <AllNewsRelayItem
-            featured={index === 0 || index === 5}
-            item={item}
-            onClick={() => onOpenArticle(createMyRecentArticle(item, index))}
-          />
-        )}
-      />
+      {items.length === 0 ? (
+        <DataUnavailableMessage target="최근 본 뉴스" />
+      ) : (
+        <SeparatedList
+          dividerClassName="newsroll_all_itemDivider"
+          getKey={(item, index) => `${item.title}-${index}`}
+          items={items}
+          renderItem={(item, index) => (
+            <AllNewsRelayItem
+              featured={index === 0 || index === 5}
+              item={item}
+              onClick={() => onOpenArticle(createMyRecentArticle(item, index))}
+            />
+          )}
+        />
+      )}
     </div>
   );
 }
@@ -4953,20 +5188,24 @@ function MyBookmarkDetailPage({
           value={activeCategory}
         />
       ) : null}
-      <SeparatedList
-        dividerClassName="newsroll_all_itemDivider"
-        getKey={(item, index) => `${item.title}-${index}`}
-        items={visibleBookmarkItems}
-        renderItem={(item, index) => (
-          <AllNewsRelayItem
-            featured={index === 0 || index === 5}
-            item={item}
-            onClick={() =>
-              onOpenArticle(createAllNewsArticle(item, item.category, index))
-            }
-          />
-        )}
-      />
+      {visibleBookmarkItems.length === 0 ? (
+        <DataUnavailableMessage target="북마크" />
+      ) : (
+        <SeparatedList
+          dividerClassName="newsroll_all_itemDivider"
+          getKey={(item, index) => `${item.title}-${index}`}
+          items={visibleBookmarkItems}
+          renderItem={(item, index) => (
+            <AllNewsRelayItem
+              featured={index === 0 || index === 5}
+              item={item}
+              onClick={() =>
+                onOpenArticle(createAllNewsArticle(item, item.category, index))
+              }
+            />
+          )}
+        />
+      )}
     </div>
   );
 }
@@ -5011,32 +5250,36 @@ function MyVoteDetailPage({
         />
       ) : null}
       <div className="wrapper_myVoteList">
-        <SeparatedList
-          dividerClassName="divider_mySection"
-          getKey={(item, index) => `${item.title}-${index}`}
-          items={visibleVoteItems}
-          renderItem={(item) => (
-            <article className="wrapper_myVoteItem">
-              <AllNewsHeadlineItem
-                item={item.headline}
-                onClick={() =>
-                  onOpenArticle(item.article, { scrollTarget: "poll" })
-                }
-              />
-              <strong className="text_myVoteQuestion">{item.pollTitle}</strong>
-              <ArticleGuideOptionButton
-                isSelected
-                label={item.selectedOption}
-                onClick={() =>
-                  onOpenArticle(item.article, { scrollTarget: "poll" })
-                }
-                percent={item.percent}
-                showResult
-                variant={item.isBinary ? "binary" : "stacked"}
-              />
-            </article>
-          )}
-        />
+        {visibleVoteItems.length === 0 ? (
+          <DataUnavailableMessage target="투표" />
+        ) : (
+          <SeparatedList
+            dividerClassName="divider_mySection"
+            getKey={(item, index) => `${item.title}-${index}`}
+            items={visibleVoteItems}
+            renderItem={(item) => (
+              <article className="wrapper_myVoteItem">
+                <AllNewsHeadlineItem
+                  item={item.headline}
+                  onClick={() =>
+                    onOpenArticle(item.article, { scrollTarget: "poll" })
+                  }
+                />
+                <strong className="text_myVoteQuestion">{item.pollTitle}</strong>
+                <ArticleGuideOptionButton
+                  isSelected
+                  label={item.selectedOption}
+                  onClick={() =>
+                    onOpenArticle(item.article, { scrollTarget: "poll" })
+                  }
+                  percent={item.percent}
+                  showResult
+                  variant={item.isBinary ? "binary" : "stacked"}
+                />
+              </article>
+            )}
+          />
+        )}
       </div>
     </div>
   );
@@ -5255,27 +5498,31 @@ function MyCommentDetailPage({
         />
       ) : null}
       <div className="wrapper_myCommentList">
-        <SeparatedList
-          dividerClassName="divider_mySection"
-          getKey={(item, index) => `${item.headline.title}-${index}`}
-          items={visibleCommentItems}
-          renderItem={(item, index) => (
-            <div className="wrapper_myCommentItem">
-              <MyCommentCreatedDate>{item.comment.date}</MyCommentCreatedDate>
-              <AllNewsHeadlineItem
-                item={item.headline}
-                onClick={() => onOpenArticle(item.article)}
-              />
-              <MyCommentPreviewThread
-                comment={item.comment}
-                instanceId={`my-comment-detail-${index}`}
-                onOpenComment={() =>
-                  onOpenArticle(item.article, { commentId: item.targetCommentId })
-                }
-              />
-            </div>
-          )}
-        />
+        {visibleCommentItems.length === 0 ? (
+          <DataUnavailableMessage target="댓글" />
+        ) : (
+          <SeparatedList
+            dividerClassName="divider_mySection"
+            getKey={(item, index) => `${item.headline.title}-${index}`}
+            items={visibleCommentItems}
+            renderItem={(item, index) => (
+              <div className="wrapper_myCommentItem">
+                <MyCommentCreatedDate>{item.comment.date}</MyCommentCreatedDate>
+                <AllNewsHeadlineItem
+                  item={item.headline}
+                  onClick={() => onOpenArticle(item.article)}
+                />
+                <MyCommentPreviewThread
+                  comment={item.comment}
+                  instanceId={`my-comment-detail-${index}`}
+                  onOpenComment={() =>
+                    onOpenArticle(item.article, { commentId: item.targetCommentId })
+                  }
+                />
+              </div>
+            )}
+          />
+        )}
       </div>
     </div>
   );
@@ -5969,26 +6216,32 @@ function MyPageView({
 
           <section className="container_myRecent" aria-label="최근 본 뉴스">
             <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
-            <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
-              {myDynamicRecentItems.slice(0, myRecentPreviewLimit).map((item, index) => (
-                <NewsBlockItem
-                  ariaPressed={false}
-                  dateLabel={item.time}
-                  dateTime={item.dateTime}
-                  imageSrc={item.image}
-                  key={`${item.title}-${index}`}
-                  onClick={() => openMyArticleDetail(createMyRecentArticle(item, index))}
-                  showDate={false}
-                  title={item.title}
+            {myDynamicRecentItems.length === 0 ? (
+              <DataUnavailableMessage target="최근 본 뉴스" />
+            ) : (
+              <>
+                <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
+                  {myDynamicRecentItems.slice(0, myRecentPreviewLimit).map((item, index) => (
+                    <NewsBlockItem
+                      ariaPressed={false}
+                      dateLabel={item.time}
+                      dateTime={item.dateTime}
+                      imageSrc={item.image}
+                      key={`${item.title}-${index}`}
+                      onClick={() => openMyArticleDetail(createMyRecentArticle(item, index))}
+                      showDate={false}
+                      title={item.title}
+                    />
+                  ))}
+                </div>
+                <AllNewsMoreButton
+                  ariaLabel="최근 본 뉴스 전체 보기"
+                  collapsedLabel="전체 보기"
+                  onClick={openRecentDetail}
+                  showIcon={false}
                 />
-              ))}
-            </div>
-            <AllNewsMoreButton
-              ariaLabel="최근 본 뉴스 전체 보기"
-              collapsedLabel="전체 보기"
-              onClick={openRecentDetail}
-              showIcon={false}
-            />
+              </>
+            )}
           </section>
 
           {myCategoryGroups.map((group, groupIndex) => (
@@ -6127,26 +6380,30 @@ function InfoNoticeSection({
 }) {
   return (
     <section className="container_infoList" aria-label="공지사항">
-      <SeparatedList
-        dividerClassName="divider_infoSection"
-        getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
-        items={items}
-        renderItem={(notice, index) => (
-          <button
-            className="btn_infoNoticeItem"
-            onClick={() => onNoticeSelect(notice, index)}
-            type="button"
-          >
-            <div className="wrapper_infoNoticeContent">
-              <span className="text_infoItemTitle">{notice.title}</span>
-              <p className="text_infoBody text_lineClamp2">
-                {notice.summary}
-              </p>
-              <span className="text_infoMeta">{notice.date}</span>
-            </div>
-          </button>
-        )}
-      />
+      {items.length === 0 ? (
+        <DataUnavailableMessage target="공지사항" />
+      ) : (
+        <SeparatedList
+          dividerClassName="divider_infoSection"
+          getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
+          items={items}
+          renderItem={(notice, index) => (
+            <button
+              className="btn_infoNoticeItem"
+              onClick={() => onNoticeSelect(notice, index)}
+              type="button"
+            >
+              <div className="wrapper_infoNoticeContent">
+                <span className="text_infoItemTitle">{notice.title}</span>
+                <p className="text_infoBody text_lineClamp2">
+                  {notice.summary}
+                </p>
+                <span className="text_infoMeta">{notice.date}</span>
+              </div>
+            </button>
+          )}
+        />
+      )}
     </section>
   );
 }
@@ -6158,38 +6415,42 @@ function InfoFaqSection({ items }: { items: Faq[] }) {
 
   return (
     <section className="container_infoList" aria-label="FAQ">
-      <SeparatedList
-        dividerClassName="divider_infoSection"
-        getKey={(item, index) => `${item.question}-${index}`}
-        items={items}
-        renderItem={(item, index) => (
-          <details
-            className="container_infoFaqItem"
-            onToggle={(event) => {
-              const isOpen = event.currentTarget.open;
+      {items.length === 0 ? (
+        <DataUnavailableMessage target="FAQ" />
+      ) : (
+        <SeparatedList
+          dividerClassName="divider_infoSection"
+          getKey={(item, index) => `${item.question}-${index}`}
+          items={items}
+          renderItem={(item, index) => (
+            <details
+              className="container_infoFaqItem"
+              onToggle={(event) => {
+                const isOpen = event.currentTarget.open;
 
-              setOpenFaqIndexes((current) => {
-                const next = new Set(current);
+                setOpenFaqIndexes((current) => {
+                  const next = new Set(current);
 
-                if (isOpen) {
-                  next.add(index);
-                } else {
-                  next.delete(index);
-                }
+                  if (isOpen) {
+                    next.add(index);
+                  } else {
+                    next.delete(index);
+                  }
 
-                return next;
-              });
-            }}
-            open={openFaqIndexes.has(index)}
-          >
-            <summary className="btn_infoFaqSummary">
-              <span className="text_infoItemTitle">Q. {item.question}</span>
-              <span className="icon_infoChevron" aria-hidden="true" />
-            </summary>
-            <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
-          </details>
-        )}
-      />
+                  return next;
+                });
+              }}
+              open={openFaqIndexes.has(index)}
+            >
+              <summary className="btn_infoFaqSummary">
+                <span className="text_infoItemTitle">Q. {item.question}</span>
+                <span className="icon_infoChevron" aria-hidden="true" />
+              </summary>
+              <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
+            </details>
+          )}
+        />
+      )}
     </section>
   );
 }
@@ -6206,6 +6467,14 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
       setSelectedInquiryType(items[0].label);
     }
   }, [items, selectedInquiryType]);
+
+  if (items.length === 0) {
+    return (
+      <section className="container_infoList" aria-label="1:1 문의">
+        <DataUnavailableMessage target="문의 유형" />
+      </section>
+    );
+  }
 
   return (
     <form

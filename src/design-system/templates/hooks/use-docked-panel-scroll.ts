@@ -337,7 +337,6 @@ export function useDockedPanelScroll({
     const deltaY = previousY - currentY;
 
     if (routeDockedPanelScroll(deltaY)) {
-      event.preventDefault();
       event.stopPropagation();
     }
 

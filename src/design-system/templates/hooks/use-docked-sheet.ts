@@ -339,7 +339,6 @@ export function useDockedSheet({
     const deltaY = previousY - currentY;
 
     if (consumeSheetHandoffLock(deltaY, "touch")) {
-      event.preventDefault();
       event.stopPropagation();
       touchYRef.current = currentY;
       return;
@@ -353,7 +352,6 @@ export function useDockedSheet({
     }
 
     if (moveSheet(deltaY, "touch")) {
-      event.preventDefault();
       event.stopPropagation();
     }
 
