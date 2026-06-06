@@ -3608,6 +3608,7 @@
     .divider_mySection {
         margin: 0;
         padding: 0;
+        height: var(--border-1);
     }
 
     .newsroll_my_summary_icon {

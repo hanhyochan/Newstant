@@ -115,6 +115,13 @@ type HomeArticle = {
   viewCount?: number;
 };
 
+type BreakingNewsItem = {
+  article: HomeArticle;
+  id: string;
+  title: string;
+  updatedAt: string;
+};
+
 type HomeHeaderControls = {
   breakingTitle?: string;
   dockedControlsMotionClassName?: string;
@@ -263,6 +270,35 @@ function getHomeArticleFromNews(item: NewsListItem, index: number): HomeArticle 
     title: item.title,
     viewCount: item.viewCount,
   };
+}
+
+function getBreakingTimestamp(article: HomeArticle) {
+  const timestamp = Date.parse(article.dateTime ?? "");
+
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function getBreakingDateId(updatedAt: string) {
+  return updatedAt.replace(/\D/g, "").slice(0, 14) || "unknown";
+}
+
+function getBreakingNewsItems(articles: HomeArticle[]) {
+  return [...articles]
+    .sort((current, next) => getBreakingTimestamp(next) - getBreakingTimestamp(current))
+    .map<BreakingNewsItem>((article, index) => {
+      const updatedAt = article.dateTime ?? defaultNewsDateTime;
+
+      return {
+        article,
+        id: `all-breaking-news-${getBreakingDateId(updatedAt)}-${article.id ?? index}`,
+        title: article.title,
+        updatedAt,
+      };
+    });
+}
+
+function getLatestBreakingNewsItem(articles: HomeArticle[]) {
+  return getBreakingNewsItems(articles)[0] ?? null;
 }
 
 const homeArticle: HomeArticle = {
@@ -810,8 +846,6 @@ function HomeMainHeader({
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls) {
-  const [isAlarmOn, setIsAlarmOn] = useState(false);
-
   return (
       <NewsRollSummaryHeroTop
         footer={
@@ -851,10 +885,10 @@ function HomeMainHeader({
               )}
               <Button
                 aria-label="알림"
-                aria-pressed={isAlarmOn}
+                aria-pressed={false}
                 className="newsroll_homeDockedAlarm"
                 iconOnly
-                onClick={() => setIsAlarmOn((current) => !current)}
+                onClick={onOpenBreakingNews}
                 radius="full"
                 size="large"
                 variant="outline"
@@ -3204,7 +3238,7 @@ function HomeView({
   }, [articles, detailOpen, homeViewMode]);
 
   const hasArticles = articles.length > 0;
-  const breakingTitle = articles[0]?.title ?? homeBreakingTitle;
+  const breakingTitle = getLatestBreakingNewsItem(articles)?.title ?? homeBreakingTitle;
 
   return (
     <HomeShell
@@ -3599,10 +3633,14 @@ function AllNewsRelayItem({
 }
 
 function AllNewsView({
+  entryMotionClassName = "",
+  initialShowAllBreaking = false,
   isTextLarge,
   onOpenSearch,
   onToggleTextSize,
 }: {
+  entryMotionClassName?: string;
+  initialShowAllBreaking?: boolean;
   isTextLarge: boolean;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
@@ -3637,8 +3675,7 @@ function AllNewsView({
   const [isLatestDragging, setIsLatestDragging] = useState(false);
   const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
   const [allNewsArticles, setAllNewsArticles] = useState<HomeArticle[]>([]);
-  const [isBreakingAlarmOn, setIsBreakingAlarmOn] = useState(false);
-  const [showAllBreaking, setShowAllBreaking] = useState(false);
+  const [showAllBreaking, setShowAllBreaking] = useState(initialShowAllBreaking);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
   const allNewsLatestItems = useMemo(
@@ -3667,9 +3704,13 @@ function AllNewsView({
     currentAllNewsRelayCategories.length > 0
       ? currentAllNewsRelayCategories
       : allNewsRelayCategories;
+  const allBreakingItems = useMemo(
+    () => getBreakingNewsItems(allNewsArticles),
+    [allNewsArticles],
+  );
   const breakingItems = showAllBreaking
-    ? allNewsArticles.map((article) => article.title)
-    : allNewsArticles.map((article) => article.title).slice(0, 3);
+    ? allBreakingItems
+    : allBreakingItems.slice(0, 3);
   const relayItems = allNewsRelayByActiveCategory[activeRelayCategory] ?? [];
   const activePressIndex = Math.max(0, visibleAllNewsPresses.indexOf(activePress));
   const activeRelayIndex = Math.max(
@@ -3911,12 +3952,20 @@ function AllNewsView({
     setDetailArticle(article);
   }
 
+  function showBreakingNewsList() {
+    if (isDetailOpen) {
+      closeAllNewsDetailImmediately();
+    }
+
+    setShowAllBreaking(true);
+  }
+
   const closeAllNewsDetail = allNewsDetailExitMotion.closeWithMotion;
 
   return (
     <NewsRollCommonLayout
       aria-label="전체 뉴스"
-      className="newsroll_sheetFrame"
+      className={`newsroll_sheetFrame ${entryMotionClassName}`.trim()}
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       minInitialTop={allNewsMinInitialTop}
@@ -3958,10 +4007,10 @@ function AllNewsView({
             )}
             <Button
               aria-label="속보 알림"
-              aria-pressed={isBreakingAlarmOn}
+              aria-pressed={false}
               className="newsroll_homeDockedAlarm"
               iconOnly
-              onClick={() => setIsBreakingAlarmOn((current) => !current)}
+              onClick={showBreakingNewsList}
               radius="full"
               size="large"
               variant="outline"
@@ -3976,22 +4025,16 @@ function AllNewsView({
           <div className="newsroll_all_breakingBody" ref={breakingBodyRef}>
             <div className="newsroll_all_breaking_stack" id="all-breaking-news">
               {breakingItems.length > 0 ? (
-                breakingItems.map((item, index) => (
+                breakingItems.map((item) => (
                   <button
                     className="newsroll_all_breaking_card"
-                    key={item}
-                    onClick={() =>
-                      openAllNewsDetail(
-                        createAllNewsArticle(
-                          { image: allNewsAssets.latest, title: item },
-                          homeArticle.category,
-                          index,
-                        ),
-                      )
-                    }
+                    data-updated-at={item.updatedAt}
+                    id={item.id}
+                    key={item.id}
+                    onClick={() => openAllNewsDetail(item.article)}
                     type="button"
                   >
-                    {item}
+                    {item.title}
                   </button>
                 ))
               ) : (
@@ -4656,16 +4699,17 @@ function useEnterFromRightExitMotion({
 
 function PolicyView({
   isTextLarge,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
   const [detailItem, setDetailItem] = useState<PolicyItem | null>(null);
-  const [isPolicyAlarmOn, setIsPolicyAlarmOn] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
@@ -4803,8 +4847,8 @@ function PolicyView({
                 <h1 className="text_panelHeaderTitle">국가정책</h1>
               )}
               <DockedAlarmButton
-                isPressed={isPolicyAlarmOn}
-                onClick={() => setIsPolicyAlarmOn((current) => !current)}
+                isPressed={false}
+                onClick={onOpenBreakingNews}
               />
             </NewsRollDockedControls>
           }
@@ -4982,6 +5026,7 @@ const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공�
 type MySummaryView = (typeof mySummaryItems)[number]["value"];
 type MyPageDetailView =
   | "recent"
+  | "customNewsSettings"
   | "newsViewTime"
   | "profileSettings"
   | MySummaryView
@@ -5579,10 +5624,12 @@ const myProfileSettingSections = [
 
 function MyPageView({
   isTextLarge,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -5617,7 +5664,6 @@ function MyPageView({
   >([]);
   const [myBookmarkCount, setMyBookmarkCount] = useState(0);
   const [myVoteCount, setMyVoteCount] = useState(0);
-  const [isMyAlarmOn, setIsMyAlarmOn] = useState(false);
   const [selectedCategorySettings, setSelectedCategorySettings] = useState(
     () =>
       myCategoryGroups.map(
@@ -5646,6 +5692,7 @@ function MyPageView({
   );
   const myPanelContentRef = useRef<HTMLDivElement>(null);
   const isRecentOpen = activeDetailView === "recent";
+  const isCustomNewsSettingsOpen = activeDetailView === "customNewsSettings";
   const isNewsViewTimeOpen = activeDetailView === "newsViewTime";
   const isProfileSettingsOpen = activeDetailView === "profileSettings";
   const isBookmarkOpen = activeDetailView === "bookmark";
@@ -5955,6 +6002,11 @@ function MyPageView({
     setActiveDetailView("newsViewTime");
   };
 
+  const openCustomNewsSettings = () => {
+    myDetailScrollRestore.captureScroll();
+    setActiveDetailView("customNewsSettings");
+  };
+
   const openProfileSettings = () => {
     myDetailScrollRestore.captureScroll();
     setActiveDetailView("profileSettings");
@@ -5987,6 +6039,8 @@ function MyPageView({
       ? "기사 본문에서 이전 목록으로 돌아가기"
       : activeDetailView === "profileSettings"
       ? "설정에서 마이페이지로 돌아가기"
+      : activeDetailView === "customNewsSettings"
+      ? "맞춤형 뉴스 설정에서 마이페이지로 돌아가기"
       : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
   const handleMyDetailBack = isMyArticleDetailOpen
     ? myArticleDetailExitMotion.closeWithMotion
@@ -6025,8 +6079,8 @@ function MyPageView({
                 onClick={handleMyDetailBack}
               />
               <DockedAlarmButton
-                isPressed={isMyAlarmOn}
-                onClick={() => setIsMyAlarmOn((current) => !current)}
+                isPressed={false}
+                onClick={onOpenBreakingNews}
               />
             </NewsRollDockedControls>
           </NewsRollHeaderTop>
@@ -6040,8 +6094,8 @@ function MyPageView({
             <NewsRollDockedControls className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow">
               <h1 className="text_panelHeaderTitle">마이페이지</h1>
               <DockedAlarmButton
-                isPressed={isMyAlarmOn}
-                onClick={() => setIsMyAlarmOn((current) => !current)}
+                isPressed={false}
+                onClick={onOpenBreakingNews}
               />
             </NewsRollDockedControls>
           </NewsRollHeaderTop>
@@ -6111,6 +6165,44 @@ function MyPageView({
               showTabs={shouldShowCommentKindTabs}
               tabs={dynamicCommentCategoryTabs}
             />
+          ) : isCustomNewsSettingsOpen ? (
+          <div
+            className={`container_mySettingsPage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
+          >
+            <h2 className="text_myTimeTitle">맞춤형 뉴스 설정</h2>
+            {myCategoryGroups.map((group, groupIndex) => (
+              <Fragment key={group.title}>
+                {groupIndex > 0 ? (
+                  <NewsRollDivider className="divider_mySection" />
+                ) : null}
+                <section className="container_myCategorySection">
+                  <h2 className="text_mySectionTitle">{group.title}</h2>
+                  <PillTabMenu
+                    ariaLabel={group.title}
+                    className="tab_myCategoryMenu"
+                    getItemState={(optionId) => {
+                      const isSelected =
+                        selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
+
+                      if (isSelected) {
+                        return "active";
+                      }
+
+                      return "default";
+                    }}
+                    items={getMyCategoryTabItems(groupIndex)}
+                    keyboardNavigation={groupIndex === 1}
+                    onChange={(optionId) => toggleCategorySetting(groupIndex, optionId)}
+                    role={groupIndex === 1 ? "radiogroup" : "group"}
+                    value={
+                      Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
+                      getMyCategoryOptionId(groupIndex, 0)
+                    }
+                  />
+                </section>
+              </Fragment>
+            ))}
+          </div>
           ) : isNewsViewTimeOpen ? (
           <div
             className={`container_myTimePage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
@@ -6244,34 +6336,17 @@ function MyPageView({
             )}
           </section>
 
-          {myCategoryGroups.map((group, groupIndex) => (
-            <section className="container_myCategorySection" key={group.title}>
-              {groupIndex > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
-              <h2 className="text_mySectionTitle">{group.title}</h2>
-              <PillTabMenu
-                ariaLabel={group.title}
-                className="tab_myCategoryMenu"
-                getItemState={(optionId) => {
-                  const isSelected =
-                    selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
-
-                  if (isSelected) {
-                    return "active";
-                  }
-
-                  return "default";
-                }}
-                items={getMyCategoryTabItems(groupIndex)}
-                keyboardNavigation={groupIndex === 1}
-                onChange={(optionId) => toggleCategorySetting(groupIndex, optionId)}
-                role={groupIndex === 1 ? "radiogroup" : "group"}
-                value={
-                  Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
-                  getMyCategoryOptionId(groupIndex, 0)
-                }
+          <section className="container_mySettingsSection">
+            <NewsRollDivider className="divider_mySection" />
+            <h2 className="text_mySectionTitle">뉴스 설정</h2>
+            <div className="wrapper_mySettingsList">
+              <MySettingRow
+                label="맞춤형 뉴스 설정"
+                onClick={openCustomNewsSettings}
+                showChevron
               />
-            </section>
-          ))}
+            </div>
+          </section>
 
           <section className="container_mySettingsSection">
             <NewsRollDivider className="divider_mySection" />
@@ -6557,15 +6632,16 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
 
 function InfoView({
   isTextLarge,
+  onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
   const [activeInfoTab, setActiveInfoTab] = useState<InfoTab>("notice");
-  const [isInfoAlarmOn, setIsInfoAlarmOn] = useState(false);
   const [noticeDetailItem, setNoticeDetailItem] = useState<PolicyItem | null>(
     null,
   );
@@ -6684,8 +6760,8 @@ function InfoView({
               <h1 className="text_panelHeaderTitle">{activeInfoTabLabel}</h1>
             )}
             <DockedAlarmButton
-              isPressed={isInfoAlarmOn}
-              onClick={() => setIsInfoAlarmOn((current) => !current)}
+              isPressed={false}
+              onClick={onOpenBreakingNews}
             />
           </NewsRollDockedControls>
         </NewsRollHeaderTop>
@@ -6751,14 +6827,18 @@ function InfoView({
 }
 
 function ActiveView({
+  allNewsEntryMotionClassName = "",
   isTextLarge,
+  isAllNewsBreakingEntry = false,
   onCloseSearch,
   onOpenAllNews,
   onOpenSearch,
   onToggleTextSize,
   view,
 }: {
+  allNewsEntryMotionClassName?: string;
   isTextLarge: boolean;
+  isAllNewsBreakingEntry?: boolean;
   onCloseSearch: () => void;
   onOpenAllNews: () => void;
   onOpenSearch: () => void;
@@ -6772,6 +6852,8 @@ function ActiveView({
   if (view === "all") {
     return (
       <AllNewsView
+        entryMotionClassName={allNewsEntryMotionClassName}
+        initialShowAllBreaking={isAllNewsBreakingEntry}
         isTextLarge={isTextLarge}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -6783,6 +6865,7 @@ function ActiveView({
     return (
       <PolicyView
         isTextLarge={isTextLarge}
+        onOpenBreakingNews={onOpenAllNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -6793,6 +6876,7 @@ function ActiveView({
     return (
       <MyPageView
         isTextLarge={isTextLarge}
+        onOpenBreakingNews={onOpenAllNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -6803,6 +6887,7 @@ function ActiveView({
     return (
       <InfoView
         isTextLarge={isTextLarge}
+        onOpenBreakingNews={onOpenAllNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -6823,6 +6908,7 @@ export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("home");
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
   const viewNavigationTimerRef = useRef<number | null>(null);
+  const allNewsEntryMotionTimerRef = useRef<number | null>(null);
   const [viewResetKeys, setViewResetKeys] = useState<Record<Tab, number>>({
     all: 0,
     home: 0,
@@ -6830,6 +6916,9 @@ export function NewsHomeScreen() {
     my: 0,
     policy: 0,
   });
+  const [allNewsEntryMotionClassName, setAllNewsEntryMotionClassName] =
+    useState("");
+  const [isAllNewsBreakingEntry, setIsAllNewsBreakingEntry] = useState(false);
   const [isTextLarge, setIsTextLarge] = useState(false);
   const isPanelView =
     activeView === "policy" || activeView === "my" || activeView === "info";
@@ -6842,11 +6931,13 @@ export function NewsHomeScreen() {
 
   useEffect(() => {
     return () => {
-      if (viewNavigationTimerRef.current === null) {
-        return;
+      if (viewNavigationTimerRef.current !== null) {
+        window.clearTimeout(viewNavigationTimerRef.current);
       }
 
-      window.clearTimeout(viewNavigationTimerRef.current);
+      if (allNewsEntryMotionTimerRef.current !== null) {
+        window.clearTimeout(allNewsEntryMotionTimerRef.current);
+      }
     };
   }, []);
 
@@ -6860,6 +6951,8 @@ export function NewsHomeScreen() {
 
   function openDefaultTab(tab: Tab) {
     const moveToTab = () => {
+      setAllNewsEntryMotionClassName("");
+      setIsAllNewsBreakingEntry(false);
       setActiveView(tab);
       setSearchBackView(tab);
       setViewResetKeys((current) => ({
@@ -6886,6 +6979,45 @@ export function NewsHomeScreen() {
     moveToTab();
   }
 
+  function openBreakingNewsView() {
+    const moveToBreakingNews = () => {
+      setAllNewsEntryMotionClassName(getEnterFromRightMotionClassName());
+      setIsAllNewsBreakingEntry(true);
+      setActiveView("all");
+      setSearchBackView("all");
+      setViewResetKeys((current) => ({
+        ...current,
+        all: current.all + 1,
+      }));
+
+      if (allNewsEntryMotionTimerRef.current !== null) {
+        window.clearTimeout(allNewsEntryMotionTimerRef.current);
+      }
+
+      allNewsEntryMotionTimerRef.current = window.setTimeout(() => {
+        allNewsEntryMotionTimerRef.current = null;
+        setAllNewsEntryMotionClassName("");
+      }, nextArticleRevealDelayMs);
+    };
+
+    if (hasActiveEnterFromRightMotion()) {
+      requestEnterFromRightExitMotion();
+
+      if (viewNavigationTimerRef.current !== null) {
+        window.clearTimeout(viewNavigationTimerRef.current);
+      }
+
+      viewNavigationTimerRef.current = window.setTimeout(() => {
+        viewNavigationTimerRef.current = null;
+        moveToBreakingNews();
+      }, nextArticleRevealDelayMs);
+
+      return;
+    }
+
+    moveToBreakingNews();
+  }
+
   return (
     <main
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
@@ -6896,10 +7028,12 @@ export function NewsHomeScreen() {
     >
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
+          allNewsEntryMotionClassName={allNewsEntryMotionClassName}
           key={`${activeView}-${activeViewResetKey}`}
+          isAllNewsBreakingEntry={isAllNewsBreakingEntry}
           isTextLarge={isTextLarge}
           onCloseSearch={() => setActiveView(searchBackView)}
-          onOpenAllNews={() => openDefaultTab("all")}
+          onOpenAllNews={openBreakingNewsView}
           onOpenSearch={openSearch}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
           view={activeView}
