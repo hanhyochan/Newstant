@@ -301,6 +301,40 @@ function getLatestBreakingNewsItem(articles: HomeArticle[]) {
   return getBreakingNewsItems(articles)[0] ?? null;
 }
 
+function normalizeBlockedKeyword(value: string) {
+  return value.trim().toLocaleLowerCase("ko-KR");
+}
+
+function getArticleFilterText(article: HomeArticle) {
+  return [
+    article.title,
+    article.body,
+    article.category,
+    article.pressName,
+    article.reporterName,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLocaleLowerCase("ko-KR");
+}
+
+function filterArticlesByBlockedKeywords(
+  articles: HomeArticle[],
+  blockedKeywords: string[],
+) {
+  const keywords = blockedKeywords.map(normalizeBlockedKeyword).filter(Boolean);
+
+  if (keywords.length === 0) {
+    return articles;
+  }
+
+  return articles.filter((article) => {
+    const articleText = getArticleFilterText(article);
+
+    return !keywords.some((keyword) => articleText.includes(keyword));
+  });
+}
+
 const homeArticle: HomeArticle = {
   category: "정치",
   date: "2026년 12월 31일 08:30",
@@ -441,15 +475,6 @@ const faqItems = [
 ];
 
 const inquiryTypes = ["서비스 이용", "뉴스 제보", "계정 문의", "오류 신고"];
-
-const searchSuggestions = [
-  "예시텍스트",
-  "예시텍스트",
-  "예시텍스트",
-  "예시텍스트",
-  "예시텍스트",
-  "예시텍스트",
-];
 
 const articleBody = `최근 국내 부동산 시장이 다시 한번 변곡점에 서고 있다. 상반기 동안 이어졌던 거래 회복 흐름이 둔화되며, 시장 전반에 신중한 분위기가 확산되는 모습이다.
 
@@ -3150,11 +3175,13 @@ function NewsRollStateCard({
 }
 
 function HomeView({
+  blockedKeywords,
   isTextLarge,
   onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
+  blockedKeywords: string[];
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
@@ -3213,11 +3240,13 @@ function HomeView({
   }, []);
 
   useEffect(() => {
-    if (homeViewMode !== "reels" || detailOpen || articles.length === 0) {
+    const visibleArticles = filterArticlesByBlockedKeywords(articles, blockedKeywords);
+
+    if (homeViewMode !== "reels" || detailOpen || visibleArticles.length === 0) {
       return;
     }
 
-    const articleIds = articles
+    const articleIds = visibleArticles
       .map((article) => article.id)
       .filter((id): id is string => Boolean(id));
     const recentKey = articleIds.join("|");
@@ -3235,10 +3264,16 @@ function HomeView({
         })
         .catch(() => undefined);
     });
-  }, [articles, detailOpen, homeViewMode]);
+  }, [articles, blockedKeywords, detailOpen, homeViewMode]);
 
-  const hasArticles = articles.length > 0;
-  const breakingTitle = getLatestBreakingNewsItem(articles)?.title ?? homeBreakingTitle;
+  const visibleArticles = useMemo(
+    () => filterArticlesByBlockedKeywords(articles, blockedKeywords),
+    [articles, blockedKeywords],
+  );
+  const hasArticles = visibleArticles.length > 0;
+  const breakingTitle =
+    getLatestBreakingNewsItem(visibleArticles)?.title ??
+    getDataUnavailableMessage("속보", "를");
 
   return (
     <HomeShell
@@ -3246,7 +3281,7 @@ function HomeView({
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
-      newsCount={articles.length}
+      newsCount={visibleArticles.length}
       onCloseDetail={homeDetailExitMotion.closeWithMotion}
       onModeChange={(nextMode) => {
         setDetailOpen(false);
@@ -3279,7 +3314,7 @@ function HomeView({
               <p className="text_commentEmpty">{newsError}</p>
             </NewsRollStateCard>
           ) : hasArticles ? (
-            articles.map((article, index) => (
+            visibleArticles.map((article, index) => (
               <HomeReelCard
                 article={article}
                 index={index}
@@ -3310,7 +3345,7 @@ function HomeView({
                 <p className="text_commentEmpty">{newsError}</p>
               </NewsRollStateCard>
             ) : hasArticles ? (
-              articles.map((article) => (
+              visibleArticles.map((article) => (
                 <NewsBlockItem
                   dateLabel={article.date}
                   dateTime={article.dateTime ?? defaultNewsDateTime}
@@ -3335,45 +3370,152 @@ function HomeView({
 
 function SearchView({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
+  const [isSearchComposerOpen, setIsSearchComposerOpen] = useState(false);
+  const [articles, setArticles] = useState<HomeArticle[]>([]);
+  const [isNewsLoading, setIsNewsLoading] = useState(false);
+  const [newsError, setNewsError] = useState<string | null>(null);
+  const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
+  const searchComposerRef = useRef<HTMLFormElement>(null);
+  const normalizedQuery = normalizeBlockedKeyword(query);
+  const searchResults = useMemo(() => {
+    if (!normalizedQuery) {
+      return [];
+    }
+
+    return articles.filter((article) =>
+      getArticleFilterText(article).includes(normalizedQuery),
+    );
+  }, [articles, normalizedQuery]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadSearchNews() {
+      setIsNewsLoading(true);
+      setNewsError(null);
+
+      try {
+        const nextNews = await newsApi.getNewsList();
+
+        if (!ignore) {
+          setArticles(nextNews.map(getHomeArticleFromNews));
+        }
+      } catch {
+        if (!ignore) {
+          setNewsError(getDataUnavailableMessage("뉴스", "를"));
+        }
+      } finally {
+        if (!ignore) {
+          setIsNewsLoading(false);
+        }
+      }
+    }
+
+    loadSearchNews();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isSearchComposerOpen) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      searchComposerRef.current?.querySelector("input")?.focus();
+    });
+  }, [isSearchComposerOpen]);
+
+  const closeSearchDetail = () => {
+    setDetailArticle(null);
+  };
 
   return (
     <section className="newsroll_search_page" aria-label="검색">
       <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
         <button
-          aria-label="검색 닫기"
+          aria-label={detailArticle ? "검색 결과로 돌아가기" : "검색 닫기"}
           className="newsroll_toolbar_icon newsroll_search_close"
-          onClick={onClose}
+          onClick={detailArticle ? closeSearchDetail : onClose}
           type="button"
         >
           <span aria-hidden="true" />
         </button>
       </div>
 
-      <div className="wrapper_searchContent">
-      <label className="newsroll_search_field">
-        <span className="sr_only">검색어</span>
-        <input
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="홍길동님은 어떻게 생각하시나요?"
-          type="search"
-          value={query}
-        />
-        <Icon name="search" />
-      </label>
-
-      <ol className="newsroll_search_suggestion_list" aria-label="추천 검색어">
-        {searchSuggestions.map((suggestion, index) => (
-          <li key={`${suggestion}-${index}`}>
-            <button onClick={() => setQuery(suggestion)} type="button">
-              {index + 1}. {suggestion}
+      {detailArticle ? (
+        <ArticleDetailContent article={detailArticle} />
+      ) : (
+        <div className="wrapper_searchContent">
+          {isSearchComposerOpen ? (
+            <form
+              className="form_searchComposer newsroll_motion_enterUp"
+              onSubmit={(event) => event.preventDefault()}
+              ref={searchComposerRef}
+            >
+              <CommentComposerInput
+                label="통합검색어 입력"
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="검색 키워드를 입력해주세요"
+                submitLabel="검색"
+                value={query}
+              />
+            </form>
+          ) : (
+            <button
+              aria-label="통합검색어 입력 열기"
+              className="btn_searchFieldTrigger"
+              onClick={() => setIsSearchComposerOpen(true)}
+              type="button"
+            >
+              <span>검색 키워드를 입력해주세요</span>
+              <Icon name="search" />
             </button>
-            {index < searchSuggestions.length - 1 ? (
-              <NewsRollDivider className="divider_searchSuggestion" />
-            ) : null}
-          </li>
-        ))}
-      </ol>
-      </div>
+          )}
+
+          {isNewsLoading ? (
+            <NewsRollStateCard role="status">
+              <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>
+            </NewsRollStateCard>
+          ) : newsError ? (
+            <NewsRollStateCard role="alert">
+              <p className="text_commentEmpty">{newsError}</p>
+            </NewsRollStateCard>
+          ) : normalizedQuery ? (
+            <article
+              aria-label="통합검색 결과"
+              className="container_articleCard newsroll_all_panel newsroll_all_relay_panel newsroll_search_results_panel"
+            >
+              <AllNewsPanelContent>
+                <h2 className="newsroll_all_section_title">
+                  검색 결과 {searchResults.length}
+                </h2>
+                {searchResults.length > 0 ? (
+                  <SeparatedList
+                    dividerClassName="newsroll_all_itemDivider"
+                    getKey={(item, index) => item.article?.id ?? `${item.title}-${index}`}
+                    items={searchResults.map(getAllNewsPreviewFromArticle)}
+                    renderItem={(item, index) => (
+                      <AllNewsRelayItem
+                        item={item}
+                        onClick={() =>
+                          setDetailArticle(
+                            createAllNewsArticle(item, item.category ?? homeArticle.category, index),
+                          )
+                        }
+                      />
+                    )}
+                  />
+                ) : (
+                  <p className="text_commentEmpty">검색 결과가 없습니다.</p>
+                )}
+              </AllNewsPanelContent>
+            </article>
+          ) : null}
+        </div>
+      )}
     </section>
   );
 }
@@ -5032,6 +5174,144 @@ type MyPageDetailView =
   | MySummaryView
   | null;
 
+function BlockedKeywordDialog({
+  onCancel,
+  onInputChange,
+  onSave,
+  value,
+}: {
+  onCancel: () => void;
+  onInputChange: (value: string) => void;
+  onSave: () => void;
+  value: string;
+}) {
+  useEffect(() => {
+    function closeOnEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    }
+
+    document.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [onCancel]);
+
+  return (
+    <ClientPortal>
+      <div
+        className="container_myKeywordOverlay"
+        onClick={onCancel}
+        role="presentation"
+      >
+        <section
+          aria-labelledby="my-blocked-keyword-dialog-title"
+          aria-modal="true"
+          className="container_myKeywordDialog"
+          onClick={(event) => event.stopPropagation()}
+          role="dialog"
+        >
+          <h2
+            className="text_myKeywordDialogTitle"
+            id="my-blocked-keyword-dialog-title"
+          >
+            보기 싫은 키워드
+          </h2>
+          <form
+            className="form_myKeywordDialog"
+            onSubmit={(event) => {
+              event.preventDefault();
+              onSave();
+            }}
+          >
+            <div className="wrapper_myKeywordInput">
+              <CommentComposerInput
+                label="보기 싫은 키워드 입력"
+                onChange={(event) => onInputChange(event.target.value)}
+                placeholder="키워드를 입력해주세요"
+                showSubmitButton={false}
+                submitLabel="키워드 저장"
+                value={value}
+              />
+            </div>
+            <div className="wrapper_myKeywordActions">
+              <button
+                className="btn_myKeywordAction btn_myKeywordCancel"
+                onClick={onCancel}
+                type="button"
+              >
+                취소
+              </button>
+              <button
+                className="btn_myKeywordAction btn_myKeywordSave"
+                type="submit"
+              >
+                저장
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </ClientPortal>
+  );
+}
+
+function BlockedKeywordSettingsSection({
+  blockedKeywords,
+  inputValue,
+  isDialogOpen,
+  onCancelDialog,
+  onInputChange,
+  onOpenDialog,
+  onSaveKeyword,
+}: {
+  blockedKeywords: string[];
+  inputValue: string;
+  isDialogOpen: boolean;
+  onCancelDialog: () => void;
+  onInputChange: (value: string) => void;
+  onOpenDialog: () => void;
+  onSaveKeyword: () => void;
+}) {
+  return (
+    <section
+      aria-label="보기 싫은 키워드 설정"
+      className="container_myBlockedKeywordSection"
+    >
+      <h2 className="text_mySectionTitle">보기 싫은 키워드</h2>
+      <div
+        aria-label="등록된 보기 싫은 키워드"
+        className="wrapper_myBlockedKeywordChips"
+        role="list"
+      >
+        {blockedKeywords.map((keyword) => (
+          <span key={keyword} role="listitem">
+            <ChipLabel kind="articleCategory">{keyword}</ChipLabel>
+          </span>
+        ))}
+        <button
+          aria-label="보기 싫은 키워드 추가"
+          className="btn_myBlockedKeywordAdd"
+          onClick={onOpenDialog}
+          type="button"
+        >
+          <Icon name="plus" />
+        </button>
+      </div>
+      {isDialogOpen ? (
+        <BlockedKeywordDialog
+          onCancel={onCancelDialog}
+          onInputChange={onInputChange}
+          onSave={onSaveKeyword}
+          value={inputValue}
+        />
+      ) : null}
+    </section>
+  );
+}
+
 const mySummaryAllTabLabel = "전체";
 const mySummaryListCount = 5;
 const myVotePercents = [64, 48, 72, 57, 81];
@@ -5623,12 +5903,16 @@ const myProfileSettingSections = [
 ] as const;
 
 function MyPageView({
+  blockedKeywords,
   isTextLarge,
+  onAddBlockedKeyword,
   onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
+  blockedKeywords: string[];
   isTextLarge: boolean;
+  onAddBlockedKeyword: (keyword: string) => void;
   onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
@@ -5690,6 +5974,9 @@ function MyPageView({
   const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
     () => new Set(["07:00", "21:00"]),
   );
+  const [isBlockedKeywordDialogOpen, setIsBlockedKeywordDialogOpen] =
+    useState(false);
+  const [blockedKeywordInputValue, setBlockedKeywordInputValue] = useState("");
   const myPanelContentRef = useRef<HTMLDivElement>(null);
   const isRecentOpen = activeDetailView === "recent";
   const isCustomNewsSettingsOpen = activeDetailView === "customNewsSettings";
@@ -5997,6 +6284,22 @@ function MyPageView({
     });
   };
 
+  const closeBlockedKeywordDialog = useCallback(() => {
+    setIsBlockedKeywordDialogOpen(false);
+    setBlockedKeywordInputValue("");
+  }, []);
+
+  const saveBlockedKeyword = () => {
+    const nextKeyword = blockedKeywordInputValue.trim();
+
+    if (!nextKeyword) {
+      return;
+    }
+
+    onAddBlockedKeyword(nextKeyword);
+    closeBlockedKeywordDialog();
+  };
+
   const openNewsViewTime = () => {
     myDetailScrollRestore.captureScroll();
     setActiveDetailView("newsViewTime");
@@ -6202,6 +6505,16 @@ function MyPageView({
                 </section>
               </Fragment>
             ))}
+            <NewsRollDivider className="divider_mySection" />
+            <BlockedKeywordSettingsSection
+              blockedKeywords={blockedKeywords}
+              inputValue={blockedKeywordInputValue}
+              isDialogOpen={isBlockedKeywordDialogOpen}
+              onCancelDialog={closeBlockedKeywordDialog}
+              onInputChange={setBlockedKeywordInputValue}
+              onOpenDialog={() => setIsBlockedKeywordDialogOpen(true)}
+              onSaveKeyword={saveBlockedKeyword}
+            />
           </div>
           ) : isNewsViewTimeOpen ? (
           <div
@@ -6828,8 +7141,10 @@ function InfoView({
 
 function ActiveView({
   allNewsEntryMotionClassName = "",
+  blockedKeywords,
   isTextLarge,
   isAllNewsBreakingEntry = false,
+  onAddBlockedKeyword,
   onCloseSearch,
   onOpenAllNews,
   onOpenSearch,
@@ -6837,8 +7152,10 @@ function ActiveView({
   view,
 }: {
   allNewsEntryMotionClassName?: string;
+  blockedKeywords: string[];
   isTextLarge: boolean;
   isAllNewsBreakingEntry?: boolean;
+  onAddBlockedKeyword: (keyword: string) => void;
   onCloseSearch: () => void;
   onOpenAllNews: () => void;
   onOpenSearch: () => void;
@@ -6875,7 +7192,9 @@ function ActiveView({
   if (view === "my") {
     return (
       <MyPageView
+        blockedKeywords={blockedKeywords}
         isTextLarge={isTextLarge}
+        onAddBlockedKeyword={onAddBlockedKeyword}
         onOpenBreakingNews={onOpenAllNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -6896,6 +7215,7 @@ function ActiveView({
 
   return (
     <HomeView
+      blockedKeywords={blockedKeywords}
       isTextLarge={isTextLarge}
       onOpenBreakingNews={onOpenAllNews}
       onOpenSearch={onOpenSearch}
@@ -6920,6 +7240,7 @@ export function NewsHomeScreen() {
     useState("");
   const [isAllNewsBreakingEntry, setIsAllNewsBreakingEntry] = useState(false);
   const [isTextLarge, setIsTextLarge] = useState(false);
+  const [blockedKeywords, setBlockedKeywords] = useState<string[]>([]);
   const isPanelView =
     activeView === "policy" || activeView === "my" || activeView === "info";
   const activeViewResetKey =
@@ -7018,6 +7339,22 @@ export function NewsHomeScreen() {
     moveToBreakingNews();
   }
 
+  function addBlockedKeyword(keyword: string) {
+    const normalizedKeyword = normalizeBlockedKeyword(keyword);
+
+    if (!normalizedKeyword) {
+      return;
+    }
+
+    setBlockedKeywords((current) => {
+      const hasSameKeyword = current.some(
+        (item) => normalizeBlockedKeyword(item) === normalizedKeyword,
+      );
+
+      return hasSameKeyword ? current : [...current, keyword.trim()];
+    });
+  }
+
   return (
     <main
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
@@ -7029,9 +7366,11 @@ export function NewsHomeScreen() {
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
+          blockedKeywords={blockedKeywords}
           key={`${activeView}-${activeViewResetKey}`}
           isAllNewsBreakingEntry={isAllNewsBreakingEntry}
           isTextLarge={isTextLarge}
+          onAddBlockedKeyword={addBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
           onOpenAllNews={openBreakingNewsView}
           onOpenSearch={openSearch}

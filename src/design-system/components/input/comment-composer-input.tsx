@@ -7,6 +7,7 @@ export type CommentComposerInputProps = {
   label: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
   placeholder: string;
+  showSubmitButton?: boolean;
   submitLabel: string;
   value: string;
 };
@@ -15,6 +16,7 @@ export function CommentComposerInput({
   label,
   onChange,
   placeholder,
+  showSubmitButton = true,
   submitLabel,
   value,
 }: CommentComposerInputProps) {
@@ -32,9 +34,11 @@ export function CommentComposerInput({
         wrapperClassNameOnly
         wrapperClassName="input_commentComposer"
       />
-      <button aria-label={submitLabel} className="btn_commentSubmit" type="submit">
-        <Icon name="submit" />
-      </button>
+      {showSubmitButton ? (
+        <button aria-label={submitLabel} className="btn_commentSubmit" type="submit">
+          <Icon name="submit" />
+        </button>
+      ) : null}
     </>
   );
 }

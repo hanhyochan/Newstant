@@ -2626,74 +2626,55 @@
         transform: translate(-50%, -50%) rotate(-45deg);
     }
 
-    .newsroll_search_field {
+    .btn_searchFieldTrigger {
         min-height: var(--spacing-padding-vertical-60);
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: var(--spacing-gap-horizontal-16);
+        margin: 0;
         padding-inline: var(--spacing-padding-horizontal-16);
         border: var(--border-1) solid var(--color-common-100);
         border-radius: var(--radius-8);
-        color: var(--color-common-100);
-    }
-
-    .newsroll_search_field input {
-        min-width: 0;
-        flex: 1;
-        border: 0;
-        outline: 0;
         color: var(--color-common-100);
         background: transparent;
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
+        text-align: left;
     }
 
-    .newsroll_search_field input::placeholder {
-        color: var(--color-cool-neutral-70);
-        opacity: 1;
+    .btn_searchFieldTrigger span {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .btn_searchFieldTrigger .newsroll_icon {
+        width: 24px;
+        height: 24px;
+        flex: 0 0 auto;
     }
 
     .wrapper_searchContent {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: var(--spacing-gap-vertical-40);
     }
 
-    .newsroll_search_suggestion_list {
-        display: grid;
-        gap: var(--spacing-gap-vertical-24);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .newsroll_search_suggestion_list li {
-        display: grid;
-        gap: var(--spacing-gap-vertical-24);
-        margin: 0;
-        padding: 0;
-    }
-
-    .divider_searchSuggestion {
-        width: 100%;
-        height: 0.5px;
-        background: var(--color-common-100);
-        opacity: 0.28;
-    }
-
-    .newsroll_search_suggestion_list button {
+    .form_searchComposer {
         width: 100%;
         display: flex;
         align-items: center;
         margin: 0;
         padding: 0;
-        border: 0;
-        color: var(--color-common-100);
-        background: transparent;
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-400);
-        line-height: var(--line-height-24);
-        text-align: left;
+    }
+
+    .newsroll_search_results_panel {
+        width: 100%;
+    }
+
+    .newsroll_search_results_panel .newsroll_all_panelContent {
+        gap: 0;
     }
 
 
@@ -3599,6 +3580,7 @@
     .wrapper_myActivity,
     .divider_mySection,
     .tab_myCategoryMenu,
+    .container_myBlockedKeywordSection,
     .btn_mySettingRow,
     .btn_myTimeRow {
         width: 100%;
@@ -3708,6 +3690,104 @@
         line-height: var(--line-height-fixed-20);
     }
 
+    .container_myKeywordOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: var(--spacing-padding-horizontal-16);
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.72);
+    }
+
+    .container_myKeywordDialog {
+        width: min(100%, 360px);
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
+        box-sizing: border-box;
+        border-radius: var(--radius-24);
+        background: var(--color-background-elevated-normal);
+    }
+
+    .text_myKeywordDialogTitle {
+        margin: 0;
+        padding: 0;
+        color: var(--color-label-strong);
+        font-size: var(--font-size-18);
+        font-weight: var(--font-weight-600);
+        line-height: 26px;
+    }
+
+    .form_myKeywordDialog,
+    .wrapper_myKeywordInput {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrapper_myKeywordInput .input_commentComposer {
+        flex: 0 0 auto;
+    }
+
+    .wrapper_myKeywordInput .input_commentComposer input {
+        padding-right: 0;
+    }
+
+    .wrapper_myKeywordActions {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        gap: var(--spacing-gap-horizontal-8);
+        margin: 0;
+        padding: 0;
+    }
+
+    .btn_myKeywordAction {
+        appearance: none;
+        min-width: 0;
+        min-height: 40px;
+        flex: 1 1 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0 var(--spacing-padding-horizontal-16);
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }
+
+    .btn_myKeywordCancel {
+        border: var(--border-1) solid var(--newsroll-divider-color);
+        color: var(--color-label-strong);
+        background: var(--color-background-elevated-normal);
+    }
+
+    .btn_myKeywordSave {
+        border: var(--border-1) solid var(--color-newsroll-purple-50);
+        color: var(--color-common-100);
+        background: var(--color-newsroll-purple-50);
+    }
+
+    .btn_myBlockedKeywordAdd:focus-visible,
+    .btn_myKeywordAction:focus-visible {
+        outline: var(--border-2) solid var(--color-accent-foreground-blue);
+        outline-offset: var(--spacing-gap-vertical-4);
+    }
+
     .wrapper_myRecentScroller {
         display: flex;
         gap: var(--spacing-gap-horizontal-24);
@@ -3772,6 +3852,56 @@
         color: var(--color-label-strong);
         border-color: var(--newsroll-divider-color);
         background: var(--color-background-elevated-normal);
+    }
+
+    .container_myBlockedKeywordSection {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .wrapper_myBlockedKeywordChips {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-8);
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrapper_myBlockedKeywordChips > span {
+        min-width: 0;
+        display: inline-flex;
+    }
+
+    .btn_myBlockedKeywordAdd {
+        appearance: none;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        margin: 0;
+        padding: 0;
+        border: var(--border-1) solid var(--newsroll-divider-color);
+        border-radius: var(--radius-full);
+        color: var(--color-label-strong);
+        background: var(--color-background-elevated-normal);
+        cursor: pointer;
+    }
+
+    .btn_myBlockedKeywordAdd .newsroll_icon {
+        width: 16px;
+        height: 16px;
     }
 
     .wrapper_mySettingsList {
