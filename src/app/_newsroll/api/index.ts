@@ -1,9 +1,11 @@
 export { bookmarkApi } from "./bookmark-api";
 export { commentApi } from "./comment-api";
 export { infoApi } from "./info-api";
+export { inquiryApi } from "./inquiry-api";
 export { newsApi } from "./news-api";
 export { notificationApi } from "./notification-api";
 export { pollApi } from "./poll-api";
+export { settingsApi } from "./settings-api";
 export { userApi } from "./user-api";
 export { welfareApi } from "./welfare-api";
 export type * from "./types";

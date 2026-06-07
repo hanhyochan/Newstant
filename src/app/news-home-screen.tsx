@@ -55,16 +55,24 @@ import {
   bookmarkApi,
   commentApi,
   infoApi,
+  inquiryApi,
   newsApi,
+  notificationApi,
   pollApi,
+  settingsApi,
+  userApi,
   welfareApi,
   type ArticleReactionType,
+  type BlockedKeywordPreference,
   type Comment,
   type CommentReaction,
   type Faq,
   type InquiryType,
   type NewsListItem,
   type Notice,
+  type NotificationSettings,
+  type UserNewsViewTime,
+  type UserPreference,
   type WelfarePolicy,
 } from "./_newsroll/api";
 import { mockCurrentUserId } from "./_newsroll/mock-current-user";
@@ -73,6 +81,11 @@ import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 type Tab = "home" | "all" | "policy" | "my" | "info";
 type View = Tab | "search";
 type InfoTab = "notice" | "faq" | "inquiry";
+type QuickMenuTarget = "customNewsSettings" | "notificationSettings" | "profileSettings";
+type QuickMenuRequest = {
+  id: number;
+  target: QuickMenuTarget;
+};
 type HomeViewMode = "reels" | "block";
 type Reaction = "like" | "dislike" | "neutral" | null;
 type ReactionValue = Exclude<Reaction, null>;
@@ -123,6 +136,7 @@ type BreakingNewsItem = {
 };
 
 type BlockedKeywordSetting = {
+  id?: string;
   isActive: boolean;
   keyword: string;
 };
@@ -137,6 +151,7 @@ type HomeHeaderControls = {
   onCloseDetail?: () => void;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenBreakingNews: () => void;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 };
@@ -788,11 +803,13 @@ const allNewsRelayByCategory: Record<
 
 function NewsToolbar({
   isTextLarge,
+  onOpenMenu,
   onOpenSearch,
   showSearch = true,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   showSearch?: boolean;
   onToggleTextSize: () => void;
@@ -822,8 +839,84 @@ function NewsToolbar({
         baseClassName="newsroll_toolbar_icon"
         icon="menu"
         label="메뉴"
+        onClick={onOpenMenu}
       />
     </div>
+  );
+}
+
+function QuickMenuDrawer({
+  isOpen,
+  onClose,
+  onNavigate,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onNavigate: (target: QuickMenuTarget) => void;
+}) {
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    function closeOnEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    document.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  const quickMenuItems: Array<{ label: string; target: QuickMenuTarget }> = [
+    { label: "내 정보 수정", target: "profileSettings" },
+    { label: "맞춤형 뉴스 설정", target: "customNewsSettings" },
+    { label: "알림 설정", target: "notificationSettings" },
+  ];
+
+  return (
+    <ClientPortal>
+      <div
+        className="container_quickMenuOverlay"
+        onClick={onClose}
+        role="presentation"
+      >
+        <section
+          aria-label="퀵메뉴"
+          aria-modal="true"
+          className="container_quickMenuDrawer"
+          onClick={(event) => event.stopPropagation()}
+          role="dialog"
+        >
+          <div className="wrapper_quickMenuList">
+            {quickMenuItems.map((item, index) => (
+              <Fragment key={item.target}>
+                {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
+                <button
+                  className="btn_quickMenuItem"
+                  onClick={() => onNavigate(item.target)}
+                  type="button"
+                >
+                  <span className="text_mySettingLabel">{item.label}</span>
+                  <span className="icon_myChevron" aria-hidden="true" />
+                </button>
+              </Fragment>
+            ))}
+          </div>
+          <button className="btn_quickMenuLogout" type="button">
+            로그아웃
+          </button>
+        </section>
+      </div>
+    </ClientPortal>
   );
 }
 
@@ -873,6 +966,7 @@ function HomeMainHeader({
   onCloseDetail,
   onModeChange,
   onOpenBreakingNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls) {
@@ -893,6 +987,7 @@ function HomeMainHeader({
         toolbar={
           <NewsToolbar
             isTextLarge={isTextLarge}
+            onOpenMenu={onOpenMenu}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
@@ -949,6 +1044,7 @@ function HomeShell({
   onCloseDetail,
   onModeChange,
   onOpenBreakingNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls & { children: ReactNode }) {
@@ -1054,6 +1150,7 @@ function HomeShell({
           onCloseDetail={onCloseDetail}
           onModeChange={onModeChange}
           onOpenBreakingNews={onOpenBreakingNews}
+          onOpenMenu={onOpenMenu}
           onOpenSearch={onOpenSearch}
           onToggleTextSize={onToggleTextSize}
         />
@@ -3183,12 +3280,14 @@ function HomeView({
   blockedKeywords,
   isTextLarge,
   onOpenBreakingNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: {
   blockedKeywords: string[];
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -3293,6 +3392,7 @@ function HomeView({
         setHomeViewMode(nextMode);
       }}
       onOpenBreakingNews={onOpenBreakingNews}
+      onOpenMenu={onOpenMenu}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
     >
@@ -3373,7 +3473,13 @@ function HomeView({
   );
 }
 
-function SearchView({ onClose }: { onClose: () => void }) {
+function SearchView({
+  blockedKeywords,
+  onClose,
+}: {
+  blockedKeywords: string[];
+  onClose: () => void;
+}) {
   const [query, setQuery] = useState("");
   const [isSearchComposerOpen, setIsSearchComposerOpen] = useState(false);
   const [articles, setArticles] = useState<HomeArticle[]>([]);
@@ -3387,10 +3493,10 @@ function SearchView({ onClose }: { onClose: () => void }) {
       return [];
     }
 
-    return articles.filter((article) =>
+    return filterArticlesByBlockedKeywords(articles, blockedKeywords).filter((article) =>
       getArticleFilterText(article).includes(normalizedQuery),
     );
-  }, [articles, normalizedQuery]);
+  }, [articles, blockedKeywords, normalizedQuery]);
 
   useEffect(() => {
     let ignore = false;
@@ -3780,15 +3886,19 @@ function AllNewsRelayItem({
 }
 
 function AllNewsView({
+  blockedKeywords,
   entryMotionClassName = "",
   initialShowAllBreaking = false,
   isTextLarge,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: {
+  blockedKeywords: string[];
   entryMotionClassName?: string;
   initialShowAllBreaking?: boolean;
   isTextLarge: boolean;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -3825,13 +3935,17 @@ function AllNewsView({
   const [showAllBreaking, setShowAllBreaking] = useState(initialShowAllBreaking);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
+  const visibleAllNewsArticles = useMemo(
+    () => filterArticlesByBlockedKeywords(allNewsArticles, blockedKeywords),
+    [allNewsArticles, blockedKeywords],
+  );
   const allNewsLatestItems = useMemo(
-    () => allNewsArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
-    [allNewsArticles],
+    () => visibleAllNewsArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
+    [visibleAllNewsArticles],
   );
   const allNewsHeadlinesByActivePress = useMemo(
-    () => groupAllNewsByValue(allNewsArticles, (article) => article.pressName),
-    [allNewsArticles],
+    () => groupAllNewsByValue(visibleAllNewsArticles, (article) => article.pressName),
+    [visibleAllNewsArticles],
   );
   const currentAllNewsPresses = useMemo(
     () => Object.keys(allNewsHeadlinesByActivePress),
@@ -3840,8 +3954,8 @@ function AllNewsView({
   const visibleAllNewsPresses =
     currentAllNewsPresses.length > 0 ? currentAllNewsPresses : allNewsPresses;
   const allNewsRelayByActiveCategory = useMemo(
-    () => groupAllNewsByValue(allNewsArticles, (article) => article.category),
-    [allNewsArticles],
+    () => groupAllNewsByValue(visibleAllNewsArticles, (article) => article.category),
+    [visibleAllNewsArticles],
   );
   const currentAllNewsRelayCategories = useMemo(
     () => Object.keys(allNewsRelayByActiveCategory),
@@ -3852,8 +3966,8 @@ function AllNewsView({
       ? currentAllNewsRelayCategories
       : allNewsRelayCategories;
   const allBreakingItems = useMemo(
-    () => getBreakingNewsItems(allNewsArticles),
-    [allNewsArticles],
+    () => getBreakingNewsItems(visibleAllNewsArticles),
+    [visibleAllNewsArticles],
   );
   const breakingItems = showAllBreaking
     ? allBreakingItems
@@ -4137,6 +4251,7 @@ function AllNewsView({
         <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
+            onOpenMenu={onOpenMenu}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
@@ -4847,11 +4962,13 @@ function useEnterFromRightExitMotion({
 function PolicyView({
   isTextLarge,
   onOpenBreakingNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -5002,6 +5119,7 @@ function PolicyView({
           toolbar={
             <NewsToolbar
               isTextLarge={isTextLarge}
+              onOpenMenu={onOpenMenu}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
@@ -5164,6 +5282,66 @@ function getMyCategoryTabItems(groupIndex: number) {
   }));
 }
 
+function getInitialCategorySettings() {
+  return myCategoryGroups.map(
+    (group, groupIndex) =>
+      new Set(
+        group.items
+          .map((item, itemIndex) =>
+            group.active.has(item)
+              ? getMyCategoryOptionId(groupIndex, itemIndex)
+              : null,
+          )
+          .filter((item): item is string => Boolean(item)),
+      ),
+  );
+}
+
+function getCategorySettingsFromPreference(preference: UserPreference | null) {
+  const initialSettings = getInitialCategorySettings();
+
+  if (!preference) {
+    return initialSettings;
+  }
+
+  const getValidOptionIds = (groupIndex: number, optionIds: string[]) => {
+    const validIds = new Set(getMyCategoryTabItems(groupIndex).map((item) => item.id));
+    return optionIds.filter((optionId) => validIds.has(optionId));
+  };
+
+  const categoryIds = getValidOptionIds(0, preference.categoryIds);
+  const ageGroupIds = getValidOptionIds(1, preference.ageGroupId ? [preference.ageGroupId] : []);
+  const pressIds = getValidOptionIds(2, preference.pressIds);
+
+  return [
+    new Set(categoryIds.length > 0 ? categoryIds : initialSettings[0]),
+    new Set(ageGroupIds.length > 0 ? ageGroupIds : initialSettings[1]),
+    new Set(pressIds.length > 0 ? pressIds : initialSettings[2]),
+  ];
+}
+
+function getNotificationSettingsFromApi(settings: NotificationSettings | null) {
+  return {
+    "속보": settings?.breakingNews ?? true,
+    "내 댓글에 좋아요, 답글": settings?.commentReplies ?? true,
+    "공지사항": settings?.notices ?? true,
+  };
+}
+
+function getNewsViewTimesFromApi(settings: UserNewsViewTime | null) {
+  return new Set(settings?.times?.length ? settings.times : ["07:00", "21:00"]);
+}
+
+function getBlockedKeywordSettingsFromApi(
+  items: BlockedKeywordPreference[],
+): BlockedKeywordSetting[] {
+  return items.map((item) => ({
+    id: item.id,
+    isActive: item.isActive,
+    keyword: item.keyword,
+  }));
+}
+
 const mySummaryItems = [
   { count: 56, icon: "bookmark", label: "북마크", tone: "like", value: "bookmark" },
   { count: 54, icon: "vote", label: "투표", tone: "dislike", value: "vote" },
@@ -5304,6 +5482,9 @@ function BlockedKeywordSettingsSection({
       className="container_myBlockedKeywordSection"
     >
       <h2 className="text_mySectionTitle">가리고 싶은 키워드</h2>
+      <p className="text_myBlockedKeywordDescription">
+        맞춤 뉴스, 전체 뉴스에 모두 적용되며 해당 키워드를 가진 뉴스는 검색되지 않습니다.
+      </p>
       <div
         aria-label="등록된 가리고 싶은 키워드"
         className="wrapper_myBlockedKeywordChips"
@@ -5953,22 +6134,30 @@ const myProfileSettingSections = [
 
 function MyPageView({
   blockedKeywordSettings,
+  isDarkMode,
   isTextLarge,
   onAddBlockedKeyword,
+  onDarkModeChange,
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
   onOpenBreakingNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
+  quickMenuRequest,
 }: {
   blockedKeywordSettings: BlockedKeywordSetting[];
+  isDarkMode: boolean;
   isTextLarge: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
+  onDarkModeChange: (isDarkMode: boolean) => void;
   onDeleteBlockedKeyword: (keyword: string) => void;
   onToggleBlockedKeyword: (keyword: string) => void;
   onOpenBreakingNews: () => void;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
+  quickMenuRequest?: QuickMenuRequest | null;
 }) {
   const [activeDetailView, setActiveDetailView] =
     useState<MyPageDetailView>(null);
@@ -6002,19 +6191,7 @@ function MyPageView({
   const [myBookmarkCount, setMyBookmarkCount] = useState(0);
   const [myVoteCount, setMyVoteCount] = useState(0);
   const [selectedCategorySettings, setSelectedCategorySettings] = useState(
-    () =>
-      myCategoryGroups.map(
-        (group, groupIndex) =>
-          new Set(
-            group.items
-              .map((item, itemIndex) =>
-                group.active.has(item)
-                  ? getMyCategoryOptionId(groupIndex, itemIndex)
-                  : null,
-              )
-              .filter((item): item is string => Boolean(item)),
-          ),
-      ),
+    getInitialCategorySettings,
   );
   const [notificationSettings, setNotificationSettings] = useState<
     Record<string, boolean>
@@ -6023,10 +6200,13 @@ function MyPageView({
     공지사항: true,
     속보: true,
   });
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
     () => new Set(["07:00", "21:00"]),
   );
+  const userPreferenceIdRef = useRef<string | null>(null);
+  const notificationSettingsIdRef = useRef<string | null>(null);
+  const userNewsViewTimeIdRef = useRef<string | null>(null);
+  const lastQuickMenuRequestIdRef = useRef<number | null>(null);
   const [isBlockedKeywordDialogOpen, setIsBlockedKeywordDialogOpen] =
     useState(false);
   const [blockedKeywordInputValue, setBlockedKeywordInputValue] = useState("");
@@ -6299,9 +6479,129 @@ function MyPageView({
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadMySettings() {
+      const [preference, notifications, newsViewTimes] = await Promise.all([
+        userApi.getUserPreferences(mockCurrentUserId),
+        notificationApi.getNotificationSettings(mockCurrentUserId),
+        settingsApi.getUserNewsViewTimes(mockCurrentUserId),
+      ]);
+      const currentPreference = preference[0] ?? null;
+
+      if (ignore) {
+        return;
+      }
+
+      userPreferenceIdRef.current = currentPreference?.id ?? null;
+      notificationSettingsIdRef.current = notifications?.id ?? null;
+      userNewsViewTimeIdRef.current = newsViewTimes?.id ?? null;
+      setSelectedCategorySettings(getCategorySettingsFromPreference(currentPreference));
+      setNotificationSettings(getNotificationSettingsFromApi(notifications));
+      setSelectedNewsViewTimes(getNewsViewTimesFromApi(newsViewTimes));
+      onDarkModeChange(notifications?.darkMode ?? false);
+    }
+
+    loadMySettings().catch(() => undefined);
+
+    return () => {
+      ignore = true;
+    };
+  }, [onDarkModeChange]);
+
+  useEffect(() => {
+    if (!quickMenuRequest || lastQuickMenuRequestIdRef.current === quickMenuRequest.id) {
+      return;
+    }
+
+    lastQuickMenuRequestIdRef.current = quickMenuRequest.id;
+
+    if (quickMenuRequest.target === "customNewsSettings") {
+      setMyArticleDetail(null);
+      setActiveDetailView("customNewsSettings");
+      return;
+    }
+
+    if (quickMenuRequest.target === "profileSettings") {
+      setMyArticleDetail(null);
+      setActiveDetailView("profileSettings");
+      return;
+    }
+
+    setMyArticleDetail(null);
+    setActiveDetailView(null);
+    window.requestAnimationFrame(() => {
+      const target = myPanelContentRef.current?.querySelector<HTMLElement>(
+        "[data-my-section='notification-settings']",
+      );
+
+      target?.scrollIntoView({ block: "start" });
+    });
+  }, [quickMenuRequest]);
+
+  const saveUserPreference = (
+    nextSettings: Array<Set<string>>,
+  ) => {
+    const preferenceId = userPreferenceIdRef.current;
+
+    if (!preferenceId) {
+      return;
+    }
+
+    userApi
+      .updateUserPreferences(preferenceId, {
+        categoryIds: Array.from(nextSettings[0] ?? []),
+        ageGroupId: Array.from(nextSettings[1] ?? [])[0] ?? "",
+        pressIds: Array.from(nextSettings[2] ?? []),
+      })
+      .catch(() => undefined);
+  };
+
+  const saveNotificationSettings = (
+    nextSettings: Record<(typeof myNotificationLabels)[number], boolean>,
+    nextDarkMode = isDarkMode,
+  ) => {
+    const settingsId = notificationSettingsIdRef.current;
+
+    if (!settingsId) {
+      return;
+    }
+
+    notificationApi
+      .updateNotificationSettings(settingsId, {
+        breakingNews: nextSettings["속보"],
+        commentReplies: nextSettings["내 댓글에 좋아요, 답글"],
+        darkMode: nextDarkMode,
+        notices: nextSettings["공지사항"],
+      })
+      .catch(() => undefined);
+  };
+
+  const saveNewsViewTimes = (nextTimes: Set<string>) => {
+    const nextTimeList = Array.from(nextTimes);
+    const settingsId = userNewsViewTimeIdRef.current;
+
+    if (settingsId) {
+      settingsApi
+        .updateUserNewsViewTimes(settingsId, { times: nextTimeList })
+        .catch(() => undefined);
+      return;
+    }
+
+    settingsApi
+      .createUserNewsViewTimes(mockCurrentUserId, nextTimeList)
+      .then((settings) => {
+        userNewsViewTimeIdRef.current = settings.id;
+      })
+      .catch(() => undefined);
+  };
+
   const toggleCategorySetting = (groupIndex: number, optionId: string) => {
     setSelectedCategorySettings((current) =>
-      current.map((selectedItems, index) => {
+      {
+        const nextSettings = current.map((selectedItems, index) => {
         if (index !== groupIndex) {
           return selectedItems;
         }
@@ -6319,7 +6619,11 @@ function MyPageView({
         }
 
         return nextItems;
-      }),
+        });
+
+        saveUserPreference(nextSettings);
+        return nextSettings;
+      },
     );
   };
 
@@ -6333,6 +6637,7 @@ function MyPageView({
         next.add(time);
       }
 
+      saveNewsViewTimes(next);
       return next;
     });
   };
@@ -6422,6 +6727,7 @@ function MyPageView({
           <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
+              onOpenMenu={onOpenMenu}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
               showSearch={false}
@@ -6444,6 +6750,7 @@ function MyPageView({
           <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
+              onOpenMenu={onOpenMenu}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
@@ -6716,7 +7023,10 @@ function MyPageView({
             </div>
           </section>
 
-          <section className="container_mySettingsSection">
+          <section
+            className="container_mySettingsSection"
+            data-my-section="notification-settings"
+          >
             <NewsRollDivider className="divider_mySection" />
             <h2 className="text_mySectionTitle">알림 설정</h2>
             <div className="wrapper_mySettingsList">
@@ -6725,12 +7035,18 @@ function MyPageView({
                   checked={notificationSettings[label]}
                   key={label}
                   label={label}
-                  onClick={() =>
-                    setNotificationSettings((currentSettings) => ({
-                      ...currentSettings,
-                      [label]: !currentSettings[label],
-                    }))
-                  }
+                  onClick={() => {
+                    setNotificationSettings((currentSettings) => {
+                      const nextSettings = {
+                        ...currentSettings,
+                      } as Record<(typeof myNotificationLabels)[number], boolean>;
+
+                      nextSettings[label] = !currentSettings[label];
+
+                      saveNotificationSettings(nextSettings);
+                      return nextSettings;
+                    });
+                  }}
                 />
               ))}
               <MySettingRow
@@ -6748,7 +7064,12 @@ function MyPageView({
               <MySettingRow
                 checked={isDarkMode}
                 label="다크모드"
-                onClick={() => setIsDarkMode((current) => !current)}
+                onClick={() => {
+                  const nextDarkMode = !isDarkMode;
+
+                  onDarkModeChange(nextDarkMode);
+                  saveNotificationSettings(notificationSettings, nextDarkMode);
+                }}
               />
             </div>
           </section>
@@ -6902,6 +7223,11 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
   const [selectedInquiryType, setSelectedInquiryType] = useState(
     items[0]?.label ?? "",
   );
+  const [inquiryTitle, setInquiryTitle] = useState("");
+  const [inquiryContent, setInquiryContent] = useState("");
+  const [inquiryStatus, setInquiryStatus] = useState<"error" | "sent" | "sending" | null>(
+    null,
+  );
   const [isInquiryTypeOpen, setIsInquiryTypeOpen] = useState(false);
   const inquiryTypeMenuId = "info-inquiry-type-menu";
 
@@ -6923,7 +7249,33 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
     <form
       className="wrapper_infoInquiry"
       aria-label="1:1 문의"
-      onSubmit={(event) => event.preventDefault()}
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        const selectedType = items.find((item) => item.label === selectedInquiryType);
+
+        if (!selectedType || !inquiryTitle.trim() || !inquiryContent.trim()) {
+          setInquiryStatus("error");
+          return;
+        }
+
+        setInquiryStatus("sending");
+        inquiryApi
+          .createInquiry({
+            content: inquiryContent.trim(),
+            title: inquiryTitle.trim(),
+            typeId: selectedType.id,
+            userId: mockCurrentUserId,
+          })
+          .then(() => {
+            setInquiryTitle("");
+            setInquiryContent("");
+            setInquiryStatus("sent");
+          })
+          .catch(() => {
+            setInquiryStatus("error");
+          });
+      }}
     >
       <label className="wrapper_infoField">
         <span className="text_infoFieldLabel">문의 유형</span>
@@ -6968,10 +7320,12 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
         <span className="text_infoFieldLabel">제목</span>
         <TextInput
           aria-label="문의 제목"
+          onChange={(event) => setInquiryTitle(event.target.value)}
           placeholder="문의 제목을 입력해주세요."
           inputSize="large"
           radius="rounded"
           type="text"
+          value={inquiryTitle}
           variant="outline"
           wrapperClassName="input_commentComposer"
         />
@@ -6981,20 +7335,33 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
         <Textarea
           aria-label="문의 내용"
           className="textarea_infoComposer"
+          onChange={(event) => setInquiryContent(event.target.value)}
           placeholder="문의 내용을 자세히 작성해주세요."
           radius="rounded"
           rows={7}
           textareaSize="large"
+          value={inquiryContent}
         />
       </div>
+      {inquiryStatus === "sent" ? (
+        <p className="text_infoSubmitStatus" role="status">
+          문의가 접수되었습니다.
+        </p>
+      ) : null}
+      {inquiryStatus === "error" ? (
+        <p className="text_infoSubmitStatus is_error" role="alert">
+          문의 내용을 확인해주세요.
+        </p>
+      ) : null}
       <Button
         className="btn_infoSubmit"
+        disabled={inquiryStatus === "sending"}
         radius="rounded"
         size="large"
         type="submit"
       >
         <Icon name="submit" />
-        문의하기
+        {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}
       </Button>
     </form>
   );
@@ -7003,11 +7370,13 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
 function InfoView({
   isTextLarge,
   onOpenBreakingNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -7113,6 +7482,7 @@ function InfoView({
         <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
+            onOpenMenu={onOpenMenu}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
@@ -7200,41 +7570,51 @@ function ActiveView({
   allNewsEntryMotionClassName = "",
   blockedKeywords,
   blockedKeywordSettings,
+  isDarkMode,
   isTextLarge,
   isAllNewsBreakingEntry = false,
   onAddBlockedKeyword,
+  onDarkModeChange,
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
   onCloseSearch,
   onOpenAllNews,
+  onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
+  quickMenuRequest,
   view,
 }: {
   allNewsEntryMotionClassName?: string;
   blockedKeywords: string[];
   blockedKeywordSettings: BlockedKeywordSetting[];
+  isDarkMode: boolean;
   isTextLarge: boolean;
   isAllNewsBreakingEntry?: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
+  onDarkModeChange: (isDarkMode: boolean) => void;
   onDeleteBlockedKeyword: (keyword: string) => void;
   onToggleBlockedKeyword: (keyword: string) => void;
   onCloseSearch: () => void;
   onOpenAllNews: () => void;
+  onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
+  quickMenuRequest?: QuickMenuRequest | null;
   view: View;
 }) {
   if (view === "search") {
-    return <SearchView onClose={onCloseSearch} />;
+    return <SearchView blockedKeywords={blockedKeywords} onClose={onCloseSearch} />;
   }
 
   if (view === "all") {
     return (
       <AllNewsView
+        blockedKeywords={blockedKeywords}
         entryMotionClassName={allNewsEntryMotionClassName}
         initialShowAllBreaking={isAllNewsBreakingEntry}
         isTextLarge={isTextLarge}
+        onOpenMenu={onOpenMenu}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -7246,6 +7626,7 @@ function ActiveView({
       <PolicyView
         isTextLarge={isTextLarge}
         onOpenBreakingNews={onOpenAllNews}
+        onOpenMenu={onOpenMenu}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -7256,13 +7637,17 @@ function ActiveView({
     return (
       <MyPageView
         blockedKeywordSettings={blockedKeywordSettings}
+        isDarkMode={isDarkMode}
         isTextLarge={isTextLarge}
         onAddBlockedKeyword={onAddBlockedKeyword}
+        onDarkModeChange={onDarkModeChange}
         onDeleteBlockedKeyword={onDeleteBlockedKeyword}
         onToggleBlockedKeyword={onToggleBlockedKeyword}
         onOpenBreakingNews={onOpenAllNews}
+        onOpenMenu={onOpenMenu}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
+        quickMenuRequest={quickMenuRequest}
       />
     );
   }
@@ -7272,6 +7657,7 @@ function ActiveView({
       <InfoView
         isTextLarge={isTextLarge}
         onOpenBreakingNews={onOpenAllNews}
+        onOpenMenu={onOpenMenu}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -7283,6 +7669,7 @@ function ActiveView({
       blockedKeywords={blockedKeywords}
       isTextLarge={isTextLarge}
       onOpenBreakingNews={onOpenAllNews}
+      onOpenMenu={onOpenMenu}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
     />
@@ -7304,6 +7691,10 @@ export function NewsHomeScreen() {
   const [allNewsEntryMotionClassName, setAllNewsEntryMotionClassName] =
     useState("");
   const [isAllNewsBreakingEntry, setIsAllNewsBreakingEntry] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
+  const [quickMenuRequest, setQuickMenuRequest] =
+    useState<QuickMenuRequest | null>(null);
   const [isTextLarge, setIsTextLarge] = useState(false);
   const [blockedKeywordSettings, setBlockedKeywordSettings] = useState<
     BlockedKeywordSetting[]
@@ -7323,6 +7714,30 @@ export function NewsHomeScreen() {
   useLayoutEffect(() => {
     resetNewsRollViewport();
   }, [activeView, activeViewResetKey]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadRootSettings() {
+      const [keywords, notifications] = await Promise.all([
+        settingsApi.getBlockedKeywords(mockCurrentUserId),
+        notificationApi.getNotificationSettings(mockCurrentUserId),
+      ]);
+
+      if (ignore) {
+        return;
+      }
+
+      setBlockedKeywordSettings(getBlockedKeywordSettingsFromApi(keywords));
+      setIsDarkMode(notifications?.darkMode ?? false);
+    }
+
+    loadRootSettings().catch(() => undefined);
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -7413,10 +7828,31 @@ export function NewsHomeScreen() {
     moveToBreakingNews();
   }
 
+  function openQuickMenuTarget(target: QuickMenuTarget) {
+    setIsQuickMenuOpen(false);
+    setAllNewsEntryMotionClassName("");
+    setIsAllNewsBreakingEntry(false);
+    setActiveView("my");
+    setSearchBackView("my");
+    setQuickMenuRequest({ id: Date.now(), target });
+    setViewResetKeys((current) => ({
+      ...current,
+      my: current.my + 1,
+    }));
+  }
+
   function addBlockedKeyword(keyword: string) {
     const normalizedKeyword = normalizeBlockedKeyword(keyword);
 
     if (!normalizedKeyword) {
+      return;
+    }
+
+    if (
+      blockedKeywordSettings.some(
+        (item) => normalizeBlockedKeyword(item.keyword) === normalizedKeyword,
+      )
+    ) {
       return;
     }
 
@@ -7429,9 +7865,35 @@ export function NewsHomeScreen() {
         ? current
         : [...current, { isActive: true, keyword: keyword.trim() }];
     });
+
+    settingsApi
+      .createBlockedKeyword({
+        isActive: true,
+        keyword: keyword.trim(),
+        userId: mockCurrentUserId,
+      })
+      .then((createdKeyword) => {
+        setBlockedKeywordSettings((current) =>
+          current.map((item) =>
+            !item.id && normalizeBlockedKeyword(item.keyword) === normalizedKeyword
+              ? {
+                  id: createdKeyword.id,
+                  isActive: createdKeyword.isActive,
+                  keyword: createdKeyword.keyword,
+                }
+              : item,
+          ),
+        );
+      })
+      .catch(() => undefined);
   }
 
   function toggleBlockedKeyword(keyword: string) {
+    const targetKeyword = blockedKeywordSettings.find(
+      (setting) => setting.keyword === keyword,
+    );
+    const nextIsActive = !targetKeyword?.isActive;
+
     setBlockedKeywordSettings((current) =>
       current.map((setting) =>
         setting.keyword === keyword
@@ -7439,12 +7901,26 @@ export function NewsHomeScreen() {
           : setting,
       ),
     );
+
+    if (targetKeyword?.id) {
+      settingsApi
+        .updateBlockedKeyword(targetKeyword.id, { isActive: nextIsActive })
+        .catch(() => undefined);
+    }
   }
 
   function deleteBlockedKeyword(keyword: string) {
+    const targetKeyword = blockedKeywordSettings.find(
+      (setting) => setting.keyword === keyword,
+    );
+
     setBlockedKeywordSettings((current) =>
       current.filter((setting) => setting.keyword !== keyword),
     );
+
+    if (targetKeyword?.id) {
+      settingsApi.deleteBlockedKeyword(targetKeyword.id).catch(() => undefined);
+    }
   }
 
   return (
@@ -7453,26 +7929,35 @@ export function NewsHomeScreen() {
         activeView === "all" ? " newsroll_screen_all" : ""
       }${isPanelView ? " newsroll_screen_panel" : ""}${
         isTextLarge ? " newsroll_text_large" : ""
-      }`}
+      }${isDarkMode ? " newsroll_dark" : ""}`}
     >
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
           blockedKeywords={blockedKeywords}
           blockedKeywordSettings={blockedKeywordSettings}
+          isDarkMode={isDarkMode}
           key={`${activeView}-${activeViewResetKey}`}
           isAllNewsBreakingEntry={isAllNewsBreakingEntry}
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
+          onDarkModeChange={setIsDarkMode}
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
           onOpenAllNews={openBreakingNewsView}
+          onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
+          quickMenuRequest={quickMenuRequest}
           view={activeView}
         />
       </div>
+      <QuickMenuDrawer
+        isOpen={isQuickMenuOpen}
+        onClose={() => setIsQuickMenuOpen(false)}
+        onNavigate={openQuickMenuTarget}
+      />
 
       {activeView !== "search" ? (
         <nav className="newsroll_bottom_nav" aria-label="하단 탐색">

@@ -3720,6 +3720,66 @@
         line-height: 26px;
     }
 
+    .container_quickMenuOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: stretch;
+        justify-content: flex-end;
+        margin: 0;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.56);
+    }
+
+    .container_quickMenuDrawer {
+        width: min(292px, calc(100% - 56px));
+        min-width: 0;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
+        box-sizing: border-box;
+        color: var(--color-label-strong);
+        background: var(--color-background-elevated-normal);
+    }
+
+    .wrapper_quickMenuList {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: 0;
+    }
+
+    .btn_quickMenuItem,
+    .btn_quickMenuLogout {
+        width: 100%;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-gap-horizontal-24);
+        margin: 0;
+        padding: 0;
+        color: inherit;
+        background: transparent;
+        text-align: left;
+    }
+
+    .btn_quickMenuLogout {
+        justify-content: flex-start;
+        color: var(--color-label-neutral);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }
+
     .form_myKeywordDialog,
     .wrapper_myKeywordInput {
         width: 100%;
@@ -3811,6 +3871,15 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    .text_myBlockedKeywordDescription {
+        margin: 0;
+        padding: 0;
+        color: var(--color-label-neutral);
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
     }
 
     .wrapper_myBlockedKeywordChips {
@@ -4242,9 +4311,120 @@
         line-height: var(--line-height-24);
     }
 
+    .text_infoSubmitStatus {
+        margin: 0;
+        padding: 0;
+        color: var(--color-label-neutral);
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }
+
+    .text_infoSubmitStatus.is_error {
+        color: var(--color-red-50);
+    }
+
     .btn_infoSubmit .newsroll_icon_submit {
         width: 24px;
         height: 24px;
+    }
+
+    .newsroll_dark {
+        --newsroll-dark-sheet: #050505;
+        --newsroll-dark-surface: #111111;
+        --newsroll-dark-surface-muted: #1a1a1a;
+        --newsroll-dark-line: #333333;
+        --newsroll-dark-text-strong: #f5f5f5;
+        --newsroll-dark-text-neutral: #c7c7c7;
+    }
+
+    .newsroll_dark .newsroll_common_sheet,
+    .newsroll_dark .container_homeSheet,
+    .newsroll_dark .container_articleCard,
+    .newsroll_dark .newsroll_all_panel,
+    .newsroll_dark .newsroll_all_latest_panel,
+    .newsroll_dark .container_infoList,
+    .newsroll_dark .wrapper_infoInquiry,
+    .newsroll_dark .container_myKeywordDialog,
+    .newsroll_dark .container_quickMenuDrawer {
+        color: var(--newsroll-dark-text-strong);
+        background: var(--newsroll-dark-sheet);
+    }
+
+    .newsroll_dark .wrapper_articleCardContent,
+    .newsroll_dark .newsroll_homeStateContent,
+    .newsroll_dark .newsroll_all_relay_item,
+    .newsroll_dark .newsroll_all_headline_item,
+    .newsroll_dark .btn_infoNoticeItem,
+    .newsroll_dark .container_infoFaqItem,
+    .newsroll_dark .wrapper_commentRepliesInner,
+    .newsroll_dark .container_commentComposerFixed,
+    .newsroll_dark .form_searchComposer,
+    .newsroll_dark .btn_searchFieldTrigger {
+        color: var(--newsroll-dark-text-strong);
+        background: var(--newsroll-dark-surface);
+    }
+
+    .newsroll_dark .text_mySectionTitle,
+    .newsroll_dark .text_myTimeTitle,
+    .newsroll_dark .text_myTimeSectionLabel,
+    .newsroll_dark .text_mySettingLabel,
+    .newsroll_dark .text_infoFieldLabel,
+    .newsroll_dark .text_infoItemTitle,
+    .newsroll_dark .newsroll_all_section_title,
+    .newsroll_dark .newsroll_all_relay_item strong,
+    .newsroll_dark .newsroll_all_headline_body strong,
+    .newsroll_dark .container_articleCard :where(h1, h2, p),
+    .newsroll_dark .wrapper_commentItem,
+    .newsroll_dark .wrapper_commentReplyItem {
+        color: var(--newsroll-dark-text-strong);
+    }
+
+    .newsroll_dark .text_infoBody,
+    .newsroll_dark .text_infoMeta,
+    .newsroll_dark .text_myBlockedKeywordDescription,
+    .newsroll_dark .text_commentEmpty,
+    .newsroll_dark .newsroll_createdTime,
+    .newsroll_dark .newsroll_all_meta,
+    .newsroll_dark .text_infoSubmitStatus {
+        color: var(--newsroll-dark-text-neutral);
+    }
+
+    .newsroll_dark .newsroll_divider,
+    .newsroll_dark .divider_mySection,
+    .newsroll_dark .divider_commentItem,
+    .newsroll_dark .newsroll_all_itemDivider {
+        background: var(--newsroll-dark-line);
+        border-color: var(--newsroll-dark-line);
+    }
+
+    .newsroll_dark .text_input,
+    .newsroll_dark .textarea,
+    .newsroll_dark .wrapper_infoInquiry .select_infoField,
+    .newsroll_dark .wrapper_infoInquiry .textarea_infoComposer {
+        color: var(--newsroll-dark-text-strong);
+        background: var(--newsroll-dark-surface-muted);
+        border-color: var(--color-newsroll-purple-50);
+    }
+
+    .newsroll_dark .text_input input,
+    .newsroll_dark .textarea::placeholder,
+    .newsroll_dark .text_input input::placeholder {
+        color: var(--newsroll-dark-text-neutral);
+    }
+
+    .newsroll_dark .tab_myCategoryMenu button[data-state='default'],
+    .newsroll_dark .btn_myBlockedKeywordAdd,
+    .newsroll_dark .btn_originalArticle {
+        color: var(--newsroll-dark-text-strong);
+        background: var(--newsroll-dark-surface);
+        border-color: var(--newsroll-dark-line);
+    }
+
+    .newsroll_dark .newsroll_icon:not(.newsroll_icon_like):not(.newsroll_icon_dislike):not(.newsroll_icon_neutral),
+    .newsroll_dark .icon_myChevron,
+    .newsroll_dark .newsroll_dropdownArrow {
+        color: currentColor;
     }
 
     :root {

@@ -83,6 +83,23 @@ export type UserPreference = {
   updatedAt: string;
 };
 
+export type UserNewsViewTime = {
+  id: string;
+  userId: string;
+  optionIds?: string[];
+  times?: string[];
+  updatedAt: string;
+};
+
+export type BlockedKeywordPreference = {
+  id: string;
+  userId: string;
+  keyword: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BookmarkTargetType = "news" | "welfarePolicy" | "notice";
 
 export type Bookmark = {
@@ -193,6 +210,18 @@ export type InquiryType = {
   label: string;
 };
 
+export type Inquiry = {
+  id: string;
+  userId: string;
+  typeId: string;
+  title: string;
+  content: string;
+  status: "received" | "answered";
+  emailSent?: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type CreateCommentInput = {
   newsId: string;
   userId: string;
@@ -243,3 +272,24 @@ export type CreatePollInput = {
 export type UpdateNotificationSettingsInput = Partial<
   Pick<NotificationSettings, "breakingNews" | "commentReplies" | "notices" | "darkMode">
 >;
+
+export type UpdateUserNewsViewTimeInput = Partial<
+  Pick<UserNewsViewTime, "optionIds" | "times">
+>;
+
+export type CreateBlockedKeywordPreferenceInput = {
+  userId: string;
+  keyword: string;
+  isActive: boolean;
+};
+
+export type UpdateBlockedKeywordPreferenceInput = Partial<
+  Pick<BlockedKeywordPreference, "keyword" | "isActive">
+>;
+
+export type CreateInquiryInput = {
+  userId: string;
+  typeId: string;
+  title: string;
+  content: string;
+};
