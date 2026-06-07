@@ -84,6 +84,7 @@ type InfoTab = "notice" | "faq" | "inquiry";
 type QuickMenuTarget = "customNewsSettings" | "notificationSettings" | "profileSettings";
 type QuickMenuRequest = {
   id: number;
+  returnView: Tab;
   target: QuickMenuTarget;
 };
 type HomeViewMode = "reels" | "block";
@@ -6143,6 +6144,7 @@ function MyPageView({
   onOpenBreakingNews,
   onOpenMenu,
   onOpenSearch,
+  onQuickMenuBack,
   onToggleTextSize,
   quickMenuRequest,
 }: {
@@ -6156,6 +6158,7 @@ function MyPageView({
   onOpenBreakingNews: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
+  onQuickMenuBack: (returnView: Tab) => void;
   onToggleTextSize: () => void;
   quickMenuRequest?: QuickMenuRequest | null;
 }) {
@@ -6599,9 +6602,8 @@ function MyPageView({
   };
 
   const toggleCategorySetting = (groupIndex: number, optionId: string) => {
-    setSelectedCategorySettings((current) =>
-      {
-        const nextSettings = current.map((selectedItems, index) => {
+    setSelectedCategorySettings((current) => {
+      const nextSettings = current.map((selectedItems, index) => {
         if (index !== groupIndex) {
           return selectedItems;
         }
@@ -6619,12 +6621,11 @@ function MyPageView({
         }
 
         return nextItems;
-        });
+      });
 
-        saveUserPreference(nextSettings);
-        return nextSettings;
-      },
-    );
+      saveUserPreference(nextSettings);
+      return nextSettings;
+    });
   };
 
   const toggleNewsViewTime = (time: string) => {
@@ -6703,8 +6704,17 @@ function MyPageView({
       : activeDetailView === "customNewsSettings"
       ? "맞춤형 뉴스 설정에서 마이페이지로 돌아가기"
       : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
+  const quickMenuReturnView =
+    !isMyArticleDetailOpen &&
+    quickMenuRequest &&
+    (activeDetailView === "customNewsSettings" ||
+      activeDetailView === "profileSettings")
+    ? quickMenuRequest.returnView
+    : null;
   const handleMyDetailBack = isMyArticleDetailOpen
     ? myArticleDetailExitMotion.closeWithMotion
+    : quickMenuReturnView
+      ? () => onQuickMenuBack(quickMenuReturnView)
     : myDetailExitMotion.closeWithMotion;
 
   return (
@@ -7581,6 +7591,7 @@ function ActiveView({
   onOpenAllNews,
   onOpenMenu,
   onOpenSearch,
+  onQuickMenuBack,
   onToggleTextSize,
   quickMenuRequest,
   view,
@@ -7599,6 +7610,7 @@ function ActiveView({
   onOpenAllNews: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
+  onQuickMenuBack: (returnView: Tab) => void;
   onToggleTextSize: () => void;
   quickMenuRequest?: QuickMenuRequest | null;
   view: View;
@@ -7646,6 +7658,7 @@ function ActiveView({
         onOpenBreakingNews={onOpenAllNews}
         onOpenMenu={onOpenMenu}
         onOpenSearch={onOpenSearch}
+        onQuickMenuBack={onQuickMenuBack}
         onToggleTextSize={onToggleTextSize}
         quickMenuRequest={quickMenuRequest}
       />
@@ -7829,15 +7842,29 @@ export function NewsHomeScreen() {
   }
 
   function openQuickMenuTarget(target: QuickMenuTarget) {
+    const returnView: Tab = activeView === "search" ? searchBackView : activeView;
+
     setIsQuickMenuOpen(false);
     setAllNewsEntryMotionClassName("");
     setIsAllNewsBreakingEntry(false);
     setActiveView("my");
-    setSearchBackView("my");
-    setQuickMenuRequest({ id: Date.now(), target });
+    setSearchBackView(returnView);
+    setQuickMenuRequest({ id: Date.now(), returnView, target });
     setViewResetKeys((current) => ({
       ...current,
       my: current.my + 1,
+    }));
+  }
+
+  function returnFromQuickMenuTarget(returnView: Tab) {
+    setQuickMenuRequest(null);
+    setAllNewsEntryMotionClassName("");
+    setIsAllNewsBreakingEntry(false);
+    setActiveView(returnView);
+    setSearchBackView(returnView);
+    setViewResetKeys((current) => ({
+      ...current,
+      [returnView]: current[returnView] + 1,
     }));
   }
 
@@ -7948,6 +7975,7 @@ export function NewsHomeScreen() {
           onOpenAllNews={openBreakingNewsView}
           onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
+          onQuickMenuBack={returnFromQuickMenuTarget}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
           quickMenuRequest={quickMenuRequest}
           view={activeView}
