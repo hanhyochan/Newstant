@@ -1532,9 +1532,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        max-width: 100%;
+        min-width: 0;
         gap: var(--spacing-gap-horizontal-8);
         font-weight: var(--font-weight-500);
-        white-space: nowrap;
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
         cursor: pointer;
         color: var(--color-label-neutral);
         background: var(--color-fill-normal);
@@ -2669,16 +2674,6 @@
         padding: 0;
     }
 
-    .newsroll_search_results_panel {
-        width: 100%;
-    }
-
-    .newsroll_search_results_panel .newsroll_all_panelContent {
-        gap: 0;
-    }
-
-
-
     .newsroll_screen_all {
         align-items: flex-start;
         padding-inline: 0;
@@ -3736,54 +3731,8 @@
         padding: 0;
     }
 
-    .wrapper_myKeywordInput .input_commentComposer {
-        flex: 0 0 auto;
-    }
-
-    .wrapper_myKeywordInput .input_commentComposer input {
-        padding-right: 0;
-    }
-
-    .wrapper_myKeywordActions {
-        width: 100%;
-        min-width: 0;
-        display: flex;
-        gap: var(--spacing-gap-horizontal-8);
-        margin: 0;
-        padding: 0;
-    }
-
-    .btn_myKeywordAction {
-        appearance: none;
-        min-width: 0;
-        min-height: 40px;
-        flex: 1 1 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0;
-        padding: 0 var(--spacing-padding-horizontal-16);
-        border-radius: var(--radius-full);
-        cursor: pointer;
-        font-size: var(--font-size-15);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
-    }
-
-    .btn_myKeywordCancel {
-        border: var(--border-1) solid var(--newsroll-divider-color);
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
-    .btn_myKeywordSave {
-        border: var(--border-1) solid var(--color-newsroll-purple-50);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-50);
-    }
-
     .btn_myBlockedKeywordAdd:focus-visible,
-    .btn_myKeywordAction:focus-visible {
+    .btn_myBlockedKeywordDelete:focus-visible {
         outline: var(--border-2) solid var(--color-accent-foreground-blue);
         outline-offset: var(--spacing-gap-vertical-4);
     }
@@ -3868,16 +3817,28 @@
         width: 100%;
         min-width: 0;
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
+        align-items: flex-start;
+        justify-content: space-between;
         gap: var(--spacing-gap-horizontal-8);
         margin: 0;
         padding: 0;
     }
 
-    .wrapper_myBlockedKeywordChips > span {
+    .wrapper_myBlockedKeywordTabs {
+        min-width: 0;
+        display: flex;
+        flex: 1 1 0;
+    }
+
+    .tab_myBlockedKeywordMenu {
+        width: 100%;
+    }
+
+    .wrapper_myBlockedKeywordTab {
         min-width: 0;
         display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-4);
     }
 
     .btn_myBlockedKeywordAdd {
@@ -3899,9 +3860,64 @@
         cursor: pointer;
     }
 
-    .btn_myBlockedKeywordAdd .newsroll_icon {
+    .btn_myBlockedKeywordAdd .newsroll_icon,
+    .btn_myBlockedKeywordDelete span {
         width: 16px;
         height: 16px;
+    }
+
+    .tab_myBlockedKeywordMenu .btn_myBlockedKeywordDelete {
+        appearance: none;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        max-width: 32px;
+        max-height: 32px;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 32px;
+        margin: 0;
+        padding: 0;
+        border: var(--border-1) solid var(--color-red-50);
+        aspect-ratio: 1 / 1;
+        border-radius: var(--radius-full);
+        color: var(--color-red-50);
+        background: var(--color-background-elevated-normal);
+        cursor: pointer;
+    }
+
+    .tab_myBlockedKeywordMenu .btn_myBlockedKeywordDelete span {
+        position: relative;
+        display: block;
+        flex: 0 0 16px;
+        width: 16px;
+        height: 16px;
+        min-width: 16px;
+        min-height: 16px;
+    }
+
+    .tab_myBlockedKeywordMenu .btn_myBlockedKeywordDelete span::before,
+    .tab_myBlockedKeywordMenu .btn_myBlockedKeywordDelete span::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: var(--border-2);
+        border-radius: var(--radius-full);
+        background: currentColor;
+        transform-origin: center;
+    }
+
+    .tab_myBlockedKeywordMenu .btn_myBlockedKeywordDelete span::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .tab_myBlockedKeywordMenu .btn_myBlockedKeywordDelete span::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
     }
 
     .wrapper_mySettingsList {
@@ -4174,12 +4190,6 @@
         line-height: var(--line-height-fixed-20);
     }
 
-    .wrapper_infoInquiry .text_input,
-    .wrapper_infoInquiry .input_commentComposer,
-    .wrapper_infoInquiry .textarea {
-        width: 100%;
-    }
-
     .wrapper_infoInquiry .select_infoField {
         width: 100%;
         min-height: var(--size-52);
@@ -4202,7 +4212,7 @@
     .wrapper_infoInquiry .textarea_infoComposer {
         width: 100%;
         min-height: 196px;
-        border: var(--newsroll-main-border-width) solid var(--color-newsroll-purple-50);
+        border: var(--newsroll-main-border-width, 1.5px) solid var(--color-newsroll-purple-50);
         border-radius: var(--radius-8);
         padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-12);
         color: var(--color-label-strong);
@@ -5903,7 +5913,7 @@
         display: inline-flex;
         align-items: center;
         padding-inline: var(--spacing-padding-horizontal-12);
-        border: var(--newsroll-main-border-width) solid var(--color-newsroll-purple-50);
+        border: var(--newsroll-main-border-width, 1.5px) solid var(--color-newsroll-purple-50);
         border-radius: var(--radius-8);
         color: var(--color-label-strong);
         background: var(--color-background-elevated-normal);

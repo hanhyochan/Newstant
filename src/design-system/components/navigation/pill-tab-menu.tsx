@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent } from "react";
+import { Fragment, useRef, type KeyboardEvent } from "react";
 import type { ReactNode } from "react";
 
 import { cn } from "../shared/utils";
@@ -15,6 +15,7 @@ export type PillTabMenuProps<T extends string> = {
   ariaLabel: string;
   className: string;
   getButtonClassName?: (id: T) => string | undefined;
+  getItemWrapperClassName?: (id: T) => string | undefined;
   getItemState?: (id: T) => PillTabMenuState;
   getItemAriaLabel?: (id: T) => string | undefined;
   getPanelId?: (id: T) => string | undefined;
@@ -22,6 +23,7 @@ export type PillTabMenuProps<T extends string> = {
   items: PillTabItem<T>[];
   keyboardNavigation?: boolean;
   onChange: (id: T) => void;
+  renderItemAddon?: (item: PillTabItem<T>, state: PillTabMenuState) => ReactNode;
   renderItemContent?: (item: PillTabItem<T>) => ReactNode;
   role?: PillTabMenuRole;
   value: T;
@@ -31,6 +33,7 @@ export function PillTabMenu<T extends string>({
   ariaLabel,
   className,
   getButtonClassName,
+  getItemWrapperClassName,
   getItemAriaLabel,
   getItemState,
   getPanelId,
@@ -38,6 +41,7 @@ export function PillTabMenu<T extends string>({
   items,
   keyboardNavigation = true,
   onChange,
+  renderItemAddon,
   renderItemContent,
   role = "tablist",
   value,
@@ -82,8 +86,7 @@ export function PillTabMenu<T extends string>({
         const itemState = getItemState?.(item.id) ?? (value === item.id ? "active" : "default");
         const isActive = itemState === "active";
         const isSelected = itemState === "selected";
-
-        return (
+        const button = (
           <button
             aria-checked={role === "radiogroup" ? isActive : undefined}
             aria-controls={role === "tablist" ? getPanelId?.(item.id) : undefined}
@@ -99,7 +102,6 @@ export function PillTabMenu<T extends string>({
             )}
             data-state={itemState}
             id={getTabId?.(item.id)}
-            key={item.id}
             onClick={() => onChange(item.id)}
             ref={(node) => {
               buttonRefs.current[index] = node;
@@ -110,6 +112,19 @@ export function PillTabMenu<T extends string>({
           >
             {renderItemContent?.(item) ?? item.label}
           </button>
+        );
+        const addon = renderItemAddon?.(item, itemState);
+
+        return addon ? (
+          <span
+            className={cn("wrapper_tabItem", getItemWrapperClassName?.(item.id))}
+            key={item.id}
+          >
+            {button}
+            {addon}
+          </span>
+        ) : (
+          <Fragment key={item.id}>{button}</Fragment>
         );
       })}
     </div>

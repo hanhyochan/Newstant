@@ -122,6 +122,11 @@ type BreakingNewsItem = {
   updatedAt: string;
 };
 
+type BlockedKeywordSetting = {
+  isActive: boolean;
+  keyword: string;
+};
+
 type HomeHeaderControls = {
   breakingTitle?: string;
   dockedControlsMotionClassName?: string;
@@ -3486,7 +3491,7 @@ function SearchView({ onClose }: { onClose: () => void }) {
           ) : normalizedQuery ? (
             <article
               aria-label="통합검색 결과"
-              className="container_articleCard newsroll_all_panel newsroll_all_relay_panel newsroll_search_results_panel"
+              className="container_articleCard newsroll_all_panel newsroll_all_relay_panel"
             >
               <AllNewsPanelContent>
                 <h2 className="newsroll_all_section_title">
@@ -5217,7 +5222,7 @@ function BlockedKeywordDialog({
             className="text_myKeywordDialogTitle"
             id="my-blocked-keyword-dialog-title"
           >
-            보기 싫은 키워드
+            가리고 싶은 키워드
           </h2>
           <form
             className="form_myKeywordDialog"
@@ -5227,29 +5232,38 @@ function BlockedKeywordDialog({
             }}
           >
             <div className="wrapper_myKeywordInput">
-              <CommentComposerInput
-                label="보기 싫은 키워드 입력"
+              <TextInput
+                aria-label="가리고 싶은 키워드 입력"
                 onChange={(event) => onInputChange(event.target.value)}
                 placeholder="키워드를 입력해주세요"
-                showSubmitButton={false}
-                submitLabel="키워드 저장"
+                inputSize="large"
+                radius="rounded"
+                type="text"
                 value={value}
+                variant="outline"
+                wrapperClassName="input_commentComposer"
               />
             </div>
-            <div className="wrapper_myKeywordActions">
-              <button
-                className="btn_myKeywordAction btn_myKeywordCancel"
-                onClick={onCancel}
-                type="button"
-              >
-                취소
-              </button>
-              <button
-                className="btn_myKeywordAction btn_myKeywordSave"
+            <div className="wrapper_commentEditActions">
+              <Button
+                className="btn_commentEditSave"
+                radius="rounded"
+                size="large"
                 type="submit"
+                variant="filled"
               >
                 저장
-              </button>
+              </Button>
+              <Button
+                className="btn_commentEditCancel"
+                onClick={onCancel}
+                radius="rounded"
+                size="large"
+                type="button"
+                variant="filled"
+              >
+                취소
+              </Button>
             </div>
           </form>
         </section>
@@ -5259,40 +5273,75 @@ function BlockedKeywordDialog({
 }
 
 function BlockedKeywordSettingsSection({
-  blockedKeywords,
+  blockedKeywordSettings,
   inputValue,
   isDialogOpen,
   onCancelDialog,
   onInputChange,
+  onKeywordDelete,
+  onKeywordToggle,
   onOpenDialog,
   onSaveKeyword,
 }: {
-  blockedKeywords: string[];
+  blockedKeywordSettings: BlockedKeywordSetting[];
   inputValue: string;
   isDialogOpen: boolean;
   onCancelDialog: () => void;
   onInputChange: (value: string) => void;
+  onKeywordDelete: (keyword: string) => void;
+  onKeywordToggle: (keyword: string) => void;
   onOpenDialog: () => void;
   onSaveKeyword: () => void;
 }) {
+  const keywordTabs = blockedKeywordSettings.map((setting) => ({
+    id: setting.keyword,
+    label: setting.keyword,
+  }));
+
   return (
     <section
-      aria-label="보기 싫은 키워드 설정"
+      aria-label="가리고 싶은 키워드 설정"
       className="container_myBlockedKeywordSection"
     >
-      <h2 className="text_mySectionTitle">보기 싫은 키워드</h2>
+      <h2 className="text_mySectionTitle">가리고 싶은 키워드</h2>
       <div
-        aria-label="등록된 보기 싫은 키워드"
+        aria-label="등록된 가리고 싶은 키워드"
         className="wrapper_myBlockedKeywordChips"
-        role="list"
+        role="group"
       >
-        {blockedKeywords.map((keyword) => (
-          <span key={keyword} role="listitem">
-            <ChipLabel kind="articleCategory">{keyword}</ChipLabel>
-          </span>
-        ))}
+        <div className="wrapper_myBlockedKeywordTabs">
+          {keywordTabs.length > 0 ? (
+            <PillTabMenu
+              ariaLabel="가리고 싶은 키워드"
+              className="tab_myCategoryMenu tab_myBlockedKeywordMenu"
+              getItemState={(keyword) =>
+                blockedKeywordSettings.find((setting) => setting.keyword === keyword)?.isActive
+                  ? "active"
+                  : "default"
+              }
+              getItemWrapperClassName={() => "wrapper_myBlockedKeywordTab"}
+              items={keywordTabs}
+              keyboardNavigation={false}
+              onChange={onKeywordToggle}
+              renderItemAddon={(item, state) =>
+                state === "default" ? (
+                  <button
+                    aria-label={`${item.label} 키워드 삭제`}
+                    className="btn_myBlockedKeywordDelete"
+                    onClick={() => onKeywordDelete(item.id)}
+                    type="button"
+                  >
+                    <span aria-hidden="true" />
+                  </button>
+                ) : null
+              }
+              role="group"
+              value={keywordTabs[0]?.id ?? ""}
+            />
+          ) : null}
+        </div>
         <button
-          aria-label="보기 싫은 키워드 추가"
+          aria-label="가리고 싶은 키워드 추가"
           className="btn_myBlockedKeywordAdd"
           onClick={onOpenDialog}
           type="button"
@@ -5903,16 +5952,20 @@ const myProfileSettingSections = [
 ] as const;
 
 function MyPageView({
-  blockedKeywords,
+  blockedKeywordSettings,
   isTextLarge,
   onAddBlockedKeyword,
+  onDeleteBlockedKeyword,
+  onToggleBlockedKeyword,
   onOpenBreakingNews,
   onOpenSearch,
   onToggleTextSize,
 }: {
-  blockedKeywords: string[];
+  blockedKeywordSettings: BlockedKeywordSetting[];
   isTextLarge: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
+  onDeleteBlockedKeyword: (keyword: string) => void;
+  onToggleBlockedKeyword: (keyword: string) => void;
   onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
@@ -6507,11 +6560,13 @@ function MyPageView({
             ))}
             <NewsRollDivider className="divider_mySection" />
             <BlockedKeywordSettingsSection
-              blockedKeywords={blockedKeywords}
+              blockedKeywordSettings={blockedKeywordSettings}
               inputValue={blockedKeywordInputValue}
               isDialogOpen={isBlockedKeywordDialogOpen}
               onCancelDialog={closeBlockedKeywordDialog}
               onInputChange={setBlockedKeywordInputValue}
+              onKeywordDelete={onDeleteBlockedKeyword}
+              onKeywordToggle={onToggleBlockedKeyword}
               onOpenDialog={() => setIsBlockedKeywordDialogOpen(true)}
               onSaveKeyword={saveBlockedKeyword}
             />
@@ -6914,8 +6969,10 @@ function InfoInquirySection({ items }: { items: InquiryType[] }) {
         <TextInput
           aria-label="문의 제목"
           placeholder="문의 제목을 입력해주세요."
+          inputSize="large"
+          radius="rounded"
           type="text"
-          wrapperClassNameOnly
+          variant="outline"
           wrapperClassName="input_commentComposer"
         />
       </div>
@@ -7142,9 +7199,12 @@ function InfoView({
 function ActiveView({
   allNewsEntryMotionClassName = "",
   blockedKeywords,
+  blockedKeywordSettings,
   isTextLarge,
   isAllNewsBreakingEntry = false,
   onAddBlockedKeyword,
+  onDeleteBlockedKeyword,
+  onToggleBlockedKeyword,
   onCloseSearch,
   onOpenAllNews,
   onOpenSearch,
@@ -7153,9 +7213,12 @@ function ActiveView({
 }: {
   allNewsEntryMotionClassName?: string;
   blockedKeywords: string[];
+  blockedKeywordSettings: BlockedKeywordSetting[];
   isTextLarge: boolean;
   isAllNewsBreakingEntry?: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
+  onDeleteBlockedKeyword: (keyword: string) => void;
+  onToggleBlockedKeyword: (keyword: string) => void;
   onCloseSearch: () => void;
   onOpenAllNews: () => void;
   onOpenSearch: () => void;
@@ -7192,9 +7255,11 @@ function ActiveView({
   if (view === "my") {
     return (
       <MyPageView
-        blockedKeywords={blockedKeywords}
+        blockedKeywordSettings={blockedKeywordSettings}
         isTextLarge={isTextLarge}
         onAddBlockedKeyword={onAddBlockedKeyword}
+        onDeleteBlockedKeyword={onDeleteBlockedKeyword}
+        onToggleBlockedKeyword={onToggleBlockedKeyword}
         onOpenBreakingNews={onOpenAllNews}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -7240,7 +7305,16 @@ export function NewsHomeScreen() {
     useState("");
   const [isAllNewsBreakingEntry, setIsAllNewsBreakingEntry] = useState(false);
   const [isTextLarge, setIsTextLarge] = useState(false);
-  const [blockedKeywords, setBlockedKeywords] = useState<string[]>([]);
+  const [blockedKeywordSettings, setBlockedKeywordSettings] = useState<
+    BlockedKeywordSetting[]
+  >([]);
+  const blockedKeywords = useMemo(
+    () =>
+      blockedKeywordSettings
+        .filter((setting) => setting.isActive)
+        .map((setting) => setting.keyword),
+    [blockedKeywordSettings],
+  );
   const isPanelView =
     activeView === "policy" || activeView === "my" || activeView === "info";
   const activeViewResetKey =
@@ -7346,13 +7420,31 @@ export function NewsHomeScreen() {
       return;
     }
 
-    setBlockedKeywords((current) => {
+    setBlockedKeywordSettings((current) => {
       const hasSameKeyword = current.some(
-        (item) => normalizeBlockedKeyword(item) === normalizedKeyword,
+        (item) => normalizeBlockedKeyword(item.keyword) === normalizedKeyword,
       );
 
-      return hasSameKeyword ? current : [...current, keyword.trim()];
+      return hasSameKeyword
+        ? current
+        : [...current, { isActive: true, keyword: keyword.trim() }];
     });
+  }
+
+  function toggleBlockedKeyword(keyword: string) {
+    setBlockedKeywordSettings((current) =>
+      current.map((setting) =>
+        setting.keyword === keyword
+          ? { ...setting, isActive: !setting.isActive }
+          : setting,
+      ),
+    );
+  }
+
+  function deleteBlockedKeyword(keyword: string) {
+    setBlockedKeywordSettings((current) =>
+      current.filter((setting) => setting.keyword !== keyword),
+    );
   }
 
   return (
@@ -7367,10 +7459,13 @@ export function NewsHomeScreen() {
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
           blockedKeywords={blockedKeywords}
+          blockedKeywordSettings={blockedKeywordSettings}
           key={`${activeView}-${activeViewResetKey}`}
           isAllNewsBreakingEntry={isAllNewsBreakingEntry}
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
+          onDeleteBlockedKeyword={deleteBlockedKeyword}
+          onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
           onOpenAllNews={openBreakingNewsView}
           onOpenSearch={openSearch}
