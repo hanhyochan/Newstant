@@ -2703,6 +2703,20 @@
         background: var(--color-newsroll-purple-20);
     }
 
+    .container_signupAgreement {
+        width: 100%;
+        min-height: 100dvh;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        gap: var(--spacing-gap-vertical-40);
+        padding: var(--spacing-padding-vertical-48) 0 var(--spacing-padding-vertical-32);
+        padding-inline: var(--spacing-padding-horizontal-16);
+        color: var(--color-common-100);
+        background: var(--color-newsroll-purple-20);
+    }
+
     .btn_loginNext {
         position: absolute;
         top: var(--spacing-padding-vertical-24);
@@ -2731,6 +2745,10 @@
         justify-content: center;
         gap: var(--spacing-gap-vertical-40);
         padding: 0;
+    }
+
+    .wrapper_signupAgreementContent {
+        justify-content: center;
     }
 
     .wrapper_loginHeader,
@@ -2839,6 +2857,92 @@
         border: var(--border-1) solid var(--color-common-100);
         border-radius: var(--radius-8);
         background: transparent;
+    }
+
+    .wrapper_signupAgreementList {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-16);
+        padding: 0;
+    }
+
+    .btn_signupAgreementItem {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-gap-horizontal-12);
+        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
+        border: var(--border-1) solid rgb(255 255 255 / 48%);
+        border-radius: var(--radius-20);
+        color: var(--color-common-100);
+        background: rgb(255 255 255 / 10%);
+        text-align: left;
+    }
+
+    .btn_signupAgreementItem[aria-pressed='true'] {
+        border-color: var(--color-common-100);
+        background: rgb(255 255 255 / 18%);
+    }
+
+    .box_signupAgreementCheck {
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: var(--border-1) solid var(--color-common-100);
+        border-radius: var(--radius-full);
+        color: var(--color-newsroll-purple-20);
+        background: transparent;
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-700);
+        line-height: var(--line-height-20);
+    }
+
+    .btn_signupAgreementItem[aria-pressed='true'] .box_signupAgreementCheck {
+        background: var(--color-common-100);
+    }
+
+    .wrapper_signupAgreementText {
+        min-width: 0;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-4);
+    }
+
+    .text_signupAgreementTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-gap-horizontal-12);
+        color: var(--color-common-100);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-24);
+    }
+
+    .text_signupAgreementRequired {
+        flex: 0 0 auto;
+        color: rgb(255 255 255 / 72%);
+        font-size: var(--font-size-13);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }
+
+    .text_signupAgreementDescription {
+        color: rgb(255 255 255 / 72%);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .btn_signupAgreementNext {
+        width: 100%;
     }
 
     .wrapper_searchContent {

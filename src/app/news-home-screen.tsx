@@ -80,7 +80,7 @@ import { mockCurrentUserId } from "./_newsroll/mock-current-user";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
-type View = Tab | "search" | "login";
+type View = Tab | "search" | "login" | "signupAgreement";
 type InfoTab = "notice" | "faq" | "inquiry";
 type QuickMenuTarget = "customNewsSettings" | "notificationSettings" | "profileSettings";
 type QuickMenuRequest = {
@@ -7686,6 +7686,116 @@ function LoginView({ onNext }: { onNext: () => void }) {
   );
 }
 
+type SignupAgreementKey = "age" | "terms" | "privacy" | "marketing";
+
+const signupAgreementItems: Array<{
+  description: string;
+  id: SignupAgreementKey;
+  required: boolean;
+  title: string;
+}> = [
+  {
+    description: "만 14세 미만은 법정대리인 동의 절차가 필요해요.",
+    id: "age",
+    required: true,
+    title: "만 14세 이상입니다",
+  },
+  {
+    description: "NewsRoll 서비스 이용을 위한 기본 약관에 동의합니다.",
+    id: "terms",
+    required: true,
+    title: "서비스 이용약관 동의",
+  },
+  {
+    description: "회원가입 및 맞춤 뉴스 제공을 위한 개인정보 수집·이용에 동의합니다.",
+    id: "privacy",
+    required: true,
+    title: "개인정보 수집·이용 동의",
+  },
+  {
+    description: "이메일, 카카오톡으로 이벤트와 혜택 정보를 받을 수 있어요.",
+    id: "marketing",
+    required: false,
+    title: "광고성 정보 수신 동의",
+  },
+];
+
+function SignupAgreementView({ onNext }: { onNext: () => void }) {
+  const [agreements, setAgreements] = useState<Record<SignupAgreementKey, boolean>>({
+    age: false,
+    marketing: false,
+    privacy: false,
+    terms: false,
+  });
+  const requiredAgreements = signupAgreementItems.filter((item) => item.required);
+  const isAllRequiredChecked = requiredAgreements.every((item) => agreements[item.id]);
+
+  function toggleAgreement(id: SignupAgreementKey) {
+    setAgreements((current) => ({
+      ...current,
+      [id]: !current[id],
+    }));
+  }
+
+  return (
+    <section className="container_signupAgreement" aria-label="회원가입 동의">
+      <button
+        aria-label="다음 임시 화면 보기"
+        className="btn_loginNext"
+        onClick={onNext}
+        type="button"
+      >
+        <span aria-hidden="true">-&gt;</span>
+      </button>
+
+      <div className="wrapper_loginContent wrapper_signupAgreementContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_loginEyebrow">Create Account</p>
+          <h1 className="text_loginTitle">회원가입 동의</h1>
+        </div>
+
+        <div className="wrapper_signupAgreementList">
+          {signupAgreementItems.map((item) => (
+            <button
+              aria-pressed={agreements[item.id]}
+              className="btn_signupAgreementItem"
+              key={item.id}
+              onClick={() => toggleAgreement(item.id)}
+              type="button"
+            >
+              <span className="box_signupAgreementCheck" aria-hidden="true">
+                {agreements[item.id] ? "✓" : ""}
+              </span>
+              <span className="wrapper_signupAgreementText">
+                <span className="text_signupAgreementTitle">
+                  <span>{item.title}</span>
+                  <span className="text_signupAgreementRequired">
+                    {item.required ? "필수" : "선택"}
+                  </span>
+                </span>
+                <span className="text_signupAgreementDescription">
+                  {item.description}
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <Button
+          className="btn_signupAgreementNext"
+          disabled={!isAllRequiredChecked}
+          onClick={onNext}
+          radius="rounded"
+          size="large"
+          variant="filled"
+        >
+          다음
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 function ActiveView({
   allNewsEntryMotionClassName = "",
   blockedKeywords,
@@ -7729,6 +7839,10 @@ function ActiveView({
 }) {
   if (view === "login") {
     return <LoginView onNext={onLoginNext} />;
+  }
+
+  if (view === "signupAgreement") {
+    return <SignupAgreementView onNext={onLoginNext} />;
   }
 
   if (view === "search") {
@@ -7838,7 +7952,11 @@ export function NewsHomeScreen() {
   const isPanelView =
     activeView === "policy" || activeView === "my" || activeView === "info";
   const activeViewResetKey =
-    activeView === "search" || activeView === "login" ? 0 : viewResetKeys[activeView];
+    activeView === "search" ||
+    activeView === "login" ||
+    activeView === "signupAgreement"
+      ? 0
+      : viewResetKeys[activeView];
 
   useLayoutEffect(() => {
     resetNewsRollViewport();
@@ -7882,7 +8000,11 @@ export function NewsHomeScreen() {
 
   function openSearch() {
     if (activeView !== "search") {
-      setSearchBackView(activeView === "login" ? "home" : activeView);
+      setSearchBackView(
+        activeView === "login" || activeView === "signupAgreement"
+          ? "home"
+          : activeView,
+      );
     }
 
     setActiveView("search");
@@ -7961,7 +8083,7 @@ export function NewsHomeScreen() {
     const returnView: Tab =
       activeView === "search"
         ? searchBackView
-        : activeView === "login"
+        : activeView === "login" || activeView === "signupAgreement"
           ? "home"
           : activeView;
 
@@ -8075,7 +8197,11 @@ export function NewsHomeScreen() {
     <main
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
         activeView === "all" ? " newsroll_screen_all" : ""
-      }${activeView === "login" ? " newsroll_screen_login" : ""}${
+      }${
+        activeView === "login" || activeView === "signupAgreement"
+          ? " newsroll_screen_login"
+          : ""
+      }${
         activeView === "search" ? " newsroll_screen_search" : ""
       }${isPanelView ? " newsroll_screen_panel" : ""}${
         isTextLarge ? " newsroll_text_large" : ""
@@ -8095,7 +8221,11 @@ export function NewsHomeScreen() {
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
-          onLoginNext={() => setActiveView("home")}
+          onLoginNext={() =>
+            setActiveView((current) =>
+              current === "login" ? "signupAgreement" : "home",
+            )
+          }
           onOpenAllNews={openBreakingNewsView}
           onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
@@ -8112,7 +8242,9 @@ export function NewsHomeScreen() {
         onNavigate={openQuickMenuTarget}
       />
 
-      {activeView !== "search" && activeView !== "login" ? (
+      {activeView !== "search" &&
+      activeView !== "login" &&
+      activeView !== "signupAgreement" ? (
         <nav className="newsroll_bottom_nav" aria-label="하단 탐색">
           {navItems.map((item) => (
             <IconButton
