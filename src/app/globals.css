@@ -3102,49 +3102,11 @@
         border-radius: 0;
         color: var(--color-common-100);
         background: transparent;
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
         text-align: left;
-    }
-
-    .btn_signupAgreementItem[aria-pressed='true'] {
-        background: transparent;
-    }
-
-    .wrapper_signupAgreementText {
-        min-width: 0;
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .text_signupAgreementTitle {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-24);
-        color: inherit;
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
     }
 
     .btn_signupAgreementNext {
         width: 100%;
-    }
-
-    .container_authAgreementDetail {
-        width: 100%;
-        min-height: 100dvh;
-        position: relative;
-        box-sizing: border-box;
-        padding: 108px var(--spacing-padding-horizontal-16)
-            var(--spacing-padding-horizontal-16);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-        overflow-y: auto;
     }
 
     .wrapper_authAgreementDetail {
@@ -3178,7 +3140,7 @@
     }
 
     .wrapper_authAgreementSection h2 {
-        color: var(--color-common-100);
+        color: var(--color-label-strong);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-600);
         line-height: var(--line-height-24);
@@ -3186,7 +3148,7 @@
 
     .wrapper_authAgreementSection p,
     .text_authAgreementSource {
-        color: rgb(255 255 255 / 78%);
+        color: var(--color-label-neutral);
         font-size: var(--font-size-15);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-24);
@@ -5123,6 +5085,11 @@
 
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_sheetFrameSheet {
         bottom: var(--newsroll-bottom-nav-clearance);
+    }
+
+    .newsroll_sheetFrame.container_authAgreementScreen.is_newsrollSheetDocked
+        .newsroll_sheetFrameSheet {
+        bottom: 0;
     }
 
     .newsroll_sheetFrameSheet::-webkit-scrollbar {

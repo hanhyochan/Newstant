@@ -826,12 +826,14 @@ function NewsToolbar({
   isTextLarge,
   onOpenMenu,
   onOpenSearch,
+  showMenu = true,
   showSearch = true,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
+  showMenu?: boolean;
   showSearch?: boolean;
   onToggleTextSize: () => void;
 }) {
@@ -856,12 +858,14 @@ function NewsToolbar({
           onClick={onOpenSearch}
         />
       ) : null}
-      <IconButton
-        baseClassName="newsroll_toolbar_icon"
-        icon="menu"
-        label="메뉴"
-        onClick={onOpenMenu}
-      />
+      {showMenu ? (
+        <IconButton
+          baseClassName="newsroll_toolbar_icon"
+          icon="menu"
+          label="메뉴"
+          onClick={onOpenMenu}
+        />
+      ) : null}
     </div>
   );
 }
@@ -7931,50 +7935,88 @@ const signupAgreementDetails: Record<
 
 function SignupAgreementDetailView({
   agreement,
+  isTextLarge,
   onBack,
+  onOpenMenu,
+  onOpenSearch,
+  onToggleTextSize,
 }: {
   agreement: (typeof signupAgreementDetails)[SignupAgreementKey];
+  isTextLarge: boolean;
   onBack: () => void;
+  onOpenMenu: () => void;
+  onOpenSearch: () => void;
+  onToggleTextSize: () => void;
 }) {
   return (
-    <section className="container_authAgreementDetail" aria-label={agreement.title}>
-      <button
-        aria-label="회원가입 동의로 돌아가기"
-        className="btn_loginPrevious"
-        onClick={onBack}
-        type="button"
-      >
-        <span aria-hidden="true">&lt;-</span>
-      </button>
+    <NewsRollCommonLayout
+      aria-label={agreement.title}
+      className="newsroll_sheetFrame container_authAgreementScreen"
+      dockedGap={pagePanelDockedGap}
+      initialGap={pagePanelInitialGap}
+      {...fixedDockedPanelProps}
+      minInitialTop={pagePanelInitialTop}
+      sheetClassName="newsroll_sheetFrameSheet container_homeSheet"
+      sheetScrollSelector={pagePanelContentSelector}
+      top={
+        <NewsRollHeaderTop>
+          <NewsToolbar
+            isTextLarge={isTextLarge}
+            onOpenMenu={onOpenMenu}
+            onOpenSearch={onOpenSearch}
+            showMenu={false}
+            onToggleTextSize={onToggleTextSize}
+          />
+          <NewsRollDockedControls
+            className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
+            isDetailOpen
+          >
+            <NewsRollDetailBackButton
+              ariaLabel="회원가입 동의로 돌아가기"
+              onClick={onBack}
+            />
+          </NewsRollDockedControls>
+        </NewsRollHeaderTop>
+      }
+    >
+      <NewsRollPagePanel ariaLabel={`${agreement.title} 본문 영역`}>
+        <div className="wrapper_authAgreementDetail">
+          <div className="wrapper_loginHeader">
+            <p className="text_authStepLabel">Agreement</p>
+            <h1 className="text_authPageTitle">{agreement.title}</h1>
+          </div>
 
-      <article className="wrapper_authAgreementDetail">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Agreement</p>
-          <h1 className="text_authPageTitle">{agreement.title}</h1>
+          <div className="wrapper_authAgreementArticle">
+            {agreement.sections.map((section) => (
+              <section className="wrapper_authAgreementSection" key={section.heading}>
+                <h2>{section.heading}</h2>
+                {section.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </section>
+            ))}
+            <p className="text_authAgreementSource">참고 기준: {agreement.source}</p>
+          </div>
         </div>
-
-        <div className="wrapper_authAgreementArticle">
-          {agreement.sections.map((section) => (
-            <section className="wrapper_authAgreementSection" key={section.heading}>
-              <h2>{section.heading}</h2>
-              {section.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </section>
-          ))}
-          <p className="text_authAgreementSource">참고 기준: {agreement.source}</p>
-        </div>
-      </article>
-    </section>
+      </NewsRollPagePanel>
+    </NewsRollCommonLayout>
   );
 }
 
 function SignupAgreementView({
+  isTextLarge,
   onNext,
+  onOpenMenu,
+  onOpenSearch,
   onPrevious,
+  onToggleTextSize,
 }: {
+  isTextLarge: boolean;
   onNext: () => void;
+  onOpenMenu: () => void;
+  onOpenSearch: () => void;
   onPrevious: () => void;
+  onToggleTextSize: () => void;
 }) {
   const [agreements, setAgreements] = useState<Record<SignupAgreementKey, boolean>>({
     age: false,
@@ -7999,7 +8041,11 @@ function SignupAgreementView({
     return (
       <SignupAgreementDetailView
         agreement={signupAgreementDetails[detailAgreementId]}
+        isTextLarge={isTextLarge}
         onBack={() => setDetailAgreementId(null)}
+        onOpenMenu={onOpenMenu}
+        onOpenSearch={onOpenSearch}
+        onToggleTextSize={onToggleTextSize}
       />
     );
   }
@@ -8030,10 +8076,8 @@ function SignupAgreementView({
                   onClick={() => setDetailAgreementId(item.id)}
                   type="button"
                 >
-                  <span className="wrapper_signupAgreementText">
-                    <span className="text_signupAgreementTitle">
-                      <span>{`(${item.required ? "필수" : "선택"}) ${item.title}`}</span>
-                    </span>
+                  <span className="text_mySettingLabel">
+                    {`(${item.required ? "필수" : "선택"}) ${item.title}`}
                   </span>
                   <span className="icon_myChevron" aria-hidden="true" />
                 </button>
@@ -8570,7 +8614,14 @@ function ActiveView({
 
   if (view === "signupAgreement") {
     return (
-      <SignupAgreementView onNext={onLoginNext} onPrevious={onLoginPrevious} />
+      <SignupAgreementView
+        isTextLarge={isTextLarge}
+        onNext={onLoginNext}
+        onOpenMenu={onOpenMenu}
+        onOpenSearch={onOpenSearch}
+        onPrevious={onLoginPrevious}
+        onToggleTextSize={onToggleTextSize}
+      />
     );
   }
 
