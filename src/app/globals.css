@@ -2697,15 +2697,12 @@
 
     .container_authLayout {
         width: 100%;
-        height: 100%;
-        min-height: 100%;
         position: relative;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
         gap: var(--spacing-gap-vertical-24);
-        padding: calc(var(--spacing-padding-vertical-40) + var(--spacing-gap-vertical-16))
-            var(--spacing-padding-horizontal-16)
+        padding: 108px var(--spacing-padding-horizontal-16)
             var(--spacing-padding-horizontal-16);
         color: var(--color-common-100);
         background: var(--color-newsroll-purple-20);
@@ -2965,6 +2962,13 @@
         border-color: var(--color-newsroll-purple-50);
     }
 
+    .container_authLayout .btn_signupAgreementNext:disabled,
+    .container_authLayout .btn_signupStepNext:disabled {
+        color: var(--color-newsroll-purple-40);
+        background: var(--color-newsroll-purple-30);
+        border-color: var(--color-newsroll-purple-30);
+    }
+
     .btn_loginAuto {
         width: fit-content;
         display: inline-flex;
@@ -2979,15 +2983,16 @@
         text-align: left;
     }
 
-    .box_loginAutoCheck {
+    .box_newsrollCheck {
         width: 20px;
         height: 20px;
         flex: 0 0 20px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
         border: var(--border-1) solid var(--color-common-100);
-        border-radius: var(--radius-8);
+        border-radius: var(--radius-full);
         color: var(--color-newsroll-purple-20);
         background: transparent;
         font-size: var(--font-size-12);
@@ -2995,8 +3000,18 @@
         line-height: var(--line-height-16);
     }
 
-    .btn_loginAuto[aria-pressed='true'] .box_loginAutoCheck {
+    .box_newsrollCheck.is_checked {
         background: var(--color-common-100);
+    }
+
+    .wrapper_loginActions {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-gap-horizontal-16);
+        padding: 0;
     }
 
     .btn_loginSignup {
@@ -3040,6 +3055,28 @@
         padding: 0;
     }
 
+    .wrapper_signupAgreementItem {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-24);
+        padding: 0;
+    }
+
+    .btn_signupAgreementCheck {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        color: inherit;
+        background: transparent;
+    }
+
     .wrapper_signupAgreementBody {
         width: 100%;
         min-width: 0;
@@ -3055,39 +3092,24 @@
         width: 100%;
         min-width: 0;
         display: flex;
-        align-items: flex-start;
-        gap: var(--spacing-gap-horizontal-12);
-        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
-        border: var(--border-1) solid rgb(255 255 255 / 48%);
-        border-radius: var(--radius-20);
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-gap-horizontal-24);
+        box-sizing: border-box;
+        padding: 0;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
         color: var(--color-common-100);
-        background: rgb(255 255 255 / 10%);
+        background: transparent;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
         text-align: left;
     }
 
     .btn_signupAgreementItem[aria-pressed='true'] {
-        border-color: var(--color-common-100);
-        background: rgb(255 255 255 / 18%);
-    }
-
-    .box_signupAgreementCheck {
-        width: 24px;
-        height: 24px;
-        flex: 0 0 24px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: var(--border-1) solid var(--color-common-100);
-        border-radius: var(--radius-full);
-        color: var(--color-newsroll-purple-20);
         background: transparent;
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-700);
-        line-height: var(--line-height-20);
-    }
-
-    .btn_signupAgreementItem[aria-pressed='true'] .box_signupAgreementCheck {
-        background: var(--color-common-100);
     }
 
     .wrapper_signupAgreementText {
@@ -3095,37 +3117,79 @@
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: var(--spacing-gap-vertical-4);
+        gap: 0;
     }
 
     .text_signupAgreementTitle {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-12);
+        gap: var(--spacing-gap-horizontal-24);
+        color: inherit;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }
+
+    .btn_signupAgreementNext {
+        width: 100%;
+    }
+
+    .container_authAgreementDetail {
+        width: 100%;
+        min-height: 100dvh;
+        position: relative;
+        box-sizing: border-box;
+        padding: 108px var(--spacing-padding-horizontal-16)
+            var(--spacing-padding-horizontal-16);
+        color: var(--color-common-100);
+        background: var(--color-newsroll-purple-20);
+        overflow-y: auto;
+    }
+
+    .wrapper_authAgreementDetail {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-40);
+        padding: 0;
+    }
+
+    .wrapper_authAgreementArticle {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        padding: 0;
+    }
+
+    .wrapper_authAgreementSection {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
+        padding: 0;
+    }
+
+    .wrapper_authAgreementSection h2,
+    .wrapper_authAgreementSection p,
+    .text_authAgreementSource {
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrapper_authAgreementSection h2 {
         color: var(--color-common-100);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-600);
         line-height: var(--line-height-24);
     }
 
-    .text_signupAgreementRequired {
-        flex: 0 0 auto;
-        color: rgb(255 255 255 / 72%);
-        font-size: var(--font-size-13);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
-    }
-
-    .text_signupAgreementDescription {
-        color: rgb(255 255 255 / 72%);
-        font-size: var(--font-size-14);
+    .wrapper_authAgreementSection p,
+    .text_authAgreementSource {
+        color: rgb(255 255 255 / 78%);
+        font-size: var(--font-size-15);
         font-weight: var(--font-weight-400);
-        line-height: var(--line-height-20);
-    }
-
-    .btn_signupAgreementNext {
-        width: 100%;
+        line-height: var(--line-height-24);
     }
 
     .text_signupStepDescription {
