@@ -273,6 +273,9 @@ export type UpdateNotificationSettingsInput = Partial<
   Pick<NotificationSettings, "breakingNews" | "commentReplies" | "notices" | "darkMode">
 >;
 
+export type CreateNotificationSettingsInput = Pick<NotificationSettings, "userId"> &
+  UpdateNotificationSettingsInput;
+
 export type UpdateUserNewsViewTimeInput = Partial<
   Pick<UserNewsViewTime, "optionIds" | "times">
 >;

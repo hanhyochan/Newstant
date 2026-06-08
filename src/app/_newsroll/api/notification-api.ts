@@ -1,7 +1,11 @@
 import { mockCurrentUserId } from "../mock-current-user";
-import { createTimestamp } from "./api-utils";
+import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
-import type { NotificationSettings, UpdateNotificationSettingsInput } from "./types";
+import type {
+  CreateNotificationSettingsInput,
+  NotificationSettings,
+  UpdateNotificationSettingsInput,
+} from "./types";
 
 export const notificationApi = {
   async getNotificationSettings(userId = mockCurrentUserId) {
@@ -10,6 +14,17 @@ export const notificationApi = {
     });
 
     return settings[0] ?? null;
+  },
+  createNotificationSettings(input: CreateNotificationSettingsInput) {
+    return apiClient.post<NotificationSettings, NotificationSettings>("/notificationSettings", {
+      id: createMockId("notification"),
+      userId: input.userId,
+      breakingNews: input.breakingNews ?? true,
+      commentReplies: input.commentReplies ?? true,
+      notices: input.notices ?? true,
+      darkMode: input.darkMode ?? false,
+      updatedAt: createTimestamp(),
+    });
   },
   updateNotificationSettings(
     settingsId: string,

@@ -4331,11 +4331,11 @@
 
     .newsroll_dark {
         --newsroll-dark-sheet: #050505;
-        --newsroll-dark-surface: #111111;
-        --newsroll-dark-surface-muted: #1a1a1a;
-        --newsroll-dark-line: #333333;
-        --newsroll-dark-text-strong: #f5f5f5;
-        --newsroll-dark-text-neutral: #c7c7c7;
+        --newsroll-dark-surface: var(--color-cool-neutral-15);
+        --newsroll-dark-surface-muted: var(--color-cool-neutral-22);
+        --newsroll-dark-line: var(--color-cool-neutral-40);
+        --newsroll-dark-text-strong: var(--color-cool-neutral-100);
+        --newsroll-dark-text-neutral: var(--color-cool-neutral-90);
     }
 
     .newsroll_dark .newsroll_common_sheet,
@@ -4359,8 +4359,7 @@
     .newsroll_dark .container_infoFaqItem,
     .newsroll_dark .wrapper_commentRepliesInner,
     .newsroll_dark .container_commentComposerFixed,
-    .newsroll_dark .form_searchComposer,
-    .newsroll_dark .btn_searchFieldTrigger {
+    .newsroll_dark .form_searchComposer {
         color: var(--newsroll-dark-text-strong);
         background: var(--newsroll-dark-surface);
     }
@@ -4907,8 +4906,8 @@
     }
 
     .btn_link_breakingNews > .newsroll_icon_alarm {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         flex: 0 0 auto;
     }
 
@@ -7298,4 +7297,96 @@
         transition: none;
         transform: none;
     }
+}
+
+.newsroll_dark {
+    --color-background-elevated-normal: var(--newsroll-dark-sheet);
+    --color-background-elevated-alternative: var(--newsroll-dark-surface);
+    --color-fill-normal: var(--color-cool-neutral-22);
+    --color-fill-alternative: var(--color-cool-neutral-20);
+    --color-fill-strong: var(--color-cool-neutral-30);
+    --color-label-alternative: var(--color-cool-neutral-80);
+    --color-label-assistive: var(--color-cool-neutral-70);
+    --color-label-neutral: var(--color-cool-neutral-90);
+    --color-label-normal: var(--color-cool-neutral-100);
+    --color-label-strong: var(--color-cool-neutral-100);
+    --color-line-normal-alternative: var(--color-cool-neutral-30);
+    --color-line-normal-neutral: var(--color-cool-neutral-40);
+    --color-line-normal-normal: var(--color-cool-neutral-40);
+    --color-line-normal-strong: var(--color-cool-neutral-50);
+    --color-line-solid-alternative: var(--color-cool-neutral-30);
+    --color-line-solid-neutral: var(--color-cool-neutral-40);
+    --color-line-solid-normal: var(--color-cool-neutral-40);
+    --color-line-solid-strong: var(--color-cool-neutral-60);
+    --newsroll-divider-color: var(--color-cool-neutral-40);
+}
+
+.newsroll_dark .tab,
+.newsroll_dark [role='tab'],
+.newsroll_dark .tab_myCategoryMenu button,
+.newsroll_dark .newsroll_all_category_tabs button,
+.newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton,
+.newsroll_dark .newsroll_all_press_tabs button {
+    color: var(--color-common-100);
+    background: var(--color-common-0);
+    border-color: var(--newsroll-divider-color);
+}
+
+.newsroll_dark .tab[aria-selected='true'],
+.newsroll_dark [role='tab'][aria-selected='true'],
+.newsroll_dark .tab[data-state='active'],
+.newsroll_dark .tab_myCategoryMenu button[data-state='active'],
+.newsroll_dark .tab_myCategoryMenu button[data-state='selected'],
+.newsroll_dark .newsroll_all_category_tabs button[aria-selected='true'],
+.newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton[aria-selected='true'],
+.newsroll_dark .newsroll_all_press_tabs button[aria-selected='true'] {
+    color: var(--color-common-100);
+    background: var(--color-common-0);
+    border-color: var(--color-common-0);
+}
+
+.newsroll_dark .chip,
+.newsroll_dark .chip_filled,
+.newsroll_dark .chip_articleCategory,
+.newsroll_dark .chip_policy,
+.newsroll_dark .badge_commentChoice,
+.newsroll_dark .newsroll_all_chip,
+.newsroll_dark .newsroll_policy_detail_tags .chip_policy {
+    color: var(--color-common-100);
+    background: var(--color-cool-neutral-40);
+    border-color: var(--color-cool-neutral-40);
+}
+
+.newsroll_dark .newsroll_all_tabSticky,
+.newsroll_dark .newsroll_all_press_tabMenu,
+.newsroll_dark .newsroll_all_press_tabScroller,
+.newsroll_dark .newsroll_all_press_tabs,
+.newsroll_dark .newsroll_all_category_tabSticky,
+.newsroll_dark .newsroll_all_category_tabs {
+    background: var(--color-common-0);
+}
+
+.newsroll_dark .btn_searchFieldTrigger {
+    color: var(--color-common-100);
+    background: transparent;
+}
+
+.newsroll_dark .newsroll_all_breaking_card {
+    color: var(--color-common-0);
+}
+
+.newsroll_dark .btn_link_breakingNews,
+.newsroll_dark .text_breakingNewsTitle,
+.newsroll_dark .text_breakingCardTitle {
+    color: var(--color-common-0);
+}
+
+.newsroll_dark .container_quickMenuDrawer {
+    border-left: var(--newsroll-divider-thickness) solid var(--newsroll-divider-color);
+}
+
+.newsroll_dark .container_quickMenuDrawer,
+.newsroll_dark .btn_quickMenuItem,
+.newsroll_dark .btn_quickMenuLogout {
+    color: var(--color-common-100);
 }

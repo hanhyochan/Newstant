@@ -1,5 +1,8 @@
-export { BreakingNewsLink } from "./button/breaking-news-link";
-export type { BreakingNewsLinkProps } from "./button/breaking-news-link";
+export { BreakingNewsCardLink, BreakingNewsLink } from "./button/breaking-news-link";
+export type {
+  BreakingNewsCardLinkProps,
+  BreakingNewsLinkProps,
+} from "./button/breaking-news-link";
 export { ArticleActionButtons } from "./button/article-action-buttons";
 export { Button } from "./button/button";
 export type { ButtonProps } from "./button/button";

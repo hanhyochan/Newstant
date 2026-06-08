@@ -20,7 +20,7 @@ import { createPortal } from "react-dom";
 
 import {
   ArticleActionButtons,
-  BreakingNewsLink,
+  BreakingNewsCardLink,
   Button,
   ChipLabel,
   CommentComposerInput,
@@ -143,6 +143,7 @@ type BlockedKeywordSetting = {
 };
 
 type HomeHeaderControls = {
+  breakingItem?: BreakingNewsItem | null;
   breakingTitle?: string;
   dockedControlsMotionClassName?: string;
   isDetailOpen?: boolean;
@@ -150,6 +151,7 @@ type HomeHeaderControls = {
   mode: HomeViewMode;
   newsCount: number;
   onCloseDetail?: () => void;
+  onOpenBreakingArticle?: (article: HomeArticle) => void;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenBreakingNews: () => void;
   onOpenMenu: () => void;
@@ -848,10 +850,12 @@ function NewsToolbar({
 
 function QuickMenuDrawer({
   isOpen,
+  isDarkMode,
   onClose,
   onNavigate,
 }: {
   isOpen: boolean;
+  isDarkMode: boolean;
   onClose: () => void;
   onNavigate: (target: QuickMenuTarget) => void;
 }) {
@@ -886,7 +890,7 @@ function QuickMenuDrawer({
   return (
     <ClientPortal>
       <div
-        className="container_quickMenuOverlay"
+        className={`container_quickMenuOverlay${isDarkMode ? " newsroll_dark" : ""}`}
         onClick={onClose}
         role="presentation"
       >
@@ -958,6 +962,7 @@ function HomeArticleMeta({
 }
 
 function HomeMainHeader({
+  breakingItem = null,
   breakingTitle = homeBreakingTitle,
   dockedControlsMotionClassName = "",
   isDetailOpen = false,
@@ -965,6 +970,7 @@ function HomeMainHeader({
   mode,
   newsCount,
   onCloseDetail,
+  onOpenBreakingArticle,
   onModeChange,
   onOpenBreakingNews,
   onOpenMenu,
@@ -975,13 +981,22 @@ function HomeMainHeader({
       <NewsRollSummaryHeroTop
         footer={
           <div className="wrapper_breakingNews">
-            <BreakingNewsLink
-              href="#all-breaking-news"
+            <BreakingNewsCardLink
+              href={breakingItem ? `#${breakingItem.id}` : "#all-breaking-news"}
+              id={breakingItem ? `home-${breakingItem.id}` : undefined}
               onClick={(event) => {
                 event.preventDefault();
+                if (breakingItem && onOpenBreakingArticle) {
+                  onOpenBreakingArticle(breakingItem.article);
+                  return;
+                }
+
                 onOpenBreakingNews();
               }}
+              showIcon
               title={breakingTitle}
+              updatedAt={breakingItem?.updatedAt}
+              variant="home"
             />
           </div>
         }
@@ -1036,6 +1051,7 @@ function HomeMainHeader({
 }
 
 function HomeShell({
+  breakingItem,
   breakingTitle,
   children,
   isDetailOpen = false,
@@ -1043,6 +1059,7 @@ function HomeShell({
   mode,
   newsCount,
   onCloseDetail,
+  onOpenBreakingArticle,
   onModeChange,
   onOpenBreakingNews,
   onOpenMenu,
@@ -1142,6 +1159,7 @@ function HomeShell({
       sheetScrollSelector={homeSheetScrollSelector}
       top={
         <HomeMainHeader
+          breakingItem={breakingItem}
           breakingTitle={breakingTitle}
           isDetailOpen={isDetailOpen}
           isTextLarge={isTextLarge}
@@ -1149,6 +1167,7 @@ function HomeShell({
           mode={mode}
           newsCount={newsCount}
           onCloseDetail={onCloseDetail}
+          onOpenBreakingArticle={onOpenBreakingArticle}
           onModeChange={onModeChange}
           onOpenBreakingNews={onOpenBreakingNews}
           onOpenMenu={onOpenMenu}
@@ -3376,18 +3395,21 @@ function HomeView({
     [articles, blockedKeywords],
   );
   const hasArticles = visibleArticles.length > 0;
+  const latestBreakingItem = getLatestBreakingNewsItem(visibleArticles);
   const breakingTitle =
-    getLatestBreakingNewsItem(visibleArticles)?.title ??
+    latestBreakingItem?.title ??
     getDataUnavailableMessage("속보", "를");
 
   return (
     <HomeShell
+      breakingItem={latestBreakingItem}
       breakingTitle={breakingTitle}
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
       newsCount={visibleArticles.length}
       onCloseDetail={homeDetailExitMotion.closeWithMotion}
+      onOpenBreakingArticle={openHomeDetail}
       onModeChange={(nextMode) => {
         setDetailOpen(false);
         setHomeViewMode(nextMode);
@@ -3971,7 +3993,7 @@ function AllNewsView({
     [visibleAllNewsArticles],
   );
   const breakingItems = showAllBreaking
-    ? allBreakingItems
+    ? allBreakingItems.slice(0, 5)
     : allBreakingItems.slice(0, 3);
   const relayItems = allNewsRelayByActiveCategory[activeRelayCategory] ?? [];
   const activePressIndex = Math.max(0, visibleAllNewsPresses.indexOf(activePress));
@@ -4289,16 +4311,14 @@ function AllNewsView({
             <div className="newsroll_all_breaking_stack" id="all-breaking-news">
               {breakingItems.length > 0 ? (
                 breakingItems.map((item) => (
-                  <button
-                    className="newsroll_all_breaking_card"
-                    data-updated-at={item.updatedAt}
+                  <BreakingNewsCardLink
                     id={item.id}
                     key={item.id}
                     onClick={() => openAllNewsDetail(item.article)}
-                    type="button"
-                  >
-                    {item.title}
-                  </button>
+                    title={item.title}
+                    updatedAt={item.updatedAt}
+                    variant="list"
+                  />
                 ))
               ) : (
                 <DataUnavailableMessage target="속보" />
@@ -6567,18 +6587,28 @@ function MyPageView({
     nextDarkMode = isDarkMode,
   ) => {
     const settingsId = notificationSettingsIdRef.current;
+    const nextNotificationSettings = {
+      breakingNews: nextSettings["속보"],
+      commentReplies: nextSettings["내 댓글에 좋아요, 답글"],
+      darkMode: nextDarkMode,
+      notices: nextSettings["공지사항"],
+    };
 
     if (!settingsId) {
+      notificationApi
+        .createNotificationSettings({
+          userId: mockCurrentUserId,
+          ...nextNotificationSettings,
+        })
+        .then((settings) => {
+          notificationSettingsIdRef.current = settings.id;
+        })
+        .catch(() => undefined);
       return;
     }
 
     notificationApi
-      .updateNotificationSettings(settingsId, {
-        breakingNews: nextSettings["속보"],
-        commentReplies: nextSettings["내 댓글에 좋아요, 답글"],
-        darkMode: nextDarkMode,
-        notices: nextSettings["공지사항"],
-      })
+      .updateNotificationSettings(settingsId, nextNotificationSettings)
       .catch(() => undefined);
   };
 
@@ -7983,6 +8013,7 @@ export function NewsHomeScreen() {
       </div>
       <QuickMenuDrawer
         isOpen={isQuickMenuOpen}
+        isDarkMode={isDarkMode}
         onClose={() => setIsQuickMenuOpen(false)}
         onNavigate={openQuickMenuTarget}
       />
