@@ -8,6 +8,7 @@ export type IconName =
   | "detail"
   | "dots"
   | "earth"
+  | "eye"
   | "fourSquare"
   | "home"
   | "information"

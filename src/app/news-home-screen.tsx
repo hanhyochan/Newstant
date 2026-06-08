@@ -36,6 +36,7 @@ import {
   ReactionButton,
   TextInput,
   Textarea,
+  TransparentTextInput,
   type IconName,
 } from "@/design-system/components";
 import {
@@ -79,7 +80,7 @@ import { mockCurrentUserId } from "./_newsroll/mock-current-user";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
-type View = Tab | "search";
+type View = Tab | "search" | "login";
 type InfoTab = "notice" | "faq" | "inquiry";
 type QuickMenuTarget = "customNewsSettings" | "notificationSettings" | "profileSettings";
 type QuickMenuRequest = {
@@ -7606,6 +7607,85 @@ function InfoView({
   );
 }
 
+function LoginView({ onNext }: { onNext: () => void }) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  return (
+    <section className="container_loginScreen" aria-label="로그인">
+      <button
+        aria-label="다음 임시 화면 보기"
+        className="btn_loginNext"
+        onClick={onNext}
+        type="button"
+      >
+        <span aria-hidden="true">-&gt;</span>
+      </button>
+
+      <div className="wrapper_loginContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_loginEyebrow">NewsRoll</p>
+          <h1 className="text_loginTitle">로그인</h1>
+        </div>
+
+        <form
+          className="form_login"
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <div className="wrapper_loginInputs">
+            <TransparentTextInput
+              aria-label="이메일 입력"
+              autoComplete="email"
+              placeholder="이메일"
+              type="email"
+            />
+            <div className="wrapper_loginPasswordField">
+              <TransparentTextInput
+                aria-label="비밀번호 입력"
+                autoComplete="current-password"
+                placeholder="비밀번호"
+                type={isPasswordVisible ? "text" : "password"}
+                wrapperClassName="input_loginPassword"
+              />
+              <button
+                aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+                aria-pressed={isPasswordVisible}
+                className="btn_loginPasswordToggle"
+                onClick={() => setIsPasswordVisible((current) => !current)}
+                type="button"
+              >
+                <Icon name="eye" />
+              </button>
+            </div>
+            <Button
+              className="btn_loginSubmit"
+              radius="rounded"
+              size="large"
+              type="submit"
+              variant="filled"
+            >
+              로그인
+            </Button>
+            <button className="btn_loginSignup" type="button">
+              회원가입
+            </button>
+          </div>
+
+          <div className="wrapper_socialLogin" aria-label="소셜 로그인">
+            {["kakao", "naver", "google"].map((provider) => (
+              <span
+                aria-label={`${provider} 로그인 아이콘 영역`}
+                className="box_socialLoginIcon"
+                key={provider}
+                role="img"
+              />
+            ))}
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+}
+
 function ActiveView({
   allNewsEntryMotionClassName = "",
   blockedKeywords,
@@ -7618,6 +7698,7 @@ function ActiveView({
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
   onCloseSearch,
+  onLoginNext,
   onOpenAllNews,
   onOpenMenu,
   onOpenSearch,
@@ -7637,6 +7718,7 @@ function ActiveView({
   onDeleteBlockedKeyword: (keyword: string) => void;
   onToggleBlockedKeyword: (keyword: string) => void;
   onCloseSearch: () => void;
+  onLoginNext: () => void;
   onOpenAllNews: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
@@ -7645,6 +7727,10 @@ function ActiveView({
   quickMenuRequest?: QuickMenuRequest | null;
   view: View;
 }) {
+  if (view === "login") {
+    return <LoginView onNext={onLoginNext} />;
+  }
+
   if (view === "search") {
     return <SearchView blockedKeywords={blockedKeywords} onClose={onCloseSearch} />;
   }
@@ -7720,7 +7806,7 @@ function ActiveView({
 }
 
 export function NewsHomeScreen() {
-  const [activeView, setActiveView] = useState<View>("home");
+  const [activeView, setActiveView] = useState<View>("login");
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
   const viewNavigationTimerRef = useRef<number | null>(null);
   const allNewsEntryMotionTimerRef = useRef<number | null>(null);
@@ -7752,7 +7838,7 @@ export function NewsHomeScreen() {
   const isPanelView =
     activeView === "policy" || activeView === "my" || activeView === "info";
   const activeViewResetKey =
-    activeView === "search" ? 0 : viewResetKeys[activeView];
+    activeView === "search" || activeView === "login" ? 0 : viewResetKeys[activeView];
 
   useLayoutEffect(() => {
     resetNewsRollViewport();
@@ -7796,7 +7882,7 @@ export function NewsHomeScreen() {
 
   function openSearch() {
     if (activeView !== "search") {
-      setSearchBackView(activeView);
+      setSearchBackView(activeView === "login" ? "home" : activeView);
     }
 
     setActiveView("search");
@@ -7872,7 +7958,12 @@ export function NewsHomeScreen() {
   }
 
   function openQuickMenuTarget(target: QuickMenuTarget) {
-    const returnView: Tab = activeView === "search" ? searchBackView : activeView;
+    const returnView: Tab =
+      activeView === "search"
+        ? searchBackView
+        : activeView === "login"
+          ? "home"
+          : activeView;
 
     setIsQuickMenuOpen(false);
     setAllNewsEntryMotionClassName("");
@@ -7984,6 +8075,8 @@ export function NewsHomeScreen() {
     <main
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
         activeView === "all" ? " newsroll_screen_all" : ""
+      }${activeView === "login" ? " newsroll_screen_login" : ""}${
+        activeView === "search" ? " newsroll_screen_search" : ""
       }${isPanelView ? " newsroll_screen_panel" : ""}${
         isTextLarge ? " newsroll_text_large" : ""
       }${isDarkMode ? " newsroll_dark" : ""}`}
@@ -8002,6 +8095,7 @@ export function NewsHomeScreen() {
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
+          onLoginNext={() => setActiveView("home")}
           onOpenAllNews={openBreakingNewsView}
           onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
@@ -8018,7 +8112,7 @@ export function NewsHomeScreen() {
         onNavigate={openQuickMenuTarget}
       />
 
-      {activeView !== "search" ? (
+      {activeView !== "search" && activeView !== "login" ? (
         <nav className="newsroll_bottom_nav" aria-label="하단 탐색">
           {navItems.map((item) => (
             <IconButton

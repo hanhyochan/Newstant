@@ -2337,6 +2337,11 @@
         --newsroll-icon-fill-url: url('/icons/icon_four_square_active.svg');
     }
 
+    .newsroll_icon_eye {
+        --newsroll-icon-outline-url: url('/icons/icon_eye.svg');
+        --newsroll-icon-fill-url: url('/icons/icon_eye.svg');
+    }
+
     .newsroll_icon_home {
         --newsroll-icon-outline-url: url('/icons/icon_home.svg');
         --newsroll-icon-fill-url: url('/icons/icon_home_active.svg');
@@ -2658,6 +2663,182 @@
         width: 24px;
         height: 24px;
         flex: 0 0 auto;
+    }
+
+    .input_transparent {
+        color: var(--color-common-100);
+        background: transparent;
+        border-color: var(--color-common-100);
+    }
+
+    .input_transparent input::placeholder {
+        color: rgb(255 255 255 / 72%);
+    }
+
+    .input_transparent:focus-within {
+        border-color: var(--color-common-100);
+    }
+
+    .newsroll_screen_login {
+        min-height: 100dvh;
+        background: var(--color-newsroll-purple-20);
+    }
+
+    .newsroll_screen_login .newsroll_phone {
+        min-height: 100dvh;
+        background: var(--color-newsroll-purple-20);
+    }
+
+    .container_loginScreen {
+        width: 100%;
+        min-height: 100dvh;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        gap: var(--spacing-gap-vertical-40);
+        padding: var(--spacing-padding-vertical-48) 0 var(--spacing-padding-vertical-32);
+        padding-inline: var(--spacing-padding-horizontal-16);
+        color: var(--color-common-100);
+        background: var(--color-newsroll-purple-20);
+    }
+
+    .btn_loginNext {
+        position: absolute;
+        top: var(--spacing-padding-vertical-24);
+        right: var(--spacing-padding-horizontal-16);
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        border-radius: var(--radius-full);
+        color: var(--color-common-100);
+        background: transparent;
+        font-size: var(--font-size-18);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-24);
+    }
+
+    .wrapper_loginContent {
+        width: 100%;
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--spacing-gap-vertical-40);
+        padding: 0;
+    }
+
+    .wrapper_loginHeader,
+    .form_login,
+    .wrapper_loginInputs {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .wrapper_loginHeader {
+        gap: var(--spacing-gap-vertical-8);
+    }
+
+    .text_loginEyebrow,
+    .text_loginTitle {
+        color: var(--color-common-100);
+    }
+
+    .text_loginEyebrow {
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }
+
+    .text_loginTitle {
+        font-size: var(--font-size-32);
+        font-weight: var(--font-weight-700);
+        line-height: var(--line-height-40);
+    }
+
+    .form_login {
+        gap: var(--spacing-gap-vertical-24);
+    }
+
+    .wrapper_loginInputs {
+        gap: var(--spacing-gap-vertical-16);
+    }
+
+    .wrapper_loginPasswordField {
+        width: 100%;
+        min-width: 0;
+        position: relative;
+        display: flex;
+        padding: 0;
+    }
+
+    .wrapper_loginPasswordField .input_loginPassword {
+        padding-right: calc(40px + var(--spacing-padding-horizontal-12));
+    }
+
+    .btn_loginPasswordToggle {
+        position: absolute;
+        top: 50%;
+        right: var(--spacing-padding-horizontal-12);
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        transform: translateY(-50%);
+    }
+
+    .btn_loginPasswordToggle .newsroll_icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .btn_loginSubmit {
+        width: 100%;
+    }
+
+    .btn_loginSignup {
+        width: auto;
+        align-self: flex-end;
+        min-height: 40px;
+        padding: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        text-align: center;
+    }
+
+    .wrapper_socialLogin {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-gap-horizontal-16);
+        padding: 0;
+    }
+
+    .box_socialLoginIcon {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        display: inline-flex;
+        border: var(--border-1) solid var(--color-common-100);
+        border-radius: var(--radius-8);
+        background: transparent;
     }
 
     .wrapper_searchContent {

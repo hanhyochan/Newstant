@@ -26,6 +26,8 @@ export { Textarea } from "./input/textarea";
 export type { TextareaProps } from "./input/textarea";
 export { TextInput } from "./input/text-input";
 export type { TextInputProps } from "./input/text-input";
+export { TransparentTextInput } from "./input/transparent-text-input";
+export type { TransparentTextInputProps } from "./input/transparent-text-input";
 export { NewsViewToggle } from "./navigation/news-view-toggle";
 export type { NewsViewMode, NewsViewToggleProps } from "./navigation/news-view-toggle";
 export { NewsRollDropdownArrow, NewsRollDropdownMenu } from "./navigation/dropdown-menu";
