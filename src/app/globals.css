@@ -403,6 +403,7 @@
         --spacing-padding-vertical-24: 24px;
         --spacing-padding-vertical-32: 32px;
         --spacing-padding-vertical-40: 40px;
+        --spacing-padding-vertical-48: 48px;
         --spacing-padding-vertical-60: 60px;
 
         /* spacing: gap / horizontal */
@@ -1542,7 +1543,7 @@
         word-break: break-word;
         cursor: pointer;
         color: var(--color-label-neutral);
-        background: var(--color-fill-normal);
+        background: transparent;
     }
 
     .tab_small {
@@ -1588,10 +1589,12 @@
         border-radius: var(--radius-full);
     }
 
-    .tab[aria-selected='true'] {
+    .tab[aria-selected='true'],
+    .tab[data-state='active'],
+    .tab[data-state='selected'] {
         color: var(--color-common-100);
-        background: var(--color-newsroll-purple-50);
-        border-color: var(--color-newsroll-purple-50);
+        background: var(--color-common-0);
+        border-color: var(--color-common-0);
     }
 
     .tab:disabled,
@@ -2685,42 +2688,33 @@
     }
 
     .newsroll_screen_login .newsroll_phone {
+        height: 100dvh;
         min-height: 100dvh;
+        box-sizing: border-box;
+        padding: 0;
         background: var(--color-newsroll-purple-20);
     }
 
-    .container_loginScreen {
+    .container_authLayout {
         width: 100%;
-        min-height: 100dvh;
+        height: 100%;
+        min-height: 100%;
         position: relative;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-        gap: var(--spacing-gap-vertical-40);
-        padding: var(--spacing-padding-vertical-48) 0 var(--spacing-padding-vertical-32);
-        padding-inline: var(--spacing-padding-horizontal-16);
+        gap: var(--spacing-gap-vertical-24);
+        padding: calc(var(--spacing-padding-vertical-40) + var(--spacing-gap-vertical-16))
+            var(--spacing-padding-horizontal-16)
+            var(--spacing-padding-horizontal-16);
         color: var(--color-common-100);
         background: var(--color-newsroll-purple-20);
     }
 
-    .container_signupAgreement {
-        width: 100%;
-        min-height: 100dvh;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        gap: var(--spacing-gap-vertical-40);
-        padding: var(--spacing-padding-vertical-48) 0 var(--spacing-padding-vertical-32);
-        padding-inline: var(--spacing-padding-horizontal-16);
-        color: var(--color-common-100);
-        background: var(--color-newsroll-purple-20);
-    }
-
+    .btn_loginPrevious,
     .btn_loginNext {
         position: absolute;
-        top: var(--spacing-padding-vertical-24);
-        right: var(--spacing-padding-horizontal-16);
+        top: 0;
         width: 40px;
         height: 40px;
         display: inline-flex;
@@ -2736,19 +2730,38 @@
         line-height: var(--line-height-24);
     }
 
+    .btn_loginPrevious {
+        left: 0;
+    }
+
+    .btn_loginNext {
+        right: 0;
+    }
+
     .wrapper_loginContent {
         width: 100%;
         min-width: 0;
         flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        box-sizing: border-box;
         gap: var(--spacing-gap-vertical-40);
         padding: 0;
     }
 
     .wrapper_signupAgreementContent {
-        justify-content: center;
+        justify-content: flex-start;
+    }
+
+    .wrapper_signupStepContent {
+        width: 100%;
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        gap: var(--spacing-gap-vertical-40);
+        padding: 0;
     }
 
     .wrapper_loginHeader,
@@ -2782,8 +2795,126 @@
         line-height: var(--line-height-40);
     }
 
+    .text_authStepLabel {
+        margin: 0;
+        padding: 0;
+        color: var(--color-common-100);
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }
+
+    .text_authPageTitle {
+        margin: 0;
+        padding: 0;
+        color: var(--color-common-100);
+        font-size: var(--font-size-fixed-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-fixed-20);
+    }
+
     .form_login {
         gap: var(--spacing-gap-vertical-24);
+    }
+
+    .form_signupStep {
+        width: 100%;
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: var(--spacing-gap-vertical-40);
+        padding: 0;
+    }
+
+    .wrapper_signupEmailField {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: stretch;
+        gap: var(--spacing-gap-horizontal-8);
+        padding: 0;
+    }
+
+    .wrapper_signupEmailField .input_transparent {
+        flex: 1 1 auto;
+    }
+
+    .btn_signupVerificationSend {
+        flex: 0 0 auto;
+        padding-inline: var(--spacing-padding-horizontal-12);
+        white-space: nowrap;
+    }
+
+    .wrapper_signupVerificationCode {
+        width: 100%;
+        min-width: 0;
+        position: relative;
+        display: flex;
+        padding: 0;
+    }
+
+    .wrapper_signupVerificationCode .input_transparent {
+        padding-right: calc(48px + var(--spacing-padding-horizontal-12));
+    }
+
+    .wrapper_authField {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
+        padding: 0;
+    }
+
+    .container_authLayout .input_transparent.text_input_error,
+    .container_authLayout .input_transparent.text_input_error:focus-within {
+        border-color: var(--color-status-negative);
+    }
+
+    .text_authValidationError {
+        margin: 0;
+        padding: 0;
+        color: var(--color-status-negative);
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .text_signupVerificationTimer {
+        position: absolute;
+        top: 50%;
+        right: var(--spacing-padding-horizontal-12);
+        color: var(--color-common-100);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-20);
+        transform: translateY(-50%);
+    }
+
+    .wrapper_authTabMenu {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: var(--spacing-gap-horizontal-8);
+        padding: 0;
+    }
+
+    .container_authLayout .wrapper_authTabMenu .tab {
+        border: var(--border-1) solid var(--newsroll-divider-color);
+        color: var(--color-common-100);
+        background: transparent;
+    }
+
+    .container_authLayout .wrapper_authTabMenu .tab[data-state='active'],
+    .container_authLayout .wrapper_authTabMenu .tab[data-state='selected'] {
+        color: var(--color-common-0);
+        border-color: var(--color-common-100);
+        background: var(--color-common-100);
+        font-weight: var(--font-weight-700);
     }
 
     .wrapper_loginInputs {
@@ -2827,6 +2958,47 @@
         width: 100%;
     }
 
+    .container_authLayout .btn_loginSubmit:disabled,
+    .container_authLayout .btn_signupVerificationSend:disabled {
+        color: var(--color-common-0);
+        background: var(--color-newsroll-purple-50);
+        border-color: var(--color-newsroll-purple-50);
+    }
+
+    .btn_loginAuto {
+        width: fit-content;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-8);
+        padding: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        text-align: left;
+    }
+
+    .box_loginAutoCheck {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: var(--border-1) solid var(--color-common-100);
+        border-radius: var(--radius-8);
+        color: var(--color-newsroll-purple-20);
+        background: transparent;
+        font-size: var(--font-size-12);
+        font-weight: var(--font-weight-700);
+        line-height: var(--line-height-16);
+    }
+
+    .btn_loginAuto[aria-pressed='true'] .box_loginAutoCheck {
+        background: var(--color-common-100);
+    }
+
     .btn_loginSignup {
         width: auto;
         align-self: flex-end;
@@ -2865,6 +3037,17 @@
         display: flex;
         flex-direction: column;
         gap: var(--spacing-gap-vertical-16);
+        padding: 0;
+    }
+
+    .wrapper_signupAgreementBody {
+        width: 100%;
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: var(--spacing-gap-vertical-40);
         padding: 0;
     }
 
@@ -2942,6 +3125,17 @@
     }
 
     .btn_signupAgreementNext {
+        width: 100%;
+    }
+
+    .text_signupStepDescription {
+        color: rgb(255 255 255 / 72%);
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .btn_signupStepNext {
         width: 100%;
     }
 
@@ -3993,7 +4187,7 @@
         padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
         box-sizing: border-box;
         border-radius: var(--radius-24);
-        background: var(--color-background-elevated-normal);
+        background: transparent;
     }
 
     .text_myKeywordDialogTitle {
@@ -4128,7 +4322,7 @@
         border: var(--border-1) solid var(--newsroll-divider-color);
         border-radius: var(--radius-full);
         color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
+        background: transparent;
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-20);
@@ -4145,7 +4339,7 @@
     .tab_myCategoryMenu button[data-state='default'] {
         color: var(--color-label-strong);
         border-color: var(--newsroll-divider-color);
-        background: var(--color-background-elevated-normal);
+        background: transparent;
     }
 
     .container_myBlockedKeywordSection {
@@ -4697,7 +4891,12 @@
         color: var(--newsroll-dark-text-neutral);
     }
 
-    .newsroll_dark .tab_myCategoryMenu button[data-state='default'],
+    .newsroll_dark .tab_myCategoryMenu button[data-state='default'] {
+        color: var(--newsroll-dark-text-strong);
+        background: transparent;
+        border-color: var(--newsroll-dark-line);
+    }
+
     .newsroll_dark .btn_myBlockedKeywordAdd,
     .newsroll_dark .btn_originalArticle {
         color: var(--newsroll-dark-text-strong);
@@ -6960,7 +7159,7 @@
     .newsroll_policy_age_tabs button:not([aria-selected='true']) {
         color: var(--color-label-strong);
         border: var(--border-1) solid var(--color-cool-neutral-96);
-        background: var(--color-background-elevated-normal);
+        background: transparent;
         font-weight: var(--font-weight-400);
     }
 
@@ -7508,7 +7707,7 @@
 .tab_myCategoryMenu button[data-state='default'],
 .newsroll_all_press_tabScroller .newsroll_all_press_tabButton:not([aria-selected='true']) {
     border: var(--border-1) solid var(--newsroll-divider-color);
-    background: var(--color-background-elevated-normal);
+    background: transparent;
 }
 
 .wrapper_newsViewToggle {
@@ -7613,7 +7812,7 @@
 .newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton,
 .newsroll_dark .newsroll_all_press_tabs button {
     color: var(--color-common-100);
-    background: var(--color-common-0);
+    background: transparent;
     border-color: var(--newsroll-divider-color);
 }
 
@@ -7625,9 +7824,9 @@
 .newsroll_dark .newsroll_all_category_tabs button[aria-selected='true'],
 .newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton[aria-selected='true'],
 .newsroll_dark .newsroll_all_press_tabs button[aria-selected='true'] {
-    color: var(--color-common-100);
-    background: var(--color-common-0);
-    border-color: var(--color-common-0);
+    color: var(--color-common-0);
+    background: var(--color-common-100);
+    border-color: var(--color-common-100);
 }
 
 .newsroll_dark .chip,

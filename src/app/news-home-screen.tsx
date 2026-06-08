@@ -53,6 +53,13 @@ import {
   useInlineTextEdit,
 } from "@/design-system/templates";
 import {
+  authEmailSchema,
+  createSignupPasswordConfirmSchema,
+  loginPasswordSchema,
+  signupPasswordSchema,
+  verificationCodeSchema,
+} from "./_newsroll/auth-validation";
+import {
   bookmarkApi,
   commentApi,
   infoApi,
@@ -78,9 +85,18 @@ import {
 } from "./_newsroll/api";
 import { mockCurrentUserId } from "./_newsroll/mock-current-user";
 import { fixedDockedPanelProps } from "./_newsroll/my-info-panel-behavior";
+import { useZodFieldValidation } from "./_newsroll/use-zod-field-validation";
 
 type Tab = "home" | "all" | "policy" | "my" | "info";
-type View = Tab | "search" | "login" | "signupAgreement";
+type View =
+  | Tab
+  | "search"
+  | "login"
+  | "signupAgreement"
+  | "signupEmail"
+  | "signupPassword"
+  | "signupAge"
+  | "signupCategory";
 type InfoTab = "notice" | "faq" | "inquiry";
 type QuickMenuTarget = "customNewsSettings" | "notificationSettings" | "profileSettings";
 type QuickMenuRequest = {
@@ -7607,20 +7623,39 @@ function InfoView({
   );
 }
 
-function LoginView({ onNext }: { onNext: () => void }) {
+function AuthValidationError({
+  id,
+  message,
+}: {
+  id: string;
+  message?: string;
+}) {
+  return message ? (
+    <p className="text_authValidationError" id={id} role="alert">
+      {message}
+    </p>
+  ) : null;
+}
+
+function LoginView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isAutoLogin, setIsAutoLogin] = useState(false);
+  const emailValidation = useZodFieldValidation(authEmailSchema, email);
+  const passwordValidation = useZodFieldValidation(loginPasswordSchema, password);
+  const isLoginReady = emailValidation.isValid && passwordValidation.isValid;
+  const loginEmailErrorId = "login-email-error";
+  const loginPasswordErrorId = "login-password-error";
 
   return (
-    <section className="container_loginScreen" aria-label="로그인">
-      <button
-        aria-label="다음 임시 화면 보기"
-        className="btn_loginNext"
-        onClick={onNext}
-        type="button"
-      >
-        <span aria-hidden="true">-&gt;</span>
-      </button>
-
+    <AuthLayout ariaLabel="로그인" onNext={onNext} onPrevious={onPrevious}>
       <div className="wrapper_loginContent">
         <div className="wrapper_loginHeader">
           <p className="text_loginEyebrow">NewsRoll</p>
@@ -7632,32 +7667,59 @@ function LoginView({ onNext }: { onNext: () => void }) {
           onSubmit={(event) => event.preventDefault()}
         >
           <div className="wrapper_loginInputs">
-            <TransparentTextInput
-              aria-label="이메일 입력"
-              autoComplete="email"
-              placeholder="이메일"
-              type="email"
-            />
-            <div className="wrapper_loginPasswordField">
+            <div className="wrapper_authField">
               <TransparentTextInput
-                aria-label="비밀번호 입력"
-                autoComplete="current-password"
-                placeholder="비밀번호"
-                type={isPasswordVisible ? "text" : "password"}
-                wrapperClassName="input_loginPassword"
+                aria-describedby={emailValidation.errorMessage ? loginEmailErrorId : undefined}
+                aria-invalid={Boolean(emailValidation.errorMessage)}
+                aria-label="이메일 입력"
+                autoComplete="email"
+                onBlur={emailValidation.markTouched}
+                onChange={(event) => setEmail(event.currentTarget.value)}
+                placeholder="이메일"
+                state={emailValidation.errorMessage ? "error" : "default"}
+                type="email"
+                value={email}
               />
-              <button
-                aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
-                aria-pressed={isPasswordVisible}
-                className="btn_loginPasswordToggle"
-                onClick={() => setIsPasswordVisible((current) => !current)}
-                type="button"
-              >
-                <Icon name="eye" />
-              </button>
+              <AuthValidationError
+                id={loginEmailErrorId}
+                message={emailValidation.errorMessage}
+              />
+            </div>
+            <div className="wrapper_authField">
+              <div className="wrapper_loginPasswordField">
+                <TransparentTextInput
+                  aria-describedby={
+                    passwordValidation.errorMessage ? loginPasswordErrorId : undefined
+                  }
+                  aria-invalid={Boolean(passwordValidation.errorMessage)}
+                  aria-label="비밀번호 입력"
+                  autoComplete="current-password"
+                  onBlur={passwordValidation.markTouched}
+                  onChange={(event) => setPassword(event.currentTarget.value)}
+                  placeholder="비밀번호"
+                  state={passwordValidation.errorMessage ? "error" : "default"}
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  wrapperClassName="input_loginPassword"
+                />
+                <button
+                  aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+                  aria-pressed={isPasswordVisible}
+                  className="btn_loginPasswordToggle"
+                  onClick={() => setIsPasswordVisible((current) => !current)}
+                  type="button"
+                >
+                  <Icon name="eye" />
+                </button>
+              </div>
+              <AuthValidationError
+                id={loginPasswordErrorId}
+                message={passwordValidation.errorMessage}
+              />
             </div>
             <Button
               className="btn_loginSubmit"
+              disabled={!isLoginReady}
               radius="rounded"
               size="large"
               type="submit"
@@ -7665,6 +7727,17 @@ function LoginView({ onNext }: { onNext: () => void }) {
             >
               로그인
             </Button>
+            <button
+              aria-pressed={isAutoLogin}
+              className="btn_loginAuto"
+              onClick={() => setIsAutoLogin((current) => !current)}
+              type="button"
+            >
+              <span className="box_loginAutoCheck" aria-hidden="true">
+                {isAutoLogin ? "✓" : ""}
+              </span>
+              <span>자동 로그인</span>
+            </button>
             <button className="btn_loginSignup" type="button">
               회원가입
             </button>
@@ -7682,6 +7755,40 @@ function LoginView({ onNext }: { onNext: () => void }) {
           </div>
         </form>
       </div>
+    </AuthLayout>
+  );
+}
+
+function AuthLayout({
+  ariaLabel,
+  children,
+  onNext,
+  onPrevious,
+}: {
+  ariaLabel: string;
+  children: ReactNode;
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  return (
+    <section className="container_authLayout" aria-label={ariaLabel}>
+      <button
+        aria-label="이전 임시 화면 보기"
+        className="btn_loginPrevious"
+        onClick={onPrevious}
+        type="button"
+      >
+        <span aria-hidden="true">&lt;-</span>
+      </button>
+      <button
+        aria-label="다음 임시 화면 보기"
+        className="btn_loginNext"
+        onClick={onNext}
+        type="button"
+      >
+        <span aria-hidden="true">-&gt;</span>
+      </button>
+      {children}
     </section>
   );
 }
@@ -7720,7 +7827,13 @@ const signupAgreementItems: Array<{
   },
 ];
 
-function SignupAgreementView({ onNext }: { onNext: () => void }) {
+function SignupAgreementView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
   const [agreements, setAgreements] = useState<Record<SignupAgreementKey, boolean>>({
     age: false,
     marketing: false,
@@ -7738,61 +7851,518 @@ function SignupAgreementView({ onNext }: { onNext: () => void }) {
   }
 
   return (
-    <section className="container_signupAgreement" aria-label="회원가입 동의">
-      <button
-        aria-label="다음 임시 화면 보기"
-        className="btn_loginNext"
-        onClick={onNext}
-        type="button"
-      >
-        <span aria-hidden="true">-&gt;</span>
-      </button>
-
+    <AuthLayout ariaLabel="회원가입 동의" onNext={onNext} onPrevious={onPrevious}>
       <div className="wrapper_loginContent wrapper_signupAgreementContent">
         <div className="wrapper_loginHeader">
-          <p className="text_loginEyebrow">Create Account</p>
-          <h1 className="text_loginTitle">회원가입 동의</h1>
+          <p className="text_authStepLabel">Create Account</p>
+          <h1 className="text_authPageTitle">회원가입 동의</h1>
         </div>
 
-        <div className="wrapper_signupAgreementList">
-          {signupAgreementItems.map((item) => (
-            <button
-              aria-pressed={agreements[item.id]}
-              className="btn_signupAgreementItem"
-              key={item.id}
-              onClick={() => toggleAgreement(item.id)}
-              type="button"
-            >
-              <span className="box_signupAgreementCheck" aria-hidden="true">
-                {agreements[item.id] ? "✓" : ""}
-              </span>
-              <span className="wrapper_signupAgreementText">
-                <span className="text_signupAgreementTitle">
-                  <span>{item.title}</span>
-                  <span className="text_signupAgreementRequired">
-                    {item.required ? "필수" : "선택"}
+        <div className="wrapper_signupAgreementBody">
+          <div className="wrapper_signupAgreementList">
+            {signupAgreementItems.map((item) => (
+              <button
+                aria-pressed={agreements[item.id]}
+                className="btn_signupAgreementItem"
+                key={item.id}
+                onClick={() => toggleAgreement(item.id)}
+                type="button"
+              >
+                <span className="box_signupAgreementCheck" aria-hidden="true">
+                  {agreements[item.id] ? "✓" : ""}
+                </span>
+                <span className="wrapper_signupAgreementText">
+                  <span className="text_signupAgreementTitle">
+                    <span>{item.title}</span>
+                    <span className="text_signupAgreementRequired">
+                      {item.required ? "필수" : "선택"}
+                    </span>
+                  </span>
+                  <span className="text_signupAgreementDescription">
+                    {item.description}
                   </span>
                 </span>
-                <span className="text_signupAgreementDescription">
-                  {item.description}
-                </span>
-              </span>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
+
+          <Button
+            className="btn_signupAgreementNext"
+            disabled={!isAllRequiredChecked}
+            onClick={onNext}
+            radius="rounded"
+            size="large"
+            variant="filled"
+          >
+            다음
+          </Button>
+        </div>
+      </div>
+    </AuthLayout>
+  );
+}
+
+function SignupEmailView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  const verificationTimerRef = useRef<number | null>(null);
+  const [email, setEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [remainingVerificationSeconds, setRemainingVerificationSeconds] = useState(0);
+  const emailValidation = useZodFieldValidation(authEmailSchema, email);
+  const verificationCodeValidation = useZodFieldValidation(
+    verificationCodeSchema,
+    verificationCode,
+  );
+  const isEmailReady =
+    emailValidation.isValid && isVerificationSent && verificationCodeValidation.isValid;
+  const signupEmailErrorId = "signup-email-error";
+  const signupVerificationCodeErrorId = "signup-verification-code-error";
+  const formattedVerificationTime = `${Math.floor(
+    remainingVerificationSeconds / 60,
+  )}:${String(remainingVerificationSeconds % 60).padStart(2, "0")}`;
+
+  function resetVerificationCode() {
+    if (verificationTimerRef.current !== null) {
+      window.clearTimeout(verificationTimerRef.current);
+      verificationTimerRef.current = null;
+    }
+
+    setIsVerificationSent(false);
+    setRemainingVerificationSeconds(0);
+  }
+
+  function startVerificationCode() {
+    if (verificationTimerRef.current !== null) {
+      window.clearTimeout(verificationTimerRef.current);
+    }
+
+    setVerificationCode("");
+    setIsVerificationSent(true);
+    setRemainingVerificationSeconds(180);
+  }
+
+  useEffect(() => {
+    if (!isVerificationSent || remainingVerificationSeconds <= 0) {
+      return undefined;
+    }
+
+    verificationTimerRef.current = window.setTimeout(() => {
+      setRemainingVerificationSeconds((current) => current - 1);
+    }, 1000);
+
+    return () => {
+      if (verificationTimerRef.current !== null) {
+        window.clearTimeout(verificationTimerRef.current);
+        verificationTimerRef.current = null;
+      }
+    };
+  }, [isVerificationSent, remainingVerificationSeconds]);
+
+  useEffect(() => {
+    if (isVerificationSent && remainingVerificationSeconds === 0) {
+      resetVerificationCode();
+    }
+  }, [isVerificationSent, remainingVerificationSeconds]);
+
+  useEffect(
+    () => () => {
+      if (verificationTimerRef.current !== null) {
+        window.clearTimeout(verificationTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  return (
+    <AuthLayout ariaLabel="회원가입 이메일 인증" onNext={onNext} onPrevious={onPrevious}>
+      <div className="wrapper_signupStepContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_authStepLabel">Step 1</p>
+          <h1 className="text_authPageTitle">이메일 인증</h1>
+          <p className="text_signupStepDescription">
+            가입에 사용할 이메일과 전송된 6자리 인증번호를 입력해주세요.
+          </p>
         </div>
 
-        <Button
-          className="btn_signupAgreementNext"
-          disabled={!isAllRequiredChecked}
-          onClick={onNext}
-          radius="rounded"
-          size="large"
-          variant="filled"
+        <form
+          className="form_signupStep"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (isEmailReady) {
+              onNext();
+            }
+          }}
         >
-          다음
-        </Button>
+          <div className="wrapper_loginInputs">
+            <div className="wrapper_authField">
+              <div className="wrapper_signupEmailField">
+                <TransparentTextInput
+                  aria-describedby={
+                    emailValidation.errorMessage ? signupEmailErrorId : undefined
+                  }
+                  aria-invalid={Boolean(emailValidation.errorMessage)}
+                  aria-label="회원가입 이메일 입력"
+                  autoComplete="email"
+                  onBlur={emailValidation.markTouched}
+                  onChange={(event) => setEmail(event.currentTarget.value)}
+                  placeholder="이메일"
+                  state={emailValidation.errorMessage ? "error" : "default"}
+                  type="email"
+                  value={email}
+                />
+                <Button
+                  className="btn_signupVerificationSend"
+                  disabled={!emailValidation.isValid}
+                  onClick={startVerificationCode}
+                  radius="rounded"
+                  size="large"
+                  type="button"
+                  variant="filled"
+                >
+                  인증번호 발송
+                </Button>
+              </div>
+              <AuthValidationError
+                id={signupEmailErrorId}
+                message={emailValidation.errorMessage}
+              />
+            </div>
+            {isVerificationSent ? (
+              <div className="wrapper_authField">
+                <div className="wrapper_signupVerificationCode">
+                  <TransparentTextInput
+                    aria-describedby={
+                      verificationCodeValidation.errorMessage
+                        ? signupVerificationCodeErrorId
+                        : undefined
+                    }
+                    aria-invalid={Boolean(verificationCodeValidation.errorMessage)}
+                    aria-label="이메일 인증번호 6자리 입력"
+                    inputMode="numeric"
+                    maxLength={6}
+                    onBlur={verificationCodeValidation.markTouched}
+                    onChange={(event) => setVerificationCode(event.currentTarget.value)}
+                    placeholder="인증번호 6자리"
+                    state={
+                      verificationCodeValidation.errorMessage ? "error" : "default"
+                    }
+                    type="text"
+                    value={verificationCode}
+                  />
+                  <span className="text_signupVerificationTimer">
+                    {formattedVerificationTime}
+                  </span>
+                </div>
+                <AuthValidationError
+                  id={signupVerificationCodeErrorId}
+                  message={verificationCodeValidation.errorMessage}
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <Button
+            className="btn_signupStepNext"
+            disabled={!isEmailReady}
+            radius="rounded"
+            size="large"
+            type="submit"
+            variant="filled"
+          >
+            다음
+          </Button>
+        </form>
       </div>
-    </section>
+    </AuthLayout>
+  );
+}
+
+function SignupPasswordView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordConfirmVisible, setIsPasswordConfirmVisible] = useState(false);
+  const passwordConfirmSchema = useMemo(
+    () => createSignupPasswordConfirmSchema(password),
+    [password],
+  );
+  const passwordValidation = useZodFieldValidation(signupPasswordSchema, password);
+  const passwordConfirmValidation = useZodFieldValidation(
+    passwordConfirmSchema,
+    passwordConfirm,
+  );
+  const isPasswordReady =
+    passwordValidation.isValid && passwordConfirmValidation.isValid;
+  const signupPasswordErrorId = "signup-password-error";
+  const signupPasswordConfirmErrorId = "signup-password-confirm-error";
+
+  return (
+    <AuthLayout ariaLabel="회원가입 비밀번호 설정" onNext={onNext} onPrevious={onPrevious}>
+      <div className="wrapper_signupStepContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_authStepLabel">Step 2</p>
+          <h1 className="text_authPageTitle">비밀번호 설정</h1>
+          <p className="text_signupStepDescription">
+            NewsRoll 계정에 사용할 비밀번호를 입력해주세요.
+          </p>
+        </div>
+
+        <form
+          className="form_signupStep"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (isPasswordReady) {
+              onNext();
+            }
+          }}
+        >
+          <div className="wrapper_loginInputs">
+            <div className="wrapper_authField">
+              <div className="wrapper_loginPasswordField">
+                <TransparentTextInput
+                  aria-describedby={
+                    passwordValidation.errorMessage ? signupPasswordErrorId : undefined
+                  }
+                  aria-invalid={Boolean(passwordValidation.errorMessage)}
+                  aria-label="회원가입 비밀번호 입력"
+                  autoComplete="new-password"
+                  onBlur={passwordValidation.markTouched}
+                  onChange={(event) => setPassword(event.currentTarget.value)}
+                  placeholder="비밀번호"
+                  state={passwordValidation.errorMessage ? "error" : "default"}
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  wrapperClassName="input_loginPassword"
+                />
+                <button
+                  aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+                  aria-pressed={isPasswordVisible}
+                  className="btn_loginPasswordToggle"
+                  onClick={() => setIsPasswordVisible((current) => !current)}
+                  type="button"
+                >
+                  <Icon name="eye" />
+                </button>
+              </div>
+              <AuthValidationError
+                id={signupPasswordErrorId}
+                message={passwordValidation.errorMessage}
+              />
+            </div>
+            <div className="wrapper_authField">
+              <div className="wrapper_loginPasswordField">
+                <TransparentTextInput
+                  aria-describedby={
+                    passwordConfirmValidation.errorMessage
+                      ? signupPasswordConfirmErrorId
+                      : undefined
+                  }
+                  aria-invalid={Boolean(passwordConfirmValidation.errorMessage)}
+                  aria-label="회원가입 비밀번호 확인 입력"
+                  autoComplete="new-password"
+                  onBlur={passwordConfirmValidation.markTouched}
+                  onChange={(event) => setPasswordConfirm(event.currentTarget.value)}
+                  placeholder="비밀번호 확인"
+                  state={passwordConfirmValidation.errorMessage ? "error" : "default"}
+                  type={isPasswordConfirmVisible ? "text" : "password"}
+                  value={passwordConfirm}
+                  wrapperClassName="input_loginPassword"
+                />
+                <button
+                  aria-label={
+                    isPasswordConfirmVisible
+                      ? "비밀번호 확인 숨기기"
+                      : "비밀번호 확인 보기"
+                  }
+                  aria-pressed={isPasswordConfirmVisible}
+                  className="btn_loginPasswordToggle"
+                  onClick={() => setIsPasswordConfirmVisible((current) => !current)}
+                  type="button"
+                >
+                  <Icon name="eye" />
+                </button>
+              </div>
+              <AuthValidationError
+                id={signupPasswordConfirmErrorId}
+                message={passwordConfirmValidation.errorMessage}
+              />
+            </div>
+          </div>
+
+          <Button
+            className="btn_signupStepNext"
+            disabled={!isPasswordReady}
+            radius="rounded"
+            size="large"
+            type="submit"
+            variant="filled"
+          >
+            다음
+          </Button>
+        </form>
+      </div>
+    </AuthLayout>
+  );
+}
+
+type SignupAgeId = "teens" | "twenties" | "thirties" | "forties" | "fifties" | "sixties";
+type SignupCategoryId =
+  | "politics"
+  | "economy"
+  | "society"
+  | "policy"
+  | "culture"
+  | "tech"
+  | "sports";
+
+const signupAgeItems: Array<{ id: SignupAgeId; label: string }> = [
+  { id: "teens", label: "10대" },
+  { id: "twenties", label: "20대" },
+  { id: "thirties", label: "30대" },
+  { id: "forties", label: "40대" },
+  { id: "fifties", label: "50대" },
+  { id: "sixties", label: "60대 이상" },
+];
+
+const signupCategoryItems: Array<{ id: SignupCategoryId; label: string }> = [
+  { id: "politics", label: "정치" },
+  { id: "economy", label: "경제" },
+  { id: "society", label: "사회" },
+  { id: "policy", label: "국가정책" },
+  { id: "culture", label: "문화" },
+  { id: "tech", label: "IT" },
+  { id: "sports", label: "스포츠" },
+];
+
+function SignupAgeView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  const [selectedAge, setSelectedAge] = useState<SignupAgeId | null>(null);
+
+  return (
+    <AuthLayout ariaLabel="나의 연령대 선택" onNext={onNext} onPrevious={onPrevious}>
+      <div className="wrapper_signupStepContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_authStepLabel">Step 3</p>
+          <h1 className="text_authPageTitle">나의 연령대 선택</h1>
+          <p className="text_signupStepDescription">
+            맞춤형 뉴스 추천에 사용할 연령대를 선택해주세요.
+          </p>
+        </div>
+
+        <form
+          className="form_signupStep"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (selectedAge) {
+              onNext();
+            }
+          }}
+        >
+          <PillTabMenu
+            ariaLabel="나의 연령대 선택"
+            className="wrapper_authTabMenu"
+            getItemState={(id) => (selectedAge === id ? "active" : "default")}
+            items={signupAgeItems}
+            onChange={setSelectedAge}
+            role="group"
+            value={selectedAge ?? signupAgeItems[0].id}
+          />
+
+          <Button
+            className="btn_signupStepNext"
+            disabled={!selectedAge}
+            radius="rounded"
+            size="large"
+            type="submit"
+            variant="filled"
+          >
+            다음
+          </Button>
+        </form>
+      </div>
+    </AuthLayout>
+  );
+}
+
+function SignupCategoryView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  const [selectedCategories, setSelectedCategories] = useState<SignupCategoryId[]>([]);
+  const tabValue = selectedCategories[0] ?? signupCategoryItems[0].id;
+
+  function toggleCategory(categoryId: SignupCategoryId) {
+    setSelectedCategories((current) =>
+      current.includes(categoryId)
+        ? current.filter((id) => id !== categoryId)
+        : [...current, categoryId],
+    );
+  }
+
+  return (
+    <AuthLayout ariaLabel="관심 카테고리 선택" onNext={onNext} onPrevious={onPrevious}>
+      <div className="wrapper_signupStepContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_authStepLabel">Step 4</p>
+          <h1 className="text_authPageTitle">관심 카테고리 선택</h1>
+          <p className="text_signupStepDescription">
+            보고 싶은 뉴스 카테고리를 하나 이상 선택해주세요.
+          </p>
+        </div>
+
+        <form
+          className="form_signupStep"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (selectedCategories.length > 0) {
+              onNext();
+            }
+          }}
+        >
+          <PillTabMenu
+            ariaLabel="관심 카테고리 선택"
+            className="wrapper_authTabMenu"
+            getItemState={(id) => (selectedCategories.includes(id) ? "active" : "default")}
+            items={signupCategoryItems}
+            keyboardNavigation={false}
+            onChange={toggleCategory}
+            role="group"
+            value={tabValue}
+          />
+
+          <Button
+            className="btn_signupStepNext"
+            disabled={selectedCategories.length === 0}
+            radius="rounded"
+            size="large"
+            type="submit"
+            variant="filled"
+          >
+            시작하기
+          </Button>
+        </form>
+      </div>
+    </AuthLayout>
   );
 }
 
@@ -7809,6 +8379,7 @@ function ActiveView({
   onToggleBlockedKeyword,
   onCloseSearch,
   onLoginNext,
+  onLoginPrevious,
   onOpenAllNews,
   onOpenMenu,
   onOpenSearch,
@@ -7829,6 +8400,7 @@ function ActiveView({
   onToggleBlockedKeyword: (keyword: string) => void;
   onCloseSearch: () => void;
   onLoginNext: () => void;
+  onLoginPrevious: () => void;
   onOpenAllNews: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
@@ -7838,11 +8410,31 @@ function ActiveView({
   view: View;
 }) {
   if (view === "login") {
-    return <LoginView onNext={onLoginNext} />;
+    return <LoginView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
   }
 
   if (view === "signupAgreement") {
-    return <SignupAgreementView onNext={onLoginNext} />;
+    return (
+      <SignupAgreementView onNext={onLoginNext} onPrevious={onLoginPrevious} />
+    );
+  }
+
+  if (view === "signupEmail") {
+    return <SignupEmailView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+  }
+
+  if (view === "signupPassword") {
+    return <SignupPasswordView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+  }
+
+  if (view === "signupAge") {
+    return <SignupAgeView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+  }
+
+  if (view === "signupCategory") {
+    return (
+      <SignupCategoryView onNext={onLoginNext} onPrevious={onLoginPrevious} />
+    );
   }
 
   if (view === "search") {
@@ -7954,7 +8546,11 @@ export function NewsHomeScreen() {
   const activeViewResetKey =
     activeView === "search" ||
     activeView === "login" ||
-    activeView === "signupAgreement"
+    activeView === "signupAgreement" ||
+    activeView === "signupEmail" ||
+    activeView === "signupPassword" ||
+    activeView === "signupAge" ||
+    activeView === "signupCategory"
       ? 0
       : viewResetKeys[activeView];
 
@@ -8001,7 +8597,12 @@ export function NewsHomeScreen() {
   function openSearch() {
     if (activeView !== "search") {
       setSearchBackView(
-        activeView === "login" || activeView === "signupAgreement"
+        activeView === "login" ||
+          activeView === "signupAgreement" ||
+          activeView === "signupEmail" ||
+          activeView === "signupPassword" ||
+          activeView === "signupAge" ||
+          activeView === "signupCategory"
           ? "home"
           : activeView,
       );
@@ -8079,11 +8680,68 @@ export function NewsHomeScreen() {
     moveToBreakingNews();
   }
 
+  function openNextAuthStep() {
+    setActiveView((current) => {
+      if (current === "login") {
+        return "signupAgreement";
+      }
+
+      if (current === "signupAgreement") {
+        return "signupEmail";
+      }
+
+      if (current === "signupEmail") {
+        return "signupPassword";
+      }
+
+      if (current === "signupPassword") {
+        return "signupAge";
+      }
+
+      if (current === "signupAge") {
+        return "signupCategory";
+      }
+
+      return "home";
+    });
+  }
+
+  function openPreviousAuthStep() {
+    setActiveView((current) => {
+      if (current === "signupCategory") {
+        return "signupAge";
+      }
+
+      if (current === "signupAge") {
+        return "signupPassword";
+      }
+
+      if (current === "signupPassword") {
+        return "signupEmail";
+      }
+
+      if (current === "signupEmail") {
+        return "signupAgreement";
+      }
+
+      if (current === "signupAgreement") {
+        return "login";
+      }
+
+      return "home";
+    });
+  }
+
   function openQuickMenuTarget(target: QuickMenuTarget) {
     const returnView: Tab =
       activeView === "search"
         ? searchBackView
-        : activeView === "login" || activeView === "signupAgreement"
+        : activeView === "login" ||
+            activeView === "signupAgreement" ||
+            activeView === "signupEmail" ||
+            activeView === "signupPassword" ||
+            activeView === "signupAge" ||
+            activeView === "signupCategory"
           ? "home"
           : activeView;
 
@@ -8198,7 +8856,12 @@ export function NewsHomeScreen() {
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
         activeView === "all" ? " newsroll_screen_all" : ""
       }${
-        activeView === "login" || activeView === "signupAgreement"
+        activeView === "login" ||
+        activeView === "signupAgreement" ||
+        activeView === "signupEmail" ||
+        activeView === "signupPassword" ||
+        activeView === "signupAge" ||
+        activeView === "signupCategory"
           ? " newsroll_screen_login"
           : ""
       }${
@@ -8221,11 +8884,8 @@ export function NewsHomeScreen() {
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
-          onLoginNext={() =>
-            setActiveView((current) =>
-              current === "login" ? "signupAgreement" : "home",
-            )
-          }
+          onLoginNext={openNextAuthStep}
+          onLoginPrevious={openPreviousAuthStep}
           onOpenAllNews={openBreakingNewsView}
           onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
@@ -8244,7 +8904,11 @@ export function NewsHomeScreen() {
 
       {activeView !== "search" &&
       activeView !== "login" &&
-      activeView !== "signupAgreement" ? (
+      activeView !== "signupAgreement" &&
+      activeView !== "signupEmail" &&
+      activeView !== "signupPassword" &&
+      activeView !== "signupAge" &&
+      activeView !== "signupCategory" ? (
         <nav className="newsroll_bottom_nav" aria-label="하단 탐색">
           {navItems.map((item) => (
             <IconButton
