@@ -29,7 +29,8 @@ import {
   NewsRollDivider,
   NewsRollDropdownArrow,
   NewsRollDropdownMenu,
-  NewsRollCheckBox,
+  NewsRollMediumCheckField,
+  NewsRollSmallCheckField,
   NewsRollSwitch,
   NewsBlockItem,
   NewsViewToggle,
@@ -7831,22 +7832,12 @@ function LoginView({
               로그인
             </Button>
             <div className="wrapper_loginActions">
-              <button
-                aria-pressed={isAutoLogin}
+              <NewsRollSmallCheckField
+                checked={isAutoLogin}
                 className="btn_loginAuto"
+                label="자동 로그인"
                 onClick={() => setIsAutoLogin((current) => !current)}
-                type="button"
-              >
-              <NewsRollCheckBox checked={isAutoLogin} />
-              <span>자동 로그인</span>
-              </button>
-              <button
-                className="btn_loginSignup"
-                onClick={onSignup}
-                type="button"
-              >
-                회원가입
-              </button>
+              />
             </div>
           </div>
 
@@ -7859,6 +7850,15 @@ function LoginView({
                 role="img"
               />
             ))}
+          </div>
+          <div className="wrapper_loginSignup">
+            <button
+              className="btn_loginSignup"
+              onClick={onSignup}
+              type="button"
+            >
+              회원가입
+            </button>
           </div>
         </form>
       </div>
@@ -8482,26 +8482,21 @@ function SignupAgreementView({
           <div className="wrapper_signupAgreementList">
             {signupAgreementItems.map((item) => (
               <div className="wrapper_signupAgreementItem" key={item.id}>
-                <button
-                  aria-label={`${item.title} 동의`}
-                  aria-pressed={agreements[item.id]}
-                  className="btn_signupAgreementCheck"
+                <NewsRollSmallCheckField
+                  checked={agreements[item.id]}
+                  className="btn_signupAgreementCheckField"
+                  label={`(${item.required ? "필수" : "선택"}) ${item.title}`}
                   onClick={() => toggleAgreement(item.id)}
-                  type="button"
-                >
-                  <NewsRollCheckBox checked={agreements[item.id]} />
-                </button>
+                />
                 <button
                   className="btn_signupAgreementItem"
                   onClick={() => {
                     setAgreementSearchTarget(null);
                     setDetailAgreementId(item.id);
                   }}
+                  aria-label={`${item.title} 상세 보기`}
                   type="button"
                 >
-                  <span className="text_mySettingLabel">
-                    {`(${item.required ? "필수" : "선택"}) ${item.title}`}
-                  </span>
                   <span className="icon_myChevron" aria-hidden="true" />
                 </button>
               </div>
@@ -8509,22 +8504,12 @@ function SignupAgreementView({
           </div>
 
           <div className="wrapper_signupAgreementAll">
-            <button
-              aria-label="전체 동의"
-              aria-pressed={isAllChecked}
-              className="btn_signupAgreementCheck"
-              onClick={toggleAllAgreements}
-              type="button"
-            >
-              <NewsRollCheckBox checked={isAllChecked} />
-            </button>
-            <button
+            <NewsRollMediumCheckField
+              checked={isAllChecked}
               className="btn_signupAgreementAll"
+              label="전체 동의"
               onClick={toggleAllAgreements}
-              type="button"
-            >
-              전체 동의
-            </button>
+            />
           </div>
 
           <Button

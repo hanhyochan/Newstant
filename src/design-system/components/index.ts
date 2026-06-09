@@ -20,8 +20,18 @@ export { NewsBlockItem } from "./shared/news-block-item";
 export type { NewsBlockItemProps } from "./shared/news-block-item";
 export { NewsRollSwitch } from "./shared/switch";
 export type { NewsRollSwitchProps } from "./shared/switch";
-export { NewsRollCheckBox } from "./shared/check-box";
-export type { NewsRollCheckBoxProps } from "./shared/check-box";
+export {
+  NewsRollCheckBox,
+  NewsRollCheckField,
+  NewsRollMediumCheckField,
+  NewsRollSmallCheckField,
+} from "./shared/check-box";
+export type {
+  NewsRollCheckBoxProps,
+  NewsRollCheckFieldProps,
+  NewsRollMediumCheckFieldProps,
+  NewsRollSmallCheckFieldProps,
+} from "./shared/check-box";
 export { CommentComposerInput } from "./input/comment-composer-input";
 export type { CommentComposerInputProps } from "./input/comment-composer-input";
 export { Textarea } from "./input/textarea";
