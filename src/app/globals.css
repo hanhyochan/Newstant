@@ -7428,11 +7428,6 @@
         padding-top: 48px;
     }
 
-    .newsroll_search_page.is_detailOpen {
-        gap: 0;
-        padding-top: 0;
-    }
-
     .newsroll_all_breaking_stack,
     .newsroll_all_more_dark {
         padding-top: 0;

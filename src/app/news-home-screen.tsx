@@ -385,6 +385,105 @@ function filterArticlesByBlockedKeywords(
   });
 }
 
+type BodySearchResult =
+  | {
+      article: HomeArticle;
+      id: string;
+      kind: "news";
+      meta: string;
+      snippet?: string;
+      title: string;
+    }
+  | {
+      id: string;
+      kind: "policy";
+      meta: string;
+      policy: PolicyItem;
+      snippet?: string;
+      title: string;
+    };
+
+function getBodySearchSnippet(text = "", normalizedQuery: string) {
+  if (!normalizedQuery) {
+    return text;
+  }
+
+  const normalizedText = text.toLocaleLowerCase("ko-KR");
+  const matchIndex = normalizedText.indexOf(normalizedQuery);
+
+  if (matchIndex === -1) {
+    return text;
+  }
+
+  const start = Math.max(0, matchIndex - 32);
+  const end = Math.min(text.length, matchIndex + normalizedQuery.length + 72);
+
+  return `${start > 0 ? "..." : ""}${text.slice(start, end)}${
+    end < text.length ? "..." : ""
+  }`;
+}
+
+function getPolicySearchText(policy: PolicyItem) {
+  return [
+    policy.title,
+    policy.summary,
+    ...policy.tags,
+    ...policy.details.flatMap((detail) => [detail.label, detail.value]),
+  ]
+    .join(" ")
+    .toLocaleLowerCase("ko-KR");
+}
+
+function getBodySearchResults({
+  articles,
+  blockedKeywords,
+  normalizedQuery,
+  policies,
+}: {
+  articles: HomeArticle[];
+  blockedKeywords: string[];
+  normalizedQuery: string;
+  policies: PolicyItem[];
+}): BodySearchResult[] {
+  if (!normalizedQuery) {
+    return [];
+  }
+
+  const newsResults: BodySearchResult[] = filterArticlesByBlockedKeywords(
+    articles,
+    blockedKeywords,
+  )
+    .filter((article) => getArticleFilterText(article).includes(normalizedQuery))
+    .map((article, index) => ({
+      article,
+      id: article.id ?? `news-search-${index}`,
+      kind: "news",
+      meta: [article.category, article.pressName, article.date]
+        .filter(Boolean)
+        .join(" · "),
+      snippet: getBodySearchSnippet(article.body ?? article.title, normalizedQuery),
+      title: article.title,
+    }));
+  const policyResults: BodySearchResult[] = policies
+    .filter((policy) => getPolicySearchText(policy).includes(normalizedQuery))
+    .map((policy, index) => ({
+      id: `policy-search-${policy.title}-${index}`,
+      kind: "policy",
+      meta: ["국가정책", ...policy.tags].filter(Boolean).join(" · "),
+      policy,
+      snippet: getBodySearchSnippet(
+        [
+          policy.summary,
+          ...policy.details.flatMap((detail) => [detail.label, detail.value]),
+        ].join(" "),
+        normalizedQuery,
+      ),
+      title: policy.title,
+    }));
+
+  return [...newsResults, ...policyResults];
+}
+
 const homeArticle: HomeArticle = {
   category: "정치",
   date: "2026년 12월 31일 08:30",
@@ -3553,104 +3652,30 @@ function SearchView({
   onClose: () => void;
   onSelectResult: (selection: BodySearchSelectionInput) => void;
 }) {
-  type BodySearchResult =
-    | {
-        article: HomeArticle;
-        id: string;
-        kind: "news";
-        meta: string;
-        snippet?: string;
-        title: string;
-      }
-    | {
-        id: string;
-        kind: "policy";
-        meta: string;
-        policy: PolicyItem;
-        snippet?: string;
-        title: string;
-      };
   const [query, setQuery] = useState("");
   const [articles, setArticles] = useState<HomeArticle[]>([]);
   const [policies, setPolicies] = useState<PolicyItem[]>([]);
-  const [isNewsLoading, setIsNewsLoading] = useState(false);
-  const [newsError, setNewsError] = useState<string | null>(null);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const normalizedQuery = normalizeBlockedKeyword(query);
-  const getBodySearchSnippet = useCallback((text = "") => {
-    if (!normalizedQuery) {
-      return text;
-    }
-
-    const normalizedText = text.toLocaleLowerCase("ko-KR");
-    const matchIndex = normalizedText.indexOf(normalizedQuery);
-
-    if (matchIndex === -1) {
-      return text;
-    }
-
-    const start = Math.max(0, matchIndex - 32);
-    const end = Math.min(text.length, matchIndex + normalizedQuery.length + 72);
-
-    return `${start > 0 ? "..." : ""}${text.slice(start, end)}${
-      end < text.length ? "..." : ""
-    }`;
-  }, [normalizedQuery]);
-  const searchResults = useMemo(() => {
-    if (!normalizedQuery) {
-      return [];
-    }
-
-    const newsResults: BodySearchResult[] = filterArticlesByBlockedKeywords(
-      articles,
-      blockedKeywords,
-    )
-      .filter((article) => getArticleFilterText(article).includes(normalizedQuery))
-      .map((article, index) => ({
-        article,
-        id: article.id ?? `news-search-${index}`,
-        kind: "news",
-        meta: [article.category, article.pressName, article.date]
-          .filter(Boolean)
-          .join(" · "),
-        snippet: getBodySearchSnippet(article.body ?? article.title),
-        title: article.title,
-      }));
-    const policyResults: BodySearchResult[] = policies
-      .filter((policy) =>
-        [
-          policy.title,
-          policy.summary,
-          ...policy.tags,
-          ...policy.details.flatMap((detail) => [detail.label, detail.value]),
-        ]
-          .join(" ")
-          .toLocaleLowerCase("ko-KR")
-          .includes(normalizedQuery),
-      )
-      .map((policy, index) => ({
-        id: `policy-search-${policy.title}-${index}`,
-        kind: "policy",
-        meta: ["국가정책", ...policy.tags].filter(Boolean).join(" · "),
-        policy,
-        snippet: getBodySearchSnippet(
-          [
-            policy.summary,
-            ...policy.details.flatMap((detail) => [detail.label, detail.value]),
-          ].join(" "),
-        ),
-        title: policy.title,
-      }));
-
-    return [...newsResults, ...policyResults];
-  }, [articles, blockedKeywords, getBodySearchSnippet, normalizedQuery, policies]);
+  const searchResults = useMemo(
+    () =>
+      getBodySearchResults({
+        articles,
+        blockedKeywords,
+        normalizedQuery,
+        policies,
+      }),
+    [articles, blockedKeywords, normalizedQuery, policies],
+  );
 
   useEffect(() => {
     let ignore = false;
 
     async function loadSearchData() {
-      setIsNewsLoading(true);
-      setNewsError(null);
+      setIsSearchLoading(true);
+      setSearchError(null);
 
       try {
         const [nextNews, nextPolicies] = await Promise.all([
@@ -3664,13 +3689,13 @@ function SearchView({
         }
       } catch {
         if (!ignore) {
-          setNewsError(getDataUnavailableMessage("검색 데이터", "를"));
+          setSearchError(getDataUnavailableMessage("검색 데이터", "를"));
           setArticles([]);
           setPolicies([]);
         }
       } finally {
         if (!ignore) {
-          setIsNewsLoading(false);
+          setIsSearchLoading(false);
         }
       }
     }
@@ -3702,59 +3727,59 @@ function SearchView({
       </div>
 
       <div className="wrapper_searchContent">
-          <form
-            className="form_searchComposer newsroll_motion_enterUp"
-            onSubmit={(event) => event.preventDefault()}
-          >
-            <label className="input_searchField">
-              <span className="sr_only">통합검색어 입력</span>
-              <input
-                onChange={(event) => setQuery(event.currentTarget.value)}
-                placeholder="검색 키워드를 입력해주세요"
-                ref={searchInputRef}
-                type="search"
-                value={query}
-              />
-              <Icon name="search" />
-            </label>
-          </form>
+        <form
+          className="form_searchComposer newsroll_motion_enterUp"
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <label className="input_searchField">
+            <span className="sr_only">통합검색어 입력</span>
+            <input
+              onChange={(event) => setQuery(event.currentTarget.value)}
+              placeholder="검색 키워드를 입력해주세요"
+              ref={searchInputRef}
+              type="search"
+              value={query}
+            />
+            <Icon name="search" />
+          </label>
+        </form>
 
-          {normalizedQuery ? (
-            isNewsLoading ? (
-              <p className="text_searchStatus" role="status">
-                뉴스를 불러오는 중입니다.
-              </p>
-            ) : newsError ? (
-              <p className="text_searchStatus" role="alert">
-                {newsError}
-              </p>
-            ) : searchResults.length > 0 ? (
-              <div className="list_searchResults" aria-label="통합검색 결과">
-                {searchResults.map((result) => (
-                  <button
-                    className="btn_searchResult"
-                    key={`${result.kind}-${result.id}`}
-                    onClick={() =>
-                      onSelectResult(
-                        result.kind === "news"
-                          ? { article: result.article, kind: "news" }
-                          : { kind: "policy", policy: result.policy },
-                      )
-                    }
-                    type="button"
-                  >
-                    <strong>{result.title}</strong>
-                    <span>{result.meta}</span>
-                    {result.snippet ? (
-                      <p className="text_searchResultSnippet">{result.snippet}</p>
-                    ) : null}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className="text_searchStatus">검색 결과가 없습니다.</p>
-            )
-          ) : null}
+        {normalizedQuery ? (
+          isSearchLoading ? (
+            <p className="text_searchStatus" role="status">
+              뉴스를 불러오는 중입니다.
+            </p>
+          ) : searchError ? (
+            <p className="text_searchStatus" role="alert">
+              {searchError}
+            </p>
+          ) : searchResults.length > 0 ? (
+            <div className="list_searchResults" aria-label="통합검색 결과">
+              {searchResults.map((result) => (
+                <button
+                  className="btn_searchResult"
+                  key={`${result.kind}-${result.id}`}
+                  onClick={() =>
+                    onSelectResult(
+                      result.kind === "news"
+                        ? { article: result.article, kind: "news" }
+                        : { kind: "policy", policy: result.policy },
+                    )
+                  }
+                  type="button"
+                >
+                  <strong>{result.title}</strong>
+                  <span>{result.meta}</span>
+                  {result.snippet ? (
+                    <p className="text_searchResultSnippet">{result.snippet}</p>
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text_searchStatus">검색 결과가 없습니다.</p>
+          )
+        ) : null}
       </div>
     </section>
   );
