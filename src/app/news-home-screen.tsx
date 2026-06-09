@@ -58,6 +58,7 @@ import {
   authEmailSchema,
   createSignupPasswordConfirmSchema,
   loginPasswordSchema,
+  signupNicknameSchema,
   signupPasswordSchema,
   verificationCodeSchema,
 } from "./_newsroll/auth-validation";
@@ -96,6 +97,7 @@ type View =
   | "login"
   | "signupAgreement"
   | "signupEmail"
+  | "signupNickname"
   | "signupPassword"
   | "signupAge"
   | "signupCategory";
@@ -8731,6 +8733,133 @@ function SignupEmailView({
   );
 }
 
+const reservedSignupNicknames = ["콩콩이", "홍길동", "관리자", "뉴스롤"];
+
+function SignupNicknameView({
+  onNext,
+  onPrevious,
+}: {
+  onNext: () => void;
+  onPrevious: () => void;
+}) {
+  const [nickname, setNickname] = useState("");
+  const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+  const [nicknameCheckMessage, setNicknameCheckMessage] = useState("");
+  const nicknameValidation = useZodFieldValidation(signupNicknameSchema, nickname);
+  const isNicknameReady = nicknameValidation.isValid && isNicknameChecked;
+  const signupNicknameErrorId = "signup-nickname-error";
+  const signupNicknameCheckId = "signup-nickname-check";
+
+  function checkNicknameDuplicate() {
+    nicknameValidation.markTouched();
+
+    if (!nicknameValidation.isValid) {
+      setIsNicknameChecked(false);
+      setNicknameCheckMessage("");
+      return;
+    }
+
+    const normalizedNickname = nickname.trim().toLocaleLowerCase("ko-KR");
+    const isDuplicated = reservedSignupNicknames.some(
+      (item) => item.toLocaleLowerCase("ko-KR") === normalizedNickname,
+    );
+
+    setIsNicknameChecked(!isDuplicated);
+    setNicknameCheckMessage(
+      isDuplicated
+        ? "이미 사용 중인 닉네임이에요."
+        : "사용 가능한 닉네임이에요.",
+    );
+  }
+
+  function updateNickname(value: string) {
+    setNickname(value);
+    setIsNicknameChecked(false);
+    setNicknameCheckMessage("");
+  }
+
+  return (
+    <AuthLayout ariaLabel="회원가입 닉네임 설정" onNext={onNext} onPrevious={onPrevious}>
+      <div className="wrapper_signupStepContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_authStepLabel">Step 2</p>
+          <h1 className="text_authPageTitle">닉네임 설정</h1>
+          <p className="text_signupStepDescription">
+            댓글과 마이페이지에 표시될 닉네임을 입력해주세요.
+          </p>
+        </div>
+
+        <form
+          className="form_signupStep"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (isNicknameReady) {
+              onNext();
+            }
+          }}
+        >
+          <div className="wrapper_loginInputs">
+            <div className="wrapper_authField">
+              <div className="wrapper_signupEmailField">
+                <TransparentTextInput
+                  aria-describedby={[
+                    nicknameValidation.errorMessage ? signupNicknameErrorId : "",
+                    nicknameCheckMessage ? signupNicknameCheckId : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || undefined}
+                  aria-invalid={Boolean(nicknameValidation.errorMessage)}
+                  aria-label="회원가입 닉네임 입력"
+                  autoComplete="nickname"
+                  maxLength={12}
+                  onBlur={nicknameValidation.markTouched}
+                  onChange={(event) => updateNickname(event.currentTarget.value)}
+                  placeholder="닉네임"
+                  state={nicknameValidation.errorMessage ? "error" : "default"}
+                  type="text"
+                  value={nickname}
+                />
+                <Button
+                  className="btn_commentMineFilter btn_signupVerificationSend"
+                  disabled={!nicknameValidation.isValid}
+                  onClick={checkNicknameDuplicate}
+                  type="button"
+                >
+                  중복확인
+                </Button>
+              </div>
+              <AuthValidationError
+                id={signupNicknameErrorId}
+                message={nicknameValidation.errorMessage}
+              />
+              {nicknameCheckMessage ? (
+                <p
+                  className="text_authValidation"
+                  data-state={isNicknameChecked ? "success" : "error"}
+                  id={signupNicknameCheckId}
+                >
+                  {nicknameCheckMessage}
+                </p>
+              ) : null}
+            </div>
+          </div>
+
+          <Button
+            className="btn_signupStepNext"
+            disabled={!isNicknameReady}
+            radius="rounded"
+            size="large"
+            type="submit"
+            variant="filled"
+          >
+            다음
+          </Button>
+        </form>
+      </div>
+    </AuthLayout>
+  );
+}
+
 function SignupPasswordView({
   onNext,
   onPrevious,
@@ -8760,7 +8889,7 @@ function SignupPasswordView({
     <AuthLayout ariaLabel="회원가입 비밀번호 설정" onNext={onNext} onPrevious={onPrevious}>
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 2</p>
+          <p className="text_authStepLabel">Step 3</p>
           <h1 className="text_authPageTitle">비밀번호 설정</h1>
           <p className="text_signupStepDescription">
             NewsRoll 계정에 사용할 비밀번호를 입력해주세요.
@@ -8907,7 +9036,7 @@ function SignupAgeView({
     <AuthLayout ariaLabel="나의 연령대 선택" onNext={onNext} onPrevious={onPrevious}>
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 3</p>
+          <p className="text_authStepLabel">Step 4</p>
           <h1 className="text_authPageTitle">나의 연령대 선택</h1>
           <p className="text_signupStepDescription">
             맞춤형 뉴스 추천에 사용할 연령대를 선택해주세요.
@@ -8971,7 +9100,7 @@ function SignupCategoryView({
     <AuthLayout ariaLabel="관심 카테고리 선택" onNext={onNext} onPrevious={onPrevious}>
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 4</p>
+          <p className="text_authStepLabel">Step 5</p>
           <h1 className="text_authPageTitle">관심 카테고리 선택</h1>
           <p className="text_signupStepDescription">
             보고 싶은 뉴스 카테고리를 하나 이상 선택해주세요.
@@ -9085,6 +9214,12 @@ function ActiveView({
 
   if (view === "signupEmail") {
     return <SignupEmailView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+  }
+
+  if (view === "signupNickname") {
+    return (
+      <SignupNicknameView onNext={onLoginNext} onPrevious={onLoginPrevious} />
+    );
   }
 
   if (view === "signupPassword") {
@@ -9222,6 +9357,7 @@ export function NewsHomeScreen() {
     activeView === "login" ||
     activeView === "signupAgreement" ||
     activeView === "signupEmail" ||
+    activeView === "signupNickname" ||
     activeView === "signupPassword" ||
     activeView === "signupAge" ||
     activeView === "signupCategory"
@@ -9274,6 +9410,7 @@ export function NewsHomeScreen() {
         activeView === "login" ||
           activeView === "signupAgreement" ||
           activeView === "signupEmail" ||
+          activeView === "signupNickname" ||
           activeView === "signupPassword" ||
           activeView === "signupAge" ||
           activeView === "signupCategory"
@@ -9367,6 +9504,10 @@ export function NewsHomeScreen() {
       }
 
       if (current === "signupEmail") {
+        return "signupNickname";
+      }
+
+      if (current === "signupNickname") {
         return "signupPassword";
       }
 
@@ -9393,6 +9534,10 @@ export function NewsHomeScreen() {
       }
 
       if (current === "signupPassword") {
+        return "signupNickname";
+      }
+
+      if (current === "signupNickname") {
         return "signupEmail";
       }
 
@@ -9415,6 +9560,7 @@ export function NewsHomeScreen() {
         : activeView === "login" ||
             activeView === "signupAgreement" ||
             activeView === "signupEmail" ||
+            activeView === "signupNickname" ||
             activeView === "signupPassword" ||
             activeView === "signupAge" ||
             activeView === "signupCategory"
@@ -9552,6 +9698,7 @@ export function NewsHomeScreen() {
         activeView === "login" ||
         activeView === "signupAgreement" ||
         activeView === "signupEmail" ||
+        activeView === "signupNickname" ||
         activeView === "signupPassword" ||
         activeView === "signupAge" ||
         activeView === "signupCategory"
@@ -9601,6 +9748,7 @@ export function NewsHomeScreen() {
       activeView !== "login" &&
       activeView !== "signupAgreement" &&
       activeView !== "signupEmail" &&
+      activeView !== "signupNickname" &&
       activeView !== "signupPassword" &&
       activeView !== "signupAge" &&
       activeView !== "signupCategory" ? (

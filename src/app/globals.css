@@ -2848,6 +2848,22 @@
         line-height: var(--line-height-20);
     }
 
+    .text_authValidation {
+        margin: 0;
+        padding: 0;
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .text_authValidation[data-state='success'] {
+        color: var(--color-status-positive);
+    }
+
+    .text_authValidation[data-state='error'] {
+        color: var(--color-status-negative);
+    }
+
     .text_signupVerificationTimer {
         position: absolute;
         top: 50%;

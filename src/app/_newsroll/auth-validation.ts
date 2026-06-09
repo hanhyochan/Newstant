@@ -10,6 +10,14 @@ export const authEmailSchema = requiredText("이메일을 입력해 주세요.")
 
 export const loginPasswordSchema = requiredText("비밀번호를 입력해 주세요.");
 
+export const signupNicknameSchema = requiredText("닉네임을 입력해 주세요.")
+  .min(2, "닉네임을 2자 이상 입력해 주세요.")
+  .max(12, "닉네임을 12자 이하로 입력해 주세요.")
+  .regex(
+    /^[가-힣A-Za-z0-9_]+$/,
+    "닉네임은 한글, 영문, 숫자, 밑줄만 사용할 수 있어요.",
+  );
+
 export const signupPasswordSchema = requiredText("비밀번호를 입력해 주세요.")
   .min(8, "비밀번호를 8자 이상 입력해 주세요.")
   .regex(/[A-Za-z]/, "비밀번호에 영문을 포함해 주세요.")
