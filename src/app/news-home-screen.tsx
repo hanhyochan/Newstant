@@ -132,6 +132,14 @@ type OpenArticleDetail = (
   options?: ArticleDetailOpenOptions,
 ) => void;
 
+type BodySearchSelection =
+  | { article: HomeArticle; id: number; kind: "news" }
+  | { id: number; kind: "policy"; policy: PolicyItem };
+
+type BodySearchSelectionInput =
+  | { article: HomeArticle; kind: "news" }
+  | { kind: "policy"; policy: PolicyItem };
+
 type HomeArticle = {
   body?: string;
   category: string;
@@ -3320,6 +3328,7 @@ function NewsRollStateCard({
 
 function HomeView({
   blockedKeywords,
+  bodySearchSelection,
   isTextLarge,
   onOpenBreakingNews,
   onOpenMenu,
@@ -3327,16 +3336,23 @@ function HomeView({
   onToggleTextSize,
 }: {
   blockedKeywords: string[];
+  bodySearchSelection?: BodySearchSelection | null;
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
-  const [homeViewMode, setHomeViewMode] = useState<HomeViewMode>("reels");
-  const [detailOpen, setDetailOpen] = useState(false);
+  const [homeViewMode, setHomeViewMode] = useState<HomeViewMode>(
+    bodySearchSelection?.kind === "news" ? "block" : "reels",
+  );
+  const [detailOpen, setDetailOpen] = useState(
+    bodySearchSelection?.kind === "news",
+  );
   const [selectedDetailArticle, setSelectedDetailArticle] =
-    useState<HomeArticle | null>(null);
+    useState<HomeArticle | null>(
+      bodySearchSelection?.kind === "news" ? bodySearchSelection.article : null,
+    );
   const [articles, setArticles] = useState<HomeArticle[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
@@ -3353,6 +3369,15 @@ function HomeView({
     setSelectedDetailArticle(article);
     setDetailOpen(true);
   }
+
+  useEffect(() => {
+    if (bodySearchSelection?.kind !== "news") {
+      return;
+    }
+
+    setHomeViewMode("block");
+    openHomeDetail(bodySearchSelection.article);
+  }, [bodySearchSelection]);
 
   useEffect(() => {
     let ignore = false;
@@ -3521,44 +3546,126 @@ function HomeView({
 function SearchView({
   blockedKeywords,
   onClose,
+  onSelectResult,
 }: {
   blockedKeywords: string[];
   onClose: () => void;
+  onSelectResult: (selection: BodySearchSelectionInput) => void;
 }) {
+  type BodySearchResult =
+    | {
+        article: HomeArticle;
+        id: string;
+        kind: "news";
+        meta: string;
+        snippet?: string;
+        title: string;
+      }
+    | {
+        id: string;
+        kind: "policy";
+        meta: string;
+        policy: PolicyItem;
+        snippet?: string;
+        title: string;
+      };
   const [query, setQuery] = useState("");
-  const [isSearchComposerOpen, setIsSearchComposerOpen] = useState(false);
   const [articles, setArticles] = useState<HomeArticle[]>([]);
+  const [policies, setPolicies] = useState<PolicyItem[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState(false);
   const [newsError, setNewsError] = useState<string | null>(null);
-  const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
-  const searchComposerRef = useRef<HTMLFormElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const normalizedQuery = normalizeBlockedKeyword(query);
+  const getBodySearchSnippet = useCallback((text = "") => {
+    if (!normalizedQuery) {
+      return text;
+    }
+
+    const normalizedText = text.toLocaleLowerCase("ko-KR");
+    const matchIndex = normalizedText.indexOf(normalizedQuery);
+
+    if (matchIndex === -1) {
+      return text;
+    }
+
+    const start = Math.max(0, matchIndex - 32);
+    const end = Math.min(text.length, matchIndex + normalizedQuery.length + 72);
+
+    return `${start > 0 ? "..." : ""}${text.slice(start, end)}${
+      end < text.length ? "..." : ""
+    }`;
+  }, [normalizedQuery]);
   const searchResults = useMemo(() => {
     if (!normalizedQuery) {
       return [];
     }
 
-    return filterArticlesByBlockedKeywords(articles, blockedKeywords).filter((article) =>
-      getArticleFilterText(article).includes(normalizedQuery),
-    );
-  }, [articles, blockedKeywords, normalizedQuery]);
+    const newsResults: BodySearchResult[] = filterArticlesByBlockedKeywords(
+      articles,
+      blockedKeywords,
+    )
+      .filter((article) => getArticleFilterText(article).includes(normalizedQuery))
+      .map((article, index) => ({
+        article,
+        id: article.id ?? `news-search-${index}`,
+        kind: "news",
+        meta: [article.category, article.pressName, article.date]
+          .filter(Boolean)
+          .join(" · "),
+        snippet: getBodySearchSnippet(article.body ?? article.title),
+        title: article.title,
+      }));
+    const policyResults: BodySearchResult[] = policies
+      .filter((policy) =>
+        [
+          policy.title,
+          policy.summary,
+          ...policy.tags,
+          ...policy.details.flatMap((detail) => [detail.label, detail.value]),
+        ]
+          .join(" ")
+          .toLocaleLowerCase("ko-KR")
+          .includes(normalizedQuery),
+      )
+      .map((policy, index) => ({
+        id: `policy-search-${policy.title}-${index}`,
+        kind: "policy",
+        meta: ["국가정책", ...policy.tags].filter(Boolean).join(" · "),
+        policy,
+        snippet: getBodySearchSnippet(
+          [
+            policy.summary,
+            ...policy.details.flatMap((detail) => [detail.label, detail.value]),
+          ].join(" "),
+        ),
+        title: policy.title,
+      }));
+
+    return [...newsResults, ...policyResults];
+  }, [articles, blockedKeywords, getBodySearchSnippet, normalizedQuery, policies]);
 
   useEffect(() => {
     let ignore = false;
 
-    async function loadSearchNews() {
+    async function loadSearchData() {
       setIsNewsLoading(true);
       setNewsError(null);
 
       try {
-        const nextNews = await newsApi.getNewsList();
+        const [nextNews, nextPolicies] = await Promise.all([
+          newsApi.getNewsList(),
+          welfareApi.getWelfarePolicyList("all"),
+        ]);
 
         if (!ignore) {
           setArticles(nextNews.map(getHomeArticleFromNews));
+          setPolicies(nextPolicies.map(getPolicyItemFromWelfarePolicy));
         }
       } catch {
         if (!ignore) {
-          setNewsError(getDataUnavailableMessage("뉴스", "를"));
+          setNewsError(getDataUnavailableMessage("검색 데이터", "를"));
+          setArticles([]);
+          setPolicies([]);
         }
       } finally {
         if (!ignore) {
@@ -3567,7 +3674,7 @@ function SearchView({
       }
     }
 
-    loadSearchNews();
+    loadSearchData();
 
     return () => {
       ignore = true;
@@ -3575,103 +3682,79 @@ function SearchView({
   }, []);
 
   useEffect(() => {
-    if (!isSearchComposerOpen) {
-      return;
-    }
-
     window.requestAnimationFrame(() => {
-      searchComposerRef.current?.querySelector("input")?.focus();
+      searchInputRef.current?.focus();
     });
-  }, [isSearchComposerOpen]);
-
-  const closeSearchDetail = () => {
-    setDetailArticle(null);
-  };
+  }, []);
 
   return (
     <section className="newsroll_search_page" aria-label="검색">
       <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
         <button
-          aria-label={detailArticle ? "검색 결과로 돌아가기" : "검색 닫기"}
+          aria-label="검색 닫기"
           className="newsroll_toolbar_icon newsroll_search_close"
-          onClick={detailArticle ? closeSearchDetail : onClose}
+          onClick={onClose}
           type="button"
         >
           <span aria-hidden="true" />
         </button>
       </div>
 
-      {detailArticle ? (
-        <ArticleDetailContent article={detailArticle} />
-      ) : (
-        <div className="wrapper_searchContent">
-          {isSearchComposerOpen ? (
-            <form
-              className="form_searchComposer newsroll_motion_enterUp"
-              onSubmit={(event) => event.preventDefault()}
-              ref={searchComposerRef}
-            >
-              <CommentComposerInput
-                label="통합검색어 입력"
-                onChange={(event) => setQuery(event.target.value)}
+      <div className="wrapper_searchContent">
+          <form
+            className="form_searchComposer newsroll_motion_enterUp"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <label className="input_searchField">
+              <span className="sr_only">통합검색어 입력</span>
+              <input
+                onChange={(event) => setQuery(event.currentTarget.value)}
                 placeholder="검색 키워드를 입력해주세요"
-                submitLabel="검색"
+                ref={searchInputRef}
+                type="search"
                 value={query}
               />
-            </form>
-          ) : (
-            <button
-              aria-label="통합검색어 입력 열기"
-              className="btn_searchFieldTrigger"
-              onClick={() => setIsSearchComposerOpen(true)}
-              type="button"
-            >
-              <span>검색 키워드를 입력해주세요</span>
               <Icon name="search" />
-            </button>
-          )}
+            </label>
+          </form>
 
-          {isNewsLoading ? (
-            <NewsRollStateCard role="status">
-              <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>
-            </NewsRollStateCard>
-          ) : newsError ? (
-            <NewsRollStateCard role="alert">
-              <p className="text_commentEmpty">{newsError}</p>
-            </NewsRollStateCard>
-          ) : normalizedQuery ? (
-            <article
-              aria-label="통합검색 결과"
-              className="container_articleCard newsroll_all_panel newsroll_all_relay_panel"
-            >
-              <AllNewsPanelContent>
-                <h2 className="newsroll_all_section_title">
-                  검색 결과 {searchResults.length}
-                </h2>
-                {searchResults.length > 0 ? (
-                  <SeparatedList
-                    dividerClassName="newsroll_all_itemDivider"
-                    getKey={(item, index) => item.article?.id ?? `${item.title}-${index}`}
-                    items={searchResults.map(getAllNewsPreviewFromArticle)}
-                    renderItem={(item, index) => (
-                      <AllNewsRelayItem
-                        item={item}
-                        onClick={() =>
-                          setDetailArticle(
-                            createAllNewsArticle(item, item.category ?? homeArticle.category, index),
-                          )
-                        }
-                      />
-                    )}
-                  />
-                ) : (
-                  <p className="text_commentEmpty">검색 결과가 없습니다.</p>
-                )}
-              </AllNewsPanelContent>
-            </article>
+          {normalizedQuery ? (
+            isNewsLoading ? (
+              <p className="text_searchStatus" role="status">
+                뉴스를 불러오는 중입니다.
+              </p>
+            ) : newsError ? (
+              <p className="text_searchStatus" role="alert">
+                {newsError}
+              </p>
+            ) : searchResults.length > 0 ? (
+              <div className="list_searchResults" aria-label="통합검색 결과">
+                {searchResults.map((result) => (
+                  <button
+                    className="btn_searchResult"
+                    key={`${result.kind}-${result.id}`}
+                    onClick={() =>
+                      onSelectResult(
+                        result.kind === "news"
+                          ? { article: result.article, kind: "news" }
+                          : { kind: "policy", policy: result.policy },
+                      )
+                    }
+                    type="button"
+                  >
+                    <strong>{result.title}</strong>
+                    <span>{result.meta}</span>
+                    {result.snippet ? (
+                      <p className="text_searchResultSnippet">{result.snippet}</p>
+                    ) : null}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text_searchStatus">검색 결과가 없습니다.</p>
+            )
           ) : null}
-        </div>
-      )}
+      </div>
     </section>
   );
 }
@@ -5003,12 +5086,14 @@ function useEnterFromRightExitMotion({
 }
 
 function PolicyView({
+  bodySearchSelection,
   isTextLarge,
   onOpenBreakingNews,
   onOpenMenu,
   onOpenSearch,
   onToggleTextSize,
 }: {
+  bodySearchSelection?: BodySearchSelection | null;
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
   onOpenMenu: () => void;
@@ -5016,7 +5101,9 @@ function PolicyView({
   onToggleTextSize: () => void;
 }) {
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
-  const [detailItem, setDetailItem] = useState<PolicyItem | null>(null);
+  const [detailItem, setDetailItem] = useState<PolicyItem | null>(
+    bodySearchSelection?.kind === "policy" ? bodySearchSelection.policy : null,
+  );
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
   const [selectedPolicyIndex, setSelectedPolicyIndex] = useState(0);
@@ -5092,6 +5179,15 @@ function PolicyView({
     setSelectedPolicyIndex(index);
     setDetailItem(item);
   }
+
+  useEffect(() => {
+    if (bodySearchSelection?.kind !== "policy") {
+      return;
+    }
+
+    setSelectedPolicyIndex(0);
+    setDetailItem(bodySearchSelection.policy);
+  }, [bodySearchSelection]);
 
   const closePolicyDetail = policyDetailExitMotion.closeWithMotion;
 
@@ -7645,9 +7741,11 @@ function AuthValidationError({
 function LoginView({
   onNext,
   onPrevious,
+  onSignup,
 }: {
   onNext: () => void;
   onPrevious: () => void;
+  onSignup: () => void;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -7742,7 +7840,11 @@ function LoginView({
               <NewsRollCheckBox checked={isAutoLogin} />
               <span>자동 로그인</span>
               </button>
-              <button className="btn_loginSignup" type="button">
+              <button
+                className="btn_loginSignup"
+                onClick={onSignup}
+                type="button"
+              >
                 회원가입
               </button>
             </div>
@@ -7933,21 +8035,193 @@ const signupAgreementDetails: Record<
   },
 };
 
+type SignupAgreementDetail = (typeof signupAgreementDetails)[SignupAgreementKey];
+
+type SignupAgreementSearchTarget = {
+  agreementId: SignupAgreementKey;
+  query: string;
+  targetKey: string;
+};
+
+type SignupAgreementSearchResult = SignupAgreementSearchTarget & {
+  agreementTitle: string;
+  label: string;
+  snippet: string;
+};
+
+function normalizeAgreementSearchQuery(query: string) {
+  return query.trim().toLocaleLowerCase("ko-KR");
+}
+
+function getAgreementTargetElementId(
+  agreementId: SignupAgreementKey,
+  targetKey: string,
+) {
+  return `signup-agreement-${agreementId}-${targetKey}`;
+}
+
+function getAgreementSearchSnippet(text: string, query: string) {
+  const normalizedText = text.toLocaleLowerCase("ko-KR");
+  const normalizedQuery = normalizeAgreementSearchQuery(query);
+  const matchIndex = normalizedText.indexOf(normalizedQuery);
+
+  if (matchIndex === -1) {
+    return text;
+  }
+
+  const start = Math.max(0, matchIndex - 32);
+  const end = Math.min(text.length, matchIndex + query.trim().length + 72);
+
+  return `${start > 0 ? "..." : ""}${text.slice(start, end)}${
+    end < text.length ? "..." : ""
+  }`;
+}
+
+function createSignupAgreementSearchResults(
+  query: string,
+): SignupAgreementSearchResult[] {
+  const normalizedQuery = normalizeAgreementSearchQuery(query);
+
+  if (!normalizedQuery) {
+    return [];
+  }
+
+  return signupAgreementItems.flatMap((item) => {
+    const agreement = signupAgreementDetails[item.id];
+    const fields: Array<{ label: string; targetKey: string; text: string }> = [
+      {
+        label: "제목",
+        targetKey: "title",
+        text: agreement.title,
+      },
+      ...agreement.sections.flatMap((section, sectionIndex) => [
+        {
+          label: section.heading,
+          targetKey: `section-${sectionIndex}-heading`,
+          text: section.heading,
+        },
+        ...section.body.map((paragraph, paragraphIndex) => ({
+          label: section.heading,
+          targetKey: `section-${sectionIndex}-paragraph-${paragraphIndex}`,
+          text: paragraph,
+        })),
+      ]),
+      {
+        label: "참고 기준",
+        targetKey: "source",
+        text: agreement.source,
+      },
+    ];
+
+    return fields
+      .filter((field) =>
+        field.text.toLocaleLowerCase("ko-KR").includes(normalizedQuery),
+      )
+      .map((field) => ({
+        agreementId: item.id,
+        agreementTitle: agreement.title,
+        label: field.label,
+        query: query.trim(),
+        snippet: getAgreementSearchSnippet(field.text, query),
+        targetKey: field.targetKey,
+      }));
+  });
+}
+
+function splitAgreementSearchText(text: string, query: string) {
+  const normalizedQuery = query.trim().toLocaleLowerCase("ko-KR");
+
+  if (!normalizedQuery) {
+    return [{ isMatch: false, text }];
+  }
+
+  const normalizedText = text.toLocaleLowerCase("ko-KR");
+  const parts: Array<{ isMatch: boolean; text: string }> = [];
+  let cursor = 0;
+  let index = normalizedText.indexOf(normalizedQuery);
+
+  while (index !== -1) {
+    if (index > cursor) {
+      parts.push({ isMatch: false, text: text.slice(cursor, index) });
+    }
+
+    parts.push({
+      isMatch: true,
+      text: text.slice(index, index + normalizedQuery.length),
+    });
+    cursor = index + normalizedQuery.length;
+    index = normalizedText.indexOf(normalizedQuery, cursor);
+  }
+
+  if (cursor < text.length) {
+    parts.push({ isMatch: false, text: text.slice(cursor) });
+  }
+
+  return parts;
+}
+
+function AgreementSearchText({
+  children,
+  query,
+}: {
+  children: string;
+  query: string;
+}) {
+  if (!query.trim()) {
+    return <>{children}</>;
+  }
+
+  return (
+    <>
+      {splitAgreementSearchText(children, query).map((part, index) =>
+        part.isMatch ? (
+          <mark className="mark_authAgreementSearch" key={`${part.text}-${index}`}>
+            {part.text}
+          </mark>
+        ) : (
+          <Fragment key={`${part.text}-${index}`}>{part.text}</Fragment>
+        ),
+      )}
+    </>
+  );
+}
+
 function SignupAgreementDetailView({
   agreement,
+  agreementId,
   isTextLarge,
   onBack,
   onOpenMenu,
   onOpenSearch,
+  searchTarget,
   onToggleTextSize,
 }: {
-  agreement: (typeof signupAgreementDetails)[SignupAgreementKey];
+  agreement: SignupAgreementDetail;
+  agreementId: SignupAgreementKey;
   isTextLarge: boolean;
   onBack: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
+  searchTarget?: SignupAgreementSearchTarget | null;
   onToggleTextSize: () => void;
 }) {
+  const highlightedQuery =
+    searchTarget?.agreementId === agreementId ? searchTarget.query : "";
+
+  useEffect(() => {
+    if (!searchTarget || searchTarget.agreementId !== agreementId) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      document
+        .getElementById(
+          getAgreementTargetElementId(agreementId, searchTarget.targetKey),
+        )
+        ?.scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+  }, [agreementId, searchTarget]);
+
   return (
     <NewsRollCommonLayout
       aria-label={agreement.title}
@@ -7983,19 +8257,53 @@ function SignupAgreementDetailView({
         <div className="wrapper_authAgreementDetail">
           <div className="wrapper_loginHeader">
             <p className="text_authStepLabel">Agreement</p>
-            <h1 className="text_authPageTitle">{agreement.title}</h1>
+            <h1
+              className="text_authPageTitle"
+              id={getAgreementTargetElementId(agreementId, "title")}
+            >
+              <AgreementSearchText query={highlightedQuery}>
+                {agreement.title}
+              </AgreementSearchText>
+            </h1>
           </div>
 
           <div className="wrapper_authAgreementArticle">
-            {agreement.sections.map((section) => (
+            {agreement.sections.map((section, sectionIndex) => (
               <section className="wrapper_authAgreementSection" key={section.heading}>
-                <h2>{section.heading}</h2>
-                {section.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
+                <h2
+                  id={getAgreementTargetElementId(
+                    agreementId,
+                    `section-${sectionIndex}-heading`,
+                  )}
+                >
+                  <AgreementSearchText query={highlightedQuery}>
+                    {section.heading}
+                  </AgreementSearchText>
+                </h2>
+                {section.body.map((paragraph, paragraphIndex) => (
+                  <p
+                    id={getAgreementTargetElementId(
+                      agreementId,
+                      `section-${sectionIndex}-paragraph-${paragraphIndex}`,
+                    )}
+                    key={paragraph}
+                  >
+                    <AgreementSearchText query={highlightedQuery}>
+                      {paragraph}
+                    </AgreementSearchText>
+                  </p>
                 ))}
               </section>
             ))}
-            <p className="text_authAgreementSource">참고 기준: {agreement.source}</p>
+            <p
+              className="text_authAgreementSource"
+              id={getAgreementTargetElementId(agreementId, "source")}
+            >
+              참고 기준:{" "}
+              <AgreementSearchText query={highlightedQuery}>
+                {agreement.source}
+              </AgreementSearchText>
+            </p>
           </div>
         </div>
       </NewsRollPagePanel>
@@ -8003,18 +8311,97 @@ function SignupAgreementDetailView({
   );
 }
 
+function SignupAgreementSearchView({
+  onBack,
+  onSelectResult,
+}: {
+  onBack: () => void;
+  onSelectResult: (result: SignupAgreementSearchResult) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const trimmedQuery = query.trim();
+  const searchResults = useMemo(
+    () => createSignupAgreementSearchResults(query),
+    [query],
+  );
+
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
+  return (
+    <section className="newsroll_search_page" aria-label="동의 문구 통합검색">
+      <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
+        <button
+          aria-label="동의 본문으로 돌아가기"
+          className="newsroll_toolbar_icon newsroll_search_close"
+          onClick={onBack}
+          type="button"
+        >
+          <span aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="wrapper_searchContent">
+        <form
+          className="form_searchComposer newsroll_motion_enterUp"
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <label className="input_searchField">
+            <span className="sr_only">동의 문구 검색</span>
+            <input
+              onChange={(event) => setQuery(event.currentTarget.value)}
+              placeholder="검색 키워드를 입력해주세요"
+              ref={inputRef}
+              type="search"
+              value={query}
+            />
+            <Icon name="search" />
+          </label>
+        </form>
+
+        {trimmedQuery ? (
+          searchResults.length > 0 ? (
+            <div className="list_searchResults" aria-label="동의 문구 검색 결과">
+              {searchResults.map((result, index) => (
+                <button
+                  className="btn_searchResult"
+                  key={`${result.agreementId}-${result.targetKey}-${index}`}
+                  onClick={() => onSelectResult(result)}
+                  type="button"
+                >
+                  <strong>{result.agreementTitle}</strong>
+                  <span>{result.label}</span>
+                  <p className="text_searchResultSnippet">
+                    <AgreementSearchText query={trimmedQuery}>
+                      {result.snippet}
+                    </AgreementSearchText>
+                  </p>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text_searchStatus">검색 결과가 없습니다.</p>
+          )
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 function SignupAgreementView({
   isTextLarge,
   onNext,
   onOpenMenu,
-  onOpenSearch,
   onPrevious,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onNext: () => void;
   onOpenMenu: () => void;
-  onOpenSearch: () => void;
   onPrevious: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -8027,7 +8414,11 @@ function SignupAgreementView({
   const [detailAgreementId, setDetailAgreementId] = useState<SignupAgreementKey | null>(
     null,
   );
+  const [isAgreementSearchOpen, setIsAgreementSearchOpen] = useState(false);
+  const [agreementSearchTarget, setAgreementSearchTarget] =
+    useState<SignupAgreementSearchTarget | null>(null);
   const requiredAgreements = signupAgreementItems.filter((item) => item.required);
+  const isAllChecked = signupAgreementItems.every((item) => agreements[item.id]);
   const isAllRequiredChecked = requiredAgreements.every((item) => agreements[item.id]);
 
   function toggleAgreement(id: SignupAgreementKey) {
@@ -8037,14 +8428,43 @@ function SignupAgreementView({
     }));
   }
 
+  function toggleAllAgreements() {
+    const nextChecked = !isAllChecked;
+
+    setAgreements({
+      age: nextChecked,
+      marketing: nextChecked,
+      privacy: nextChecked,
+      terms: nextChecked,
+    });
+  }
+
+  if (isAgreementSearchOpen) {
+    return (
+      <SignupAgreementSearchView
+        onBack={() => setIsAgreementSearchOpen(false)}
+        onSelectResult={(result) => {
+          setDetailAgreementId(result.agreementId);
+          setAgreementSearchTarget(result);
+          setIsAgreementSearchOpen(false);
+        }}
+      />
+    );
+  }
+
   if (detailAgreementId) {
     return (
       <SignupAgreementDetailView
         agreement={signupAgreementDetails[detailAgreementId]}
+        agreementId={detailAgreementId}
         isTextLarge={isTextLarge}
-        onBack={() => setDetailAgreementId(null)}
+        onBack={() => {
+          setDetailAgreementId(null);
+          setAgreementSearchTarget(null);
+        }}
         onOpenMenu={onOpenMenu}
-        onOpenSearch={onOpenSearch}
+        onOpenSearch={() => setIsAgreementSearchOpen(true)}
+        searchTarget={agreementSearchTarget}
         onToggleTextSize={onToggleTextSize}
       />
     );
@@ -8073,7 +8493,10 @@ function SignupAgreementView({
                 </button>
                 <button
                   className="btn_signupAgreementItem"
-                  onClick={() => setDetailAgreementId(item.id)}
+                  onClick={() => {
+                    setAgreementSearchTarget(null);
+                    setDetailAgreementId(item.id);
+                  }}
                   type="button"
                 >
                   <span className="text_mySettingLabel">
@@ -8083,6 +8506,25 @@ function SignupAgreementView({
                 </button>
               </div>
             ))}
+          </div>
+
+          <div className="wrapper_signupAgreementAll">
+            <button
+              aria-label="전체 동의"
+              aria-pressed={isAllChecked}
+              className="btn_signupAgreementCheck"
+              onClick={toggleAllAgreements}
+              type="button"
+            >
+              <NewsRollCheckBox checked={isAllChecked} />
+            </button>
+            <button
+              className="btn_signupAgreementAll"
+              onClick={toggleAllAgreements}
+              type="button"
+            >
+              전체 동의
+            </button>
           </div>
 
           <Button
@@ -8216,13 +8658,10 @@ function SignupEmailView({
                   value={email}
                 />
                 <Button
-                  className="btn_signupVerificationSend"
+                  className="btn_commentMineFilter btn_signupVerificationSend"
                   disabled={!emailValidation.isValid}
                   onClick={startVerificationCode}
-                  radius="rounded"
-                  size="large"
                   type="button"
-                  variant="filled"
                 >
                   인증번호 발송
                 </Button>
@@ -8567,6 +9006,7 @@ function SignupCategoryView({
 
 function ActiveView({
   allNewsEntryMotionClassName = "",
+  bodySearchSelection,
   blockedKeywords,
   blockedKeywordSettings,
   isDarkMode,
@@ -8583,11 +9023,13 @@ function ActiveView({
   onOpenMenu,
   onOpenSearch,
   onQuickMenuBack,
+  onSelectSearchResult,
   onToggleTextSize,
   quickMenuRequest,
   view,
 }: {
   allNewsEntryMotionClassName?: string;
+  bodySearchSelection?: BodySearchSelection | null;
   blockedKeywords: string[];
   blockedKeywordSettings: BlockedKeywordSetting[];
   isDarkMode: boolean;
@@ -8604,12 +9046,19 @@ function ActiveView({
   onOpenMenu: () => void;
   onOpenSearch: () => void;
   onQuickMenuBack: (returnView: Tab) => void;
+  onSelectSearchResult: (selection: BodySearchSelectionInput) => void;
   onToggleTextSize: () => void;
   quickMenuRequest?: QuickMenuRequest | null;
   view: View;
 }) {
   if (view === "login") {
-    return <LoginView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+    return (
+      <LoginView
+        onNext={onLoginNext}
+        onPrevious={onLoginPrevious}
+        onSignup={onLoginNext}
+      />
+    );
   }
 
   if (view === "signupAgreement") {
@@ -8618,7 +9067,6 @@ function ActiveView({
         isTextLarge={isTextLarge}
         onNext={onLoginNext}
         onOpenMenu={onOpenMenu}
-        onOpenSearch={onOpenSearch}
         onPrevious={onLoginPrevious}
         onToggleTextSize={onToggleTextSize}
       />
@@ -8644,7 +9092,13 @@ function ActiveView({
   }
 
   if (view === "search") {
-    return <SearchView blockedKeywords={blockedKeywords} onClose={onCloseSearch} />;
+    return (
+      <SearchView
+        blockedKeywords={blockedKeywords}
+        onClose={onCloseSearch}
+        onSelectResult={onSelectSearchResult}
+      />
+    );
   }
 
   if (view === "all") {
@@ -8664,6 +9118,7 @@ function ActiveView({
   if (view === "policy") {
     return (
       <PolicyView
+        bodySearchSelection={bodySearchSelection}
         isTextLarge={isTextLarge}
         onOpenBreakingNews={onOpenAllNews}
         onOpenMenu={onOpenMenu}
@@ -8707,6 +9162,7 @@ function ActiveView({
 
   return (
     <HomeView
+      bodySearchSelection={bodySearchSelection}
       blockedKeywords={blockedKeywords}
       isTextLarge={isTextLarge}
       onOpenBreakingNews={onOpenAllNews}
@@ -8737,6 +9193,8 @@ export function NewsHomeScreen() {
   const [quickMenuRequest, setQuickMenuRequest] =
     useState<QuickMenuRequest | null>(null);
   const [isTextLarge, setIsTextLarge] = useState(false);
+  const [bodySearchSelection, setBodySearchSelection] =
+    useState<BodySearchSelection | null>(null);
   const [blockedKeywordSettings, setBlockedKeywordSettings] = useState<
     BlockedKeywordSetting[]
   >([]);
@@ -8821,6 +9279,7 @@ export function NewsHomeScreen() {
     const moveToTab = () => {
       setAllNewsEntryMotionClassName("");
       setIsAllNewsBreakingEntry(false);
+      setBodySearchSelection(null);
       setActiveView(tab);
       setSearchBackView(tab);
       setViewResetKeys((current) => ({
@@ -8851,6 +9310,7 @@ export function NewsHomeScreen() {
     const moveToBreakingNews = () => {
       setAllNewsEntryMotionClassName(getEnterFromRightMotionClassName());
       setIsAllNewsBreakingEntry(true);
+      setBodySearchSelection(null);
       setActiveView("all");
       setSearchBackView("all");
       setViewResetKeys((current) => ({
@@ -8954,6 +9414,7 @@ export function NewsHomeScreen() {
     setIsQuickMenuOpen(false);
     setAllNewsEntryMotionClassName("");
     setIsAllNewsBreakingEntry(false);
+    setBodySearchSelection(null);
     setActiveView("my");
     setSearchBackView(returnView);
     setQuickMenuRequest({ id: Date.now(), returnView, target });
@@ -8967,6 +9428,7 @@ export function NewsHomeScreen() {
     setQuickMenuRequest(null);
     setAllNewsEntryMotionClassName("");
     setIsAllNewsBreakingEntry(false);
+    setBodySearchSelection(null);
     setActiveView(returnView);
     setSearchBackView(returnView);
     setViewResetKeys((current) => ({
@@ -9057,6 +9519,21 @@ export function NewsHomeScreen() {
     }
   }
 
+  function openBodySearchResult(selection: BodySearchSelectionInput) {
+    const nextView = selection.kind === "news" ? "home" : "policy";
+
+    setAllNewsEntryMotionClassName("");
+    setIsAllNewsBreakingEntry(false);
+    setQuickMenuRequest(null);
+    setBodySearchSelection({ ...selection, id: Date.now() });
+    setActiveView(nextView);
+    setSearchBackView(nextView);
+    setViewResetKeys((current) => ({
+      ...current,
+      [nextView]: current[nextView] + 1,
+    }));
+  }
+
   return (
     <main
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
@@ -9079,6 +9556,7 @@ export function NewsHomeScreen() {
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
+          bodySearchSelection={bodySearchSelection}
           blockedKeywords={blockedKeywords}
           blockedKeywordSettings={blockedKeywordSettings}
           isDarkMode={isDarkMode}
@@ -9096,6 +9574,7 @@ export function NewsHomeScreen() {
           onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
           onQuickMenuBack={returnFromQuickMenuTarget}
+          onSelectSearchResult={openBodySearchResult}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
           quickMenuRequest={quickMenuRequest}
           view={activeView}

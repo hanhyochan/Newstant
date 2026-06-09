@@ -2639,35 +2639,6 @@
         transform: translate(-50%, -50%) rotate(-45deg);
     }
 
-    .btn_searchFieldTrigger {
-        min-height: var(--spacing-padding-vertical-60);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-16);
-        margin: 0;
-        padding-inline: var(--spacing-padding-horizontal-16);
-        border: var(--border-1) solid var(--color-common-100);
-        border-radius: var(--radius-8);
-        color: var(--color-common-100);
-        background: transparent;
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
-        text-align: left;
-    }
-
-    .btn_searchFieldTrigger span {
-        min-width: 0;
-        flex: 1 1 auto;
-    }
-
-    .btn_searchFieldTrigger .newsroll_icon {
-        width: 24px;
-        height: 24px;
-        flex: 0 0 auto;
-    }
-
     .input_transparent {
         color: var(--color-common-100);
         background: transparent;
@@ -2787,9 +2758,9 @@
     }
 
     .text_loginTitle {
-        font-size: var(--font-size-32);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-700);
-        line-height: var(--line-height-40);
+        line-height: var(--line-height-24);
     }
 
     .text_authStepLabel {
@@ -2805,9 +2776,9 @@
         margin: 0;
         padding: 0;
         color: var(--color-common-100);
-        font-size: var(--font-size-fixed-16);
+        font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
-        line-height: var(--line-height-fixed-20);
+        line-height: var(--line-height-24);
     }
 
     .form_login {
@@ -2840,8 +2811,6 @@
 
     .btn_signupVerificationSend {
         flex: 0 0 auto;
-        padding-inline: var(--spacing-padding-horizontal-12);
-        white-space: nowrap;
     }
 
     .wrapper_signupVerificationCode {
@@ -2955,8 +2924,7 @@
         width: 100%;
     }
 
-    .container_authLayout .btn_loginSubmit:disabled,
-    .container_authLayout .btn_signupVerificationSend:disabled {
+    .container_authLayout .btn_loginSubmit:disabled {
         color: var(--color-common-0);
         background: var(--color-newsroll-purple-50);
         border-color: var(--color-newsroll-purple-50);
@@ -3105,6 +3073,28 @@
         text-align: left;
     }
 
+    .wrapper_signupAgreementAll {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-24);
+        padding: 0;
+    }
+
+    .btn_signupAgreementAll {
+        width: 100%;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-24);
+        text-align: left;
+    }
+
     .btn_signupAgreementNext {
         width: 100%;
     }
@@ -3154,6 +3144,13 @@
         line-height: var(--line-height-24);
     }
 
+    .mark_authAgreementSearch {
+        padding: 0;
+        border-radius: var(--radius-4);
+        color: var(--color-label-strong);
+        background: var(--color-newsroll-purple-90);
+    }
+
     .text_signupStepDescription {
         color: rgb(255 255 255 / 72%);
         font-size: var(--font-size-15);
@@ -3177,6 +3174,103 @@
         align-items: center;
         margin: 0;
         padding: 0;
+    }
+
+    .input_searchField {
+        width: 100%;
+        min-width: 0;
+        min-height: var(--spacing-padding-vertical-60);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-16);
+        box-sizing: border-box;
+        padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
+        border: var(--border-1) solid var(--color-common-100);
+        border-radius: var(--radius-8);
+        color: var(--color-common-100);
+        background: transparent;
+    }
+
+    .input_searchField input {
+        width: 100%;
+        min-width: 0;
+        flex: 1;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }
+
+    .input_searchField input::placeholder {
+        color: var(--color-common-100);
+        opacity: 1;
+    }
+
+    .input_searchField .newsroll_icon {
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+        color: var(--color-common-100);
+    }
+
+    .list_searchResults {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        padding: 0;
+    }
+
+    .btn_searchResult {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-gap-vertical-4);
+        padding: 0;
+        border: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        text-align: left;
+    }
+
+    .btn_searchResult strong,
+    .btn_searchResult span,
+    .text_searchResultSnippet,
+    .text_searchStatus {
+        margin: 0;
+        padding: 0;
+    }
+
+    .btn_searchResult strong {
+        width: 100%;
+        color: var(--color-common-100);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }
+
+    .btn_searchResult span,
+    .text_searchResultSnippet,
+    .text_searchStatus {
+        color: var(--color-common-100);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .text_searchResultSnippet {
+        width: 100%;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
     }
 
     .newsroll_screen_all {
@@ -5481,7 +5575,7 @@
         justify-content: flex-end;
         gap: var(--spacing-gap-horizontal-8);
         color: var(--color-cool-neutral-50);
-        font-size: var(--font-size-15);
+        font-size: var(--font-size-14);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-20);
         white-space: nowrap;
@@ -5761,8 +5855,8 @@
     }
 
     .btn_newsBlockItem .newsroll_viewCount {
-        font-size: var(--font-size-13);
-        line-height: 13px;
+        font-size: var(--font-size-14);
+        line-height: var(--line-height-20);
     }
 
     .btn_newsBlockItem img {
@@ -6664,6 +6758,7 @@
         line-height: var(--line-height-20);
     }
 
+    .wrapper_signupEmailField .btn_commentMineFilter,
     .wrapper_commentSummary .btn_commentMineFilter,
     .container_myProfile .btn_commentMineFilter {
         min-height: 40px;
@@ -6683,6 +6778,8 @@
         white-space: nowrap;
     }
 
+    .wrapper_signupEmailField .btn_commentMineFilter:active,
+    .wrapper_signupEmailField .btn_commentMineFilter[aria-pressed='true'],
     .wrapper_commentSummary .btn_commentMineFilter:active,
     .wrapper_commentSummary .btn_commentMineFilter[aria-pressed='true'],
     .container_myProfile .btn_commentMineFilter:active,
@@ -7290,6 +7387,11 @@
         padding-top: 48px;
     }
 
+    .newsroll_search_page.is_detailOpen {
+        gap: 0;
+        padding-top: 0;
+    }
+
     .newsroll_all_breaking_stack,
     .newsroll_all_more_dark {
         padding-top: 0;
@@ -7879,11 +7981,6 @@
 .newsroll_dark .newsroll_all_category_tabSticky,
 .newsroll_dark .newsroll_all_category_tabs {
     background: var(--color-common-0);
-}
-
-.newsroll_dark .btn_searchFieldTrigger {
-    color: var(--color-common-100);
-    background: transparent;
 }
 
 .newsroll_dark .newsroll_all_breaking_card {
