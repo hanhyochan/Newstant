@@ -8528,15 +8528,17 @@ function SignupAgreementView({
                 </button>
               </div>
             ))}
-          </div>
 
-          <div className="wrapper_signupAgreementAll">
-            <NewsRollMediumCheckField
-              checked={isAllChecked}
-              className="btn_signupAgreementAll"
-              label="전체 동의"
-              onClick={toggleAllAgreements}
-            />
+            <NewsRollDivider className="divider_signupAgreementAll" />
+
+            <div className="wrapper_signupAgreementAll">
+              <NewsRollMediumCheckField
+                checked={isAllChecked}
+                className="btn_signupAgreementAll"
+                label="전체 동의"
+                onClick={toggleAllAgreements}
+              />
+            </div>
           </div>
 
           <Button
