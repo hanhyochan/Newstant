@@ -1,4 +1,4 @@
-import { mockCurrentUserId } from "../mock-current-user";
+import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type {
@@ -54,7 +54,7 @@ export const pollApi = {
       votes: [],
     };
   },
-  async getPoll(newsId: string, userId = mockCurrentUserId): Promise<PollDetail | null> {
+  async getPoll(newsId: string, userId = currentUserId): Promise<PollDetail | null> {
     const polls = await apiClient.get<Poll[]>("/polls", {
       newsId,
     });

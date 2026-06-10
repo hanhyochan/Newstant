@@ -1,10 +1,10 @@
-import { mockCurrentUserId } from "../mock-current-user";
+import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type { AddBookmarkInput, Bookmark } from "./types";
 
 export const bookmarkApi = {
-  getBookmarks(userId = mockCurrentUserId) {
+  getBookmarks(userId = currentUserId) {
     return apiClient.get<Bookmark[]>("/bookmarks", {
       userId,
       _sort: "createdAt",

@@ -1,4 +1,4 @@
-import { mockCurrentUserId } from "../mock-current-user";
+import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type {
@@ -8,7 +8,7 @@ import type {
 } from "./types";
 
 export const notificationApi = {
-  async getNotificationSettings(userId = mockCurrentUserId) {
+  async getNotificationSettings(userId = currentUserId) {
     const settings = await apiClient.get<NotificationSettings[]>("/notificationSettings", {
       userId,
     });

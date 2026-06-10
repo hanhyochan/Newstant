@@ -1,4 +1,4 @@
-import { mockCurrentUserId } from "../mock-current-user";
+import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type {
@@ -10,7 +10,7 @@ import type {
 } from "./types";
 
 export const settingsApi = {
-  async getUserNewsViewTimes(userId = mockCurrentUserId) {
+  async getUserNewsViewTimes(userId = currentUserId) {
     const settings = await apiClient.get<UserNewsViewTime[]>("/userNewsViewTimes", {
       userId,
     });
@@ -37,7 +37,7 @@ export const settingsApi = {
       updatedAt: createTimestamp(),
     });
   },
-  getBlockedKeywords(userId = mockCurrentUserId) {
+  getBlockedKeywords(userId = currentUserId) {
     return apiClient.get<BlockedKeywordPreference[]>("/blockedKeywordSettings", {
       userId,
       _sort: "createdAt",

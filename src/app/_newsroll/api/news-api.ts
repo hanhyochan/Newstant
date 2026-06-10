@@ -1,4 +1,4 @@
-import { mockCurrentUserId } from "../mock-current-user";
+import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type {
@@ -39,7 +39,7 @@ export const newsApi = {
     }));
   },
   getNewsDetail,
-  async getNewsReaction(newsId: string, userId = mockCurrentUserId) {
+  async getNewsReaction(newsId: string, userId = currentUserId) {
     const reactions = await apiClient.get<ArticleReaction[]>("/articleReactions", {
       newsId,
       userId,
@@ -77,7 +77,7 @@ export const newsApi = {
       viewCount: news.viewCount + 1,
     });
   },
-  getRecentNewsViews(userId = mockCurrentUserId) {
+  getRecentNewsViews(userId = currentUserId) {
     return apiClient.get<RecentNewsView[]>("/recentNewsViews", {
       userId,
       _sort: "viewedAt",

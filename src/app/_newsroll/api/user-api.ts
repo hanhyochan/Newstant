@@ -1,13 +1,13 @@
-import { mockCurrentUserId } from "../mock-current-user";
+import { currentUserId } from "../auth/current-user";
 import { createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type { User, UserPreference } from "./types";
 
 export const userApi = {
-  getCurrentUser(userId = mockCurrentUserId) {
+  getCurrentUser(userId = currentUserId) {
     return apiClient.get<User>(`/users/${userId}`);
   },
-  getUserPreferences(userId = mockCurrentUserId) {
+  getUserPreferences(userId = currentUserId) {
     return apiClient.get<UserPreference[]>("/userPreferences", {
       userId,
     });
