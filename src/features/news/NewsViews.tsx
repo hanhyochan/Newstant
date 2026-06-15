@@ -145,7 +145,6 @@ export type HomeArticle = {
   pressName?: string;
   reporterName?: string;
   title: string;
-  viewCount?: number;
 };
 type BreakingNewsItem = {
   article: HomeArticle;
@@ -277,7 +276,6 @@ export function getHomeArticleFromNews(item: NewsListItem, index: number): HomeA
     pressName: item.press?.name,
     reporterName: item.reporterName,
     title: item.title,
-    viewCount: item.viewCount,
   };
 }
 
@@ -800,15 +798,6 @@ export function QuickMenuDrawer({
               </button>
             </Fragment>
           ))}
-          <NewsRollDivider className="divider_mySection" />
-          <button
-            aria-label="로그아웃"
-            className="btn_quickMenuLogout"
-            onClick={onLogout}
-            type="button"
-          >
-            로그아웃
-          </button>
         </div>
         <button
           aria-label="로그아웃"
@@ -823,38 +812,18 @@ export function QuickMenuDrawer({
   );
 }
 
-function NewsViewCount({
-  className = "newsroll_viewCount",
-  count = 132,
-}: {
-  className?: string;
-  count?: number;
-}) {
-  return (
-    <span className={className} aria-label="조회수">
-      <i className="newsroll_all_stat_icon_eye" aria-hidden="true" />
-      {count.toLocaleString("ko-KR")}
-    </span>
-  );
-}
-
 function HomeArticleMeta({
   className = "newsroll_article_meta",
   date,
   dateTime = defaultNewsDateTime,
-  showViewCount = true,
-  viewCount,
 }: {
   className?: string;
   date: string;
   dateTime?: string;
-  showViewCount?: boolean;
-  viewCount?: number;
 }) {
   return (
     <p className={className}>
       <NewsCreatedTime dateTime={dateTime}>{date}</NewsCreatedTime>
-      {showViewCount ? <NewsViewCount count={viewCount} /> : null}
     </p>
   );
 }
@@ -1184,7 +1153,7 @@ function ArticleGuideOptionButton({
       {isBinary ? (
         <img
           alt=""
-          className="img_articleGuideBinaryIcon"
+          className="newsroll_icon_image img_articleGuideBinaryIcon"
           src={label === binaryGuideOptions[0] ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"}
         />
       ) : null}
@@ -2735,7 +2704,6 @@ function HomeReelCard({
   const [articleReactionCounts, setArticleReactionCounts] = useState<
     Record<ReactionValue, number>
   >({ ...emptyArticleReactionCounts });
-  const [visibleViewCount, setVisibleViewCount] = useState(article.viewCount);
   const cardRef = useRef<HTMLElement>(null);
   const hasTrackedViewRef = useRef(false);
   const numericIndex = typeof index === "number" ? index : 0;
@@ -2797,8 +2765,7 @@ function HomeReelCard({
 
   useEffect(() => {
     hasTrackedViewRef.current = false;
-    setVisibleViewCount(article.viewCount);
-  }, [article.id, article.viewCount]);
+  }, [article.id]);
 
   useEffect(() => {
     if (!article.id || hasTrackedViewRef.current) {
@@ -2818,9 +2785,7 @@ function HomeReelCard({
           })
         : Promise.resolve(undefined);
 
-      Promise.all([newsApi.increaseNewsViewCount(article.id), recentViewRequest])
-        .then(([nextArticle]) => setVisibleViewCount(nextArticle.viewCount))
-        .catch(() => undefined);
+      recentViewRequest.catch(() => undefined);
     }
 
     if (!framed) {
@@ -2944,22 +2909,25 @@ function HomeReelCard({
       tabIndex={0}
     >
       <div className="wrapper_articleSummary">
-        <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
+        <div className="wrapper_articleKicker">
+          <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
+        </div>
         <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
-        <HomeArticleMeta
-          date={article.date}
-          dateTime={article.dateTime}
-          viewCount={visibleViewCount}
-        />
+        <div className="wrapper_articleMetaActions">
+          <HomeArticleMeta
+            date={article.date}
+            dateTime={article.dateTime}
+          />
+          <ArticleActionButtons
+            isBookmarked={isBookmarked}
+            isShared={isShared}
+            onBookmark={() => {
+              void toggleBookmark();
+            }}
+            onShare={() => setIsShared((current) => !current)}
+          />
+        </div>
       </div>
-      <ArticleActionButtons
-        isBookmarked={isBookmarked}
-        isShared={isShared}
-        onBookmark={() => {
-          void toggleBookmark();
-        }}
-        onShare={() => setIsShared((current) => !current)}
-      />
       <img alt={article.imageAlt} src={article.image} />
       <p className="text_articleBody">{article.body ?? articleBody}</p>
 
@@ -3317,6 +3285,7 @@ export function HomeView({
             ) : hasArticles ? (
               visibleArticles.map((article) => (
                 <NewsBlockItem
+                  categoryLabel={article.category}
                   dateLabel={article.date}
                   dateTime={article.dateTime ?? defaultNewsDateTime}
                   imageAlt={article.imageAlt}
@@ -3342,7 +3311,6 @@ function AllNewsMeta() {
   return (
     <p className="newsroll_all_meta">
       <NewsCreatedTime />
-      <NewsViewCount className="newsroll_all_views" />
     </p>
   );
 }
@@ -3375,7 +3343,7 @@ function AllNewsMoreButton({
       <span>{expanded ? expandedLabel : collapsedLabel}</span>
       {showIcon ? (
         <img
-          className="newsroll_all_more_icon"
+          className="newsroll_icon_image newsroll_all_more_icon"
           src="/icons/icon_chevron_right.svg"
           alt=""
           aria-hidden="true"

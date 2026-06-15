@@ -715,27 +715,6 @@
             line-height: var(--line-height-24);
         }
 
-        .newsroll_all_views {
-            display: inline-flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: var(--spacing-gap-horizontal-8);
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .newsroll_all_stat_icon_eye {
-            width: 24px;
-            height: 24px;
-            flex: 0 0 24px;
-        }
-
-        .newsroll_all_stat_icon_comment {
-            width: 24px;
-            height: 24px;
-            flex: 0 0 24px;
-        }
-
         .newsroll_all_press_tabs {
             gap: var(--spacing-gap-horizontal-8);
             align-items: center;
@@ -841,52 +820,6 @@
             border-radius: var(--radius-8);
             object-fit: cover;
         }
-
-        .newsroll_all_stat_icon_eye,
-        .newsroll_all_stat_icon_comment {
-            position: relative;
-            background: transparent;
-        }
-
-        .newsroll_all_stat_icon_eye::before {
-            content: '';
-            position: absolute;
-            inset: 1px 0;
-            border-radius: 50%;
-            background: currentColor;
-        }
-
-        .newsroll_all_stat_icon_eye::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: var(--spacing-padding-horizontal-8);
-            height: var(--spacing-padding-vertical-8);
-            border-radius: var(--radius-full);
-            background: var(--color-background-elevated-normal);
-            transform: translate(-50%, -50%);
-        }
-
-        .newsroll_all_stat_icon_comment::before {
-            content: '';
-            position: absolute;
-            inset: 1px 0 3px;
-            border-radius: var(--radius-full);
-            background: var(--color-neutral-60);
-        }
-
-        .newsroll_all_stat_icon_comment::after {
-            content: '';
-            position: absolute;
-            left: 7px;
-            bottom: 0;
-            width: var(--spacing-padding-horizontal-8);
-            height: var(--spacing-padding-vertical-8);
-            background: var(--color-neutral-60);
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-
 
     /* typography: display */
     .type-display_1 {

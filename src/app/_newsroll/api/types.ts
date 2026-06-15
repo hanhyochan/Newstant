@@ -19,7 +19,6 @@ export type News = {
   imageUrl: string;
   reporterName: string;
   publishedAt: string;
-  viewCount: number;
 };
 
 export type NewsListItem = News & {

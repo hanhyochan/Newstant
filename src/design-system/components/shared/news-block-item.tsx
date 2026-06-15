@@ -1,7 +1,10 @@
 import type { MouseEventHandler } from "react";
 
+import { ChipLabel } from "../chip/chip-label";
+
 export type NewsBlockItemProps = {
   ariaPressed?: boolean;
+  categoryLabel?: string;
   dateLabel: string;
   dateTime?: string;
   imageAlt?: string;
@@ -13,6 +16,7 @@ export type NewsBlockItemProps = {
 
 export function NewsBlockItem({
   ariaPressed,
+  categoryLabel,
   dateLabel,
   dateTime,
   imageAlt = "",
@@ -28,6 +32,11 @@ export function NewsBlockItem({
       onClick={onClick}
       type="button"
     >
+      {categoryLabel ? (
+        <span className="newsroll_blockKicker">
+          <ChipLabel kind="articleCategory">{categoryLabel}</ChipLabel>
+        </span>
+      ) : null}
       <img alt={imageAlt} src={imageSrc} />
       <strong>{title}</strong>
       {showDate ? (

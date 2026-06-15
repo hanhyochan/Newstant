@@ -70,13 +70,6 @@ export const newsApi = {
   removeNewsReaction(reactionId: string) {
     return apiClient.delete(`/articleReactions/${reactionId}`);
   },
-  async increaseNewsViewCount(newsId: string) {
-    const news = await getNewsDetail(newsId);
-
-    return apiClient.patch<News, Pick<News, "viewCount">>(`/news/${newsId}`, {
-      viewCount: news.viewCount + 1,
-    });
-  },
   getRecentNewsViews(userId = currentUserId) {
     return apiClient.get<RecentNewsView[]>("/recentNewsViews", {
       userId,
