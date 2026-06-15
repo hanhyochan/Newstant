@@ -49,12 +49,18 @@ function AuthValidationError({
 }
 
 export function LoginView({
-  onNext,
-  onPrevious,
+  isSubmitting = false,
+  loginError,
+  onLogin,
   onSignup,
 }: {
-  onNext: () => void;
-  onPrevious: () => void;
+  isSubmitting?: boolean;
+  loginError?: string;
+  onLogin: (input: {
+    email: string;
+    isAutoLogin: boolean;
+    password: string;
+  }) => Promise<void> | void;
   onSignup: () => void;
 }) {
   const [email, setEmail] = useState("");
@@ -68,7 +74,7 @@ export function LoginView({
   const loginPasswordErrorId = "login-password-error";
 
   return (
-    <AuthLayout ariaLabel="로그인" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="로그인">
       <div className="wrapper_loginContent">
         <div className="wrapper_loginHeader">
           <p className="text_loginEyebrow">NewsRoll</p>
@@ -77,7 +83,13 @@ export function LoginView({
 
         <form
           className="form_login"
-          onSubmit={(event) => event.preventDefault()}
+          onSubmit={(event) => {
+            event.preventDefault();
+
+            if (isLoginReady && !isSubmitting) {
+              onLogin({ email, isAutoLogin, password });
+            }
+          }}
         >
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
@@ -132,7 +144,7 @@ export function LoginView({
             </div>
             <Button
               className="btn_loginSubmit"
-              disabled={!isLoginReady}
+              disabled={!isLoginReady || isSubmitting}
               radius="rounded"
               size="large"
               type="submit"
@@ -140,6 +152,7 @@ export function LoginView({
             >
               로그인
             </Button>
+            <AuthValidationError id="login-submit-error" message={loginError} />
             <div className="wrapper_loginActions">
               <NewsRollSmallCheckField
                 checked={isAutoLogin}
@@ -178,32 +191,12 @@ export function LoginView({
 function AuthLayout({
   ariaLabel,
   children,
-  onNext,
-  onPrevious,
 }: {
   ariaLabel: string;
   children: ReactNode;
-  onNext: () => void;
-  onPrevious: () => void;
 }) {
   return (
     <section className="container_authLayout" aria-label={ariaLabel}>
-      <button
-        aria-label="이전 임시 화면 보기"
-        className="btn_loginPrevious"
-        onClick={onPrevious}
-        type="button"
-      >
-        <span aria-hidden="true">&lt;-</span>
-      </button>
-      <button
-        aria-label="다음 임시 화면 보기"
-        className="btn_loginNext"
-        onClick={onNext}
-        type="button"
-      >
-        <span aria-hidden="true">-&gt;</span>
-      </button>
       {children}
     </section>
   );
@@ -705,13 +698,11 @@ export function SignupAgreementView({
   isTextLarge,
   onNext,
   onOpenMenu,
-  onPrevious,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
-  onNext: () => void;
+  onNext: (agreements: Record<SignupAgreementKey, boolean>) => void;
   onOpenMenu: () => void;
-  onPrevious: () => void;
   onToggleTextSize: () => void;
 }) {
   const [agreements, setAgreements] = useState<Record<SignupAgreementKey, boolean>>({
@@ -780,7 +771,7 @@ export function SignupAgreementView({
   }
 
   return (
-    <AuthLayout ariaLabel="회원가입 동의" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="회원가입 동의">
       <div className="wrapper_loginContent wrapper_signupAgreementContent">
         <div className="wrapper_loginHeader">
           <p className="text_authStepLabel">Create Account</p>
@@ -826,7 +817,7 @@ export function SignupAgreementView({
           <Button
             className="btn_signupAgreementNext"
             disabled={!isAllRequiredChecked}
-            onClick={onNext}
+            onClick={() => onNext(agreements)}
             radius="rounded"
             size="large"
             variant="filled"
@@ -841,14 +832,13 @@ export function SignupAgreementView({
 
 export function SignupEmailView({
   onNext,
-  onPrevious,
 }: {
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext: (email: string) => void;
 }) {
   const verificationTimerRef = useRef<number | null>(null);
   const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
+  const [isVerificationConfirmed, setIsVerificationConfirmed] = useState(false);
   const [isVerificationSent, setIsVerificationSent] = useState(false);
   const [remainingVerificationSeconds, setRemainingVerificationSeconds] = useState(0);
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
@@ -856,8 +846,7 @@ export function SignupEmailView({
     verificationCodeSchema,
     verificationCode,
   );
-  const isEmailReady =
-    emailValidation.isValid && isVerificationSent && verificationCodeValidation.isValid;
+  const isEmailReady = emailValidation.isValid && isVerificationConfirmed;
   const signupEmailErrorId = "signup-email-error";
   const signupVerificationCodeErrorId = "signup-verification-code-error";
   const formattedVerificationTime = `${Math.floor(
@@ -871,6 +860,7 @@ export function SignupEmailView({
     }
 
     setIsVerificationSent(false);
+    setIsVerificationConfirmed(false);
     setRemainingVerificationSeconds(0);
   }
 
@@ -880,8 +870,17 @@ export function SignupEmailView({
     }
 
     setVerificationCode("");
+    setIsVerificationConfirmed(false);
     setIsVerificationSent(true);
     setRemainingVerificationSeconds(180);
+  }
+
+  function confirmVerificationCode() {
+    verificationCodeValidation.markTouched();
+
+    if (verificationCodeValidation.isValid) {
+      setIsVerificationConfirmed(true);
+    }
   }
 
   useEffect(() => {
@@ -917,7 +916,7 @@ export function SignupEmailView({
   );
 
   return (
-    <AuthLayout ariaLabel="회원가입 이메일 인증" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="회원가입 이메일 인증">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
           <p className="text_authStepLabel">Step 1</p>
@@ -932,7 +931,7 @@ export function SignupEmailView({
           onSubmit={(event) => {
             event.preventDefault();
             if (isEmailReady) {
-              onNext();
+              onNext(email.trim());
             }
           }}
         >
@@ -970,33 +969,53 @@ export function SignupEmailView({
             {isVerificationSent ? (
               <div className="wrapper_authField">
                 <div className="wrapper_signupVerificationCode">
-                  <TransparentTextInput
-                    aria-describedby={
-                      verificationCodeValidation.errorMessage
-                        ? signupVerificationCodeErrorId
-                        : undefined
+                  <div className="wrapper_signupVerificationCodeInput">
+                    <TransparentTextInput
+                      aria-describedby={
+                        verificationCodeValidation.errorMessage
+                          ? signupVerificationCodeErrorId
+                          : undefined
+                      }
+                      aria-invalid={Boolean(verificationCodeValidation.errorMessage)}
+                      aria-label="이메일 인증번호 6자리 입력"
+                      inputMode="numeric"
+                      maxLength={6}
+                      onBlur={verificationCodeValidation.markTouched}
+                      onChange={(event) => {
+                        setVerificationCode(event.currentTarget.value);
+                        setIsVerificationConfirmed(false);
+                      }}
+                      placeholder="인증번호 6자리"
+                      state={
+                        verificationCodeValidation.errorMessage ? "error" : "default"
+                      }
+                      type="text"
+                      value={verificationCode}
+                    />
+                    <span className="text_signupVerificationTimer">
+                      {formattedVerificationTime}
+                    </span>
+                  </div>
+                  <Button
+                    className="btn_commentMineFilter btn_signupVerificationSend"
+                    disabled={
+                      !verificationCodeValidation.isValid || isVerificationConfirmed
                     }
-                    aria-invalid={Boolean(verificationCodeValidation.errorMessage)}
-                    aria-label="이메일 인증번호 6자리 입력"
-                    inputMode="numeric"
-                    maxLength={6}
-                    onBlur={verificationCodeValidation.markTouched}
-                    onChange={(event) => setVerificationCode(event.currentTarget.value)}
-                    placeholder="인증번호 6자리"
-                    state={
-                      verificationCodeValidation.errorMessage ? "error" : "default"
-                    }
-                    type="text"
-                    value={verificationCode}
-                  />
-                  <span className="text_signupVerificationTimer">
-                    {formattedVerificationTime}
-                  </span>
+                    onClick={confirmVerificationCode}
+                    type="button"
+                  >
+                    인증하기
+                  </Button>
                 </div>
                 <AuthValidationError
                   id={signupVerificationCodeErrorId}
                   message={verificationCodeValidation.errorMessage}
                 />
+                {isVerificationConfirmed ? (
+                  <p className="text_authValidation" data-state="success">
+                    인증이 완료되었습니다.
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -1020,21 +1039,22 @@ export function SignupEmailView({
 const reservedSignupNicknames = ["콩콩이", "홍길동", "관리자", "뉴스롤"];
 
 export function SignupNicknameView({
+  onCheckNickname,
   onNext,
-  onPrevious,
 }: {
-  onNext: () => void;
-  onPrevious: () => void;
+  onCheckNickname: (nickname: string) => Promise<boolean>;
+  onNext: (nickname: string) => void;
 }) {
   const [nickname, setNickname] = useState("");
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+  const [isNicknameChecking, setIsNicknameChecking] = useState(false);
   const [nicknameCheckMessage, setNicknameCheckMessage] = useState("");
   const nicknameValidation = useZodFieldValidation(signupNicknameSchema, nickname);
   const isNicknameReady = nicknameValidation.isValid && isNicknameChecked;
   const signupNicknameErrorId = "signup-nickname-error";
   const signupNicknameCheckId = "signup-nickname-check";
 
-  function checkNicknameDuplicate() {
+  async function checkNicknameDuplicate() {
     nicknameValidation.markTouched();
 
     if (!nicknameValidation.isValid) {
@@ -1047,10 +1067,20 @@ export function SignupNicknameView({
     const isDuplicated = reservedSignupNicknames.some(
       (item) => item.toLocaleLowerCase("ko-KR") === normalizedNickname,
     );
+    setIsNicknameChecking(true);
 
-    setIsNicknameChecked(!isDuplicated);
+    let isAvailable = false;
+
+    try {
+      isAvailable = isDuplicated ? false : await onCheckNickname(nickname.trim());
+    } catch {
+      isAvailable = false;
+    }
+
+    setIsNicknameChecking(false);
+    setIsNicknameChecked(isAvailable);
     setNicknameCheckMessage(
-      isDuplicated
+      !isAvailable
         ? "이미 사용 중인 닉네임이에요."
         : "사용 가능한 닉네임이에요.",
     );
@@ -1063,7 +1093,7 @@ export function SignupNicknameView({
   }
 
   return (
-    <AuthLayout ariaLabel="회원가입 닉네임 설정" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="회원가입 닉네임 설정">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
           <p className="text_authStepLabel">Step 2</p>
@@ -1078,7 +1108,7 @@ export function SignupNicknameView({
           onSubmit={(event) => {
             event.preventDefault();
             if (isNicknameReady) {
-              onNext();
+              onNext(nickname.trim());
             }
           }}
         >
@@ -1105,7 +1135,7 @@ export function SignupNicknameView({
                 />
                 <Button
                   className="btn_commentMineFilter btn_signupVerificationSend"
-                  disabled={!nicknameValidation.isValid}
+                  disabled={!nicknameValidation.isValid || isNicknameChecking}
                   onClick={checkNicknameDuplicate}
                   type="button"
                 >
@@ -1146,10 +1176,8 @@ export function SignupNicknameView({
 
 export function SignupPasswordView({
   onNext,
-  onPrevious,
 }: {
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext: (password: string) => void;
 }) {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -1170,7 +1198,7 @@ export function SignupPasswordView({
   const signupPasswordConfirmErrorId = "signup-password-confirm-error";
 
   return (
-    <AuthLayout ariaLabel="회원가입 비밀번호 설정" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="회원가입 비밀번호 설정">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
           <p className="text_authStepLabel">Step 3</p>
@@ -1185,7 +1213,7 @@ export function SignupPasswordView({
           onSubmit={(event) => {
             event.preventDefault();
             if (isPasswordReady) {
-              onNext();
+              onNext(password);
             }
           }}
         >
@@ -1309,15 +1337,13 @@ const signupCategoryItems: Array<{ id: SignupCategoryId; label: string }> = [
 
 export function SignupAgeView({
   onNext,
-  onPrevious,
 }: {
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext: (ageId: SignupAgeId) => void;
 }) {
   const [selectedAge, setSelectedAge] = useState<SignupAgeId | null>(null);
 
   return (
-    <AuthLayout ariaLabel="나의 연령대 선택" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="나의 연령대 선택">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
           <p className="text_authStepLabel">Step 4</p>
@@ -1332,7 +1358,7 @@ export function SignupAgeView({
           onSubmit={(event) => {
             event.preventDefault();
             if (selectedAge) {
-              onNext();
+              onNext(selectedAge);
             }
           }}
         >
@@ -1363,11 +1389,13 @@ export function SignupAgeView({
 }
 
 export function SignupCategoryView({
+  isSubmitting = false,
+  submitError,
   onNext,
-  onPrevious,
 }: {
-  onNext: () => void;
-  onPrevious: () => void;
+  isSubmitting?: boolean;
+  submitError?: string;
+  onNext: (categoryIds: SignupCategoryId[]) => Promise<void> | void;
 }) {
   const [selectedCategories, setSelectedCategories] = useState<SignupCategoryId[]>([]);
   const tabValue = selectedCategories[0] ?? signupCategoryItems[0].id;
@@ -1381,7 +1409,7 @@ export function SignupCategoryView({
   }
 
   return (
-    <AuthLayout ariaLabel="관심 카테고리 선택" onNext={onNext} onPrevious={onPrevious}>
+    <AuthLayout ariaLabel="관심 카테고리 선택">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
           <p className="text_authStepLabel">Step 5</p>
@@ -1395,8 +1423,8 @@ export function SignupCategoryView({
           className="form_signupStep"
           onSubmit={(event) => {
             event.preventDefault();
-            if (selectedCategories.length > 0) {
-              onNext();
+            if (selectedCategories.length > 0 && !isSubmitting) {
+              onNext(selectedCategories);
             }
           }}
         >
@@ -1413,7 +1441,7 @@ export function SignupCategoryView({
 
           <Button
             className="btn_signupStepNext"
-            disabled={selectedCategories.length === 0}
+            disabled={selectedCategories.length === 0 || isSubmitting}
             radius="rounded"
             size="large"
             type="submit"
@@ -1421,6 +1449,7 @@ export function SignupCategoryView({
           >
             시작하기
           </Button>
+          <AuthValidationError id="signup-submit-error" message={submitError} />
         </form>
       </div>
     </AuthLayout>

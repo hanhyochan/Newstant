@@ -18,7 +18,6 @@ import {
 } from "@/design-system/templates";
 import {
   getNextAuthView,
-  getPreviousAuthView,
   isAuthView,
 } from "@/features/auth/auth-flow";
 import {
@@ -54,10 +53,16 @@ import { SearchView } from "@/features/search/SearchView";
 import {
   notificationApi,
   settingsApi,
+  userApi,
   type BlockedKeywordPreference,
   type NotificationSettings,
 } from "./_newsroll/api";
-import { currentUserId } from "./_newsroll/auth/current-user";
+import {
+  clearCurrentUserSession,
+  currentUserId,
+  hydrateCurrentUserSession,
+  setCurrentUserSession,
+} from "./_newsroll/auth/current-user";
 
 type View =
   | Tab
@@ -69,6 +74,16 @@ type View =
   | "signupPassword"
   | "signupAge"
   | "signupCategory";
+
+type SignupDraft = {
+  ageGroupId?: string;
+  agreementIds?: string[];
+  categoryIds?: string[];
+  email?: string;
+  marketingAgreed?: boolean;
+  nickname?: string;
+  password?: string;
+};
 
 function normalizeBlockedKeyword(value: string) {
   return value.trim().toLocaleLowerCase("ko-KR");
@@ -122,13 +137,22 @@ function ActiveView({
   isDarkMode,
   isTextLarge,
   isAllNewsBreakingEntry = false,
+  authError,
+  isAuthSubmitting,
   onAddBlockedKeyword,
+  onCheckSignupNickname,
   onDarkModeChange,
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
   onCloseSearch,
-  onLoginNext,
-  onLoginPrevious,
+  onLogin,
+  onSignupAgeNext,
+  onSignupAgreementNext,
+  onSignupCategoryNext,
+  onSignupEmailNext,
+  onSignupNicknameNext,
+  onSignupPasswordNext,
+  onSignupStart,
   onOpenAllNews,
   onOpenMenu,
   onOpenSearch,
@@ -145,13 +169,26 @@ function ActiveView({
   isDarkMode: boolean;
   isTextLarge: boolean;
   isAllNewsBreakingEntry?: boolean;
+  authError?: string;
+  isAuthSubmitting: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
+  onCheckSignupNickname: (nickname: string) => Promise<boolean>;
   onDarkModeChange: (isDarkMode: boolean) => void;
   onDeleteBlockedKeyword: (keyword: string) => void;
   onToggleBlockedKeyword: (keyword: string) => void;
   onCloseSearch: () => void;
-  onLoginNext: () => void;
-  onLoginPrevious: () => void;
+  onLogin: (input: {
+    email: string;
+    isAutoLogin: boolean;
+    password: string;
+  }) => Promise<void>;
+  onSignupAgeNext: (ageId: string) => void;
+  onSignupAgreementNext: (agreements: Record<string, boolean>) => void;
+  onSignupCategoryNext: (categoryIds: string[]) => Promise<void>;
+  onSignupEmailNext: (email: string) => void;
+  onSignupNicknameNext: (nickname: string) => void;
+  onSignupPasswordNext: (password: string) => void;
+  onSignupStart: () => void;
   onOpenAllNews: () => void;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
@@ -164,9 +201,10 @@ function ActiveView({
   if (view === "login") {
     return (
       <LoginView
-        onNext={onLoginNext}
-        onPrevious={onLoginPrevious}
-        onSignup={onLoginNext}
+        isSubmitting={isAuthSubmitting}
+        loginError={authError}
+        onLogin={onLogin}
+        onSignup={onSignupStart}
       />
     );
   }
@@ -175,35 +213,41 @@ function ActiveView({
     return (
       <SignupAgreementView
         isTextLarge={isTextLarge}
-        onNext={onLoginNext}
+        onNext={onSignupAgreementNext}
         onOpenMenu={onOpenMenu}
-        onPrevious={onLoginPrevious}
         onToggleTextSize={onToggleTextSize}
       />
     );
   }
 
   if (view === "signupEmail") {
-    return <SignupEmailView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+    return <SignupEmailView onNext={onSignupEmailNext} />;
   }
 
   if (view === "signupNickname") {
     return (
-      <SignupNicknameView onNext={onLoginNext} onPrevious={onLoginPrevious} />
+      <SignupNicknameView
+        onCheckNickname={onCheckSignupNickname}
+        onNext={onSignupNicknameNext}
+      />
     );
   }
 
   if (view === "signupPassword") {
-    return <SignupPasswordView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+    return <SignupPasswordView onNext={onSignupPasswordNext} />;
   }
 
   if (view === "signupAge") {
-    return <SignupAgeView onNext={onLoginNext} onPrevious={onLoginPrevious} />;
+    return <SignupAgeView onNext={onSignupAgeNext} />;
   }
 
   if (view === "signupCategory") {
     return (
-      <SignupCategoryView onNext={onLoginNext} onPrevious={onLoginPrevious} />
+      <SignupCategoryView
+        isSubmitting={isAuthSubmitting}
+        onNext={onSignupCategoryNext}
+        submitError={authError}
+      />
     );
   }
 
@@ -312,6 +356,9 @@ export function NewsHomeScreen() {
   const [quickMenuRequest, setQuickMenuRequest] =
     useState<QuickMenuRequest | null>(null);
   const [isTextLarge, setIsTextLarge] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
+  const [signupDraft, setSignupDraft] = useState<SignupDraft>({});
   const [bodySearchSelection, setBodySearchSelection] =
     useState<BodySearchSelection | null>(null);
   const [blockedKeywordSettings, setBlockedKeywordSettings] = useState<
@@ -342,29 +389,36 @@ export function NewsHomeScreen() {
     resetNewsRollViewport();
   }, [activeView, activeViewResetKey]);
 
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadRootSettings() {
+  const loadRootSettings = useCallback(
+    async (userId = currentUserId, options: { ignore?: () => boolean } = {}) => {
       const [keywords, notifications] = await Promise.all([
-        settingsApi.getBlockedKeywords(currentUserId),
-        notificationApi.getNotificationSettings(currentUserId),
+        settingsApi.getBlockedKeywords(userId),
+        notificationApi.getNotificationSettings(userId),
       ]);
 
-      if (ignore) {
+      if (options.ignore?.()) {
         return;
       }
 
       setBlockedKeywordSettings(getBlockedKeywordSettingsFromApi(keywords));
       setIsDarkMode(notifications?.darkMode ?? false);
-    }
+    },
+    [],
+  );
 
-    loadRootSettings().catch(() => undefined);
+  useEffect(() => {
+    let ignore = false;
+    const storedUser = hydrateCurrentUserSession();
+
+    if (storedUser) {
+      setActiveView("home");
+      loadRootSettings(storedUser.id, { ignore: () => ignore }).catch(() => undefined);
+    }
 
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [loadRootSettings]);
 
   useEffect(() => {
     return () => {
@@ -473,12 +527,176 @@ export function NewsHomeScreen() {
     });
   }
 
-  function openPreviousAuthStep() {
-    setActiveView((current) => {
-      return isAuthView(current) && current !== "login"
-        ? getPreviousAuthView(current)
-        : "home";
-    });
+  function getSignupAgeGroupId(ageId: string) {
+    if (ageId === "teens") {
+      return "minor";
+    }
+
+    if (ageId === "sixties") {
+      return "senior";
+    }
+
+    if (ageId === "twenties") {
+      return "youth";
+    }
+
+    return "middle";
+  }
+
+  function getSignupCategoryId(categoryId: string) {
+    return categoryId === "tech" ? "science" : categoryId;
+  }
+
+  async function checkSignupNickname(nickname: string) {
+    const user = await userApi.getUserByNickname(nickname);
+
+    return !user;
+  }
+
+  async function loginWithEmail(input: {
+    email: string;
+    isAutoLogin: boolean;
+    password: string;
+  }) {
+    setAuthError("");
+    setIsAuthSubmitting(true);
+
+    try {
+      const user = await userApi.login({
+        email: input.email,
+        password: input.password,
+      });
+
+      if (!user) {
+        setAuthError("이메일 또는 비밀번호를 확인해 주세요.");
+        return;
+      }
+
+      setCurrentUserSession(user, { remember: input.isAutoLogin });
+      await loadRootSettings(user.id).catch(() => undefined);
+      setActiveView("home");
+    } catch {
+      setAuthError("로그인 정보를 확인하지 못했습니다.");
+    } finally {
+      setIsAuthSubmitting(false);
+    }
+  }
+
+  function startSignup() {
+    setAuthError("");
+    setSignupDraft({});
+    setActiveView("signupAgreement");
+  }
+
+  function moveToNextAuthStepWithDraft(nextDraft: SignupDraft) {
+    setAuthError("");
+    setSignupDraft((current) => ({
+      ...current,
+      ...nextDraft,
+    }));
+    openNextAuthStep();
+  }
+
+  async function ensureInitialUserSettings(
+    userId: string,
+    input: {
+      ageGroupId: string;
+      categoryIds: string[];
+    },
+  ) {
+    const [preferences, notifications] = await Promise.all([
+      userApi.getUserPreferences(userId).catch(() => []),
+      notificationApi.getNotificationSettings(userId).catch(() => null),
+    ]);
+
+    const tasks: Array<Promise<unknown>> = [];
+
+    if (preferences.length === 0) {
+      tasks.push(
+        userApi.createUserPreferences({
+          ageGroupId: input.ageGroupId,
+          categoryIds: input.categoryIds,
+          pressIds: [],
+          userId,
+        }),
+      );
+    }
+
+    if (!notifications) {
+      tasks.push(
+        notificationApi.createNotificationSettings({
+          userId,
+        }),
+      );
+    }
+
+    await Promise.all(tasks);
+  }
+
+  async function completeSignup(categoryIds: string[]) {
+    const nextDraft = {
+      ...signupDraft,
+      categoryIds: categoryIds.map(getSignupCategoryId),
+    };
+
+    if (
+      !nextDraft.email ||
+      !nextDraft.nickname ||
+      !nextDraft.password ||
+      !nextDraft.ageGroupId ||
+      !nextDraft.agreementIds
+    ) {
+      setAuthError("회원가입 정보를 다시 확인해 주세요.");
+      return;
+    }
+
+    setAuthError("");
+    setIsAuthSubmitting(true);
+
+    try {
+      const existingUser = await userApi.getUserByEmail(nextDraft.email);
+
+      if (existingUser) {
+        if (existingUser.password !== nextDraft.password) {
+          setAuthError("이미 가입된 이메일입니다.");
+          return;
+        }
+
+        await ensureInitialUserSettings(existingUser.id, {
+          ageGroupId: nextDraft.ageGroupId,
+          categoryIds: nextDraft.categoryIds ?? [],
+        });
+        setCurrentUserSession(existingUser, { remember: true });
+        await loadRootSettings(existingUser.id).catch(() => undefined);
+        setSignupDraft({});
+        setActiveView("home");
+        return;
+      }
+
+      const user = await userApi.createUser({
+        ageGroupId: nextDraft.ageGroupId,
+        agreementIds: nextDraft.agreementIds,
+        categoryIds: nextDraft.categoryIds ?? [],
+        email: nextDraft.email,
+        marketingAgreed: Boolean(nextDraft.marketingAgreed),
+        nickname: nextDraft.nickname,
+        password: nextDraft.password,
+      });
+
+      await ensureInitialUserSettings(user.id, {
+        ageGroupId: user.ageGroupId,
+        categoryIds: nextDraft.categoryIds ?? [],
+      });
+
+      setCurrentUserSession(user, { remember: true });
+      await loadRootSettings(user.id).catch(() => undefined);
+      setSignupDraft({});
+      setActiveView("home");
+    } catch {
+      setAuthError("회원가입 정보를 저장하지 못했습니다.");
+    } finally {
+      setIsAuthSubmitting(false);
+    }
   }
 
   function openQuickMenuTarget(target: QuickMenuTarget) {
@@ -513,6 +731,21 @@ export function NewsHomeScreen() {
       ...current,
       [returnView]: current[returnView] + 1,
     }));
+  }
+
+  function logout() {
+    clearCurrentUserSession();
+    setIsQuickMenuOpen(false);
+    setQuickMenuRequest(null);
+    setAuthError("");
+    setSignupDraft({});
+    setBlockedKeywordSettings([]);
+    setIsDarkMode(false);
+    setAllNewsEntryMotionClassName("");
+    setIsAllNewsBreakingEntry(false);
+    setBodySearchSelection(null);
+    setSearchBackView("home");
+    setActiveView("login");
   }
 
   function addBlockedKeyword(keyword: string) {
@@ -635,36 +868,61 @@ export function NewsHomeScreen() {
       <div className="newsroll_phone" aria-label="NewsRoll">
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
+          authError={authError}
           bodySearchSelection={bodySearchSelection}
           blockedKeywords={blockedKeywords}
           blockedKeywordSettings={blockedKeywordSettings}
           isDarkMode={isDarkMode}
           key={`${activeView}-${activeViewResetKey}`}
           isAllNewsBreakingEntry={isAllNewsBreakingEntry}
+          isAuthSubmitting={isAuthSubmitting}
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
+          onCheckSignupNickname={checkSignupNickname}
           onDarkModeChange={setIsDarkMode}
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
-          onLoginNext={openNextAuthStep}
-          onLoginPrevious={openPreviousAuthStep}
+          onLogin={loginWithEmail}
           onOpenAllNews={openBreakingNewsView}
           onOpenMenu={() => setIsQuickMenuOpen(true)}
           onOpenSearch={openSearch}
           onQuickMenuBack={returnFromQuickMenuTarget}
           onSelectSearchResult={openBodySearchResult}
+          onSignupAgeNext={(ageId) =>
+            moveToNextAuthStepWithDraft({
+              ageGroupId: getSignupAgeGroupId(ageId),
+            })
+          }
+          onSignupAgreementNext={(agreements) =>
+            moveToNextAuthStepWithDraft({
+              agreementIds: Object.entries(agreements)
+                .filter(([, isAgreed]) => isAgreed)
+                .map(([id]) => id),
+              marketingAgreed: Boolean(agreements.marketing),
+            })
+          }
+          onSignupCategoryNext={completeSignup}
+          onSignupEmailNext={(email) => moveToNextAuthStepWithDraft({ email })}
+          onSignupNicknameNext={(nickname) =>
+            moveToNextAuthStepWithDraft({ nickname })
+          }
+          onSignupPasswordNext={(password) =>
+            moveToNextAuthStepWithDraft({ password })
+          }
+          onSignupStart={startSignup}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
           quickMenuRequest={quickMenuRequest}
           view={activeView}
         />
+        <QuickMenuDrawer
+          isOpen={isQuickMenuOpen}
+          isDarkMode={isDarkMode}
+          onClose={() => setIsQuickMenuOpen(false)}
+          onLogout={logout}
+          onNavigate={openQuickMenuTarget}
+        />
       </div>
-      <QuickMenuDrawer
-        isOpen={isQuickMenuOpen}
-        isDarkMode={isDarkMode}
-        onClose={() => setIsQuickMenuOpen(false)}
-        onNavigate={openQuickMenuTarget}
-      />
 
       {activeView !== "search" &&
       activeView !== "login" &&

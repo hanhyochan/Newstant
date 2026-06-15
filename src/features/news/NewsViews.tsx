@@ -736,11 +736,13 @@ export function QuickMenuDrawer({
   isOpen,
   isDarkMode,
   onClose,
+  onLogout,
   onNavigate,
 }: {
   isOpen: boolean;
   isDarkMode: boolean;
   onClose: () => void;
+  onLogout: () => void;
   onNavigate: (target: QuickMenuTarget) => void;
 }) {
   useEffect(() => {
@@ -772,40 +774,52 @@ export function QuickMenuDrawer({
   ];
 
   return (
-    <ClientPortal>
-      <div
-        className={`container_quickMenuOverlay${isDarkMode ? " newsroll_dark" : ""}`}
-        onClick={onClose}
-        role="presentation"
+    <div
+      className={`container_quickMenuOverlay${isDarkMode ? " newsroll_dark" : ""}`}
+      onClick={onClose}
+      role="presentation"
+    >
+      <section
+        aria-label="퀵메뉴"
+        aria-modal="true"
+        className="container_quickMenuDrawer"
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
       >
-        <section
-          aria-label="퀵메뉴"
-          aria-modal="true"
-          className="container_quickMenuDrawer"
-          onClick={(event) => event.stopPropagation()}
-          role="dialog"
-        >
-          <div className="wrapper_quickMenuList">
-            {quickMenuItems.map((item, index) => (
-              <Fragment key={item.target}>
-                {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
-                <button
-                  className="btn_quickMenuItem"
-                  onClick={() => onNavigate(item.target)}
-                  type="button"
-                >
-                  <span className="text_mySettingLabel">{item.label}</span>
-                  <span className="icon_myChevron" aria-hidden="true" />
-                </button>
-              </Fragment>
-            ))}
-          </div>
-          <button className="btn_quickMenuLogout" type="button">
+        <div className="wrapper_quickMenuList">
+          {quickMenuItems.map((item, index) => (
+            <Fragment key={item.target}>
+              {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
+              <button
+                className="btn_quickMenuItem"
+                onClick={() => onNavigate(item.target)}
+                type="button"
+              >
+                <span className="text_mySettingLabel">{item.label}</span>
+                <span className="icon_myChevron" aria-hidden="true" />
+              </button>
+            </Fragment>
+          ))}
+          <NewsRollDivider className="divider_mySection" />
+          <button
+            aria-label="로그아웃"
+            className="btn_quickMenuLogout"
+            onClick={onLogout}
+            type="button"
+          >
             로그아웃
           </button>
-        </section>
-      </div>
-    </ClientPortal>
+        </div>
+        <button
+          aria-label="로그아웃"
+          className="btn_quickMenuLogout"
+          onClick={onLogout}
+          type="button"
+        >
+          로그아웃
+        </button>
+      </section>
+    </div>
   );
 }
 

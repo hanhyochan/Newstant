@@ -70,8 +70,12 @@ export type User = {
   id: string;
   nickname: string;
   email: string;
+  password?: string;
   ageGroupId: string;
+  agreementIds?: string[];
+  marketingAgreed?: boolean;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type UserPreference = {
@@ -81,6 +85,16 @@ export type UserPreference = {
   pressIds: string[];
   ageGroupId: string;
   updatedAt: string;
+};
+
+export type CreateUserInput = {
+  nickname: string;
+  email: string;
+  password: string;
+  ageGroupId: string;
+  agreementIds: string[];
+  categoryIds: string[];
+  marketingAgreed: boolean;
 };
 
 export type UserNewsViewTime = {

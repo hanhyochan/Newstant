@@ -23,9 +23,3 @@ export function getNextAuthView(currentView: AuthView) {
 
   return signupViewOrder[currentIndex + 1] ?? "home";
 }
-
-export function getPreviousAuthView(currentView: SignupView) {
-  const currentIndex = signupViewOrder.indexOf(currentView);
-
-  return currentIndex <= 0 ? "login" : signupViewOrder[currentIndex - 1];
-}
