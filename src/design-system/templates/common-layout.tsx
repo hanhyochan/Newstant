@@ -25,6 +25,7 @@ type NewsRollCommonLayoutProps = HTMLAttributes<HTMLElement> & {
   sheetNestedScrollResetSelector?: string;
   sheetRef?: Ref<HTMLDivElement>;
   sheetScrollSelector?: string;
+  sheetUndockSignal?: number;
   sheetProps?: HTMLAttributes<HTMLDivElement>;
   top: ReactNode;
   topClassName?: string;
@@ -72,6 +73,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   sheetProps,
   sheetRef,
   sheetScrollSelector,
+  sheetUndockSignal,
   top,
   topClassName = "container_home newsroll_sheetFrameTop",
   topProps,
@@ -103,6 +105,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
     onWheelCapture,
     sheetNestedScrollResetSelector,
     sheetScrollSelector,
+    sheetUndockSignal,
     top,
   });
 

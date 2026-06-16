@@ -261,8 +261,6 @@ const policySortOptions: { label: string; value: SortOrder }[] = [
   { label: policySortLabels.popular, value: "popular" },
   { label: policySortLabels.latest, value: "latest" },
 ];
-const policyListTargetCount = 10;
-
 function formatPolicyDate(value: string) {
   const date = new Date(value);
 
@@ -301,17 +299,6 @@ export function getPolicyItemFromWelfarePolicy(policy: WelfarePolicy): PolicyIte
     title: policy.title,
     updatedAt: formatPolicyDate(policy.updatedAt),
   };
-}
-
-function fillPolicyListItems(items: PolicyItem[]) {
-  if (items.length === 0 || items.length >= policyListTargetCount) {
-    return items;
-  }
-
-  return Array.from(
-    { length: policyListTargetCount },
-    (_, index) => items[index % items.length],
-  );
 }
 
 function getPolicyDateDisplay(item: PolicyItem) {
@@ -392,7 +379,7 @@ export function PolicyView({
   const [policyLoadFailed, setPolicyLoadFailed] = useState(false);
   const policyPanelContentRef = useRef<HTMLDivElement>(null);
   const policyListSectionRef = useRef<HTMLDivElement>(null);
-  const policyItems = fillPolicyListItems(policyApiItems);
+  const policyItems = policyApiItems;
   const visiblePolicyItems =
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
   const activeAgeIndex = Math.max(0, policyAgeTabs.indexOf(activeAge));

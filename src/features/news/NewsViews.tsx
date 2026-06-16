@@ -79,6 +79,7 @@ import {
   pollApi,
   settingsApi,
   userApi,
+  welfareApi,
   type ArticleReactionType,
   type BlockedKeywordPreference,
   type Comment,
@@ -3627,6 +3628,7 @@ export function AllNewsView({
   const [showAllBreaking, setShowAllBreaking] = useState(initialShowAllBreaking);
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
+  const [allNewsSheetUndockSignal, setAllNewsSheetUndockSignal] = useState(0);
   const visibleAllNewsArticles = useMemo(
     () => filterArticlesByBlockedKeywords(allNewsArticles, blockedKeywords),
     [allNewsArticles, blockedKeywords],
@@ -3760,6 +3762,14 @@ export function AllNewsView({
       window.removeEventListener("resize", measureBreakingOffset);
     };
   }, [showAllBreaking]);
+
+  useLayoutEffect(() => {
+    if (!showAllBreaking || allNewsBreakingOffset <= 0) {
+      return;
+    }
+
+    setAllNewsSheetUndockSignal((current) => current + 1);
+  }, [allNewsBreakingOffset, showAllBreaking]);
 
   function isLatestScrollerEventTarget(target: EventTarget | null) {
     return (
@@ -3944,6 +3954,7 @@ export function AllNewsView({
     }
 
     setShowAllBreaking(true);
+    setAllNewsSheetUndockSignal((current) => current + 1);
   }
 
   const closeAllNewsDetail = allNewsDetailExitMotion.closeWithMotion;
@@ -3957,6 +3968,7 @@ export function AllNewsView({
       minInitialTop={allNewsMinInitialTop}
       lockSheetPosition={isDetailOpen}
       movingSheet
+      sheetUndockSignal={allNewsSheetUndockSignal}
       onTouchCancelCapture={resetLatestTouchIntent}
       onTouchEndCapture={resetLatestTouchIntent}
       onTouchMoveCapture={isDetailOpen ? undefined : handleAllNewsTouchMove}
@@ -4570,7 +4582,23 @@ const myVoteItems = allNewsLatest.map((item, index) => ({
   title: item.title,
 }));
 const myVoteCategoryTabs = getMySummaryCategoryTabs(myVoteItems);
-type MyBookmarkSummaryItem = AllNewsArticlePreview & { category: string };
+const myBookmarkTabs = ["뉴스", "국가정책"] as const;
+type MyBookmarkNewsSummaryItem = AllNewsArticlePreview & {
+  bookmarkType: "news";
+  category: typeof myBookmarkTabs[0];
+  newsCategory: string;
+};
+type MyBookmarkPolicySummaryItem = {
+  bookmarkType: "policy";
+  category: typeof myBookmarkTabs[1];
+  policy: PolicyItem;
+  summary: string;
+  tags: string[];
+  title: string;
+};
+type MyBookmarkSummaryItem =
+  | MyBookmarkNewsSummaryItem
+  | MyBookmarkPolicySummaryItem;
 type MyCommentKind = (typeof myCommentTabs)[number]["id"];
 type MyVoteSummaryItem = {
   article: HomeArticle;
@@ -4620,6 +4648,64 @@ function hasMultipleMySummaryCategories(items: { category: string }[]) {
 
 function hasMultipleMyCommentKinds(items: { commentKind: Exclude<MyCommentKind, "all"> }[]) {
   return getUniqueValues(items.map((item) => item.commentKind)).length > 1;
+}
+
+function formatPolicyBookmarkDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function getPolicyBookmarkItem(policy: {
+  applicationEndDate: string;
+  applicationMethod: string;
+  applicationStartDate: string;
+  businessEndDate: string;
+  businessStartDate: string;
+  category: string;
+  documents: string;
+  institution: string;
+  label: string;
+  registeredAt: string;
+  selectionMethod: string;
+  subcategory: string;
+  summary: string;
+  supportContent: string;
+  targetAge: string;
+  title: string;
+  updatedAt: string;
+}): PolicyItem {
+  return {
+    details: [
+      { label: "지원 대상 연령", value: policy.targetAge },
+      { label: "지원 내용", value: policy.supportContent },
+      { label: "지원 기관", value: policy.institution },
+      {
+        label: "사업 기간",
+        value: `${policy.businessStartDate} ~ ${policy.businessEndDate}`,
+      },
+      {
+        label: "신청 기간",
+        value: `${policy.applicationStartDate} ~ ${policy.applicationEndDate}`,
+      },
+      { label: "신청 방법", value: policy.applicationMethod },
+      { label: "선발 방식", value: policy.selectionMethod },
+      { label: "제출 서류", value: policy.documents },
+    ],
+    registeredAt: formatPolicyBookmarkDate(policy.registeredAt),
+    summary: policy.summary,
+    tags: [policy.category, policy.subcategory, policy.label],
+    title: policy.title,
+    updatedAt: formatPolicyBookmarkDate(policy.updatedAt),
+  };
 }
 
 type MySettingRowProps = {
@@ -4707,6 +4793,7 @@ function MyBookmarkDetailPage({
   isLeaving = false,
   onCategoryChange,
   onOpenArticle,
+  onOpenPolicy,
   showTabs,
   tabs,
 }: {
@@ -4715,6 +4802,7 @@ function MyBookmarkDetailPage({
   isLeaving?: boolean;
   onCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
+  onOpenPolicy: (policy: PolicyItem) => void;
   showTabs: boolean;
   tabs: string[];
 }) {
@@ -4748,13 +4836,38 @@ function MyBookmarkDetailPage({
           getKey={(item, index) => `${item.title}-${index}`}
           items={visibleBookmarkItems}
           renderItem={(item, index) => (
-            <AllNewsRelayItem
-              featured={index === 0 || index === 5}
-              item={item}
-              onClick={() =>
-                onOpenArticle(createAllNewsArticle(item, item.category, index))
-              }
-            />
+            item.bookmarkType === "news" ? (
+              <AllNewsRelayItem
+                featured={index === 0 || index === 5}
+                item={item}
+                onClick={() =>
+                  onOpenArticle(
+                    createAllNewsArticle(item, item.newsCategory, index),
+                  )
+                }
+              />
+            ) : (
+              <button
+                className="newsroll_policy_list_item"
+                onClick={() => onOpenPolicy(item.policy)}
+                type="button"
+              >
+                <div className="newsroll_policy_list_tags">
+                  {item.tags.map((tag, tagIndex) => (
+                    <ChipLabel
+                      kind={tagIndex === item.tags.length - 1 ? "policyAccent" : "policy"}
+                      key={`${item.title}-${tag}`}
+                    >
+                      {tag}
+                    </ChipLabel>
+                  ))}
+                </div>
+                <div className="wrapper_policyItemContent">
+                  <h2>{item.title}</h2>
+                  <p className="text_infoBody text_lineClamp2">{item.summary}</p>
+                </div>
+              </button>
+            )
           )}
         />
       )}
@@ -5167,11 +5280,12 @@ export function MyPageView({
     replyToCommentId?: CommentId;
     scrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
   } | null>(null);
+  const [myPolicyDetail, setMyPolicyDetail] = useState<PolicyItem | null>(null);
   const [activeVoteCategory, setActiveVoteCategory] = useState(
     () => myVoteCategoryTabs[0] ?? "",
   );
-  const [activeBookmarkCategory, setActiveBookmarkCategory] = useState(
-    () => mySummaryAllTabLabel,
+  const [activeBookmarkCategory, setActiveBookmarkCategory] = useState<string>(
+    () => myBookmarkTabs[0],
   );
   const [activeCommentCategory, setActiveCommentCategory] = useState<MyCommentKind>(
     () => "all",
@@ -5219,21 +5333,22 @@ export function MyPageView({
   const isVoteOpen = activeDetailView === "vote";
   const isCommentOpen = activeDetailView === "comment";
   const isMyArticleDetailOpen = myArticleDetail !== null;
+  const isMyNestedDetailOpen = isMyArticleDetailOpen || myPolicyDetail !== null;
   const dynamicCommentCategoryTabs = useMemo(
     () => myCommentTabs,
     [],
   );
   const dynamicBookmarkCategoryTabs = useMemo(
-    () => getMySummaryCategoryTabs(myDynamicBookmarkItems),
-    [myDynamicBookmarkItems],
+    () => [...myBookmarkTabs],
+    [],
   );
   const dynamicVoteCategoryTabs = useMemo(
     () => getMySummaryCategoryTabs(myDynamicVoteItems),
     [myDynamicVoteItems],
   );
   const shouldShowBookmarkCategoryTabs = useMemo(
-    () => hasMultipleMySummaryCategories(myDynamicBookmarkItems),
-    [myDynamicBookmarkItems],
+    () => true,
+    [],
   );
   const shouldShowVoteCategoryTabs = useMemo(
     () => hasMultipleMySummaryCategories(myDynamicVoteItems),
@@ -5267,24 +5382,26 @@ export function MyPageView({
     scrollerRef: myPanelContentRef,
   });
   const myArticleDetailScrollRestore = useDetailScrollRestore({
-    isDetailOpen: isMyArticleDetailOpen,
+    isDetailOpen: isMyNestedDetailOpen,
     scrollerRef: myPanelContentRef,
   });
   const closeMyArticleDetailImmediately = useCallback(() => {
     myArticleDetailScrollRestore.requestRestore();
     setMyArticleDetail(null);
+    setMyPolicyDetail(null);
   }, [myArticleDetailScrollRestore]);
   const closeActiveDetailViewImmediately = useCallback(() => {
     myDetailScrollRestore.requestRestore();
     setMyArticleDetail(null);
+    setMyPolicyDetail(null);
     setActiveDetailView(null);
   }, [myDetailScrollRestore]);
   const myArticleDetailExitMotion = useEnterFromRightExitMotion({
-    isOpen: isMyArticleDetailOpen,
+    isOpen: isMyNestedDetailOpen,
     onClose: closeMyArticleDetailImmediately,
   });
   const myDetailExitMotion = useEnterFromRightExitMotion({
-    isOpen: isMyDetailOpen && !isMyArticleDetailOpen,
+    isOpen: isMyDetailOpen && !isMyNestedDetailOpen,
     onClose: closeActiveDetailViewImmediately,
   });
 
@@ -5303,6 +5420,7 @@ export function MyPageView({
         nextPollOptions,
         nextPollVotes,
         nextRecentViews,
+        nextPolicies,
       ] = await Promise.all([
         commentApi.getCommentsByUserId(currentUserId),
         commentApi.getComments(),
@@ -5314,6 +5432,7 @@ export function MyPageView({
         pollApi.getPollOptions(),
         pollApi.getPollVotes(),
         newsApi.getRecentNewsViews(currentUserId),
+        welfareApi.getWelfarePolicyList("all"),
       ]);
       const {
         bookmarkItems: nextBookmarkItems,
@@ -5338,18 +5457,50 @@ export function MyPageView({
         recentViews: nextRecentViews,
         userVotes: nextUserVotes,
       });
+      const policyById = new Map(nextPolicies.map((policy) => [policy.id, policy]));
+      const nextNewsBookmarkItems: MyBookmarkNewsSummaryItem[] =
+        nextBookmarkItems.map((item) => ({
+          ...item,
+          bookmarkType: "news",
+          category: myBookmarkTabs[0],
+          newsCategory: item.category,
+        }));
+      const nextPolicyBookmarkItems: MyBookmarkPolicySummaryItem[] =
+        nextBookmarks
+          .filter((bookmark) => bookmark.targetType === "welfarePolicy")
+          .map((bookmark) => {
+            const policy = policyById.get(bookmark.targetId);
+
+            if (!policy) {
+              return null;
+            }
+
+            const policyItem = getPolicyBookmarkItem(policy);
+
+            return {
+              bookmarkType: "policy" as const,
+              category: myBookmarkTabs[1],
+              policy: policyItem,
+              summary: policyItem.summary,
+              tags: policyItem.tags,
+              title: policyItem.title,
+            };
+          })
+          .filter((item): item is MyBookmarkPolicySummaryItem => Boolean(item));
+      const nextAllBookmarkItems = [
+        ...nextNewsBookmarkItems,
+        ...nextPolicyBookmarkItems,
+      ];
 
       if (!ignore) {
         setMyDynamicCommentItems(nextItems);
-        setMyDynamicBookmarkItems(nextBookmarkItems);
+        setMyDynamicBookmarkItems(nextAllBookmarkItems);
         setMyDynamicRecentItems(nextRecentItems);
         setMyDynamicVoteItems(nextVoteItems);
-        setMyBookmarkCount(nextBookmarkItems.length);
+        setMyBookmarkCount(nextAllBookmarkItems.length);
         setMyVoteCount(nextVoteItems.length);
         setActiveCommentCategory("all");
-        setActiveBookmarkCategory(
-          getMySummaryCategoryTabs(nextBookmarkItems)[0] ?? mySummaryAllTabLabel,
-        );
+        setActiveBookmarkCategory(myBookmarkTabs[0]);
         if (nextVoteItems.length > 0) {
           setActiveVoteCategory(getMySummaryCategoryTabs(nextVoteItems)[0] ?? "");
         }
@@ -5412,17 +5563,20 @@ export function MyPageView({
 
     if (quickMenuRequest.target === "customNewsSettings") {
       setMyArticleDetail(null);
+      setMyPolicyDetail(null);
       setActiveDetailView("customNewsSettings");
       return;
     }
 
     if (quickMenuRequest.target === "profileSettings") {
       setMyArticleDetail(null);
+      setMyPolicyDetail(null);
       setActiveDetailView("profileSettings");
       return;
     }
 
     setMyArticleDetail(null);
+    setMyPolicyDetail(null);
     setActiveDetailView(null);
     window.requestAnimationFrame(() => {
       const target = myPanelContentRef.current?.querySelector<HTMLElement>(
@@ -5576,17 +5730,20 @@ export function MyPageView({
   const openSummaryDetail = (view: MySummaryView) => {
     myDetailScrollRestore.captureScroll();
     setMyArticleDetail(null);
+    setMyPolicyDetail(null);
     setActiveDetailView(view);
   };
 
   const openRecentDetail = () => {
     myDetailScrollRestore.captureScroll();
     setMyArticleDetail(null);
+    setMyPolicyDetail(null);
     setActiveDetailView("recent");
   };
 
   const openMyArticleDetail: OpenArticleDetail = (article, options) => {
     myArticleDetailScrollRestore.captureScroll();
+    setMyPolicyDetail(null);
     setMyArticleDetail({
       article,
       commentId: options?.commentId,
@@ -5595,8 +5752,14 @@ export function MyPageView({
     });
   };
 
+  const openMyPolicyDetail = (policy: PolicyItem) => {
+    myArticleDetailScrollRestore.captureScroll();
+    setMyArticleDetail(null);
+    setMyPolicyDetail(policy);
+  };
+
   const detailBackLabel =
-    isMyArticleDetailOpen
+    isMyNestedDetailOpen
       ? "기사 본문에서 이전 목록으로 돌아가기"
       : activeDetailView === "profileSettings"
       ? "설정에서 마이페이지로 돌아가기"
@@ -5604,13 +5767,13 @@ export function MyPageView({
       ? "맞춤형 뉴스 설정에서 마이페이지로 돌아가기"
       : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
   const quickMenuReturnView =
-    !isMyArticleDetailOpen &&
+    !isMyNestedDetailOpen &&
     quickMenuRequest &&
     (activeDetailView === "customNewsSettings" ||
       activeDetailView === "profileSettings")
     ? quickMenuRequest.returnView
     : null;
-  const handleMyDetailBack = isMyArticleDetailOpen
+  const handleMyDetailBack = isMyNestedDetailOpen
     ? myArticleDetailExitMotion.closeWithMotion
     : quickMenuReturnView
       ? () => onQuickMenuBack(quickMenuReturnView)
@@ -5626,10 +5789,10 @@ export function MyPageView({
       minInitialTop={pagePanelInitialTop}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet container_mySheet"
       sheetNestedScrollResetSelector={
-        isMyArticleDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
+        isMyNestedDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
       }
       sheetScrollSelector={
-        isMyArticleDetailOpen ? newsrollNewsFeedDetailSelector : pagePanelContentSelector
+        isMyNestedDetailOpen ? newsrollNewsFeedDetailSelector : pagePanelContentSelector
       }
       top={
         isMyDetailOpen ? (
@@ -5682,6 +5845,12 @@ export function MyPageView({
           initialScrollTarget={myArticleDetail.scrollTarget}
           isLeaving={myArticleDetailExitMotion.isLeaving}
         />
+      ) : myPolicyDetail ? (
+        <PolicyDetailContent
+          hideDetailToggle
+          isLeaving={myArticleDetailExitMotion.isLeaving}
+          item={myPolicyDetail}
+        />
       ) : (
         <NewsRollPagePanel
           ariaLabel={
@@ -5714,6 +5883,7 @@ export function MyPageView({
               isLeaving={myDetailExitMotion.isLeaving}
               onCategoryChange={setActiveBookmarkCategory}
               onOpenArticle={openMyArticleDetail}
+              onOpenPolicy={openMyPolicyDetail}
               showTabs={shouldShowBookmarkCategoryTabs}
               tabs={dynamicBookmarkCategoryTabs}
             />

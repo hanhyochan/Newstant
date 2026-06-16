@@ -27,6 +27,7 @@ type UseDockedSheetOptions = {
   onWheelCapture?: (event: WheelEvent<HTMLElement>) => void;
   sheetNestedScrollResetSelector?: string;
   sheetScrollSelector?: string;
+  sheetUndockSignal?: number;
   top: ReactNode;
 };
 
@@ -52,6 +53,7 @@ export function useDockedSheet({
   onWheelCapture,
   sheetNestedScrollResetSelector,
   sheetScrollSelector,
+  sheetUndockSignal,
   top,
 }: UseDockedSheetOptions) {
   const rootRef = useRef<HTMLElement | null>(null);
@@ -65,6 +67,7 @@ export function useDockedSheet({
   const sheetTopRef = useRef(0);
   const sheetBoundsRef = useRef({ initialTop: 0, stopTop: 0 });
   const hasMeasuredRef = useRef(false);
+  const lastSheetUndockSignalRef = useRef(sheetUndockSignal);
   const [isSheetDocked, setIsSheetDocked] = useState(false);
 
   const getSheetScroller = () => {
@@ -388,6 +391,26 @@ export function useDockedSheet({
     sheetNestedScrollResetSelector,
     top,
   ]);
+
+  useLayoutEffect(() => {
+    if (
+      !movingSheet
+      || lockSheetPosition
+      || sheetUndockSignal == null
+      || lastSheetUndockSignalRef.current === sheetUndockSignal
+    ) {
+      return undefined;
+    }
+
+    lastSheetUndockSignalRef.current = sheetUndockSignal;
+    const frame = window.requestAnimationFrame(() => {
+      clearSheetHandoffLock();
+      resetSheetScroll();
+      setSheetTop(sheetBoundsRef.current.initialTop);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [lockSheetPosition, movingSheet, sheetUndockSignal]);
 
   return {
     handleTouchCancel,

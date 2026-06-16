@@ -97,13 +97,15 @@ export function PolicyDetailContent({
 
       <div className="newsroll_policy_detail_body">
         <h1>{item.title}</h1>
+      </div>
+
+      <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
         <div className="newsroll_policy_detail_dates">
           <span>
             <strong>{policyDate.label}</strong>
             {policyDate.date}
           </span>
         </div>
-      </div>
 
       <ArticleActionButtons
         ariaLabel="정책 도구"
@@ -113,6 +115,7 @@ export function PolicyDetailContent({
           void sharePolicy();
         }}
       />
+      </div>
 
       <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
 
