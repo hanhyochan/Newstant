@@ -69,6 +69,7 @@ import {
   useDockedPanelScroll,
   useEnterFromRightExitMotion,
   useInlineTextEdit,
+  useShareContent,
 } from "@/design-system/templates";
 import {
   bookmarkApi,
@@ -2670,7 +2671,6 @@ function HomeReelCard({
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(
     initialCommentId != null || initialReplyTargetId != null,
   );
-  const [isShared, setIsShared] = useState(false);
   const [reaction, setReaction] = useState<Reaction>(null);
   const [articleReactionId, setArticleReactionId] = useState<string | null>(null);
   const [articleReactionCounts, setArticleReactionCounts] = useState<
@@ -2684,6 +2684,10 @@ function HomeReelCard({
   const articleGuideId = `home-article-guide-${index}`;
   const articleTitleId = `home-article-title-${index}`;
   const ArticleTitle = headingLevel;
+  const shareArticle = useShareContent({
+    text: article.body ?? article.title,
+    title: article.title,
+  });
 
   function scrollCommentPanelOpenHint() {
     window.setTimeout(() => {
@@ -2927,11 +2931,12 @@ function HomeReelCard({
           />
           <ArticleActionButtons
             isBookmarked={isBookmarked}
-            isShared={isShared}
             onBookmark={() => {
               void toggleBookmark();
             }}
-            onShare={() => setIsShared((current) => !current)}
+            onShare={() => {
+              void shareArticle();
+            }}
           />
         </div>
       </div>
@@ -2952,6 +2957,11 @@ function HomeReelCard({
               (numericIndex % 2 === 0 ? "국민일보" : "중앙일보")}
           </span>
         </div>
+        <NewsRollDivider
+          aria-hidden="true"
+          className="divider_articleSource"
+          orientation="vertical"
+        />
         <span className="text_articleReporter">
           {article.reporterName ?? "홍길동 기자"}
         </span>
@@ -3661,6 +3671,7 @@ export function AllNewsView({
     visibleAllNewsRelayCategories.indexOf(activeRelayCategory),
   );
   const activeHeadlineItems = allNewsHeadlinesByActivePress[activePress] ?? [];
+  const canExpandHeadlines = activeHeadlineItems.length > 4;
   const headlineItems = showAllHeadlines
     ? activeHeadlineItems
     : activeHeadlineItems.slice(0, 4);
@@ -3869,6 +3880,38 @@ export function AllNewsView({
     });
   }
 
+  function resetAllNewsPanelScroll(panelSelector: string) {
+    const scrollToTop = () => {
+      const panelContent = feedRef.current?.querySelector<HTMLElement>(
+        `${panelSelector} .newsroll_all_panelContent`,
+      );
+
+      panelContent?.scrollTo({ left: 0, top: 0 });
+    };
+
+    scrollToTop();
+    window.requestAnimationFrame(scrollToTop);
+  }
+
+  function changeActivePress(nextPress: string) {
+    if (nextPress === activePress) {
+      return;
+    }
+
+    resetAllNewsPanelScroll(".newsroll_all_press_panel");
+    setShowAllHeadlines(false);
+    setActivePress(nextPress);
+  }
+
+  function changeActiveRelayCategory(nextCategory: string) {
+    if (nextCategory === activeRelayCategory) {
+      return;
+    }
+
+    resetAllNewsPanelScroll(".newsroll_all_relay_panel");
+    setActiveRelayCategory(nextCategory);
+  }
+
   function handlePressTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const lastIndex = visibleAllNewsPresses.length - 1;
     const nextIndexByKey: Record<string, number> = {
@@ -3886,7 +3929,7 @@ export function AllNewsView({
     }
 
     event.preventDefault();
-    setActivePress(visibleAllNewsPresses[nextIndex]);
+    changeActivePress(visibleAllNewsPresses[nextIndex]);
     document.getElementById(`all-news-press-tab-${nextIndex}`)?.focus();
   }
 
@@ -4075,7 +4118,7 @@ export function AllNewsView({
                         classNameOnly
                         id={`all-news-press-tab-${index}`}
                         key={press}
-                        onClick={() => setActivePress(press)}
+                        onClick={() => changeActivePress(press)}
                         role="tab"
                         tabIndex={selected ? 0 : -1}
                         type="button"
@@ -4108,7 +4151,7 @@ export function AllNewsView({
                 />
                 {headlineItems.length === 0 ? (
                   <DataUnavailableMessage target="언론사별 헤드라인" />
-                ) : (
+                ) : canExpandHeadlines ? (
                   <AllNewsMoreButton
                     ariaLabel={
                       showAllHeadlines
@@ -4118,7 +4161,7 @@ export function AllNewsView({
                     expanded={showAllHeadlines}
                     onClick={() => setShowAllHeadlines((current) => !current)}
                   />
-                )}
+                ) : null}
               </div>
           </AllNewsSectionPanel>
 
@@ -4148,7 +4191,7 @@ export function AllNewsView({
                     id: category,
                     label: category,
                   }))}
-                  onChange={setActiveRelayCategory}
+                  onChange={changeActiveRelayCategory}
                   value={activeRelayCategory}
                 />
               </div>

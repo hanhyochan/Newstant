@@ -4228,7 +4228,7 @@
     }
 
     .newsroll_all_breakingHeader .newsroll_all_more {
-        min-height: 40px;
+        min-height: 48px;
         border: 0;
     }
 
@@ -4355,12 +4355,15 @@
     }
 
     .newsroll_all_more_icon {
+        width: var(--newsroll-chevron-size);
+        height: var(--newsroll-chevron-size);
+        flex: 0 0 var(--newsroll-chevron-size);
         transform: rotate(90deg);
         transition: var(--newsroll-chevron-transition);
     }
 
     .newsroll_all_press_panel .newsroll_all_more {
-        min-height: 40px;
+        min-height: 48px;
         transform: none;
         color: var(--color-cool-neutral-50);
         border: var(--newsroll-main-border-width) solid var(--color-cool-neutral-96);
@@ -4852,12 +4855,12 @@
     }
 
     .newsroll_all_more {
-        min-height: var(--size-52);
-        gap: 10px;
-        border-radius: 10px;
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-24);
+        min-height: 48px;
+        gap: var(--spacing-gap-horizontal-8);
+        border-radius: var(--radius-8);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
     }
 
     .newsroll_all_more_dark {
@@ -5333,7 +5336,7 @@
         align-items: center;
         gap: var(--spacing-gap-horizontal-8);
         justify-content: space-between;
-        padding: 8px;
+        padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-8);
         color: var(--color-cool-neutral-50);
         border: var(--newsroll-main-border-width) solid transparent;
@@ -5381,7 +5384,7 @@
         align-items: center;
         justify-content: center;
         gap: var(--spacing-gap-vertical-8);
-        padding: 8px;
+        padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
         border: 0;
         border-radius: var(--radius-16);
         background: var(--color-background-elevated-normal);

@@ -36,5 +36,6 @@ export {
   useDockedPanelScroll,
   useDockedSheet,
   useInlineTextEdit,
+  useShareContent,
 } from "./hooks";
 

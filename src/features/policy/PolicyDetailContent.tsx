@@ -9,6 +9,7 @@ import {
   Icon,
   NewsRollDivider,
 } from "@/design-system/components";
+import { useShareContent } from "@/design-system/templates";
 
 type PolicyDetailItem = {
   label: string;
@@ -69,8 +70,11 @@ export function PolicyDetailContent({
   onPreviousItem?: () => void;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isShared, setIsShared] = useState(false);
   const policyDate = getPolicyDateDisplay(item);
+  const sharePolicy = useShareContent({
+    text: item.summary,
+    title: item.title,
+  });
 
   useLayoutEffect(() => {
     resetNewsRollViewport();
@@ -104,9 +108,10 @@ export function PolicyDetailContent({
       <ArticleActionButtons
         ariaLabel="정책 도구"
         isBookmarked={isBookmarked}
-        isShared={isShared}
         onBookmark={() => setIsBookmarked((current) => !current)}
-        onShare={() => setIsShared((current) => !current)}
+        onShare={() => {
+          void sharePolicy();
+        }}
       />
 
       <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
