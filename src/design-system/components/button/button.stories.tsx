@@ -61,3 +61,11 @@ export const CommentMineFilter: Story = {
     </Button>
   ),
 };
+
+export const TextAction: Story = {
+  render: () => (
+    <Button aria-pressed="false" className="btn_textAction" classNameOnly type="button">
+      텍스트 버튼
+    </Button>
+  ),
+};

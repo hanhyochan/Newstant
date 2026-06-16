@@ -32,14 +32,13 @@ export function formatCommentDate(value: string) {
     return value;
   }
 
-  return new Intl.DateTimeFormat("ko-KR", {
-    day: "2-digit",
-    hour: "2-digit",
-    hour12: false,
-    minute: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}.${month}.${day}. ${hour}:${minute}`;
 }
 
 export function getCommentAuthor(userId: string) {

@@ -133,6 +133,9 @@ export type BodySearchSelection =
 export type BodySearchSelectionInput =
   | { article: HomeArticle; kind: "news" }
   | { kind: "policy"; policy: PolicyItem };
+
+const commentPanelOpenHintOffset = 56;
+
 export type HomeArticle = {
   body?: string;
   category: string;
@@ -1652,27 +1655,6 @@ function CommentReactionPanel({
     );
   }
 
-  function scrollPanelTopToReadingPosition() {
-    const panel = panelRef.current;
-    const articleScroller = getCommentScrollRoot();
-
-    if (!(articleScroller instanceof HTMLElement) || !panel) {
-      return;
-    }
-
-    const scrollerRect = articleScroller.getBoundingClientRect();
-    const panelRect = panel.getBoundingClientRect();
-    const targetScrollTop =
-      articleScroller.scrollTop +
-      panelRect.top -
-      scrollerRect.top -
-      articleScroller.clientHeight * 0.3;
-    const nextScrollTop = Math.max(0, targetScrollTop);
-
-    scrollArticleTo(articleScroller, nextScrollTop);
-    setIsComposerVisible(true);
-  }
-
   useEffect(() => {
     function closeCommentDropdowns(event: globalThis.PointerEvent) {
       const target = event.target;
@@ -1844,18 +1826,6 @@ function CommentReactionPanel({
   ]);
 
   useEffect(() => {
-    if (initialCommentTargetId != null) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      scrollPanelTopToReadingPosition();
-    }, commentScrollDelayMs);
-
-    return () => window.clearTimeout(timeout);
-  }, [initialCommentTargetId]);
-
-  useEffect(() => {
     if (isComposerVisible) {
       return;
     }
@@ -1906,31 +1876,6 @@ function CommentReactionPanel({
       resizeObserver?.disconnect();
     };
   }, [composerId, isComposerVisible]);
-
-  useEffect(() => {
-    if (
-      !isComposerVisible ||
-      composerHeight <= 0 ||
-      initialCommentTargetId != null ||
-      visibleComments.length === 0
-    ) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      window.requestAnimationFrame(() => {
-        scrollElementBottomIntoView(commentListId, 0);
-      });
-    }, commentScrollDelayMs);
-
-    return () => window.clearTimeout(timeout);
-  }, [
-    commentListId,
-    composerHeight,
-    initialCommentTargetId,
-    isComposerVisible,
-    visibleComments.length,
-  ]);
 
   useEffect(() => {
     if (!pendingScrollTarget) {
@@ -2042,14 +1987,6 @@ function CommentReactionPanel({
 
   function toggleReplyList(commentId: CommentId) {
     const isClosing = expandedReplyId === commentId;
-
-    if (!isClosing) {
-      setPendingScrollTarget({
-        bottomGap: 0,
-        delayMs: nextArticleRevealDelayMs,
-        id: `${panelId}-reply-list-${commentId}`,
-      });
-    }
 
     setExpandedReplyId(isClosing ? null : commentId);
 
@@ -2253,7 +2190,7 @@ function CommentReactionPanel({
           <span className="text_commentTotal">댓글 {allComments.length}</span>
           <Button
             aria-pressed={myCommentsOnly}
-            className="btn_commentMineFilter"
+            className="btn_textAction"
             classNameOnly
             onClick={() => {
               setMyCommentsOnly((current) => !current);
@@ -2413,6 +2350,7 @@ function CommentReactionPanel({
                           <button
                             aria-controls={replyListId}
                             aria-expanded={isReplyListOpen}
+                            className="btn_textAction"
                             id={replyToggleId}
                             onClick={() => toggleReplyList(comment.id)}
                             type="button"
@@ -2455,7 +2393,7 @@ function CommentReactionPanel({
                         >
                           <div className="wrapper_commentRepliesInner">
                             <Button
-                              className="btn_originalArticle"
+                              className="btn_textAction"
                               classNameOnly
                               aria-controls={composerId}
                               aria-pressed={
@@ -2713,7 +2651,42 @@ function HomeReelCard({
   const articleTitleId = `home-article-title-${index}`;
   const ArticleTitle = headingLevel;
 
+  function scrollCommentPanelOpenHint() {
+    window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        const scroller = document.getElementById(articleContentId);
+
+        if (!(scroller instanceof HTMLElement)) {
+          return;
+        }
+
+        const maxScroll = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+
+        if (maxScroll <= 0) {
+          return;
+        }
+
+        const nextScrollTop = Math.min(
+          maxScroll,
+          scroller.scrollTop + commentPanelOpenHintOffset,
+        );
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        scroller.scrollTo({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          top: nextScrollTop,
+        });
+      });
+    }, commentScrollDelayMs);
+  }
+
   function handleCommentPanelToggle() {
+    if (!isCommentPanelOpen) {
+      scrollCommentPanelOpenHint();
+    }
+
     setIsCommentPanelOpen((current) => !current);
   }
 
@@ -2937,8 +2910,8 @@ function HomeReelCard({
             className="img_articlePublisherLogo"
             src="/icons/icon_my_page_active.svg"
             alt=""
-            width={32}
-            height={32}
+            width={24}
+            height={24}
           />
           <span className="text_articlePublisherName">
             {article.pressName ??
@@ -4851,6 +4824,7 @@ function MyCommentPreviewThread({
         <button
           aria-controls={replyListId}
           aria-expanded={false}
+          className="btn_textAction"
           id={replyToggleId}
           onClick={openCommentFromControl}
           type="button"
@@ -4891,7 +4865,7 @@ function MyCommentPreviewThread({
           <Button
             aria-controls={`${instanceId}-composer`}
             aria-pressed={false}
-            className="btn_originalArticle"
+            className="btn_textAction"
             classNameOnly
             onClick={openCommentFromControl}
             type="button"

@@ -317,7 +317,9 @@ export function useDockedPanelScroll({
       return;
     }
 
-    event.preventDefault();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     event.stopPropagation();
   };
 

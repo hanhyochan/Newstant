@@ -292,7 +292,9 @@ export function useDockedSheet({
 
   const handleWheel = (event: WheelEvent<HTMLElement>) => {
     if (consumeSheetHandoffLock(event.deltaY, "wheel")) {
-      event.preventDefault();
+      if (event.cancelable) {
+        event.preventDefault();
+      }
       event.stopPropagation();
       return;
     }
@@ -303,7 +305,9 @@ export function useDockedSheet({
       return;
     }
 
-    event.preventDefault();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     event.stopPropagation();
   };
 

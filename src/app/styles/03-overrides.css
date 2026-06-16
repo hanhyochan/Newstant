@@ -197,7 +197,7 @@
 
     .text_greeting {
         color: var(--color-common-100);
-        font-size: var(--font-size-18);
+        font-size: var(--font-size-16);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-24);
     }
@@ -219,10 +219,16 @@
         letter-spacing: 0;
     }
 
-    .text_heroUnit,
-    .text_heroCaption {
+    .text_heroUnit {
         color: var(--color-common-100);
         font-size: var(--font-size-24);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-32);
+    }
+
+    .text_heroCaption {
+        color: var(--color-common-100);
+        font-size: var(--font-size-20);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-32);
     }
@@ -327,7 +333,7 @@
     .wrapper_articleActions {
         display: flex;
         justify-content: flex-end;
-        gap: var(--spacing-gap-horizontal-16);
+        gap: var(--spacing-gap-horizontal-8);
         color: var(--color-cool-neutral-50);
     }
 
@@ -492,7 +498,7 @@
         background: transparent;
     }
 
-    .btn_newsViewOption .newsroll_icon {
+    .btn_newsViewOption :is(.newsroll_icon_20, .newsroll_icon_18) {
         width: 20px;
         height: 20px;
     }
@@ -831,7 +837,7 @@
         background: var(--color-common-0);
     }
 
-    .newsroll_home_alarm[aria-pressed='true'] .newsroll_icon {
+    .newsroll_home_alarm[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18) {
         --newsroll-icon-url: var(--newsroll-icon-fill-url);
     }
 
@@ -998,8 +1004,8 @@
     }
 
     .img_articlePublisherLogo {
-        width: 32px;
-        height: 32px;
+        width: 24px;
+        height: 24px;
         display: block;
         flex: 0 0 auto;
         border-radius: var(--radius-full);
@@ -1014,8 +1020,8 @@
         font-weight: var(--font-weight-400);
     }
 
-    .wrapper_articleActions .btn_articleTool[aria-pressed='true'] .newsroll_icon,
-    .wrapper_articleReaction > button[aria-pressed='true'] .newsroll_icon {
+    .wrapper_articleActions .btn_articleTool[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18),
+    .wrapper_articleReaction > button[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18) {
         --newsroll-icon-url: var(--newsroll-icon-fill-url);
     }
 
@@ -1060,17 +1066,17 @@
     }
 
     .wrapper_articleCardContent .btn_articleReaction_like,
-    .wrapper_articleCardContent .btn_articleReaction_like .newsroll_icon {
+    .wrapper_articleCardContent .btn_articleReaction_like :is(.newsroll_icon_20, .newsroll_icon_18) {
         color: var(--color-red-50);
     }
 
     .wrapper_articleCardContent .btn_articleReaction_dislike,
-    .wrapper_articleCardContent .btn_articleReaction_dislike .newsroll_icon {
+    .wrapper_articleCardContent .btn_articleReaction_dislike :is(.newsroll_icon_20, .newsroll_icon_18) {
         color: var(--color-blue-50);
     }
 
     .wrapper_articleCardContent .btn_articleReaction_neutral,
-    .wrapper_articleCardContent .btn_articleReaction_neutral .newsroll_icon {
+    .wrapper_articleCardContent .btn_articleReaction_neutral :is(.newsroll_icon_20, .newsroll_icon_18) {
         color: var(--color-cool-neutral-50);
     }
 
@@ -1090,7 +1096,7 @@
     .text_articleGuide {
         color: var(--color-common-0);
         font-family: var(--font-sans);
-        font-size: var(--font-size-18);
+        font-size: var(--font-size-16);
         font-style: normal;
         font-weight: var(--font-weight-600);
         line-height: var(--line-height-24);
@@ -1145,7 +1151,7 @@
     }
 
     .wrapper_articleGuide_binary .text_articleGuide {
-        font-size: var(--font-size-18);
+        font-size: var(--font-size-16);
         font-weight: var(--font-weight-700);
         line-height: var(--line-height-24);
     }
@@ -1238,7 +1244,7 @@
 
     .btn_originalArticle {
         width: 100%;
-        min-height: 40px;
+        min-height: 48px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -1309,7 +1315,7 @@
 
     .text_articleGuideTotal {
         color: var(--color-cool-neutral-50);
-        font-size: var(--font-size-15);
+        font-size: var(--font-size-14);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-20);
     }
@@ -1472,13 +1478,12 @@
 
     .text_commentTotal {
         color: var(--color-cool-neutral-50);
-        font-size: var(--font-size-15);
+        font-size: var(--font-size-14);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-20);
     }
 
     .wrapper_signupEmailField .btn_commentMineFilter,
-    .wrapper_commentSummary .btn_commentMineFilter,
     .container_myProfile .btn_commentMineFilter {
         min-height: 40px;
         display: inline-flex;
@@ -1499,11 +1504,46 @@
 
     .wrapper_signupEmailField .btn_commentMineFilter:active,
     .wrapper_signupEmailField .btn_commentMineFilter[aria-pressed='true'],
-    .wrapper_commentSummary .btn_commentMineFilter:active,
-    .wrapper_commentSummary .btn_commentMineFilter[aria-pressed='true'],
     .container_myProfile .btn_commentMineFilter:active,
     .container_myProfile .btn_commentMineFilter[aria-pressed='true'] {
         background: var(--color-cool-neutral-96);
+    }
+
+    .btn_textAction {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-gap-horizontal-8);
+        padding: 0;
+        border: 0;
+        color: var(--color-cool-neutral-50);
+        background: transparent;
+        cursor: pointer;
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        white-space: nowrap;
+    }
+
+    .btn_textAction:active,
+    .btn_textAction[aria-pressed='true'] {
+        color: var(--color-common-0);
+        background: transparent;
+    }
+
+    .btn_commentReaction_like,
+    .btn_commentReaction_dislike {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-8);
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        white-space: nowrap;
     }
 
     .container_commentGuide {
@@ -1736,7 +1776,7 @@
 
     .wrapper_commentItem > p {
         color: var(--color-cool-neutral-50);
-        font-size: var(--font-size-14);
+        font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
     }
@@ -1797,48 +1837,32 @@
         line-height: var(--line-height-20);
     }
 
-    .wrapper_commentItem > footer > span {
+    .wrapper_commentItem > footer > span,
+    .wrapper_commentReplyItem footer > span {
         display: inline-flex;
         align-items: center;
         gap: var(--spacing-gap-horizontal-16);
     }
 
-    .wrapper_commentItem > footer button {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--spacing-gap-horizontal-8);
-        padding: 0;
-        color: inherit;
-        font: inherit;
-    }
-
-    .wrapper_commentItem > footer .btn_commentReaction_like {
+    .btn_commentReaction_like {
         color: var(--color-status-negative);
     }
 
-    .wrapper_commentItem > footer .btn_commentReaction_like .newsroll_icon {
+    .btn_commentReaction_like :is(.newsroll_icon_20, .newsroll_icon_18) {
         color: var(--color-status-negative);
     }
 
-    .wrapper_commentItem > footer .btn_commentReaction_dislike {
+    .btn_commentReaction_dislike {
         color: var(--color-accent-foreground-blue);
     }
 
-    .wrapper_commentItem > footer .btn_commentReaction_dislike .newsroll_icon {
+    .btn_commentReaction_dislike :is(.newsroll_icon_20, .newsroll_icon_18) {
         color: var(--color-accent-foreground-blue);
     }
 
-    .btn_commentReaction_like[aria-pressed='true'] .newsroll_icon,
-    .btn_commentReaction_dislike[aria-pressed='true'] .newsroll_icon {
+    .btn_commentReaction_like[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18),
+    .btn_commentReaction_dislike[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18) {
         --newsroll-icon-url: var(--newsroll-icon-fill-url);
-    }
-
-    .wrapper_commentItem > footer .btn_commentReaction_like[aria-pressed='true'] {
-        color: var(--color-status-negative);
-    }
-
-    .wrapper_commentItem > footer .btn_commentReaction_dislike[aria-pressed='true'] {
-        color: var(--color-accent-foreground-blue);
     }
 
     .wrapper_commentReplies {
@@ -1921,7 +1945,7 @@
 
     .wrapper_commentReplyItem p {
         color: var(--color-cool-neutral-50);
-        font-size: var(--font-size-14);
+        font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
     }
@@ -1933,37 +1957,6 @@
         font-size: var(--font-size-15);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-20);
-    }
-
-    .wrapper_commentReplyItem footer > span {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .wrapper_commentReplyItem footer button {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--spacing-gap-horizontal-8);
-        padding: 0;
-        color: inherit;
-        font: inherit;
-    }
-
-    .wrapper_commentReplyItem footer .btn_commentReaction_like {
-        color: var(--color-status-negative);
-    }
-
-    .wrapper_commentReplyItem footer .btn_commentReaction_like .newsroll_icon {
-        color: var(--color-status-negative);
-    }
-
-    .wrapper_commentReplyItem footer .btn_commentReaction_dislike {
-        color: var(--color-accent-foreground-blue);
-    }
-
-    .wrapper_commentReplyItem footer .btn_commentReaction_dislike .newsroll_icon {
-        color: var(--color-accent-foreground-blue);
     }
 
     .newsroll_all_more[aria-expanded='true'] .newsroll_all_more_chevron {
@@ -2557,7 +2550,7 @@
     padding: 0;
 }
 
-.btn_newsViewOption .newsroll_icon {
+.btn_newsViewOption :is(.newsroll_icon_20, .newsroll_icon_18) {
     width: 20px;
     height: 20px;
 }

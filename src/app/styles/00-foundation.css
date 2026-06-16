@@ -530,7 +530,7 @@
             line-height: var(--line-height-24);
         }
 
-        .newsroll_all_breaking_label .newsroll_icon {
+        .newsroll_all_breaking_label :is(.newsroll_icon_20, .newsroll_icon_18) {
             width: var(--spacing-padding-horizontal-24);
             height: var(--spacing-padding-vertical-24);
         }
