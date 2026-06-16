@@ -328,16 +328,6 @@ function PolicyListItem({
       onClick={onSelect}
       type="button"
     >
-      <div className="newsroll_policy_list_tags">
-        {item.tags.map((tag, index) => (
-          <ChipLabel
-            kind={index === 2 ? "policyAccent" : "policy"}
-            key={`${item.title}-${tag}`}
-          >
-            {tag}
-          </ChipLabel>
-        ))}
-      </div>
       <div className="wrapper_policyItemContent">
         <h2>{item.title}</h2>
         <p className="text_infoBody text_lineClamp2">{item.summary}</p>
@@ -346,6 +336,16 @@ function PolicyListItem({
             <strong>{policyDate.label}</strong>
             {policyDate.date}
           </span>
+        </div>
+        <div className="newsroll_policy_list_tags">
+          {item.tags.map((tag, index) => (
+            <ChipLabel
+              kind={index === 2 ? "policyAccent" : "policy"}
+              key={`${item.title}-${tag}`}
+            >
+              {tag}
+            </ChipLabel>
+          ))}
         </div>
       </div>
     </button>

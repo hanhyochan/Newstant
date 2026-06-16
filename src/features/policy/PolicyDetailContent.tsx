@@ -84,17 +84,6 @@ export function PolicyDetailContent({
     <div
       className={`newsroll_policy_detail_content ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
-      <div className="newsroll_policy_detail_tags">
-        {item.tags.map((tag, index) => (
-          <ChipLabel
-            kind={index === item.tags.length - 1 ? "policyAccent" : "policy"}
-            key={`${item.title}-${tag}`}
-          >
-            {tag}
-          </ChipLabel>
-        ))}
-      </div>
-
       <div className="newsroll_policy_detail_body">
         <h1>{item.title}</h1>
       </div>
@@ -115,6 +104,17 @@ export function PolicyDetailContent({
           void sharePolicy();
         }}
       />
+      </div>
+
+      <div className="newsroll_policy_detail_tags">
+        {item.tags.map((tag, index) => (
+          <ChipLabel
+            kind={index === item.tags.length - 1 ? "policyAccent" : "policy"}
+            key={`${item.title}-${tag}`}
+          >
+            {tag}
+          </ChipLabel>
+        ))}
       </div>
 
       <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
