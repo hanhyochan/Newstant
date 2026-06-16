@@ -2804,6 +2804,14 @@
         gap: var(--spacing-gap-vertical-16);
     }
 
+    .newsroll_policy_list_body {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
+    }
+
     .chip_policy {
         min-height: 31px;
         display: inline-flex;
@@ -2876,6 +2884,22 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    .newsroll_policy_detail_header {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-16);
+    }
+
+    .newsroll_policy_detail_titleMeta {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
     }
 
     .newsroll_policy_detail_body {
@@ -3682,6 +3706,14 @@
         z-index: 2;
         padding-bottom: var(--spacing-padding-vertical-24);
         background: var(--color-background-elevated-normal);
+    }
+
+    .container_infoList .wrapper_separatedItem {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .divider_infoSection,

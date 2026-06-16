@@ -84,37 +84,41 @@ export function PolicyDetailContent({
     <div
       className={`newsroll_policy_detail_content ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
-      <div className="newsroll_policy_detail_body">
-        <h1>{item.title}</h1>
-      </div>
+      <div className="newsroll_policy_detail_header">
+        <div className="newsroll_policy_detail_titleMeta">
+          <div className="newsroll_policy_detail_body">
+            <h1>{item.title}</h1>
+          </div>
 
-      <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
-        <div className="newsroll_policy_detail_dates">
-          <span>
-            <strong>{policyDate.label}</strong>
-            {policyDate.date}
-          </span>
+          <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
+            <div className="newsroll_policy_detail_dates">
+              <span>
+                <strong>{policyDate.label}</strong>
+                {policyDate.date}
+              </span>
+            </div>
+
+            <ArticleActionButtons
+              ariaLabel="정책 도구"
+              isBookmarked={isBookmarked}
+              onBookmark={() => setIsBookmarked((current) => !current)}
+              onShare={() => {
+                void sharePolicy();
+              }}
+            />
+          </div>
         </div>
 
-      <ArticleActionButtons
-        ariaLabel="정책 도구"
-        isBookmarked={isBookmarked}
-        onBookmark={() => setIsBookmarked((current) => !current)}
-        onShare={() => {
-          void sharePolicy();
-        }}
-      />
-      </div>
-
-      <div className="newsroll_policy_detail_tags">
-        {item.tags.map((tag, index) => (
-          <ChipLabel
-            kind={index === item.tags.length - 1 ? "policyAccent" : "policy"}
-            key={`${item.title}-${tag}`}
-          >
-            {tag}
-          </ChipLabel>
-        ))}
+        <div className="newsroll_policy_detail_tags">
+          {item.tags.map((tag, index) => (
+            <ChipLabel
+              kind={index === item.tags.length - 1 ? "policyAccent" : "policy"}
+              key={`${item.title}-${tag}`}
+            >
+              {tag}
+            </ChipLabel>
+          ))}
+        </div>
       </div>
 
       <NewsRollDivider className="newsroll_policy_detail_actions_divider" />

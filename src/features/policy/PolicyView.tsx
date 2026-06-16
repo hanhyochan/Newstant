@@ -329,13 +329,15 @@ function PolicyListItem({
       type="button"
     >
       <div className="wrapper_policyItemContent">
-        <h2>{item.title}</h2>
-        <p className="text_infoBody text_lineClamp2">{item.summary}</p>
-        <div className="newsroll_policy_dates">
-          <span>
-            <strong>{policyDate.label}</strong>
-            {policyDate.date}
-          </span>
+        <div className="newsroll_policy_list_body">
+          <h2>{item.title}</h2>
+          <p className="text_infoBody text_lineClamp2">{item.summary}</p>
+          <div className="newsroll_policy_dates">
+            <span>
+              <strong>{policyDate.label}</strong>
+              {policyDate.date}
+            </span>
+          </div>
         </div>
         <div className="newsroll_policy_list_tags">
           {item.tags.map((tag, index) => (
