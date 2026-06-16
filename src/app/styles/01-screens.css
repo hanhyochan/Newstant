@@ -3121,6 +3121,7 @@
 
     .wrapper_myActivity,
     .divider_mySection,
+    .newsroll_policy_itemDivider,
     .tab_myCategoryMenu,
     .container_myBlockedKeywordSection,
     .btn_mySettingRow,
@@ -3129,7 +3130,8 @@
         flex: 0 0 auto;
     }
 
-    .divider_mySection {
+    .divider_mySection,
+    .newsroll_policy_itemDivider {
         margin: 0;
         padding: 0;
         height: var(--border-1);
@@ -3673,7 +3675,8 @@
         background: var(--color-background-elevated-normal);
     }
 
-    .divider_infoSection {
+    .divider_infoSection,
+    .newsroll_policy_itemDivider {
         width: 100%;
         margin: 0;
         padding: 0;
@@ -3943,6 +3946,7 @@
     .newsroll_dark .newsroll_divider,
     .newsroll_dark .divider_mySection,
     .newsroll_dark .divider_commentItem,
+    .newsroll_dark .newsroll_policy_itemDivider,
     .newsroll_dark .newsroll_all_itemDivider {
         background: var(--newsroll-dark-line);
         border-color: var(--newsroll-dark-line);

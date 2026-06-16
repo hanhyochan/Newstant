@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 import {
   ChipLabel,
@@ -81,8 +88,8 @@ function SeparatedList<T>({
   return (
     <>
       {items.map((item, index) => (
-        <div className="wrapper_separatedItem" key={getKey(item, index)}>
-          {renderItem(item, index)}
+        <Fragment key={getKey(item, index)}>
+          <div className="wrapper_separatedItem">{renderItem(item, index)}</div>
           {index < items.length - 1 ? (
             <span
               aria-hidden="true"
@@ -90,7 +97,7 @@ function SeparatedList<T>({
               role="presentation"
             />
           ) : null}
-        </div>
+        </Fragment>
       ))}
     </>
   );
