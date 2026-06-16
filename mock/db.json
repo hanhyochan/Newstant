@@ -326,7 +326,15 @@
       "createdAt": "2026-06-05T06:37:48.580Z"
     }
   ],
-  "articleReactions": [],
+  "articleReactions": [
+    {
+      "id": "article-reaction-cbbc5040-9f1f-4f99-9d4a-736bfb0ba8b4",
+      "newsId": "news-006",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "neutral",
+      "createdAt": "2026-06-16T04:19:48.543Z"
+    }
+  ],
   "recentNewsViews": [
     {
       "id": "recent-f625c32f-1c3f-4a1a-b602-9d3ae4576e34",
@@ -380,49 +388,49 @@
       "id": "recent-b43c3d2b-ca13-4a7d-bde7-c6388b9b41ac",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-001",
-      "viewedAt": "2026-06-16T03:00:46.641Z"
+      "viewedAt": "2026-06-16T05:15:52.846Z"
     },
     {
       "id": "recent-993518cd-c298-4d5d-b559-d0e97c800d6b",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-002",
-      "viewedAt": "2026-06-16T03:00:46.653Z"
+      "viewedAt": "2026-06-16T05:15:52.851Z"
     },
     {
       "id": "recent-07b95f5d-526d-4f1c-875b-97a1f224f160",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-003",
-      "viewedAt": "2026-06-16T03:00:46.654Z"
+      "viewedAt": "2026-06-16T05:15:52.855Z"
     },
     {
       "id": "recent-05c264a9-f239-4225-963c-069d4a40eed8",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-006",
-      "viewedAt": "2026-06-16T03:00:46.662Z"
+      "viewedAt": "2026-06-16T05:15:52.868Z"
     },
     {
       "id": "recent-f321b1a2-74bb-4d41-b9d4-446780fccca7",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-007",
-      "viewedAt": "2026-06-16T03:00:46.663Z"
+      "viewedAt": "2026-06-16T05:15:52.862Z"
     },
     {
       "id": "recent-85767137-cb19-4528-a322-d561e549d323",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-008",
-      "viewedAt": "2026-06-16T03:00:46.677Z"
+      "viewedAt": "2026-06-16T05:15:52.870Z"
     },
     {
       "id": "recent-ecaeef41-987e-4033-867e-9ac3f6b6d24e",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-004",
-      "viewedAt": "2026-06-16T03:00:46.655Z"
+      "viewedAt": "2026-06-16T05:15:52.856Z"
     },
     {
       "id": "recent-8763ce45-cd8c-4238-9082-5993c0cb11cd",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-005",
-      "viewedAt": "2026-06-16T03:00:46.659Z"
+      "viewedAt": "2026-06-16T05:15:52.866Z"
     }
   ],
   "polls": [
@@ -596,6 +604,97 @@
       "replyCount": 0,
       "createdAt": "2026-06-16T03:02:17.193Z",
       "updatedAt": "2026-06-16T03:02:22.987Z"
+    },
+    {
+      "id": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": null,
+      "pollOptionId": null,
+      "content": "dk",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T04:41:58.020Z",
+      "updatedAt": "2026-06-16T04:41:58.020Z"
+    },
+    {
+      "id": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": null,
+      "pollOptionId": null,
+      "content": "왜 안돼",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T04:42:54.381Z",
+      "updatedAt": "2026-06-16T04:42:54.381Z"
+    },
+    {
+      "id": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "pollOptionId": null,
+      "content": "어쩌라고",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T04:43:08.075Z",
+      "updatedAt": "2026-06-16T04:43:08.075Z"
+    },
+    {
+      "id": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": null,
+      "pollOptionId": null,
+      "content": "ㄷㅇ",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T04:46:07.485Z",
+      "updatedAt": "2026-06-16T04:46:07.485Z"
+    },
+    {
+      "id": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "pollOptionId": null,
+      "content": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T04:46:16.052Z",
+      "updatedAt": "2026-06-16T04:46:16.052Z"
+    },
+    {
+      "id": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "pollOptionId": null,
+      "content": "할로",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T05:16:02.243Z",
+      "updatedAt": "2026-06-16T05:16:02.243Z"
+    },
+    {
+      "id": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "newsId": "news-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "parentId": null,
+      "pollOptionId": null,
+      "content": "ㅇㅇ",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-16T05:16:11.522Z",
+      "updatedAt": "2026-06-16T05:16:11.522Z"
     }
   ],
   "commentReactions": [],

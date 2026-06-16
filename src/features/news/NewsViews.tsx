@@ -114,7 +114,6 @@ type CommentScrollTarget = {
   bottomGap?: number;
   delayMs?: number;
   id: string;
-  stickToBottom?: boolean;
 };
 type ArticleDetailOpenOptions = {
   commentId?: CommentId;
@@ -1456,6 +1455,7 @@ function CommentReactionPanel({
   const commentEdit = useInlineTextEdit<CommentId>();
   const replyEdit = useInlineTextEdit<string>();
   const initialCommentScrollKeyRef = useRef<string | null>(null);
+  const replyComposerHistoryRef = useRef(false);
   const initialCommentTargetId =
     initialCommentId != null || initialReplyTargetId != null
       ? `${panelId}-comment-${initialCommentId ?? initialReplyTargetId}`
@@ -1642,19 +1642,6 @@ function CommentReactionPanel({
     return true;
   }
 
-  function scrollArticleToBottom() {
-    const articleScroller = getCommentScrollRoot();
-
-    if (!(articleScroller instanceof HTMLElement)) {
-      return;
-    }
-
-    scrollArticleTo(
-      articleScroller,
-      Math.max(0, articleScroller.scrollHeight - articleScroller.clientHeight),
-    );
-  }
-
   useEffect(() => {
     function closeCommentDropdowns(event: globalThis.PointerEvent) {
       const target = event.target;
@@ -1831,12 +1818,30 @@ function CommentReactionPanel({
     }
 
     setComposerHeight(0);
+    replyComposerHistoryRef.current = false;
     setComposerDraft("");
     setComposerMode("comment");
     commentEdit.cancelEdit();
     replyEdit.cancelEdit();
     setReplyTargetCommentId(null);
   }, [isComposerVisible]);
+
+  useEffect(() => {
+    function handleReplyComposerBack() {
+      if (!replyComposerHistoryRef.current) {
+        return;
+      }
+
+      setExpandedReplyId(null);
+      resetComposer();
+    }
+
+    window.addEventListener("popstate", handleReplyComposerBack);
+
+    return () => {
+      window.removeEventListener("popstate", handleReplyComposerBack);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     if (!isComposerVisible) {
@@ -1883,27 +1888,79 @@ function CommentReactionPanel({
     }
 
     const scrollTarget = pendingScrollTarget;
-    const timeout = window.setTimeout(() => {
-      if (scrollTarget.stickToBottom) {
-        scrollArticleToBottom();
-      } else {
-        scrollElementBottomIntoView(
-          scrollTarget.id,
-          scrollTarget.bottomGap,
-        );
+    let isCancelled = false;
+    let retryTimeout = 0;
+
+    const scrollToPendingTarget = (attempt = 0) => {
+      if (isCancelled) {
+        return;
       }
-      setPendingScrollTarget(null);
+
+      const didScroll = scrollElementBottomIntoView(
+        scrollTarget.id,
+        scrollTarget.bottomGap,
+      );
+
+      if (didScroll) {
+        setPendingScrollTarget(null);
+        return;
+      }
+
+      if (attempt >= 12) {
+        setPendingScrollTarget(null);
+        return;
+      }
+
+      retryTimeout = window.setTimeout(() => {
+        scrollToPendingTarget(attempt + 1);
+      }, 80);
+    };
+
+    const timeout = window.setTimeout(() => {
+      scrollToPendingTarget();
     }, scrollTarget.delayMs ?? commentScrollDelayMs);
 
-    return () => window.clearTimeout(timeout);
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(timeout);
+      window.clearTimeout(retryTimeout);
+    };
   }, [pendingScrollTarget]);
 
   function resetComposer() {
+    replyComposerHistoryRef.current = false;
     setComposerDraft("");
     setComposerMode("comment");
     commentEdit.cancelEdit();
     replyEdit.cancelEdit();
     setReplyTargetCommentId(null);
+  }
+
+  function activateReplyComposer(commentId: CommentId) {
+    commentEdit.cancelEdit();
+    replyEdit.cancelEdit();
+    setReplyTargetCommentId(commentId);
+    setComposerMode("reply");
+    setComposerDraft("");
+
+    if (!replyComposerHistoryRef.current) {
+      window.history.pushState(
+        { newsrollReplyComposer: true },
+        "",
+        window.location.href,
+      );
+      replyComposerHistoryRef.current = true;
+    }
+  }
+
+  function deactivateReplyComposer(shouldRestoreHistory = false) {
+    const shouldGoBack = shouldRestoreHistory && replyComposerHistoryRef.current;
+
+    resetComposer();
+
+    if (shouldGoBack) {
+      window.history.back();
+    }
   }
 
   function startEditComment(commentId: CommentId) {
@@ -1967,31 +2024,23 @@ function CommentReactionPanel({
     await reloadComments();
   }
 
-  function startReplyComposer(commentId: CommentId) {
-    if (!isComposerVisible) {
-      return;
-    }
-
-    commentEdit.cancelEdit();
-    replyEdit.cancelEdit();
-    setReplyTargetCommentId(commentId);
-    setExpandedReplyId(commentId);
-    setComposerMode("reply");
-    setComposerDraft("");
-    setPendingScrollTarget({
-      bottomGap: 0,
-      delayMs: nextArticleRevealDelayMs,
-      id: `${panelId}-reply-list-${commentId}`,
-    });
-  }
-
   function toggleReplyList(commentId: CommentId) {
     const isClosing = expandedReplyId === commentId;
 
     setExpandedReplyId(isClosing ? null : commentId);
 
     if (isClosing && replyTargetCommentId === commentId) {
-      resetComposer();
+      deactivateReplyComposer(true);
+      return;
+    }
+
+    if (!isClosing) {
+      activateReplyComposer(commentId);
+      setPendingScrollTarget({
+        bottomGap: 0,
+        delayMs: nextArticleRevealDelayMs,
+        id: `${panelId}-reply-list-${commentId}`,
+      });
     }
   }
 
@@ -2022,7 +2071,6 @@ function CommentReactionPanel({
       setPendingScrollTarget({
         bottomGap: 0,
         id: `${panelId}-reply-${createdReply.id}`,
-        stickToBottom: true,
       });
       setExpandedReplyId(targetComment.id);
       resetComposer();
@@ -2043,7 +2091,6 @@ function CommentReactionPanel({
     setPendingScrollTarget({
       bottomGap: 0,
       id: `${panelId}-comment-${createdComment.id}`,
-      stickToBottom: true,
     });
     resetComposer();
     await reloadComments();
@@ -2392,19 +2439,6 @@ function CommentReactionPanel({
                           role="region"
                         >
                           <div className="wrapper_commentRepliesInner">
-                            <Button
-                              className="btn_textAction"
-                              classNameOnly
-                              aria-controls={composerId}
-                              aria-pressed={
-                                composerMode === "reply" &&
-                                replyTargetCommentId === comment.id
-                              }
-                              onClick={() => startReplyComposer(comment.id)}
-                              type="button"
-                            >
-                              대댓글 달기
-                            </Button>
                             {commentReplies.map((reply, replyIndex) => {
                               const replyActionMenuId = `${panelId}-reply-action-${reply.id}`;
                               const replyActions = reply.isMine

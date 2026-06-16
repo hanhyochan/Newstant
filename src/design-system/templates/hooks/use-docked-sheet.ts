@@ -301,7 +301,7 @@ export function useDockedSheet({
 
     onWheelCapture?.(event);
 
-    if (event.defaultPrevented || !moveSheet(event.deltaY, "wheel")) {
+    if (event.defaultPrevented || event.isPropagationStopped() || !moveSheet(event.deltaY, "wheel")) {
       return;
     }
 
@@ -350,7 +350,7 @@ export function useDockedSheet({
 
     onTouchMoveCapture?.(event);
 
-    if (event.defaultPrevented) {
+    if (event.defaultPrevented || event.isPropagationStopped()) {
       touchYRef.current = currentY;
       return;
     }

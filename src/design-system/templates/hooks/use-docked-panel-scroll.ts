@@ -3,6 +3,7 @@
 import { useEffect, useRef, type RefObject, type TouchEvent, type WheelEvent } from "react";
 
 type BoundaryDirection = "end" | "start";
+type RoutedScrollResult = false | "handled" | "locked";
 type AdjacentPanels = {
   nextPanel: HTMLElement | null;
   previousPanel: HTMLElement | null;
@@ -15,6 +16,7 @@ type UseDockedPanelScrollOptions = {
   contentScrollerSelector?: string;
   dockedClassName: string;
   immediatePanelSelector?: string;
+  navigationLockSelector?: string;
   panelSelector: string;
   rootRef: RefObject<HTMLElement | null>;
   scrollerRef: RefObject<HTMLElement | null>;
@@ -25,6 +27,7 @@ export function useDockedPanelScroll({
   contentScrollerSelector,
   dockedClassName,
   immediatePanelSelector,
+  navigationLockSelector,
   panelSelector,
   rootRef,
   scrollerRef,
@@ -143,6 +146,10 @@ export function useDockedPanelScroll({
     immediatePanelSelector ? panel.matches(immediatePanelSelector) : false
   );
 
+  const isPanelNavigationLocked = (panel: HTMLElement) => (
+    navigationLockSelector ? panel.querySelector(navigationLockSelector) != null : false
+  );
+
   const isAtStart = (contentScroller: HTMLElement) => (
     contentScroller.scrollTop <= SCROLL_EDGE_THRESHOLD
   );
@@ -254,7 +261,7 @@ export function useDockedPanelScroll({
     return true;
   };
 
-  const routeDockedPanelScroll = (deltaY: number) => {
+  const routeDockedPanelScroll = (deltaY: number): RoutedScrollResult => {
     const scroller = scrollerRef.current;
     const isDocked = rootRef.current?.classList.contains(dockedClassName) ?? false;
 
@@ -276,7 +283,7 @@ export function useDockedPanelScroll({
 
       scroller.scrollTop = nextScrollTop;
       clearBoundary();
-      return true;
+      return "handled";
     }
 
     const { nextPanel, previousPanel } = getAdjacentPanels(panels, activePanel);
@@ -286,38 +293,55 @@ export function useDockedPanelScroll({
       return false;
     }
 
+    if (isPanelNavigationLocked(activePanel)) {
+      clearBoundary();
+      return "locked";
+    }
+
     const shouldScrollContent = !isImmediatePanel(activePanel);
     const maxScroll = getScrollLimit(activeContentScroller);
 
     if (!shouldScrollContent || maxScroll <= SCROLL_EDGE_THRESHOLD) {
-      return movePanelByDirection(deltaY, activePanel, previousPanel, nextPanel);
+      return movePanelByDirection(deltaY, activePanel, previousPanel, nextPanel)
+        ? "handled"
+        : false;
     }
 
     if (deltaY < 0) {
       if (!isAtStart(activeContentScroller)) {
-        return scrollPanelContent(activePanel, activeContentScroller, deltaY, maxScroll, "start");
+        return scrollPanelContent(activePanel, activeContentScroller, deltaY, maxScroll, "start")
+          ? "handled"
+          : false;
       }
 
-      return moveToAdjacentPanel(activePanel, previousPanel, "start", "end");
+      return moveToAdjacentPanel(activePanel, previousPanel, "start", "end")
+        ? "handled"
+        : false;
     }
 
     if (deltaY > 0) {
       if (!isAtEnd(activeContentScroller, maxScroll)) {
-        return scrollPanelContent(activePanel, activeContentScroller, deltaY, maxScroll, "end");
+        return scrollPanelContent(activePanel, activeContentScroller, deltaY, maxScroll, "end")
+          ? "handled"
+          : false;
       }
 
-      return moveToAdjacentPanel(activePanel, nextPanel, "end", "start");
+      return moveToAdjacentPanel(activePanel, nextPanel, "end", "start")
+        ? "handled"
+        : false;
     }
 
     return false;
   };
 
   const handleWheel = (event: WheelEvent<HTMLElement>) => {
-    if (!routeDockedPanelScroll(event.deltaY)) {
+    const routeResult = routeDockedPanelScroll(event.deltaY);
+
+    if (!routeResult) {
       return;
     }
 
-    if (event.cancelable) {
+    if (routeResult === "handled" && event.cancelable) {
       event.preventDefault();
     }
     event.stopPropagation();
@@ -338,7 +362,9 @@ export function useDockedPanelScroll({
 
     const deltaY = previousY - currentY;
 
-    if (routeDockedPanelScroll(deltaY)) {
+    const routeResult = routeDockedPanelScroll(deltaY);
+
+    if (routeResult) {
       event.stopPropagation();
     }
 
