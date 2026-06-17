@@ -1,14 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
-  Button,
-  Icon,
-  NewsRollDropdownArrow,
   PillTabMenu,
-  TextInput,
-  Textarea,
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
@@ -25,13 +20,21 @@ import {
 } from "@/design-system/templates";
 import {
   infoApi,
-  inquiryApi,
   type Faq,
   type InquiryType,
   type Notice,
 } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
+import {
+  InfoFaqSection,
+} from "@/features/info/components/InfoFaqSection";
+import {
+  InfoInquirySection,
+} from "@/features/info/components/InfoInquirySection";
+import {
+  InfoNoticeSection,
+  type InfoNoticeItem,
+} from "@/features/info/components/InfoNoticeSection";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
@@ -47,15 +50,6 @@ type PolicyItem = {
   registeredAt: string;
   summary: string;
   tags: string[];
-  title: string;
-  updatedAt: string;
-};
-
-type InfoNoticeItem = {
-  content: string;
-  date: string;
-  id: string;
-  summary: string;
   title: string;
   updatedAt: string;
 };
@@ -78,51 +72,6 @@ function formatPolicyDate(value: string) {
     month: "long",
     year: "numeric",
   }).format(date);
-}
-
-function getDataUnavailableMessage(target: string, particle = "을") {
-  return `${target}${particle} 불러오지 못했습니다.`;
-}
-
-function DataUnavailableMessage({
-  particle = "을",
-  target,
-}: {
-  particle?: string;
-  target: string;
-}) {
-  return <p className="text_commentEmpty">{getDataUnavailableMessage(target, particle)}</p>;
-}
-
-type SeparatedListProps<T> = {
-  dividerClassName?: string;
-  getKey: (item: T, index: number) => string;
-  items: T[];
-  renderItem: (item: T, index: number) => ReactNode;
-};
-
-function SeparatedList<T>({
-  dividerClassName = "newsroll_divider_horizontal",
-  getKey,
-  items,
-  renderItem,
-}: SeparatedListProps<T>) {
-  return (
-    <>
-      {items.map((item, index) => (
-        <div className="wrapper_separatedItem" key={getKey(item, index)}>
-          {renderItem(item, index)}
-          {index < items.length - 1 ? (
-            <span
-              aria-hidden="true"
-              className={`newsroll_divider newsroll_divider_horizontal ${dividerClassName}`}
-              role="presentation"
-            />
-          ) : null}
-        </div>
-      ))}
-    </>
-  );
 }
 
 function getNoticeDateLabel(date: string) {
@@ -155,238 +104,6 @@ function getNoticeDetailItem(notice: InfoNoticeItem): PolicyItem {
     title: notice.title,
     updatedAt: notice.updatedAt,
   };
-}
-
-function InfoNoticeSection({
-  items,
-  onNoticeSelect,
-}: {
-  items: InfoNoticeItem[];
-  onNoticeSelect: (notice: InfoNoticeItem, index: number) => void;
-}) {
-  return (
-    <section className="container_infoList" aria-label="공지사항">
-      {items.length === 0 ? (
-        <DataUnavailableMessage target="공지사항" />
-      ) : (
-        <SeparatedList
-          dividerClassName="divider_infoSection"
-          getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
-          items={items}
-          renderItem={(notice, index) => (
-            <button
-              className="btn_infoNoticeItem"
-              onClick={() => onNoticeSelect(notice, index)}
-              type="button"
-            >
-              <div className="wrapper_infoNoticeContent">
-                <span className="text_infoItemTitle">{notice.title}</span>
-                <p className="text_infoBody text_lineClamp2">
-                  {notice.summary}
-                </p>
-                <span className="text_infoMeta">{notice.date}</span>
-              </div>
-            </button>
-          )}
-        />
-      )}
-    </section>
-  );
-}
-
-function InfoFaqSection({ items }: { items: Faq[] }) {
-  const [openFaqIndexes, setOpenFaqIndexes] = useState<Set<number>>(
-    () => new Set(),
-  );
-
-  return (
-    <section className="container_infoList" aria-label="FAQ">
-      {items.length === 0 ? (
-        <DataUnavailableMessage target="FAQ" />
-      ) : (
-        <SeparatedList
-          dividerClassName="divider_infoSection"
-          getKey={(item, index) => `${item.question}-${index}`}
-          items={items}
-          renderItem={(item, index) => (
-            <details
-              className="container_infoFaqItem"
-              onToggle={(event) => {
-                const isOpen = event.currentTarget.open;
-
-                setOpenFaqIndexes((current) => {
-                  const next = new Set(current);
-
-                  if (isOpen) {
-                    next.add(index);
-                  } else {
-                    next.delete(index);
-                  }
-
-                  return next;
-                });
-              }}
-              open={openFaqIndexes.has(index)}
-            >
-              <summary className="btn_infoFaqSummary">
-                <span className="text_infoItemTitle">Q. {item.question}</span>
-                <span className="icon_infoChevron" aria-hidden="true" />
-              </summary>
-              <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
-            </details>
-          )}
-        />
-      )}
-    </section>
-  );
-}
-
-function InfoInquirySection({ items }: { items: InquiryType[] }) {
-  const [selectedInquiryType, setSelectedInquiryType] = useState(
-    items[0]?.label ?? "",
-  );
-  const [inquiryTitle, setInquiryTitle] = useState("");
-  const [inquiryContent, setInquiryContent] = useState("");
-  const [inquiryStatus, setInquiryStatus] = useState<"error" | "sent" | "sending" | null>(
-    null,
-  );
-  const [isInquiryTypeOpen, setIsInquiryTypeOpen] = useState(false);
-  const inquiryTypeMenuId = "info-inquiry-type-menu";
-
-  useEffect(() => {
-    if (items.length > 0 && !items.some((item) => item.label === selectedInquiryType)) {
-      setSelectedInquiryType(items[0].label);
-    }
-  }, [items, selectedInquiryType]);
-
-  if (items.length === 0) {
-    return (
-      <section className="container_infoList" aria-label="1:1 문의">
-        <DataUnavailableMessage target="문의 유형" />
-      </section>
-    );
-  }
-
-  return (
-    <form
-      className="wrapper_infoInquiry"
-      aria-label="1:1 문의"
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        const selectedType = items.find((item) => item.label === selectedInquiryType);
-
-        if (!selectedType || !inquiryTitle.trim() || !inquiryContent.trim()) {
-          setInquiryStatus("error");
-          return;
-        }
-
-        setInquiryStatus("sending");
-        inquiryApi
-          .createInquiry({
-            content: inquiryContent.trim(),
-            title: inquiryTitle.trim(),
-            typeId: selectedType.id,
-            userId: currentUserId,
-          })
-          .then(() => {
-            setInquiryTitle("");
-            setInquiryContent("");
-            setInquiryStatus("sent");
-          })
-          .catch(() => {
-            setInquiryStatus("error");
-          });
-      }}
-    >
-      <label className="wrapper_infoField">
-        <span className="text_infoFieldLabel">문의 유형</span>
-        <div className="wrapper_infoSelectControl">
-          <button
-            aria-controls={isInquiryTypeOpen ? inquiryTypeMenuId : undefined}
-            aria-expanded={isInquiryTypeOpen}
-            aria-haspopup="listbox"
-            aria-label="문의 유형"
-            className="btn_commentDropdown select_infoField"
-            onClick={() => setIsInquiryTypeOpen((current) => !current)}
-            type="button"
-          >
-            {selectedInquiryType}
-            <NewsRollDropdownArrow />
-          </button>
-          {isInquiryTypeOpen ? (
-            <div
-              className="listbox_commentDropdown listbox_infoInquiryType"
-              id={inquiryTypeMenuId}
-              role="listbox"
-            >
-              {items.map((type) => (
-                <button
-                  aria-selected={selectedInquiryType === type.label}
-                  key={type.id}
-                  onClick={() => {
-                    setSelectedInquiryType(type.label);
-                    setIsInquiryTypeOpen(false);
-                  }}
-                  role="option"
-                  type="button"
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      </label>
-      <div className="wrapper_infoField">
-        <span className="text_infoFieldLabel">제목</span>
-        <TextInput
-          aria-label="문의 제목"
-          onChange={(event) => setInquiryTitle(event.target.value)}
-          placeholder="문의 제목을 입력해주세요."
-          inputSize="large"
-          radius="rounded"
-          type="text"
-          value={inquiryTitle}
-          variant="outline"
-          wrapperClassName="input_commentComposer"
-        />
-      </div>
-      <div className="wrapper_infoField">
-        <span className="text_infoFieldLabel">내용</span>
-        <Textarea
-          aria-label="문의 내용"
-          className="textarea_infoComposer"
-          onChange={(event) => setInquiryContent(event.target.value)}
-          placeholder="문의 내용을 자세히 작성해주세요."
-          radius="rounded"
-          rows={7}
-          textareaSize="large"
-          value={inquiryContent}
-        />
-      </div>
-      {inquiryStatus === "sent" ? (
-        <p className="text_infoSubmitStatus" role="status">
-          문의가 접수되었습니다.
-        </p>
-      ) : null}
-      {inquiryStatus === "error" ? (
-        <p className="text_infoSubmitStatus is_error" role="alert">
-          문의 내용을 확인해주세요.
-        </p>
-      ) : null}
-      <Button
-        className="btn_infoSubmit"
-        disabled={inquiryStatus === "sending"}
-        radius="rounded"
-        size="large"
-        type="submit"
-      >
-        <Icon name="submit" />
-        {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}
-      </Button>
-    </form>
-  );
 }
 
 export function InfoView({

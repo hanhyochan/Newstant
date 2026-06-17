@@ -23,7 +23,10 @@ import {
   type Comment,
   type NewsListItem
 } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
+import {
+  currentUserId,
+  getCurrentUserSnapshot,
+} from "@/app/_newsroll/auth/current-user";
 import {
   ArticleActionButtons,
   BreakingNewsCardLink,
@@ -74,6 +77,7 @@ import {
   type CommentItem,
   type CommentReactionValue,
 } from "@/features/comments/utils/comment-data";
+import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
 export type Tab = "home" | "all" | "policy" | "my" | "info";
@@ -694,6 +698,8 @@ function HomeMainHeader({
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls) {
+  const currentUser = getCurrentUserSnapshot();
+
   return (
       <NewsRollSummaryHeroTop
         footer={
@@ -758,7 +764,7 @@ function HomeMainHeader({
           count: formatHeroCount(newsCount),
           greeting: (
             <>
-              반갑습니다 <strong>콩콩이</strong>님!
+              반갑습니다 <strong>{currentUser.nickname}</strong>님!
             </>
           ),
           unit: "개",
@@ -2894,24 +2900,6 @@ export function ArticleDetailContent({
   );
 }
 
-export function getDataUnavailableMessage(target: string, particle = "을") {
-  return `${target}${particle} 불러오지 못했습니다.`;
-}
-
-export function DataUnavailableMessage({
-  particle,
-  target,
-}: {
-  particle?: string;
-  target: string;
-}) {
-  return (
-    <p className="text_commentEmpty">
-      {getDataUnavailableMessage(target, particle)}
-    </p>
-  );
-}
-
 export function NewsRollStateCard({
   children,
   role,
@@ -2941,44 +2929,6 @@ export function AllNewsMeta() {
   );
 }
 
-export function AllNewsMoreButton({
-  ariaLabel,
-  collapsedLabel = "더보기",
-  expanded = false,
-  expandedLabel = "접기",
-  onClick,
-  showIcon = true,
-  tone = "light",
-}: {
-  ariaLabel?: string;
-  collapsedLabel?: string;
-  expanded?: boolean;
-  expandedLabel?: string;
-  onClick?: () => void;
-  showIcon?: boolean;
-  tone?: "dark" | "light";
-}) {
-  return (
-    <button
-      aria-label={ariaLabel}
-      aria-expanded={showIcon ? expanded : undefined}
-      className={`btn_originalArticle newsroll_all_more newsroll_all_more_${tone}`}
-      onClick={onClick}
-      type="button"
-    >
-      <span>{expanded ? expandedLabel : collapsedLabel}</span>
-      {showIcon ? (
-        <img
-          className="newsroll_icon_image newsroll_all_more_icon"
-          src="/icons/icon_chevron_right.svg"
-          alt=""
-          aria-hidden="true"
-        />
-      ) : null}
-    </button>
-  );
-}
-
 type AllNewsPanelContentProps = HTMLAttributes<HTMLDivElement>;
 
 function AllNewsPanelContent({
@@ -2994,31 +2944,6 @@ function AllNewsPanelContent({
     <div className={classNames} {...props}>
       {children}
     </div>
-  );
-}
-
-type SeparatedListProps<T> = {
-  dividerClassName: string;
-  getKey: (item: T, index: number) => string;
-  items: T[];
-  renderItem: (item: T, index: number) => ReactNode;
-};
-
-export function SeparatedList<T>({
-  dividerClassName,
-  getKey,
-  items,
-  renderItem,
-}: SeparatedListProps<T>) {
-  return (
-    <>
-      {items.map((item, index) => (
-        <Fragment key={getKey(item, index)}>
-          {index > 0 ? <NewsRollDivider className={dividerClassName} /> : null}
-          {renderItem(item, index)}
-        </Fragment>
-      ))}
-    </>
   );
 }
 

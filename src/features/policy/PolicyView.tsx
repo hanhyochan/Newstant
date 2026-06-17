@@ -1,15 +1,14 @@
 "use client";
 
 import {
-  Fragment,
   useCallback,
   useEffect,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
 
 import { welfareApi, type WelfarePolicy } from "@/app/_newsroll/api";
+import { getCurrentUserSnapshot } from "@/app/_newsroll/auth/current-user";
 import {
   ChipLabel,
   NewsRollDropdownArrow,
@@ -29,6 +28,8 @@ import {
   useEnterFromRightExitMotion
 } from "@/design-system/templates";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
+import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
+import { SeparatedList } from "@/features/shared/SeparatedList";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
 type SortOrder = "popular" | "latest";
@@ -53,51 +54,6 @@ type BodySearchSelection =
 
 function formatHeroCount(count: number) {
   return new Intl.NumberFormat("ko-KR").format(count);
-}
-
-function getDataUnavailableMessage(target: string, particle = "을") {
-  return `${target}${particle} 불러오지 못했습니다.`;
-}
-
-function DataUnavailableMessage({
-  particle = "을",
-  target,
-}: {
-  particle?: string;
-  target: string;
-}) {
-  return <p className="text_commentEmpty">{getDataUnavailableMessage(target, particle)}</p>;
-}
-
-type SeparatedListProps<T> = {
-  dividerClassName?: string;
-  getKey: (item: T, index: number) => string;
-  items: T[];
-  renderItem: (item: T, index: number) => ReactNode;
-};
-
-function SeparatedList<T>({
-  dividerClassName = "newsroll_divider_horizontal",
-  getKey,
-  items,
-  renderItem,
-}: SeparatedListProps<T>) {
-  return (
-    <>
-      {items.map((item, index) => (
-        <Fragment key={getKey(item, index)}>
-          <div className="wrapper_separatedItem">{renderItem(item, index)}</div>
-          {index < items.length - 1 ? (
-            <span
-              aria-hidden="true"
-              className={`newsroll_divider newsroll_divider_horizontal ${dividerClassName}`}
-              role="presentation"
-            />
-          ) : null}
-        </Fragment>
-      ))}
-    </>
-  );
 }
 
 const policyAgeTabs = ["전체", "미성년", "청년", "중장년", "노년"];
@@ -225,6 +181,7 @@ export function PolicyView({
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
+  const currentUser = getCurrentUserSnapshot();
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
   const [detailItem, setDetailItem] = useState<PolicyItem | null>(
     bodySearchSelection?.kind === "policy" ? bodySearchSelection.policy : null,
@@ -393,7 +350,7 @@ export function PolicyView({
             caption: "국가정책 정보가 있습니다.",
             className: "newsroll_policy_hero",
             count: formatHeroCount(policyTotalCount),
-            greeting: "콩콩이님을 위한",
+            greeting: `${currentUser.nickname}님을 위한`,
             unit: "개",
           }}
         />
@@ -482,6 +439,7 @@ export function PolicyView({
                 ) : (
                   <SeparatedList
                     dividerClassName="newsroll_policy_itemDivider"
+                    dividerPlacement="after-wrapped-item"
                     getKey={(item, index) =>
                       `${activeAge}-${sortOrder}-${item.title}-${index}`
                     }

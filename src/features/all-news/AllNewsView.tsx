@@ -37,16 +37,16 @@ import {
   useEnterFromRightExitMotion
 } from "@/design-system/templates";
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
+import { MoreActionButton } from "@/features/shared/MoreActionButton";
+import { SeparatedList } from "@/features/shared/SeparatedList";
 
 import {
   AllNewsHeadlineItem,
   AllNewsLatestCard,
-  AllNewsMoreButton,
   AllNewsRelayItem,
   AllNewsSectionPanel,
   ArticleDetailContent,
-  DataUnavailableMessage,
-  SeparatedList,
   allNewsDockedScrollSelectors,
   allNewsPresses,
   allNewsRelayCategories,
@@ -522,7 +522,7 @@ export function AllNewsView({
                 <DataUnavailableMessage target="속보" />
               )}
             </div>
-            <AllNewsMoreButton
+            <MoreActionButton
               ariaLabel={showAllBreaking ? "속보 접기" : "속보 더보기"}
               expanded={showAllBreaking}
               onClick={() => setShowAllBreaking((current) => !current)}
@@ -648,7 +648,7 @@ export function AllNewsView({
                 {headlineItems.length === 0 ? (
                   <DataUnavailableMessage target="언론사별 헤드라인" />
                 ) : canExpandHeadlines ? (
-                  <AllNewsMoreButton
+                  <MoreActionButton
                     ariaLabel={
                       showAllHeadlines
                         ? "언론사별 헤드라인 접기"

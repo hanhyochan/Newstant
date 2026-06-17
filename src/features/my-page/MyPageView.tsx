@@ -1,15 +1,11 @@
 "use client";
 
 import {
-  Fragment,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
-  type MouseEvent,
-  type ReactNode
 } from "react";
 
 import {
@@ -26,19 +22,16 @@ import {
   type UserNewsViewTime,
   type UserPreference
 } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
+import {
+  currentUserId,
+  getCurrentUserSnapshot,
+} from "@/app/_newsroll/auth/current-user";
 import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import {
-  Button,
-  ChipLabel,
-  Icon,
   IconButton,
   NewsBlockItem,
   NewsRollDivider,
-  NewsRollSwitch,
-  PillTabMenu,
-  ReactionButton,
-  TextInput
+  ReactionButton
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
@@ -46,7 +39,6 @@ import {
   NewsRollDockedControls,
   NewsRollHeaderTop,
   NewsRollPagePanel,
-  getEnterFromRightMotionClassName,
   newsrollHomeDockedScrollSelectors as homeDockedScrollSelectors,
   newsrollNewsFeedDetailSelector,
   newsrollPagePanelContentSelector as pagePanelContentSelector,
@@ -58,60 +50,54 @@ import {
 } from "@/design-system/templates";
 import {
   getCommentItemFromApi,
-  type CommentId,
-  type CommentItem
+  type CommentId
 } from "@/features/comments/utils/comment-data";
+import { MySettingRow } from "@/features/my-page/components/MySettingRow";
+import {
+  MyBookmarkDetailPage,
+  type MyBookmarkNewsSummaryItem,
+  type MyBookmarkPolicySummaryItem,
+  type MyBookmarkSummaryItem,
+} from "@/features/my-page/detail/MyBookmarkDetailPage";
+import {
+  MyCommentDetailPage,
+  type MyCommentKind,
+  type MyCommentSummaryItem,
+} from "@/features/my-page/detail/MyCommentDetailPage";
+import { MyCustomNewsSettingsPage } from "@/features/my-page/detail/MyCustomNewsSettingsPage";
+import { MyNewsViewTimePage } from "@/features/my-page/detail/MyNewsViewTimePage";
+import { MyProfileSettingsPage } from "@/features/my-page/detail/MyProfileSettingsPage";
+import {
+  MyRecentDetailPage,
+  createMyRecentArticle,
+  type MyRecentSummaryItem,
+} from "@/features/my-page/detail/MyRecentDetailPage";
+import {
+  MyVoteDetailPage,
+  type MyVoteSummaryItem,
+} from "@/features/my-page/detail/MyVoteDetailPage";
 import { buildMyActivitySummary } from "@/features/my-page/utils/my-activity-summary";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
 import {
-  AllNewsArticlePreview,
-  AllNewsHeadlineItem,
-  AllNewsMoreButton,
-  AllNewsRelayItem,
   ArticleDetailContent,
-  ArticleGuideOptionButton,
-  ClientPortal,
-  DataUnavailableMessage,
-  NewsCreatedTime,
-  SeparatedList,
-  allNewsLatest,
-  articleImage,
   binaryGuideOptions,
-  commentReplyTemplates,
-  createAllNewsArticle,
-  defaultNewsDateLabel,
-  defaultNewsDateTime,
   formatNewsDate,
   getAllNewsPreviewFromArticle,
   getHomeArticleFromNews,
-  getVisibleReactionCount,
   guideOptions,
-  homeArticle,
-  homeArticles,
   type ArticleDetailOpenOptions,
   type BlockedKeywordSetting,
-  type CommentReplyItem,
   type HomeArticle,
   type OpenArticleDetail,
   type PolicyItem,
   type QuickMenuRequest,
   type Tab
 } from "@/features/news/NewsViews";
+import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
+import { MoreActionButton } from "@/features/shared/MoreActionButton";
 
-const myRecentNews = Array.from({ length: 12 }, (_, index) => ({
-  dateTime: defaultNewsDateTime,
-  image: articleImage,
-  time: defaultNewsDateLabel,
-  title:
-    index % 2 === 0
-      ? "용인 수지, 강남·분당 가격 동조화로..."
-      : "APEC, 국익에 도움됐다 74%...",
-}));
-type MyRecentSummaryItem = (typeof myRecentNews)[number] & {
-  article: HomeArticle;
-};
 const myRecentPreviewLimit = 10;
 
 const myCategoryGroups = [
@@ -207,192 +193,9 @@ type MyPageDetailView =
   | MySummaryView
   | null;
 
-function BlockedKeywordDialog({
-  onCancel,
-  onInputChange,
-  onSave,
-  value,
-}: {
-  onCancel: () => void;
-  onInputChange: (value: string) => void;
-  onSave: () => void;
-  value: string;
-}) {
-  useEffect(() => {
-    function closeOnEscape(event: globalThis.KeyboardEvent) {
-      if (event.key === "Escape") {
-        onCancel();
-      }
-    }
-
-    document.addEventListener("keydown", closeOnEscape);
-
-    return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [onCancel]);
-
-  return (
-    <ClientPortal>
-      <div
-        className="container_myKeywordOverlay"
-        onClick={onCancel}
-        role="presentation"
-      >
-        <section
-          aria-labelledby="my-blocked-keyword-dialog-title"
-          aria-modal="true"
-          className="container_myKeywordDialog"
-          onClick={(event) => event.stopPropagation()}
-          role="dialog"
-        >
-          <h2
-            className="text_myKeywordDialogTitle"
-            id="my-blocked-keyword-dialog-title"
-          >
-            가리고 싶은 키워드
-          </h2>
-          <form
-            className="form_myKeywordDialog"
-            onSubmit={(event) => {
-              event.preventDefault();
-              onSave();
-            }}
-          >
-            <div className="wrapper_myKeywordInput">
-              <TextInput
-                aria-label="가리고 싶은 키워드 입력"
-                onChange={(event) => onInputChange(event.target.value)}
-                placeholder="키워드를 입력해주세요"
-                inputSize="large"
-                radius="rounded"
-                type="text"
-                value={value}
-                variant="outline"
-                wrapperClassName="input_commentComposer"
-              />
-            </div>
-            <div className="wrapper_commentEditActions">
-              <Button
-                className="btn_commentEditSave"
-                radius="rounded"
-                size="large"
-                type="submit"
-                variant="filled"
-              >
-                저장
-              </Button>
-              <Button
-                className="btn_commentEditCancel"
-                onClick={onCancel}
-                radius="rounded"
-                size="large"
-                type="button"
-                variant="filled"
-              >
-                취소
-              </Button>
-            </div>
-          </form>
-        </section>
-      </div>
-    </ClientPortal>
-  );
-}
-
-function BlockedKeywordSettingsSection({
-  blockedKeywordSettings,
-  inputValue,
-  isDialogOpen,
-  onCancelDialog,
-  onInputChange,
-  onKeywordDelete,
-  onKeywordToggle,
-  onOpenDialog,
-  onSaveKeyword,
-}: {
-  blockedKeywordSettings: BlockedKeywordSetting[];
-  inputValue: string;
-  isDialogOpen: boolean;
-  onCancelDialog: () => void;
-  onInputChange: (value: string) => void;
-  onKeywordDelete: (keyword: string) => void;
-  onKeywordToggle: (keyword: string) => void;
-  onOpenDialog: () => void;
-  onSaveKeyword: () => void;
-}) {
-  const keywordTabs = blockedKeywordSettings.map((setting) => ({
-    id: setting.keyword,
-    label: setting.keyword,
-  }));
-
-  return (
-    <section
-      aria-label="가리고 싶은 키워드 설정"
-      className="container_myBlockedKeywordSection"
-    >
-      <h2 className="text_mySectionTitle">가리고 싶은 키워드</h2>
-      <p className="text_myBlockedKeywordDescription">
-        맞춤 뉴스, 전체 뉴스에 모두 적용되며 해당 키워드를 가진 뉴스는 검색되지 않습니다.
-      </p>
-      <div
-        aria-label="등록된 가리고 싶은 키워드"
-        className="wrapper_myBlockedKeywordChips"
-        role="group"
-      >
-        <div className="wrapper_myBlockedKeywordTabs">
-          {keywordTabs.length > 0 ? (
-            <PillTabMenu
-              ariaLabel="가리고 싶은 키워드"
-              className="tab_myCategoryMenu tab_myBlockedKeywordMenu"
-              getItemState={(keyword) =>
-                blockedKeywordSettings.find((setting) => setting.keyword === keyword)?.isActive
-                  ? "active"
-                  : "default"
-              }
-              getItemWrapperClassName={() => "wrapper_myBlockedKeywordTab"}
-              items={keywordTabs}
-              keyboardNavigation={false}
-              onChange={onKeywordToggle}
-              renderItemAddon={(item, state) =>
-                state === "default" ? (
-                  <button
-                    aria-label={`${item.label} 키워드 삭제`}
-                    className="btn_myBlockedKeywordDelete"
-                    onClick={() => onKeywordDelete(item.id)}
-                    type="button"
-                  >
-                    <span aria-hidden="true" />
-                  </button>
-                ) : null
-              }
-              role="group"
-              value={keywordTabs[0]?.id ?? ""}
-            />
-          ) : null}
-        </div>
-        <button
-          aria-label="가리고 싶은 키워드 추가"
-          className="btn_myBlockedKeywordAdd"
-          onClick={onOpenDialog}
-          type="button"
-        >
-          <Icon name="plus" />
-        </button>
-      </div>
-      {isDialogOpen ? (
-        <BlockedKeywordDialog
-          onCancel={onCancelDialog}
-          onInputChange={onInputChange}
-          onSave={onSaveKeyword}
-          value={inputValue}
-        />
-      ) : null}
-    </section>
-  );
-}
-
-const mySummaryAllTabLabel = "전체";const myVotePercents = [64, 48, 72, 57, 81];
+const mySummaryAllTabLabel = "전체";
+const myVoteCategoryTabs = [mySummaryAllTabLabel];
+const myBookmarkTabs = ["뉴스", "국가정책"] as const;
 const myCommentTabs = [
   { id: "all", label: "전체" },
   { id: "comment", label: "댓글" },
@@ -409,66 +212,6 @@ function getMySummaryCategoryTabs(items: { category: string }[]) {
     ...getUniqueValues(items.map((item) => item.category)),
   ];
 }
-
-function isMySummaryAllCategory(category: string) {
-  return category === mySummaryAllTabLabel;
-}
-
-function getMySummaryItemsByCategory<T extends { category: string }>(
-  items: T[],
-  category: string,
-) {
-  return isMySummaryAllCategory(category)
-    ? items
-    : items.filter((item) => item.category === category);
-}
-
-const myVoteItems = allNewsLatest.map((item, index) => ({
-  article: createAllNewsArticle(item, item.category, index),
-  category: item.category,
-  headline: item,
-  isBinary: false,
-  percent: myVotePercents[index % myVotePercents.length],
-  pollTitle: item.title,
-  selectedOption: guideOptions[index % guideOptions.length],
-  title: item.title,
-}));
-const myVoteCategoryTabs = getMySummaryCategoryTabs(myVoteItems);
-const myBookmarkTabs = ["뉴스", "국가정책"] as const;
-type MyBookmarkNewsSummaryItem = AllNewsArticlePreview & {
-  bookmarkType: "news";
-  category: typeof myBookmarkTabs[0];
-  newsCategory: string;
-};
-type MyBookmarkPolicySummaryItem = {
-  bookmarkType: "policy";
-  category: typeof myBookmarkTabs[1];
-  policy: PolicyItem;
-  summary: string;
-  tags: string[];
-  title: string;
-};
-type MyBookmarkSummaryItem =
-  | MyBookmarkNewsSummaryItem
-  | MyBookmarkPolicySummaryItem;
-type MyCommentKind = (typeof myCommentTabs)[number]["id"];
-type MyVoteSummaryItem = {
-  article: HomeArticle;
-  category: string;
-  headline: AllNewsArticlePreview & { category: string };
-  isBinary: boolean;
-  percent: number;
-  pollTitle: string;
-  selectedOption: string;
-  title: string;
-};type MyCommentSummaryItem = {
-  article: HomeArticle;
-  category: string;
-  comment: CommentItem;
-  commentKind: Exclude<MyCommentKind, "all">;
-  headline: AllNewsArticlePreview & { category: string };
-  targetCommentId: CommentId;
-};
 
 function hasMultipleMySummaryCategories(items: { category: string }[]) {
   return getUniqueValues(items.map((item) => item.category)).length > 1;
@@ -534,492 +277,6 @@ function getPolicyBookmarkItem(policy: {
     title: policy.title,
     updatedAt: formatPolicyBookmarkDate(policy.updatedAt),
   };
-}
-
-type MySettingRowProps = {
-  checked?: boolean;
-  label: string;
-  onClick?: () => void;
-  showChevron?: boolean;
-};
-
-function MySettingRow({
-  checked,
-  label,
-  onClick,
-  showChevron = false,
-}: MySettingRowProps) {
-  const className = `btn_mySettingRow${showChevron ? " btn_mySettingRowLink" : ""}`;
-
-  return (
-    <button
-      aria-pressed={checked}
-      className={className}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="text_mySettingLabel">{label}</span>
-      {typeof checked === "boolean" ? <NewsRollSwitch checked={checked} /> : null}
-      {showChevron ? <span className="icon_myChevron" aria-hidden="true" /> : null}
-    </button>
-  );
-}
-
-function createMyRecentArticle(
-  item: MyRecentSummaryItem,
-  index: number,
-): HomeArticle {
-  const fallbackArticle = homeArticles[index % homeArticles.length] ?? homeArticle;
-
-  return {
-    ...fallbackArticle,
-    ...item.article,
-    date: item.time,
-    image: item.image,
-    imageAlt: item.article.imageAlt,
-    title: item.title,
-  };
-}
-
-function MyRecentDetailPage({
-  items,
-  isLeaving = false,
-  onOpenArticle,
-}: {
-  items: MyRecentSummaryItem[];
-  isLeaving?: boolean;
-  onOpenArticle: OpenArticleDetail;
-}) {
-  return (
-    <div
-      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
-    >
-      <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
-      {items.length === 0 ? (
-        <DataUnavailableMessage target="최근 본 뉴스" />
-      ) : (
-        <SeparatedList
-          dividerClassName="newsroll_all_itemDivider"
-          getKey={(item, index) => `${item.title}-${index}`}
-          items={items}
-          renderItem={(item, index) => (
-            <AllNewsRelayItem
-              featured={index === 0 || index === 5}
-              item={item}
-              onClick={() => onOpenArticle(createMyRecentArticle(item, index))}
-            />
-          )}
-        />
-      )}
-    </div>
-  );
-}
-
-function MyBookmarkDetailPage({
-  activeCategory,
-  items,
-  isLeaving = false,
-  onCategoryChange,
-  onOpenArticle,
-  onOpenPolicy,
-  showTabs,
-  tabs,
-}: {
-  activeCategory: string;
-  items: MyBookmarkSummaryItem[];
-  isLeaving?: boolean;
-  onCategoryChange: (category: string) => void;
-  onOpenArticle: OpenArticleDetail;
-  onOpenPolicy: (policy: PolicyItem) => void;
-  showTabs: boolean;
-  tabs: string[];
-}) {
-  const visibleBookmarkItems = getMySummaryItemsByCategory(
-    items,
-    activeCategory,
-  );
-
-  return (
-    <div
-      className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
-    >
-      <h2 className="text_mySectionTitle">북마크</h2>
-      {showTabs ? (
-        <PillTabMenu
-          ariaLabel="북마크 뉴스 카테고리"
-          className="tab_myCategoryMenu"
-          items={tabs.map((category) => ({
-            id: category,
-            label: category,
-          }))}
-          onChange={onCategoryChange}
-          value={activeCategory}
-        />
-      ) : null}
-      {visibleBookmarkItems.length === 0 ? (
-        <DataUnavailableMessage target="북마크" />
-      ) : (
-        <SeparatedList
-          dividerClassName="newsroll_all_itemDivider"
-          getKey={(item, index) => `${item.title}-${index}`}
-          items={visibleBookmarkItems}
-          renderItem={(item, index) => (
-            item.bookmarkType === "news" ? (
-              <AllNewsRelayItem
-                featured={index === 0 || index === 5}
-                item={item}
-                onClick={() =>
-                  onOpenArticle(
-                    createAllNewsArticle(item, item.newsCategory, index),
-                  )
-                }
-              />
-            ) : (
-              <button
-                className="newsroll_policy_list_item"
-                onClick={() => onOpenPolicy(item.policy)}
-                type="button"
-              >
-                <div className="newsroll_policy_list_tags">
-                  {item.tags.map((tag, tagIndex) => (
-                    <ChipLabel
-                      kind={tagIndex === item.tags.length - 1 ? "policyAccent" : "policy"}
-                      key={`${item.title}-${tag}`}
-                    >
-                      {tag}
-                    </ChipLabel>
-                  ))}
-                </div>
-                <div className="wrapper_policyItemContent">
-                  <h2>{item.title}</h2>
-                  <p className="text_infoBody text_lineClamp2">{item.summary}</p>
-                </div>
-              </button>
-            )
-          )}
-        />
-      )}
-    </div>
-  );
-}
-
-function MyVoteDetailPage({
-  activeCategory,
-  items,
-  isLeaving = false,
-  onCategoryChange,
-  onOpenArticle,
-  showTabs,
-  tabs,
-}: {
-  activeCategory: string;
-  items: MyVoteSummaryItem[];
-  isLeaving?: boolean;
-  onCategoryChange: (category: string) => void;
-  onOpenArticle: OpenArticleDetail;
-  showTabs: boolean;
-  tabs: string[];
-}) {
-  const visibleVoteItems = getMySummaryItemsByCategory(
-    items,
-    activeCategory,
-  );
-
-  return (
-    <div
-      className={`container_myVotePage ${getEnterFromRightMotionClassName(isLeaving)}`}
-    >
-      <h2 className="text_mySectionTitle">투표</h2>
-      {showTabs ? (
-        <PillTabMenu
-          ariaLabel="내가 참여한 투표 카테고리"
-          className="tab_myCategoryMenu"
-          items={tabs.map((category) => ({
-            id: category,
-            label: category,
-          }))}
-          onChange={onCategoryChange}
-          value={activeCategory}
-        />
-      ) : null}
-      <div className="wrapper_myVoteList">
-        {visibleVoteItems.length === 0 ? (
-          <DataUnavailableMessage target="투표" />
-        ) : (
-          <SeparatedList
-            dividerClassName="divider_mySection"
-            getKey={(item, index) => `${item.title}-${index}`}
-            items={visibleVoteItems}
-            renderItem={(item) => (
-              <article className="wrapper_myVoteItem">
-                <AllNewsHeadlineItem
-                  item={item.headline}
-                  onClick={() =>
-                    onOpenArticle(item.article, { scrollTarget: "poll" })
-                  }
-                />
-                <strong className="text_myVoteQuestion">{item.pollTitle}</strong>
-                <ArticleGuideOptionButton
-                  isSelected
-                  label={item.selectedOption}
-                  onClick={() =>
-                    onOpenArticle(item.article, { scrollTarget: "poll" })
-                  }
-                  percent={item.percent}
-                  showResult
-                  variant={item.isBinary ? "binary" : "stacked"}
-                />
-              </article>
-            )}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function MyCommentCreatedDate({
-  children,
-  dateTime = defaultNewsDateTime,
-}: {
-  children: ReactNode;
-  dateTime?: string;
-}) {
-  return (
-    <time className="text_myCommentCreatedDate" dateTime={dateTime}>
-      {children}
-    </time>
-  );
-}
-
-function MyCommentPreviewThread({
-  comment,
-  instanceId,
-  onOpenComment,
-}: {
-  comment: CommentItem;
-  instanceId: string;
-  onOpenComment: () => void;
-}) {
-  const replyToggleId = `${instanceId}-reply-toggle-${comment.id}`;
-  const replyListId = `${instanceId}-reply-list-${comment.id}`;
-  const commentReplies: CommentReplyItem[] = Array.from(
-    { length: Math.min(comment.replies, 3) },
-    (_, replyIndex) => ({
-      ...commentReplyTemplates[replyIndex % commentReplyTemplates.length],
-      id: `${comment.id}-${replyIndex}`,
-    }),
-  );
-  const likeCount = comment.likes;
-  const dislikeCount = comment.dislikes;
-
-  function openCommentFromControl(event: MouseEvent<HTMLElement>) {
-    event.stopPropagation();
-    onOpenComment();
-  }
-
-  function openCommentFromKeyboard(event: KeyboardEvent<HTMLElement>) {
-    if (event.key !== "Enter" && event.key !== " ") {
-      return;
-    }
-
-    event.preventDefault();
-    onOpenComment();
-  }
-
-  return (
-    <article
-      aria-label="댓글이 달린 기사 본문으로 이동"
-      className="wrapper_commentItem wrapper_myPageCommentThread"
-      id={`${instanceId}-comment-${comment.id}`}
-      onClick={onOpenComment}
-      onKeyDown={openCommentFromKeyboard}
-      tabIndex={0}
-    >
-      <ChipLabel kind="commentChoice">{comment.choice}</ChipLabel>
-      <p>{comment.body}</p>
-      <footer>
-        <button
-          aria-controls={replyListId}
-          aria-expanded={false}
-          className="btn_textAction"
-          id={replyToggleId}
-          onClick={openCommentFromControl}
-          type="button"
-        >
-          대댓글 {commentReplies.length}
-        </button>
-        <span>
-          <ReactionButton
-            aria-label="댓글 좋아요"
-            aria-pressed={false}
-            icon="thumbUp"
-            onClick={openCommentFromControl}
-            tone="like"
-            variant="comment"
-          >
-            {getVisibleReactionCount(likeCount)}
-          </ReactionButton>
-          <ReactionButton
-            aria-label="댓글 싫어요"
-            aria-pressed={false}
-            icon="thumbDown"
-            onClick={openCommentFromControl}
-            tone="dislike"
-            variant="comment"
-          >
-            {getVisibleReactionCount(dislikeCount)}
-          </ReactionButton>
-        </span>
-      </footer>
-      <div
-        aria-hidden="true"
-        aria-labelledby={replyToggleId}
-        className="wrapper_commentReplies"
-        id={replyListId}
-        role="region"
-      >
-        <div className="wrapper_commentRepliesInner">
-          <Button
-            aria-controls={`${instanceId}-composer`}
-            aria-pressed={false}
-            className="btn_textAction"
-            classNameOnly
-            onClick={openCommentFromControl}
-            type="button"
-          >
-            대댓글 달기
-          </Button>
-          {commentReplies.map((reply, replyIndex) => (
-            <Fragment key={reply.id}>
-              <article
-                className="wrapper_commentReplyItem"
-                id={`${instanceId}-reply-${reply.id}`}
-              >
-                <header>
-                  <span className="wrapper_commentMeta">
-                    <strong>{reply.author}</strong>
-                    <NewsCreatedTime>{reply.date}</NewsCreatedTime>
-                  </span>
-                  <span className="wrapper_commentAction">
-                    <IconButton
-                      aria-expanded={false}
-                      aria-haspopup="menu"
-                      baseClassName="btn_commentAction"
-                      disabled
-                      icon="detail"
-                      label="대댓글 더보기"
-                    />
-                  </span>
-                </header>
-                <ChipLabel kind="commentChoice">{reply.choice}</ChipLabel>
-                <p>{reply.body}</p>
-                <footer>
-                  <span>
-                    <ReactionButton
-                      aria-label="대댓글 좋아요"
-                      disabled
-                      icon="thumbUp"
-                      tone="like"
-                      variant="comment"
-                    >
-                      {getVisibleReactionCount(reply.likes)}
-                    </ReactionButton>
-                    <ReactionButton
-                      aria-label="대댓글 싫어요"
-                      disabled
-                      icon="thumbDown"
-                      tone="dislike"
-                      variant="comment"
-                    >
-                      {getVisibleReactionCount(reply.dislikes)}
-                    </ReactionButton>
-                  </span>
-                </footer>
-              </article>
-              {replyIndex < commentReplies.length - 1 ? (
-                <span aria-hidden="true" className="divider_commentItem" />
-              ) : null}
-            </Fragment>
-          ))}
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function MyCommentDetailPage({
-  activeCategory,
-  items,
-  isLeaving = false,
-  onCategoryChange,
-  onOpenArticle,
-  showTabs,
-  tabs,
-}: {
-  activeCategory: string;
-  items: MyCommentSummaryItem[];
-  isLeaving?: boolean;
-  onCategoryChange: (category: MyCommentKind) => void;
-  onOpenArticle: OpenArticleDetail;
-  showTabs: boolean;
-  tabs: readonly { id: MyCommentKind; label: string }[];
-}) {
-  const activeCommentKind = myCommentTabs.some(
-    (tab) => tab.id === activeCategory,
-  )
-    ? (activeCategory as MyCommentKind)
-    : "all";
-  const visibleCommentItems =
-    activeCommentKind === "all"
-      ? items
-      : items.filter((item) => item.commentKind === activeCommentKind);
-
-  return (
-    <div
-      className={`container_myCommentPage ${getEnterFromRightMotionClassName(isLeaving)}`}
-    >
-      <h2 className="text_mySectionTitle">댓글</h2>
-      {showTabs ? (
-        <PillTabMenu
-          ariaLabel="내 댓글 카테고리"
-          className="tab_myCategoryMenu"
-          items={[...tabs]}
-          onChange={(nextCategory) =>
-            onCategoryChange(nextCategory as MyCommentKind)
-          }
-          value={activeCommentKind}
-        />
-      ) : null}
-      <div className="wrapper_myCommentList">
-        {visibleCommentItems.length === 0 ? (
-          <DataUnavailableMessage target="댓글" />
-        ) : (
-          <SeparatedList
-            dividerClassName="divider_mySection"
-            getKey={(item, index) => `${item.headline.title}-${index}`}
-            items={visibleCommentItems}
-            renderItem={(item, index) => (
-              <div className="wrapper_myCommentItem">
-                <MyCommentCreatedDate>{item.comment.date}</MyCommentCreatedDate>
-                <AllNewsHeadlineItem
-                  item={item.headline}
-                  onClick={() => onOpenArticle(item.article)}
-                />
-                <MyCommentPreviewThread
-                  comment={item.comment}
-                  instanceId={`my-comment-detail-${index}`}
-                  onOpenComment={() =>
-                    onOpenArticle(item.article, { commentId: item.targetCommentId })
-                  }
-                />
-              </div>
-            )}
-          />
-        )}
-      </div>
-    </div>
-  );
 }
 
 const myNewsViewTimeSections = [
@@ -1100,6 +357,7 @@ export function MyPageView({
   onToggleTextSize: () => void;
   quickMenuRequest?: QuickMenuRequest | null;
 }) {
+  const currentUser = getCurrentUserSnapshot();
   const [activeDetailView, setActiveDetailView] =
     useState<MyPageDetailView>(null);
   const [myArticleDetail, setMyArticleDetail] = useState<{
@@ -1297,7 +555,7 @@ export function MyPageView({
       const nextPolicyBookmarkItems: MyBookmarkPolicySummaryItem[] =
         nextBookmarks
           .filter((bookmark) => bookmark.targetType === "welfarePolicy")
-          .map((bookmark) => {
+          .map((bookmark): MyBookmarkPolicySummaryItem | null => {
             const policy = policyById.get(bookmark.targetId);
 
             if (!policy) {
@@ -1315,7 +573,7 @@ export function MyPageView({
               title: policyItem.title,
             };
           })
-          .filter((item): item is MyBookmarkPolicySummaryItem => Boolean(item));
+          .filter((item): item is MyBookmarkPolicySummaryItem => item !== null);
       const nextAllBookmarkItems = [
         ...nextNewsBookmarkItems,
         ...nextPolicyBookmarkItems,
@@ -1610,6 +868,10 @@ export function MyPageView({
     closeBlockedKeywordDialog();
   };
 
+  const getSelectedCategoryValue = (groupIndex: number) =>
+    Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
+    getMyCategoryOptionId(groupIndex, 0);
+
   const openNewsViewTime = () => {
     myDetailScrollRestore.captureScroll();
     setActiveDetailView("newsViewTime");
@@ -1806,124 +1068,40 @@ export function MyPageView({
               tabs={dynamicCommentCategoryTabs}
             />
           ) : isCustomNewsSettingsOpen ? (
-          <div
-            className={`container_mySettingsPage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
-          >
-            <h2 className="text_myTimeTitle">맞춤형 뉴스 설정</h2>
-            {myCategoryGroups.map((group, groupIndex) => (
-              <Fragment key={group.title}>
-                {groupIndex > 0 ? (
-                  <NewsRollDivider className="divider_mySection" />
-                ) : null}
-                <section className="container_myCategorySection">
-                  <h2 className="text_mySectionTitle">{group.title}</h2>
-                  <PillTabMenu
-                    ariaLabel={group.title}
-                    className="tab_myCategoryMenu"
-                    getItemState={(optionId) => {
-                      const isSelected =
-                        selectedCategorySettings[groupIndex]?.has(optionId) ?? false;
-
-                      if (isSelected) {
-                        return "active";
-                      }
-
-                      return "default";
-                    }}
-                    items={getMyCategoryTabItems(groupIndex)}
-                    keyboardNavigation={groupIndex === 1}
-                    onChange={(optionId) => toggleCategorySetting(groupIndex, optionId)}
-                    role={groupIndex === 1 ? "radiogroup" : "group"}
-                    value={
-                      Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
-                      getMyCategoryOptionId(groupIndex, 0)
-                    }
-                  />
-                </section>
-              </Fragment>
-            ))}
-            <NewsRollDivider className="divider_mySection" />
-            <BlockedKeywordSettingsSection
+            <MyCustomNewsSettingsPage
+              blockedKeywordInputValue={blockedKeywordInputValue}
               blockedKeywordSettings={blockedKeywordSettings}
-              inputValue={blockedKeywordInputValue}
-              isDialogOpen={isBlockedKeywordDialogOpen}
-              onCancelDialog={closeBlockedKeywordDialog}
-              onInputChange={setBlockedKeywordInputValue}
-              onKeywordDelete={onDeleteBlockedKeyword}
-              onKeywordToggle={onToggleBlockedKeyword}
-              onOpenDialog={() => setIsBlockedKeywordDialogOpen(true)}
-              onSaveKeyword={saveBlockedKeyword}
+              categoryGroups={myCategoryGroups}
+              getCategoryTabItems={getMyCategoryTabItems}
+              getCategoryValue={getSelectedCategoryValue}
+              isBlockedKeywordDialogOpen={isBlockedKeywordDialogOpen}
+              isLeaving={myDetailExitMotion.isLeaving}
+              onCancelBlockedKeywordDialog={closeBlockedKeywordDialog}
+              onDeleteBlockedKeyword={onDeleteBlockedKeyword}
+              onInputBlockedKeywordChange={setBlockedKeywordInputValue}
+              onOpenBlockedKeywordDialog={() => setIsBlockedKeywordDialogOpen(true)}
+              onSaveBlockedKeyword={saveBlockedKeyword}
+              onToggleBlockedKeyword={onToggleBlockedKeyword}
+              onToggleCategorySetting={toggleCategorySetting}
+              selectedCategorySettings={selectedCategorySettings}
             />
-          </div>
           ) : isNewsViewTimeOpen ? (
-          <div
-            className={`container_myTimePage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
-          >
-            <h2 className="text_myTimeTitle">뉴스 보기 타임</h2>
-            {myNewsViewTimeSections.map((section, sectionIndex) => (
-              <Fragment key={section.label}>
-                {sectionIndex > 0 ? (
-                  <NewsRollDivider className="divider_mySection" />
-                ) : null}
-                <section
-                  aria-label={`${section.label} 시간 설정`}
-                  className="container_myTimeSection"
-                >
-                  <h3 className="text_myTimeSectionLabel">{section.label}</h3>
-                  <div className="wrapper_myTimeRows">
-                    {section.times.map((time) => {
-                      const isSelected = selectedNewsViewTimes.has(time);
-
-                      return (
-                        <button
-                          aria-pressed={isSelected}
-                          className="btn_myTimeRow"
-                          key={time}
-                          onClick={() => toggleNewsViewTime(time)}
-                          type="button"
-                        >
-                          <span className="text_myTimeValue">{time}</span>
-                          <NewsRollSwitch checked={isSelected} />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </section>
-              </Fragment>
-            ))}
-          </div>
-        ) : isProfileSettingsOpen ? (
-          <div
-            className={`container_mySettingsPage ${getEnterFromRightMotionClassName(myDetailExitMotion.isLeaving)}`}
-          >
-            <h2 className="text_myTimeTitle">설정</h2>
-            {myProfileSettingSections.map((section, sectionIndex) => (
-              <Fragment key={section.title}>
-                {sectionIndex > 0 ? (
-                  <NewsRollDivider className="divider_mySection" />
-                ) : null}
-                <section
-                  aria-label={`${section.title} 설정`}
-                  className="container_mySettingsDetailSection"
-                >
-                  <div className="wrapper_mySettingsList">
-                    {section.items.map((item) => (
-                      <MySettingRow
-                        key={item}
-                        label={item}
-                        showChevron
-                      />
-                    ))}
-                  </div>
-                </section>
-              </Fragment>
-            ))}
-          </div>
+            <MyNewsViewTimePage
+              isLeaving={myDetailExitMotion.isLeaving}
+              onToggleTime={toggleNewsViewTime}
+              sections={myNewsViewTimeSections}
+              selectedTimes={selectedNewsViewTimes}
+            />
+          ) : isProfileSettingsOpen ? (
+          <MyProfileSettingsPage
+            isLeaving={myDetailExitMotion.isLeaving}
+            sections={myProfileSettingSections}
+          />
         ) : (
           <div className="container_myContent">
           <section className="container_myProfile" aria-label="프로필">
             <span className="wrapper_myProfileGreeting">
-              <strong>콩콩이님</strong>
+              <strong>{currentUser.nickname}님</strong>
               <span>안녕하세요</span>
             </span>
             <div className="wrapper_articleActions" aria-label="프로필 도구" role="group">
@@ -1978,7 +1156,7 @@ export function MyPageView({
                     />
                   ))}
                 </div>
-                <AllNewsMoreButton
+                <MoreActionButton
                   ariaLabel="최근 본 뉴스 전체 보기"
                   collapsedLabel="전체 보기"
                   onClick={openRecentDetail}

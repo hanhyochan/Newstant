@@ -49,6 +49,7 @@ import {
   PolicyView,
 } from "@/features/policy/PolicyView";
 import { SearchView } from "@/features/search/SearchView";
+import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import {
   notificationApi,
   settingsApi,
@@ -85,10 +86,6 @@ type SignupDraft = {
 
 function normalizeBlockedKeyword(value: string) {
   return value.trim().toLocaleLowerCase("ko-KR");
-}
-
-function getDataUnavailableMessage(target: string, particle = "을") {
-  return `${target}${particle} 불러오지 못했습니다.`;
 }
 
 function getBlockedKeywordSettingsFromApi(

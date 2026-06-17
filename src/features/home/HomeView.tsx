@@ -26,13 +26,13 @@ import {
   NewsRollStateCard,
   defaultNewsDateTime,
   filterArticlesByBlockedKeywords,
-  getDataUnavailableMessage,
   getHomeArticleFromNews,
   getLatestBreakingNewsItem,
   type BodySearchSelection,
   type HomeArticle,
   type HomeViewMode,
 } from "@/features/news/NewsViews";
+import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 
 export function HomeView({
   blockedKeywords,
