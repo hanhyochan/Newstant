@@ -2,6 +2,7 @@ import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type {
+  AppNotification,
   CreateNotificationSettingsInput,
   NotificationSettings,
   UpdateNotificationSettingsInput,
@@ -37,5 +38,31 @@ export const notificationApi = {
       ...input,
       updatedAt: createTimestamp(),
     });
+  },
+  getNotifications(userId = currentUserId) {
+    return apiClient.get<AppNotification[]>("/notifications", {
+      _sort: "createdAt",
+      _order: "desc",
+      userId,
+    });
+  },
+  markNotificationAsRead(notificationId: string) {
+    return apiClient.patch<
+      AppNotification,
+      Pick<AppNotification, "isRead" | "readAt">
+    >(`/notifications/${notificationId}`, {
+      isRead: true,
+      readAt: createTimestamp(),
+    });
+  },
+  async markAllNotificationsAsRead(userId = currentUserId) {
+    const notifications = await this.getNotifications(userId);
+    const unreadNotifications = notifications.filter((notification) => !notification.isRead);
+
+    return Promise.all(
+      unreadNotifications.map((notification) =>
+        this.markNotificationAsRead(notification.id),
+      ),
+    );
   },
 };

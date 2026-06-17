@@ -203,6 +203,19 @@ export type NotificationSettings = {
   updatedAt: string;
 };
 
+export type AppNotification = {
+  id: string;
+  userId: string;
+  type: "breakingNews" | "commentReply" | "notice";
+  title: string;
+  body: string;
+  targetType: "news" | "notice" | "policy" | null;
+  targetId: string | null;
+  isRead: boolean;
+  createdAt: string;
+  readAt?: string | null;
+};
+
 export type Notice = {
   id: string;
   title: string;

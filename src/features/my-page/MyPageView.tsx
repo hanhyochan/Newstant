@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import {
+  type AppNotification,
   bookmarkApi,
   commentApi,
   newsApi,
@@ -189,7 +190,9 @@ function getNotificationSettingsFromApi(settings: NotificationSettings | null) {
 
 function getNewsViewTimesFromApi(settings: UserNewsViewTime | null) {
   return new Set(settings?.times?.length ? settings.times : ["07:00", "21:00"]);
-}const mySummaryItems = [
+}
+
+const mySummaryItems = [
   { count: 56, icon: "bookmark", label: "북마크", tone: "like", value: "bookmark" },
   { count: 54, icon: "vote", label: "투표", tone: "dislike", value: "vote" },
   { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
@@ -1139,6 +1142,7 @@ export function MyPageView({
     공지사항: true,
     속보: true,
   });
+  const [notificationItems, setNotificationItems] = useState<AppNotification[]>([]);
   const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
     () => new Set(["07:00", "21:00"]),
   );
@@ -1352,10 +1356,16 @@ export function MyPageView({
     let ignore = false;
 
     async function loadMySettings() {
-      const [preference, notifications, newsViewTimes] = await Promise.all([
+      const [
+        preference,
+        notifications,
+        newsViewTimes,
+        nextNotificationItems,
+      ] = await Promise.all([
         userApi.getUserPreferences(currentUserId),
         notificationApi.getNotificationSettings(currentUserId),
         settingsApi.getUserNewsViewTimes(currentUserId),
+        notificationApi.getNotifications(currentUserId).catch(() => []),
       ]);
       const currentPreference = preference[0] ?? null;
 
@@ -1369,6 +1379,7 @@ export function MyPageView({
       setSelectedCategorySettings(getCategorySettingsFromPreference(currentPreference));
       setNotificationSettings(getNotificationSettingsFromApi(notifications));
       setSelectedNewsViewTimes(getNewsViewTimesFromApi(newsViewTimes));
+      setNotificationItems(nextNotificationItems);
       onDarkModeChange(notifications?.darkMode ?? false);
     }
 
@@ -1458,6 +1469,68 @@ export function MyPageView({
     notificationApi
       .updateNotificationSettings(settingsId, nextNotificationSettings)
       .catch(() => undefined);
+  };
+
+  const toggleNotificationSetting = (label: (typeof myNotificationLabels)[number]) => {
+    const nextSettings = {
+      ...notificationSettings,
+      [label]: !notificationSettings[label],
+    } as Record<(typeof myNotificationLabels)[number], boolean>;
+
+    setNotificationSettings(nextSettings);
+    saveNotificationSettings(nextSettings);
+  };
+
+  const markNotificationAsRead = (notificationId: string) => {
+    setNotificationItems((currentItems) =>
+      currentItems.map((item) =>
+        item.id === notificationId
+          ? {
+              ...item,
+              isRead: true,
+              readAt: item.readAt ?? new Date().toISOString(),
+            }
+          : item,
+      ),
+    );
+
+    notificationApi.markNotificationAsRead(notificationId).catch(() => undefined);
+  };
+
+  const markAllNotificationsAsRead = () => {
+    setNotificationItems((currentItems) =>
+      currentItems.map((item) => ({
+        ...item,
+        isRead: true,
+        readAt: item.readAt ?? new Date().toISOString(),
+      })),
+    );
+
+    notificationApi.markAllNotificationsAsRead(currentUserId).catch(() => undefined);
+  };
+
+  const openNotificationTarget = async (notification: AppNotification) => {
+    markNotificationAsRead(notification.id);
+
+    if (notification.targetType === "news" && notification.targetId) {
+      const news = await newsApi.getNewsList().catch(() => []);
+      const targetNews = news.find((item) => item.id === notification.targetId);
+
+      if (targetNews) {
+        openMyArticleDetail(getHomeArticleFromNews(targetNews, 0));
+      }
+
+      return;
+    }
+
+    if (notification.targetType === "policy" && notification.targetId) {
+      const policies = await welfareApi.getWelfarePolicyList("all").catch(() => []);
+      const targetPolicy = policies.find((policy) => policy.id === notification.targetId);
+
+      if (targetPolicy) {
+        openMyPolicyDetail(getPolicyBookmarkItem(targetPolicy));
+      }
+    }
   };
 
   const saveNewsViewTimes = (nextTimes: Set<string>) => {
@@ -1939,18 +2012,7 @@ export function MyPageView({
                   checked={notificationSettings[label]}
                   key={label}
                   label={label}
-                  onClick={() => {
-                    setNotificationSettings((currentSettings) => {
-                      const nextSettings = {
-                        ...currentSettings,
-                      } as Record<(typeof myNotificationLabels)[number], boolean>;
-
-                      nextSettings[label] = !currentSettings[label];
-
-                      saveNotificationSettings(nextSettings);
-                      return nextSettings;
-                    });
-                  }}
+                  onClick={() => toggleNotificationSetting(label)}
                 />
               ))}
               <MySettingRow
@@ -1958,6 +2020,45 @@ export function MyPageView({
                 onClick={openNewsViewTime}
                 showChevron
               />
+            </div>
+            <div className="wrapper_myNotificationList" aria-label="최근 알림">
+              <div className="wrapper_myNotificationHeader">
+                <h3 className="text_myNotificationTitle">최근 알림</h3>
+                {notificationItems.some((item) => !item.isRead) ? (
+                  <button
+                    className="btn_textAction"
+                    onClick={markAllNotificationsAsRead}
+                    type="button"
+                  >
+                    모두 읽음
+                  </button>
+                ) : null}
+              </div>
+              {notificationItems.length === 0 ? (
+                <p className="text_commentEmpty">받은 알림이 없습니다.</p>
+              ) : (
+                <div className="wrapper_mySettingsList">
+                  {notificationItems.slice(0, 5).map((notification) => (
+                    <button
+                      aria-label={`${notification.title} 알림 열기`}
+                      className={`btn_mySettingRow btn_myNotificationItem${
+                        notification.isRead ? "" : " is_unread"
+                      }`}
+                      key={notification.id}
+                      onClick={() => openNotificationTarget(notification)}
+                      type="button"
+                    >
+                      <span className="wrapper_myNotificationText">
+                        <strong>{notification.title}</strong>
+                        <span>{notification.body}</span>
+                      </span>
+                      {notification.isRead ? null : (
+                        <span className="badge_myNotificationUnread">새 알림</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
 

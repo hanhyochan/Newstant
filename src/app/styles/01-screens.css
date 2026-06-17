@@ -3592,6 +3592,57 @@
         gap: var(--spacing-gap-vertical-24);
     }
 
+    .wrapper_myNotificationHeader {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-gap-horizontal-16);
+    }
+
+    .wrapper_myNotificationList {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-16);
+    }
+
+    .wrapper_myNotificationText {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-8);
+    }
+
+    .wrapper_myNotificationText strong,
+    .text_myNotificationTitle {
+        color: var(--color-label-strong);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-24);
+    }
+
+    .wrapper_myNotificationText span {
+        color: var(--color-cool-neutral-40);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .btn_myNotificationItem {
+        align-items: flex-start;
+    }
+
+    .badge_myNotificationUnread {
+        flex: 0 0 auto;
+        color: var(--color-newsroll-purple-50);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-20);
+    }
+
     .btn_mySettingRow,
     .btn_myTimeRow {
         width: 100%;
@@ -3968,6 +4019,8 @@
     .newsroll_dark .text_myTimeTitle,
     .newsroll_dark .text_myTimeSectionLabel,
     .newsroll_dark .text_mySettingLabel,
+    .newsroll_dark .text_myNotificationTitle,
+    .newsroll_dark .wrapper_myNotificationText strong,
     .newsroll_dark .text_infoFieldLabel,
     .newsroll_dark .text_infoItemTitle,
     .newsroll_dark .newsroll_all_section_title,
@@ -3982,6 +4035,7 @@
     .newsroll_dark .text_infoBody,
     .newsroll_dark .text_infoMeta,
     .newsroll_dark .text_myBlockedKeywordDescription,
+    .newsroll_dark .wrapper_myNotificationText span,
     .newsroll_dark .text_commentEmpty,
     .newsroll_dark .newsroll_createdTime,
     .newsroll_dark .newsroll_all_meta,
