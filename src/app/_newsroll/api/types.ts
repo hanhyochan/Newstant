@@ -13,6 +13,7 @@ export type News = {
   id: string;
   categoryId: string;
   pressId: string;
+  ageGroupIds?: string[];
   title: string;
   summary: string;
   body: string;

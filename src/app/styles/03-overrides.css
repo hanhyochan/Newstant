@@ -744,7 +744,7 @@
     .newsroll_bottom_nav,
     .newsroll_screen_all .newsroll_bottom_nav {
         left: 50%;
-        width: min(100vw, var(--newsroll-max-width));
+        width: 100vw;
         height: var(--spacing-padding-vertical-60);
         gap: 0;
         padding-inline: 0;
@@ -1179,14 +1179,14 @@
 
     .wrapper_articleGuide_binary .btn_articleGuideOption,
     .btn_articleGuideOption_binary {
-        min-height: 84px;
-        height: 84px;
+        min-height: 0;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: var(--spacing-gap-vertical-8);
-        padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
+        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
         border: 0;
         border-radius: var(--radius-16);
         background: var(--color-background-elevated-normal);
@@ -1294,10 +1294,6 @@
         line-height: var(--line-height-20);
         text-decoration: none;
         white-space: nowrap;
-    }
-
-    .btn_originalArticle:active {
-        background: var(--color-cool-neutral-96);
     }
 
     .newsroll_policy_detail_pagination {
@@ -1647,8 +1643,8 @@
         padding: 0;
         border: 0;
         border-radius: var(--radius-8);
-        color: var(--color-cool-neutral-50);
-        background: var(--color-common-100);
+        color: var(--color-label-strong);
+        background: var(--color-background-elevated-normal);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-600);
         line-height: var(--line-height-20);
@@ -1675,9 +1671,9 @@
         z-index: 20;
         min-width: 72px;
         overflow: hidden;
-        border: var(--border-1) solid var(--color-cool-neutral-96);
+        border: var(--border-1) solid var(--color-line-normal-normal);
         border-radius: var(--radius-8);
-        background: var(--color-common-100);
+        background: var(--color-background-elevated-normal);
     }
 
     .listbox_commentDropdown button {
@@ -1686,7 +1682,7 @@
         align-items: center;
         padding: var(--spacing-padding-horizontal-12);
         color: var(--color-label-strong);
-        background: var(--color-common-100);
+        background: var(--color-background-elevated-normal);
         font-size: var(--font-size-14);
         font-weight: var(--font-weight-400);
         line-height: var(--line-height-20);
@@ -1935,6 +1931,7 @@
         gap: var(--spacing-gap-vertical-24);
         padding-block: 0;
         padding-inline: var(--spacing-padding-horizontal-16);
+        background: var(--color-cool-neutral-98);
         opacity: 0;
         transform: translateY(-8px);
         transition:
@@ -2304,6 +2301,10 @@
         box-sizing: border-box;
     }
 
+.container_mySettingsPage > .container_myCategorySection {
+    gap: var(--spacing-gap-vertical-16);
+}
+
 
 .container_homeToolbar {
     padding-top: 48px;
@@ -2462,6 +2463,16 @@
 
 .newsroll_all_category_tabSticky {
     min-height: calc(var(--spacing-padding-vertical-32) + var(--spacing-padding-vertical-24));
+}
+
+.container_myBookmarkPage > .tab_myCategoryMenu,
+.container_myVotePage > .tab_myCategoryMenu,
+.container_myCommentPage > .tab_myCategoryMenu {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding-bottom: var(--spacing-padding-vertical-24);
+    background: var(--color-background-elevated-normal);
 }
 
 .newsroll_all_press_tabScroller::-webkit-scrollbar,
@@ -2643,14 +2654,14 @@
 }
 
 .newsroll_dark {
-    --color-background-elevated-normal: var(--newsroll-dark-sheet);
-    --color-background-elevated-alternative: var(--newsroll-dark-surface);
+    --color-background-elevated-normal: var(--color-cool-neutral-10);
+    --color-background-elevated-alternative: var(--color-cool-neutral-15);
     --color-fill-normal: var(--color-cool-neutral-22);
     --color-fill-alternative: var(--color-cool-neutral-20);
     --color-fill-strong: var(--color-cool-neutral-30);
-    --color-label-alternative: var(--color-cool-neutral-80);
-    --color-label-assistive: var(--color-cool-neutral-70);
-    --color-label-neutral: var(--color-cool-neutral-90);
+    --color-label-alternative: var(--color-cool-neutral-100);
+    --color-label-assistive: var(--color-cool-neutral-100);
+    --color-label-neutral: var(--color-cool-neutral-100);
     --color-label-normal: var(--color-cool-neutral-100);
     --color-label-strong: var(--color-cool-neutral-100);
     --color-line-normal-alternative: var(--color-cool-neutral-30);
@@ -2661,11 +2672,256 @@
     --color-line-solid-neutral: var(--color-cool-neutral-40);
     --color-line-solid-normal: var(--color-cool-neutral-40);
     --color-line-solid-strong: var(--color-cool-neutral-60);
-    --newsroll-divider-color: var(--color-cool-neutral-40);
+    --newsroll-divider-color: var(--color-cool-neutral-30);
 }
 
-.newsroll_dark .tab,
-.newsroll_dark [role='tab'],
+.newsroll_dark :is(
+    .newsroll_common_sheet,
+    .container_homeSheet,
+    .newsroll_page_panel,
+    .newsroll_all_panel,
+    .newsroll_all_latest_panel,
+    .container_infoList,
+    .wrapper_infoInquiry,
+    .container_myKeywordDialog,
+    .container_quickMenuDrawer
+) {
+    box-shadow:
+        0 -7px 16px color-mix(in srgb, var(--color-newsroll-purple-50) 4%, transparent),
+        0 -12px 19px color-mix(in srgb, var(--color-newsroll-purple-30) 55%, transparent);
+}
+
+.newsroll_dark .container_homeSheet {
+    border-radius: var(--radius-20) var(--radius-20) 0 0;
+    background: var(--color-cool-neutral-10);
+}
+
+.newsroll_dark .newsroll_page_panel {
+    border-radius: var(--radius-20);
+    background: var(--color-cool-neutral-15);
+}
+
+.newsroll_dark .newsroll_all_feed > .newsroll_all_panel:nth-child(1) {
+    z-index: 30;
+}
+
+.newsroll_dark .newsroll_all_feed > .newsroll_all_panel:nth-child(2) {
+    z-index: 29;
+}
+
+.newsroll_dark .newsroll_all_feed > .newsroll_all_panel:nth-child(3) {
+    z-index: 28;
+}
+
+.newsroll_dark .newsroll_all_feed > .newsroll_all_panel:nth-child(4) {
+    z-index: 27;
+}
+
+.newsroll_dark .newsroll_all_feed > .newsroll_all_panel:nth-child(5) {
+    z-index: 26;
+}
+
+.newsroll_dark .newsroll_all_feed > .newsroll_all_panel:nth-child(n + 6) {
+    z-index: 25;
+}
+
+.newsroll_dark :is(.container_newsFeed, .newsroll_all_feed) {
+    background: var(--color-cool-neutral-10);
+}
+
+.newsroll_dark .container_newsFeed .container_articleCard {
+    background: var(--color-cool-neutral-15);
+}
+
+.newsroll_dark .newsroll_bottom_nav,
+.newsroll_dark.newsroll_screen_all .newsroll_bottom_nav {
+    border-top-color: var(--color-cool-neutral-30);
+}
+
+.newsroll_dark .btn_originalArticle,
+.newsroll_dark .newsroll_all_more,
+.newsroll_dark .newsroll_all_press_panel .newsroll_all_more,
+.newsroll_dark .newsroll_all_breakingHeader .newsroll_all_more {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-15);
+    border-color: var(--color-cool-neutral-30);
+}
+
+.newsroll_dark .container_commentComposerFixed,
+.newsroll_dark :is(.text_input, .textarea, .input_commentComposer),
+.newsroll_dark .wrapper_infoInquiry .textarea_infoComposer,
+body:has(.newsroll_dark) .container_commentComposerFixed,
+body:has(.newsroll_dark) :is(.text_input, .textarea, .input_commentComposer),
+body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-20);
+    border-color: var(--color-newsroll-purple-50);
+}
+
+.newsroll_dark .input_commentComposer input,
+.newsroll_dark .text_input input,
+.newsroll_dark .textarea,
+.newsroll_dark .wrapper_infoInquiry .textarea_infoComposer,
+body:has(.newsroll_dark) .input_commentComposer input,
+body:has(.newsroll_dark) .text_input input,
+body:has(.newsroll_dark) .textarea,
+body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer {
+    color: var(--color-cool-neutral-100);
+}
+
+.newsroll_dark .input_commentComposer input::placeholder,
+.newsroll_dark .text_input input::placeholder,
+.newsroll_dark .textarea::placeholder,
+.newsroll_dark .wrapper_infoInquiry .textarea_infoComposer::placeholder,
+body:has(.newsroll_dark) .input_commentComposer input::placeholder,
+body:has(.newsroll_dark) .text_input input::placeholder,
+body:has(.newsroll_dark) .textarea::placeholder,
+body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholder {
+    color: var(--color-cool-neutral-100);
+}
+
+.newsroll_dark .wrapper_articleGuide {
+    background: var(--color-cool-neutral-20);
+}
+
+.newsroll_dark .btn_articleGuideOption {
+    background: var(--color-cool-neutral-30);
+}
+
+.newsroll_dark .wrapper_commentPanel,
+.newsroll_dark .container_commentGuide {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-10);
+}
+
+.newsroll_dark .wrapper_commentReplies.is_open,
+.newsroll_dark .wrapper_commentRepliesInner {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-20);
+}
+
+.newsroll_dark .btn_textAction,
+.newsroll_dark .wrapper_commentReplyItem,
+.newsroll_dark .wrapper_commentReplyItem :where(p, strong, time) {
+    color: var(--color-cool-neutral-100);
+}
+
+.newsroll_dark .btn_articleGuideOption_binary .text_articleGuideOption,
+.newsroll_dark .btn_articleGuideOption_stacked .text_articleGuideOption {
+    color: var(--color-common-100);
+}
+
+.newsroll_dark .btn_articleGuideOption_stacked[aria-pressed='true'] .text_articleGuideOption,
+.newsroll_dark .btn_articleGuideOption_stacked[aria-pressed='true'] .text_articleGuidePercent {
+    color: var(--color-cool-neutral-10);
+}
+
+.newsroll_dark .btn_articleGuideOption_binary[aria-pressed='true'] .text_articleGuideOption {
+    color: var(--color-cool-neutral-10);
+}
+
+.newsroll_dark
+    .wrapper_articleActions
+    .btn_articleTool
+    > :is(.newsroll_icon_share, .newsroll_icon_bookmark) {
+    color: var(--color-common-100);
+}
+
+.newsroll_dark .btn_articleReaction_like strong,
+.newsroll_dark .btn_articleReaction_dislike strong,
+.newsroll_dark .btn_articleReaction_neutral strong {
+    color: var(--color-common-100);
+}
+
+.newsroll_dark .btn_articleReaction_like :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-red-50);
+}
+
+.newsroll_dark .btn_articleReaction_dislike :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-blue-50);
+}
+
+.newsroll_dark .btn_articleReaction_neutral :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-cool-neutral-50);
+}
+
+.newsroll_dark .btn_commentReaction_like,
+.newsroll_dark .btn_commentReaction_like :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-status-negative);
+}
+
+.newsroll_dark .btn_commentReaction_dislike,
+.newsroll_dark .btn_commentReaction_dislike :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-accent-foreground-blue);
+}
+
+.newsroll_dark .btn_filled,
+.newsroll_dark .btn_filled :where(span, strong),
+.newsroll_dark .btn_filled :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-common-0);
+}
+
+.newsroll_dark .wrapper_articleReaction .btn_articleReaction_like > :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-red-50);
+}
+
+.newsroll_dark
+    .wrapper_articleReaction
+    .btn_articleReaction_like[aria-pressed='true']
+    > :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-red-50);
+}
+
+.newsroll_dark .wrapper_articleReaction .btn_articleReaction_dislike > :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-blue-50);
+}
+
+.newsroll_dark
+    .wrapper_articleReaction
+    .btn_articleReaction_dislike[aria-pressed='true']
+    > :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-blue-50);
+}
+
+.newsroll_dark .wrapper_articleReaction .btn_articleReaction_neutral > :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-cool-neutral-50);
+}
+
+.newsroll_dark
+    .wrapper_articleReaction
+    .btn_articleReaction_neutral[aria-pressed='true']
+    > :is(.newsroll_icon_20, .newsroll_icon_18) {
+    color: var(--color-cool-neutral-50);
+}
+
+.newsroll_dark .container_articleCard .text_articleBody {
+    color: var(--color-common-100);
+}
+
+.newsroll_dark .container_articleCard .wrapper_articleSource,
+.newsroll_dark .container_articleCard .text_articlePublisherName,
+.newsroll_dark .container_articleCard .text_articleReporter {
+    color: var(--color-common-100);
+}
+
+.newsroll_dark .wrapper_newsViewToggle {
+    background: inherit;
+}
+
+.newsroll_dark .btn_newsViewOption,
+.newsroll_dark .btn_newsViewOption:not([aria-selected='true']) {
+    border: 0;
+    color: var(--color-common-100);
+    background: transparent;
+}
+
+.newsroll_dark .btn_newsViewOption[aria-selected='true'] {
+    color: var(--color-common-0);
+    background: var(--color-common-100);
+}
+
+.newsroll_dark .tab:not(.btn_newsViewOption),
+.newsroll_dark [role='tab']:not(.btn_newsViewOption),
 .newsroll_dark .tab_myCategoryMenu button,
 .newsroll_dark .newsroll_all_category_tabs button,
 .newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton,
@@ -2675,17 +2931,17 @@
     border-color: var(--newsroll-divider-color);
 }
 
-.newsroll_dark .tab[aria-selected='true'],
-.newsroll_dark [role='tab'][aria-selected='true'],
-.newsroll_dark .tab[data-state='active'],
+.newsroll_dark .tab[aria-selected='true']:not(.btn_newsViewOption),
+.newsroll_dark [role='tab'][aria-selected='true']:not(.btn_newsViewOption),
+.newsroll_dark .tab[data-state='active']:not(.btn_newsViewOption),
 .newsroll_dark .tab_myCategoryMenu button[data-state='active'],
 .newsroll_dark .tab_myCategoryMenu button[data-state='selected'],
 .newsroll_dark .newsroll_all_category_tabs button[aria-selected='true'],
 .newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton[aria-selected='true'],
 .newsroll_dark .newsroll_all_press_tabs button[aria-selected='true'] {
-    color: var(--color-common-0);
-    background: var(--color-common-100);
-    border-color: var(--color-common-100);
+    color: var(--color-common-100);
+    background: var(--color-cool-neutral-30);
+    border-color: var(--color-cool-neutral-30);
 }
 
 .newsroll_dark .chip,

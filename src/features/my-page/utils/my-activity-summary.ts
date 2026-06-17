@@ -158,6 +158,7 @@ export function buildMyActivitySummary<Article extends ArticleBase, Headline>({
 
       return {
         article,
+        category: article.category,
         dateTime: view.viewedAt,
         image: article.image,
         time: formatNewsDate(view.viewedAt),

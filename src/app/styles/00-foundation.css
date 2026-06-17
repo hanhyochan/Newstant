@@ -7,11 +7,11 @@
 
     :root {
         /* color: atomic / common */
-        --color-common-0: #000000;
+        --color-common-0: var(--color-cool-neutral-10);
         --color-common-100: #ffffff;
 
         /* color: atomic / neutral */
-        --color-neutral-0: #000000;
+        --color-neutral-0: var(--color-cool-neutral-10);
         --color-neutral-5: #0f0f0f;
         --color-neutral-10: #171717;
         --color-neutral-15: #1c1c1c;
@@ -289,7 +289,7 @@
         --color-label-disable: rgb(55 56 60 / 16%);
         --color-label-neutral: rgb(46 47 51 / 88%);
         --color-label-normal: #171719;
-        --color-label-strong: #000000;
+        --color-label-strong: var(--color-cool-neutral-10);
 
         /* color: semantic / line */
         --color-line-normal-alternative: rgb(112 115 124 / 8%);

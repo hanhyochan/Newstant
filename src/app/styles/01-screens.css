@@ -3119,6 +3119,10 @@
         gap: var(--spacing-gap-horizontal-16);
     }
 
+    .container_mySettingsPage > .container_myCategorySection {
+        gap: var(--spacing-gap-vertical-16);
+    }
+
     .wrapper_myProfileGreeting {
         min-width: 0;
         display: inline-flex;
@@ -3459,7 +3463,7 @@
         min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-gap-vertical-24);
+        gap: var(--spacing-gap-vertical-8);
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -3708,6 +3712,16 @@
         background: var(--color-background-elevated-normal);
     }
 
+    .container_myBookmarkPage > .tab_myCategoryMenu,
+    .container_myVotePage > .tab_myCategoryMenu,
+    .container_myCommentPage > .tab_myCategoryMenu {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        padding-bottom: var(--spacing-padding-vertical-24);
+        background: var(--color-background-elevated-normal);
+    }
+
     .container_infoList .wrapper_separatedItem {
         width: 100%;
         min-width: 0;
@@ -3924,15 +3938,6 @@
         color: var(--color-red-50);
     }
 
-    .newsroll_dark {
-        --newsroll-dark-sheet: #050505;
-        --newsroll-dark-surface: var(--color-cool-neutral-15);
-        --newsroll-dark-surface-muted: var(--color-cool-neutral-22);
-        --newsroll-dark-line: var(--color-cool-neutral-40);
-        --newsroll-dark-text-strong: var(--color-cool-neutral-100);
-        --newsroll-dark-text-neutral: var(--color-cool-neutral-90);
-    }
-
     .newsroll_dark .newsroll_common_sheet,
     .newsroll_dark .container_homeSheet,
     .newsroll_dark .container_articleCard,
@@ -3942,8 +3947,8 @@
     .newsroll_dark .wrapper_infoInquiry,
     .newsroll_dark .container_myKeywordDialog,
     .newsroll_dark .container_quickMenuDrawer {
-        color: var(--newsroll-dark-text-strong);
-        background: var(--newsroll-dark-sheet);
+        color: var(--color-cool-neutral-100);
+        background: var(--color-cool-neutral-10);
     }
 
     .newsroll_dark .wrapper_articleCardContent,
@@ -3955,8 +3960,8 @@
     .newsroll_dark .wrapper_commentRepliesInner,
     .newsroll_dark .container_commentComposerFixed,
     .newsroll_dark .form_searchComposer {
-        color: var(--newsroll-dark-text-strong);
-        background: var(--newsroll-dark-surface);
+        color: var(--color-cool-neutral-100);
+        background: var(--color-cool-neutral-15);
     }
 
     .newsroll_dark .text_mySectionTitle,
@@ -3971,7 +3976,7 @@
     .newsroll_dark .container_articleCard :where(h1, h2, p),
     .newsroll_dark .wrapper_commentItem,
     .newsroll_dark .wrapper_commentReplyItem {
-        color: var(--newsroll-dark-text-strong);
+        color: var(--color-cool-neutral-100);
     }
 
     .newsroll_dark .text_infoBody,
@@ -3981,7 +3986,7 @@
     .newsroll_dark .newsroll_createdTime,
     .newsroll_dark .newsroll_all_meta,
     .newsroll_dark .text_infoSubmitStatus {
-        color: var(--newsroll-dark-text-neutral);
+        color: var(--color-cool-neutral-100);
     }
 
     .newsroll_dark .newsroll_divider,
@@ -3989,41 +3994,44 @@
     .newsroll_dark .divider_commentItem,
     .newsroll_dark .newsroll_policy_itemDivider,
     .newsroll_dark .newsroll_all_itemDivider {
-        background: var(--newsroll-dark-line);
-        border-color: var(--newsroll-dark-line);
+        background: var(--color-cool-neutral-30);
+        border-color: var(--color-cool-neutral-30);
     }
 
     .newsroll_dark .text_input,
     .newsroll_dark .textarea,
-    .newsroll_dark .wrapper_infoInquiry .select_infoField,
     .newsroll_dark .wrapper_infoInquiry .textarea_infoComposer {
-        color: var(--newsroll-dark-text-strong);
-        background: var(--newsroll-dark-surface-muted);
+        color: var(--color-cool-neutral-100);
+        background: var(--color-cool-neutral-22);
         border-color: var(--color-newsroll-purple-50);
     }
 
     .newsroll_dark .text_input input,
     .newsroll_dark .textarea::placeholder,
     .newsroll_dark .text_input input::placeholder {
-        color: var(--newsroll-dark-text-neutral);
+        color: var(--color-cool-neutral-100);
     }
 
     .newsroll_dark .tab_myCategoryMenu button[data-state='default'] {
-        color: var(--newsroll-dark-text-strong);
+        color: var(--color-cool-neutral-100);
         background: transparent;
-        border-color: var(--newsroll-dark-line);
+        border-color: var(--color-cool-neutral-40);
     }
 
     .newsroll_dark .btn_myBlockedKeywordAdd,
     .newsroll_dark .btn_originalArticle {
-        color: var(--newsroll-dark-text-strong);
-        background: var(--newsroll-dark-surface);
-        border-color: var(--newsroll-dark-line);
+        color: var(--color-cool-neutral-100);
+        background: var(--color-cool-neutral-15);
+        border-color: var(--color-cool-neutral-30);
     }
 
-    .newsroll_dark :is(.newsroll_icon_20, .newsroll_icon_18):not(.newsroll_icon_like):not(.newsroll_icon_dislike):not(.newsroll_icon_neutral),
-    .newsroll_dark .icon_myChevron,
-    .newsroll_dark .newsroll_dropdownArrow {
+    .newsroll_dark
+        :is(.newsroll_icon_20, .newsroll_icon_18):not(.newsroll_icon_thumbUp):not(
+            .newsroll_icon_thumbDown
+        ):not(.newsroll_icon_dots):not(.newsroll_icon_bookmark):not(.newsroll_icon_vote):not(
+            .newsroll_icon_chat
+        ):not(.newsroll_icon_share),
+    .newsroll_dark .icon_myChevron {
         color: currentColor;
     }
 
@@ -4270,6 +4278,45 @@
     .newsroll_all_breakingHeader .newsroll_all_breaking_stack {
         gap: var(--spacing-gap-vertical-4);
         padding-top: 0;
+    }
+
+    .newsroll_all_breaking_extra {
+        display: grid;
+        grid-template-rows: 0fr;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(calc(var(--spacing-gap-vertical-8) * -1));
+        transition:
+            grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+    }
+
+    .newsroll_all_breaking_extraInner {
+        display: grid;
+        min-height: 0;
+        gap: var(--spacing-gap-vertical-4);
+        overflow: hidden;
+    }
+
+    .newsroll_all_breakingBody[data-expanded='true'] .newsroll_all_breaking_extra {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        transition:
+            grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear 0ms;
     }
 
     .newsroll_all_breakingHeader .newsroll_all_more {
@@ -4987,7 +5034,7 @@
     .newsroll_bottom_nav,
     .newsroll_screen_all .newsroll_bottom_nav {
         left: 50%;
-        width: min(100vw, var(--newsroll-max-width));
+        width: 100vw;
         height: var(--spacing-padding-vertical-60);
         gap: 0;
         padding-inline: 0;
@@ -5422,14 +5469,14 @@
 
     .wrapper_articleGuide_binary .btn_articleGuideOption,
     .btn_articleGuideOption_binary {
-        min-height: 84px;
-        height: 84px;
+        min-height: 0;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: var(--spacing-gap-vertical-8);
-        padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
+        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
         border: 0;
         border-radius: var(--radius-16);
         background: var(--color-background-elevated-normal);
@@ -5537,10 +5584,6 @@
         line-height: var(--line-height-20);
         text-decoration: none;
         white-space: nowrap;
-    }
-
-    .btn_originalArticle:active {
-        background: var(--color-cool-neutral-96);
     }
 
     .newsroll_policy_detail_pagination {

@@ -9,17 +9,16 @@ import {
   type ReactNode,
 } from "react";
 
+import { welfareApi, type WelfarePolicy } from "@/app/_newsroll/api";
 import {
   ChipLabel,
   NewsRollDropdownArrow,
-  NewsRollDropdownMenu,
-  PillTabMenu,
+  PillTabMenu
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
   NewsRollDetailBackButton,
   NewsRollDockedControls,
-  NewsRollHeaderTop,
   NewsRollPagePanel,
   NewsRollSummaryHeroTop,
   newsrollPagePanelContentSelector as pagePanelContentSelector,
@@ -27,10 +26,8 @@ import {
   newsrollPagePanelInitialGap as pagePanelInitialGap,
   newsrollPagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
-  useEnterFromRightExitMotion,
+  useEnterFromRightExitMotion
 } from "@/design-system/templates";
-import { welfareApi, type WelfarePolicy } from "@/app/_newsroll/api";
-import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
@@ -111,148 +108,7 @@ const policyAgeIdByLabel: Record<string, string> = {
   중장년: "middle",
   청년: "youth",
 };
-const basePolicyDetails: PolicyDetailItem[] = [
-  { label: "지원 대상 연령", value: "19세 ~ 45세" },
-  {
-    label: "지원 내용",
-    value:
-      "동아리 활동에 필요한 강사비, 교재비, 재료비 등 운영비 지원 (팀당 약 150만원).",
-  },
-  { label: "지원 기관", value: "경상남도 하동군 지역활력추진단" },
-  { label: "사업 기간", value: "2026-01 ~ 2026-12" },
-  { label: "신청 기간", value: "2025-10-01 ~ 2025-10-10" },
-  {
-    label: "신청 방법",
-    value: "양산시 청년 정보 플랫폼 청년카까 온라인 신청.",
-  },
-  {
-    label: "선발 방식",
-    value: "지원 자격 충족자 대상 선착순 선정 후 개별 통보.",
-  },
-  {
-    label: "제출 서류",
-    value:
-      "사업자등록 사실 여부 증명서, 시험 응시 확인 서류, 응시료 결제 영수증, 통장 사본 등.",
-  },
-];
-const policyItemsByAge: Record<string, PolicyItem[]> = {
-  전체: [
-    {
-      title: "청년동아리 활동비 지원사업",
-      tags: ["복지문화", "문화활동", "바우처"],
-      summary:
-        "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
-      registeredAt: "2026년 12월 31일",
-      updatedAt: "2026년 12월 31일",
-      details: basePolicyDetails,
-    },
-    {
-      title: "양산시 청년 자격증 응시료 지원",
-      tags: ["일자리", "취업", "보조금"],
-      summary:
-        "취업 준비 청년의 자격증 응시료 부담을 낮추기 위한 지역 지원 정책.",
-      registeredAt: "2026년 12월 31일",
-      updatedAt: "2027년 1월 3일",
-      details: basePolicyDetails,
-    },
-  ],
-  미성년: [
-    {
-      title: "청소년 문화예술 체험 바우처",
-      tags: ["복지문화", "청소년", "바우처"],
-      summary:
-        "미성년 청소년의 문화예술 관람과 체험 활동 비용을 지원하는 사업.",
-      registeredAt: "2026년 12월 20일",
-      updatedAt: "2026년 12월 28일",
-      details: [
-        { label: "지원 대상 연령", value: "13세 ~ 18세" },
-        ...basePolicyDetails.slice(1),
-      ],
-    },
-    {
-      title: "방과후 학습 돌봄 지원",
-      tags: ["교육", "돌봄", "지원금"],
-      summary:
-        "방과후 학습과 돌봄이 필요한 청소년 가구에 프로그램 이용료를 지원.",
-      registeredAt: "2026년 12월 18일",
-      updatedAt: "2026년 12월 29일",
-      details: [
-        { label: "지원 대상 연령", value: "8세 ~ 18세" },
-        ...basePolicyDetails.slice(1),
-      ],
-    },
-  ],
-  청년: [
-    {
-      title: "청년동아리 활동비 지원사업",
-      tags: ["복지문화", "문화활동", "바우처"],
-      summary:
-        "청년 비율이 50% 이상인 5인 이상의 동아리를 대상으로 활동비를 지원하는 사업.",
-      registeredAt: "2026년 12월 31일",
-      updatedAt: "2026년 12월 31일",
-      details: basePolicyDetails,
-    },
-    {
-      title: "청년 주거 지원 확대 논의",
-      tags: ["주거", "청년", "보조금"],
-      summary:
-        "청년 주거비 부담을 낮추기 위해 지자체별 신청 조건을 정비하는 정책.",
-      registeredAt: "2026년 12월 27일",
-      updatedAt: "2026년 12월 30일",
-      details: basePolicyDetails,
-    },
-  ],
-  중장년: [
-    {
-      title: "중장년 재취업 역량 강화 과정",
-      tags: ["일자리", "교육", "재취업"],
-      summary: "경력 전환을 준비하는 중장년층에게 직무 교육과 상담을 제공.",
-      registeredAt: "2026년 12월 24일",
-      updatedAt: "2026년 12월 30일",
-      details: [
-        { label: "지원 대상 연령", value: "40세 ~ 64세" },
-        ...basePolicyDetails.slice(1),
-      ],
-    },
-    {
-      title: "소상공인 전환 컨설팅 지원",
-      tags: ["경제", "창업", "컨설팅"],
-      summary:
-        "업종 전환과 매장 운영 개선이 필요한 중장년 소상공인 대상 컨설팅 지원.",
-      registeredAt: "2026년 12월 21일",
-      updatedAt: "2026년 12월 29일",
-      details: [
-        { label: "지원 대상 연령", value: "35세 ~ 64세" },
-        ...basePolicyDetails.slice(1),
-      ],
-    },
-  ],
-  노년: [
-    {
-      title: "노년층 디지털 생활 교육",
-      tags: ["교육", "복지", "디지털"],
-      summary:
-        "스마트폰, 공공앱, 금융앱 사용에 어려움을 겪는 노년층을 위한 교육.",
-      registeredAt: "2026년 12월 22일",
-      updatedAt: "2026년 12월 30일",
-      details: [
-        { label: "지원 대상 연령", value: "65세 이상" },
-        ...basePolicyDetails.slice(1),
-      ],
-    },
-    {
-      title: "어르신 건강 돌봄 방문 서비스",
-      tags: ["건강", "복지", "방문지원"],
-      summary: "거동이 불편한 노년층에게 정기 건강 확인과 생활 상담을 제공.",
-      registeredAt: "2026년 12월 19일",
-      updatedAt: "2026년 12월 28일",
-      details: [
-        { label: "지원 대상 연령", value: "70세 이상" },
-        ...basePolicyDetails.slice(1),
-      ],
-    },
-  ],
-};
+
 const policySortLabels: Record<SortOrder, string> = {
   latest: "최신순",
   popular: "인기순",

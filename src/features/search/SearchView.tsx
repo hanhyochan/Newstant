@@ -52,7 +52,6 @@ export type SearchSelectionInput<
   | { kind: "policy"; policy: Policy };
 
 type SearchViewProps<Article extends SearchArticle, Policy extends SearchPolicy> = {
-  blockedKeywords: string[];
   getNewsArticle: (item: NewsListItem, index: number) => Article;
   getPolicyItem: (item: WelfarePolicy) => Policy;
   onClose: () => void;
@@ -69,23 +68,6 @@ function getArticleFilterText(article: SearchArticle) {
     .filter(Boolean)
     .join(" ")
     .toLocaleLowerCase("ko-KR");
-}
-
-function filterArticlesByBlockedKeywords<Article extends SearchArticle>(
-  articles: Article[],
-  blockedKeywords: string[],
-) {
-  const keywords = blockedKeywords.map(normalizeSearchKeyword).filter(Boolean);
-
-  if (keywords.length === 0) {
-    return articles;
-  }
-
-  return articles.filter((article) => {
-    const articleText = getArticleFilterText(article);
-
-    return !keywords.some((keyword) => articleText.includes(keyword));
-  });
 }
 
 function getBodySearchSnippet(text = "", normalizedQuery: string) {
@@ -124,12 +106,10 @@ function getBodySearchResults<
   Policy extends SearchPolicy,
 >({
   articles,
-  blockedKeywords,
   normalizedQuery,
   policies,
 }: {
   articles: Article[];
-  blockedKeywords: string[];
   normalizedQuery: string;
   policies: Policy[];
 }): BodySearchResult<Article, Policy>[] {
@@ -138,7 +118,7 @@ function getBodySearchResults<
   }
 
   const newsResults: BodySearchResult<Article, Policy>[] =
-    filterArticlesByBlockedKeywords(articles, blockedKeywords)
+    articles
       .filter((article) => getArticleFilterText(article).includes(normalizedQuery))
       .map((article, index) => ({
         article,
@@ -171,7 +151,6 @@ function getBodySearchResults<
 }
 
 export function SearchView<Article extends SearchArticle, Policy extends SearchPolicy>({
-  blockedKeywords,
   getNewsArticle,
   getPolicyItem,
   onClose,
@@ -189,11 +168,10 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
     () =>
       getBodySearchResults({
         articles,
-        blockedKeywords,
         normalizedQuery,
         policies,
       }),
-    [articles, blockedKeywords, normalizedQuery, policies],
+    [articles, normalizedQuery, policies],
   );
 
   useEffect(() => {

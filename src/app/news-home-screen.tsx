@@ -16,6 +16,7 @@ import {
   newsrollDetailRevealDelayMs as nextArticleRevealDelayMs,
   requestEnterFromRightExitMotion,
 } from "@/design-system/templates";
+import { AllNewsView } from "@/features/all-news/AllNewsView";
 import {
   getNextAuthView,
   isAuthView,
@@ -29,22 +30,20 @@ import {
   SignupNicknameView,
   SignupPasswordView,
 } from "@/features/auth/AuthViews";
+import { HomeView } from "@/features/home/HomeView";
 import { InfoView } from "@/features/info/InfoView";
+import { MyPageView } from "@/features/my-page/MyPageView";
 import {
-  QuickMenuDrawer,
   getHomeArticleFromNews,
   navItems,
+  QuickMenuDrawer,
   type BlockedKeywordSetting,
   type BodySearchSelection,
   type BodySearchSelectionInput,
-  type HomeArticle,
   type QuickMenuRequest,
   type QuickMenuTarget,
-  type Tab,
+  type Tab
 } from "@/features/news/NewsViews";
-import { AllNewsView } from "@/features/all-news/AllNewsView";
-import { HomeView } from "@/features/home/HomeView";
-import { MyPageView } from "@/features/my-page/MyPageView";
 import {
   getPolicyItemFromWelfarePolicy,
   PolicyView,
@@ -54,8 +53,7 @@ import {
   notificationApi,
   settingsApi,
   userApi,
-  type BlockedKeywordPreference,
-  type NotificationSettings,
+  type BlockedKeywordPreference
 } from "./_newsroll/api";
 import {
   clearCurrentUserSession,
@@ -254,7 +252,6 @@ function ActiveView({
   if (view === "search") {
     return (
       <SearchView
-        blockedKeywords={blockedKeywords}
         getNewsArticle={getHomeArticleFromNews}
         getPolicyItem={getPolicyItemFromWelfarePolicy}
         onClose={onCloseSearch}
@@ -267,7 +264,6 @@ function ActiveView({
   if (view === "all") {
     return (
       <AllNewsView
-        blockedKeywords={blockedKeywords}
         entryMotionClassName={allNewsEntryMotionClassName}
         initialShowAllBreaking={isAllNewsBreakingEntry}
         isTextLarge={isTextLarge}
@@ -616,7 +612,7 @@ export function NewsHomeScreen() {
         userApi.createUserPreferences({
           ageGroupId: input.ageGroupId,
           categoryIds: input.categoryIds,
-          pressIds: [],
+          pressIds: ["joongang", "kukmin", "hani"],
           userId,
         }),
       );
