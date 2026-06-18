@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from "react";
+import { useId, type InputHTMLAttributes } from "react";
 
 import { cn } from "../shared/utils";
 
@@ -22,7 +22,9 @@ export function TextInput({
   active = false,
   className,
   disabled,
+  id,
   inputSize,
+  name,
   radius,
   readOnly,
   shape,
@@ -32,9 +34,11 @@ export function TextInput({
   wrapperClassName,
   ...props
 }: TextInputProps) {
+  const generatedId = useId();
   const isView = state === "view" || readOnly;
   const resolvedRadius = radius ?? shape ?? "rounded";
   const resolvedSize = size ?? inputSize ?? "medium";
+  const fieldId = id ?? generatedId;
 
   return (
     <label
@@ -55,6 +59,8 @@ export function TextInput({
       <input
         className={className}
         disabled={disabled}
+        id={fieldId}
+        name={name}
         readOnly={isView}
         {...props}
       />

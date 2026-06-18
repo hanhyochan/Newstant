@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 
 import type {
   Inquiry,
@@ -9,6 +9,7 @@ import type {
 } from "@/app/_newsroll/api";
 import {
   Button,
+  Icon,
   NewsRollDivider,
   NewsRollSwitch,
   PillTabMenu,
@@ -103,6 +104,11 @@ const compactHeaderSettingItemIds = new Set<MyProfileSettingItemId>([
   "blockedHiddenSettings",
 ]);
 
+const hiddenDescriptionSettingItemIds = new Set<MyProfileSettingItemId>([
+  "accountEdit",
+  "passwordReset",
+]);
+
 const documentSections: Partial<Record<MyProfileSettingItemId, string[]>> = {
   agreement: [
     "필수 동의 항목은 만 14세 이상 확인, 서비스 이용약관, 개인정보 수집·이용 동의입니다.",
@@ -174,25 +180,124 @@ function SettingDocument({ itemId }: { itemId: MyProfileSettingItemId }) {
   );
 }
 
-function InquiryHistory({ inquiries }: { inquiries: Inquiry[] }) {
+function InquiryDetailContent({
+  inquiry,
+  onNextItem,
+  onPreviousItem,
+}: {
+  inquiry: Inquiry;
+  onNextItem?: () => void;
+  onPreviousItem?: () => void;
+}) {
+  return (
+    <div className="newsroll_policy_detail_content">
+      <div className="newsroll_policy_detail_main">
+      <div className="newsroll_policy_detail_header">
+        <div className="newsroll_policy_detail_titleMeta">
+          <div className="newsroll_policy_detail_body">
+            <h1>{inquiry.title}</h1>
+          </div>
+
+          <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
+            <div className="newsroll_policy_detail_dates">
+              <span>{formatDate(inquiry.createdAt)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
+
+      <p className="newsroll_policy_detail_summary">{inquiry.content}</p>
+      </div>
+
+      <div
+        className="newsroll_policy_detail_pagination"
+        role="group"
+        aria-label="문의 이전글 다음글"
+      >
+        <Button
+          className="btn_originalArticle newsroll_policy_detail_page_button"
+          classNameOnly
+          disabled={!onPreviousItem}
+          onClick={onPreviousItem}
+          type="button"
+        >
+          <Icon name="arrow" />
+          이전글
+        </Button>
+        <Button
+          className="btn_originalArticle newsroll_policy_detail_page_button"
+          classNameOnly
+          disabled={!onNextItem}
+          onClick={onNextItem}
+          type="button"
+        >
+          다음글
+          <Icon name="arrow" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function InquiryHistory({
+  inquiries,
+  selectedInquiryId,
+  onSelectInquiry,
+}: {
+  inquiries: Inquiry[];
+  selectedInquiryId: string | null;
+  onSelectInquiry: (inquiryId: string | null) => void;
+}) {
+  const selectedInquiryIndex = inquiries.findIndex(
+    (inquiry) => inquiry.id === selectedInquiryId,
+  );
+  const selectedInquiry =
+    selectedInquiryIndex >= 0 ? inquiries[selectedInquiryIndex] : null;
+
+  if (selectedInquiry) {
+    return (
+      <InquiryDetailContent
+        inquiry={selectedInquiry}
+        onNextItem={
+          selectedInquiryIndex < inquiries.length - 1
+            ? () => onSelectInquiry(inquiries[selectedInquiryIndex + 1].id)
+            : undefined
+        }
+        onPreviousItem={
+          selectedInquiryIndex > 0
+            ? () => onSelectInquiry(inquiries[selectedInquiryIndex - 1].id)
+            : undefined
+        }
+      />
+    );
+  }
+
   if (inquiries.length === 0) {
     return <DataUnavailableMessage target="문의 내역" />;
   }
 
   return (
-    <div className="wrapper_mySettingsList">
+    <div className="newsroll_policy_items">
       {inquiries.map((inquiry, index) => (
-        <article className="wrapper_mySettingsHistoryItem" key={inquiry.id}>
-          {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
-          <div className="wrapper_mySettingsHistoryText">
-            <span className="text_mySettingsHistoryMeta">
-              {inquiry.status === "answered" ? "답변 완료" : "접수 완료"} ·{" "}
-              {formatDate(inquiry.createdAt)}
-            </span>
-            <strong>{inquiry.title}</strong>
-            <p>{inquiry.content}</p>
-          </div>
-        </article>
+        <Fragment key={inquiry.id}>
+          <button
+            className="newsroll_policy_list_item"
+            onClick={() => onSelectInquiry(inquiry.id)}
+            type="button"
+          >
+            <div className="wrapper_policyItemContent wrapper_myInquiryItemContent">
+              <h2>{inquiry.title}</h2>
+              <div className="newsroll_policy_dates">
+                <span>{formatDate(inquiry.createdAt)}</span>
+              </div>
+            </div>
+          </button>
+          {index < inquiries.length - 1 ? (
+            <NewsRollDivider className="newsroll_policy_itemDivider" />
+          ) : null}
+        </Fragment>
       ))}
     </div>
   );
@@ -202,14 +307,20 @@ function ModerationHistory({
   actions,
   itemId,
   onDeleteAction,
+  users,
 }: {
   actions: UserContentAction[];
   itemId: MyProfileSettingItemId;
   onDeleteAction: (actionId: string) => Promise<void>;
+  users: User[];
 }) {
   const [activeTab, setActiveTab] = useState<UserContentActionType>("block");
   const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const isReport = itemId === "reportHistory";
+  const userNameById = useMemo(
+    () => new Map(users.map((user) => [user.id, user.nickname])),
+    [users],
+  );
   const filteredActions = useMemo(
     () =>
       actions.filter((action) =>
@@ -238,10 +349,15 @@ function ModerationHistory({
             <article className="wrapper_mySettingsHistoryItem" key={action.id}>
               {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
               <div className="wrapper_mySettingsHistoryText">
+                <span className="text_mySettingsHistoryMeta">
+                  {formatDate(action.createdAt)}
+                </span>
                 <div className="wrapper_mySettingsHistoryHeader">
-                  <span className="text_mySettingsHistoryMeta">
-                    {formatDate(action.createdAt)}
-                  </span>
+                  <strong>
+                    {action.targetUserId
+                      ? userNameById.get(action.targetUserId) ?? action.targetUserId
+                      : action.targetId}
+                  </strong>
                   {isReport ? null : (
                     <button
                       aria-pressed="true"
@@ -259,7 +375,6 @@ function ModerationHistory({
                     </button>
                   )}
                 </div>
-                <strong>{action.targetUserId ?? action.targetId}</strong>
                 {isReport && action.reason ? <p>{action.reason}</p> : null}
               </div>
             </article>
@@ -279,13 +394,11 @@ function AccountEditForm({
 }) {
   const [nickname, setNickname] = useState(user?.nickname ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
-  const [ageGroupId, setAgeGroupId] = useState(user?.ageGroupId ?? "");
   const [status, setStatus] = useState<"error" | "saving" | "saved" | null>(null);
 
   useEffect(() => {
     setNickname(user?.nickname ?? "");
     setEmail(user?.email ?? "");
-    setAgeGroupId(user?.ageGroupId ?? "");
   }, [user]);
 
   return (
@@ -294,14 +407,13 @@ function AccountEditForm({
       onSubmit={(event) => {
         event.preventDefault();
 
-        if (!nickname.trim() || !email.trim() || !ageGroupId.trim()) {
+        if (!nickname.trim() || !email.trim()) {
           setStatus("error");
           return;
         }
 
         setStatus("saving");
         onSubmit({
-          ageGroupId: ageGroupId.trim(),
           email: email.trim(),
           nickname: nickname.trim(),
         })
@@ -333,18 +445,6 @@ function AccountEditForm({
           variant="outline"
         />
       </label>
-      <label className="wrapper_mySettingsField">
-        <span className="text_infoFieldLabel">연령대</span>
-        <TextInput
-          aria-label="연령대"
-          inputSize="large"
-          onChange={(event) => setAgeGroupId(event.target.value)}
-          radius="rounded"
-          type="text"
-          value={ageGroupId}
-          variant="outline"
-        />
-      </label>
       {status ? (
         <p className={`text_mySettingsStatus${status === "error" ? " is_error" : ""}`}>
           {status === "saving"
@@ -367,6 +467,50 @@ function AccountEditForm({
   );
 }
 
+function SettingsPasswordField({
+  autoComplete,
+  isVisible,
+  label,
+  onChange,
+  onToggleVisible,
+  value,
+}: {
+  autoComplete: string;
+  isVisible: boolean;
+  label: string;
+  onChange: (value: string) => void;
+  onToggleVisible: () => void;
+  value: string;
+}) {
+  return (
+    <label className="wrapper_mySettingsField">
+      <span className="text_infoFieldLabel">{label}</span>
+      <div className="wrapper_loginPasswordField">
+        <TextInput
+          aria-label={label}
+          autoComplete={autoComplete}
+          inputSize="large"
+          onChange={(event) => onChange(event.target.value)}
+          radius="rounded"
+          type={isVisible ? "text" : "password"}
+          value={value}
+          variant="outline"
+          wrapperClassName="input_loginPassword"
+        />
+        <button
+          aria-label={isVisible ? `${label} 숨기기` : `${label} 보기`}
+          aria-pressed={isVisible}
+          className="btn_loginPasswordToggle btn_mySettingsPasswordToggle"
+          onClick={onToggleVisible}
+          type="button"
+        >
+          <Icon name="eye" />
+        </button>
+      </div>
+    </label>
+  );
+}
+
 function PasswordResetForm({
   onSubmit,
 }: {
@@ -375,6 +519,9 @@ function PasswordResetForm({
   const [currentPassword, setCurrentPassword] = useState("");
   const [nextPassword, setNextPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
+  const [isNextPasswordVisible, setIsNextPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [status, setStatus] = useState<"error" | "saving" | "saved" | null>(null);
 
   return (
@@ -403,42 +550,30 @@ function PasswordResetForm({
           .catch(() => setStatus("error"));
       }}
     >
-      <label className="wrapper_mySettingsField">
-        <span className="text_infoFieldLabel">현재 비밀번호</span>
-        <TextInput
-          aria-label="현재 비밀번호"
-          inputSize="large"
-          onChange={(event) => setCurrentPassword(event.target.value)}
-          radius="rounded"
-          type="password"
-          value={currentPassword}
-          variant="outline"
-        />
-      </label>
-      <label className="wrapper_mySettingsField">
-        <span className="text_infoFieldLabel">새 비밀번호</span>
-        <TextInput
-          aria-label="새 비밀번호"
-          inputSize="large"
-          onChange={(event) => setNextPassword(event.target.value)}
-          radius="rounded"
-          type="password"
-          value={nextPassword}
-          variant="outline"
-        />
-      </label>
-      <label className="wrapper_mySettingsField">
-        <span className="text_infoFieldLabel">새 비밀번호 확인</span>
-        <TextInput
-          aria-label="새 비밀번호 확인"
-          inputSize="large"
-          onChange={(event) => setConfirmPassword(event.target.value)}
-          radius="rounded"
-          type="password"
-          value={confirmPassword}
-          variant="outline"
-        />
-      </label>
+      <SettingsPasswordField
+        autoComplete="current-password"
+        isVisible={isCurrentPasswordVisible}
+        label="현재 비밀번호"
+        onChange={setCurrentPassword}
+        onToggleVisible={() => setIsCurrentPasswordVisible((current) => !current)}
+        value={currentPassword}
+      />
+      <SettingsPasswordField
+        autoComplete="new-password"
+        isVisible={isNextPasswordVisible}
+        label="새 비밀번호"
+        onChange={setNextPassword}
+        onToggleVisible={() => setIsNextPasswordVisible((current) => !current)}
+        value={nextPassword}
+      />
+      <SettingsPasswordField
+        autoComplete="new-password"
+        isVisible={isConfirmPasswordVisible}
+        label="새 비밀번호 확인"
+        onChange={setConfirmPassword}
+        onToggleVisible={() => setIsConfirmPasswordVisible((current) => !current)}
+        value={confirmPassword}
+      />
       {status ? (
         <p className={`text_mySettingsStatus${status === "error" ? " is_error" : ""}`}>
           {status === "saving"
@@ -523,6 +658,7 @@ export function MyProfileSettingDetailPage({
   onPasswordSubmit,
   onUserSubmit,
   user,
+  users,
 }: {
   actions: UserContentAction[];
   inquiries: Inquiry[];
@@ -532,23 +668,39 @@ export function MyProfileSettingDetailPage({
   onPasswordSubmit: (currentPassword: string, nextPassword: string) => Promise<void>;
   onUserSubmit: (input: UpdateUserInput) => Promise<void>;
   user: User | null;
+  users: User[];
 }) {
   const meta = settingMeta[itemId];
+  const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null);
   const shouldUseCompactHeader = compactHeaderSettingItemIds.has(itemId);
+  const shouldHideDescription = hiddenDescriptionSettingItemIds.has(itemId);
+  const isInquiryDetailOpen =
+    itemId === "inquiryHistory" &&
+    inquiries.some((inquiry) => inquiry.id === selectedInquiryId);
+  const shouldShowHeader = !isInquiryDetailOpen;
+  const shouldShowDivider =
+    shouldShowHeader &&
+    !shouldUseCompactHeader &&
+    itemId !== "accountEdit" &&
+    itemId !== "passwordReset";
+
+  useEffect(() => {
+    setSelectedInquiryId(null);
+  }, [itemId]);
 
   return (
     <div
-      className={`container_mySettingsPage ${getEnterFromRightMotionClassName(isLeaving)}`}
+      className={`container_mySettingsPage ${isInquiryDetailOpen ? "is_mySettingsNestedDetail " : ""}${getEnterFromRightMotionClassName(isLeaving)}`}
     >
-      <section className="container_mySettingsDetailSection">
-        <h2 className="text_myTimeTitle">{meta.title}</h2>
-        {shouldUseCompactHeader ? null : (
-          <p className="text_mySettingsDescription">{meta.description}</p>
-        )}
-      </section>
-      {shouldUseCompactHeader ? null : (
-        <NewsRollDivider className="divider_mySection" />
-      )}
+      {shouldShowHeader ? (
+        <section className="container_mySettingsDetailSection">
+          <h2 className="text_myTimeTitle">{meta.title}</h2>
+          {shouldUseCompactHeader || shouldHideDescription ? null : (
+            <p className="text_mySettingsDescription">{meta.description}</p>
+          )}
+        </section>
+      ) : null}
+      {shouldShowDivider ? <NewsRollDivider className="divider_mySection" /> : null}
       {itemId === "accountEdit" ? (
         <AccountEditForm onSubmit={onUserSubmit} user={user} />
       ) : itemId === "passwordReset" ? (
@@ -556,12 +708,17 @@ export function MyProfileSettingDetailPage({
       ) : itemId === "marketingConsent" ? (
         <MarketingConsentForm onSubmit={onUserSubmit} user={user} />
       ) : itemId === "inquiryHistory" ? (
-        <InquiryHistory inquiries={inquiries} />
+        <InquiryHistory
+          inquiries={inquiries}
+          onSelectInquiry={setSelectedInquiryId}
+          selectedInquiryId={selectedInquiryId}
+        />
       ) : itemId === "reportHistory" || itemId === "blockedHiddenSettings" ? (
         <ModerationHistory
           actions={actions}
           itemId={itemId}
           onDeleteAction={onDeleteContentAction}
+          users={users}
         />
       ) : (
         <SettingDocument itemId={itemId} />

@@ -1,4 +1,4 @@
-import type { TextareaHTMLAttributes } from "react";
+import { useId, type TextareaHTMLAttributes } from "react";
 
 import { cn } from "../shared/utils";
 
@@ -21,6 +21,8 @@ export function Textarea({
   active = false,
   className,
   disabled,
+  id,
+  name,
   radius,
   readOnly,
   shape,
@@ -30,9 +32,11 @@ export function Textarea({
   variant = "outline",
   ...props
 }: TextareaProps) {
+  const generatedId = useId();
   const isView = state === "view" || readOnly;
   const resolvedRadius = radius ?? shape ?? "rounded";
   const resolvedSize = size ?? textareaSize ?? "medium";
+  const fieldId = id ?? generatedId;
 
   return (
     <textarea
@@ -48,6 +52,8 @@ export function Textarea({
         className,
       )}
       disabled={disabled}
+      id={fieldId}
+      name={name}
       readOnly={isView}
       {...props}
     />

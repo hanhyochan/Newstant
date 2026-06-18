@@ -11,7 +11,23 @@ export type CurrentUser = {
 export const fallbackCurrentUser: CurrentUser = {
   id: mockCurrentUserId,
   isAuthenticated: true,
-  nickname: "콩콩이",
+  nickname: "\uCF69\uCF69\uC774",
+};
+
+const mockUserDisplayNames: Record<string, string> = {
+  "user-5da62014-46f6-453f-8e3c-47bb64bdc700": "\uD584\uC2A4\uD130",
+  "user-doyun": "\uB3C4\uC724",
+  "user-haneul": "\uD558\uB298",
+  "user-hong": "\uD64D\uAE38\uB3D9",
+  "user-jiho": "\uC9C0\uD638",
+  "user-jisoo": "\uC9C0\uC218",
+  "user-junho": "\uC900\uD638",
+  "user-kongkong": "\uCF69\uCF69\uC774",
+  "user-minji": "\uBBFC\uC9C0",
+  "user-seojin": "\uC11C\uC9C4",
+  "user-soyeon": "\uC18C\uC5F0",
+  "user-taeho": "\uD0DC\uD638",
+  "user-yuna": "\uC720\uB098",
 };
 
 function readStoredCurrentUser() {
@@ -94,5 +110,7 @@ export function clearCurrentUserSession() {
 }
 
 export function getCurrentUserDisplayName(userId: string) {
-  return userId === currentUser.id ? currentUser.nickname : "홍길동";
+  return userId === currentUser.id
+    ? currentUser.nickname
+    : mockUserDisplayNames[userId] ?? "\uD64D\uAE38\uB3D9";
 }

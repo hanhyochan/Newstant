@@ -68,6 +68,7 @@ export type UserAgeGroup = {
 
 export type User = {
   id: string;
+  loginId: string;
   nickname: string;
   email: string;
   password?: string;
@@ -79,7 +80,10 @@ export type User = {
 };
 
 export type UpdateUserInput = Partial<
-  Pick<User, "ageGroupId" | "email" | "marketingAgreed" | "nickname" | "password">
+  Pick<
+    User,
+    "ageGroupId" | "email" | "loginId" | "marketingAgreed" | "nickname" | "password"
+  >
 >;
 
 export type UserPreference = {
@@ -92,6 +96,7 @@ export type UserPreference = {
 };
 
 export type CreateUserInput = {
+  loginId: string;
   nickname: string;
   email: string;
   password: string;

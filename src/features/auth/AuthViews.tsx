@@ -26,6 +26,7 @@ import {
   authEmailSchema,
   createSignupPasswordConfirmSchema,
   loginPasswordSchema,
+  signupLoginIdSchema,
   signupNicknameSchema,
   signupPasswordSchema,
   verificationCodeSchema,
@@ -46,6 +47,27 @@ function AuthValidationError({
       {message}
     </p>
   ) : null;
+}
+
+function SignupFieldActionButton({
+  children,
+  disabled,
+  onClick,
+}: {
+  children: ReactNode;
+  disabled: boolean;
+  onClick: () => void | Promise<void>;
+}) {
+  return (
+    <Button
+      className="btn_commentMineFilter btn_signupVerificationSend"
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
+      {children}
+    </Button>
+  );
 }
 
 export function LoginView({
@@ -655,6 +677,7 @@ function SignupAgreementSearchView({
           <label className="input_searchField">
             <span className="sr_only">동의 문구 검색</span>
             <input
+              name="agreement-search"
               onChange={(event) => setQuery(event.currentTarget.value)}
               placeholder="검색 키워드를 입력해주세요"
               ref={inputRef}
@@ -831,12 +854,17 @@ export function SignupAgreementView({
 }
 
 export function SignupEmailView({
+  onCheckEmail,
   onNext,
 }: {
+  onCheckEmail: (email: string) => Promise<boolean>;
   onNext: (email: string) => void;
 }) {
   const verificationTimerRef = useRef<number | null>(null);
   const [email, setEmail] = useState("");
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [isEmailChecking, setIsEmailChecking] = useState(false);
+  const [emailCheckMessage, setEmailCheckMessage] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isVerificationConfirmed, setIsVerificationConfirmed] = useState(false);
   const [isVerificationSent, setIsVerificationSent] = useState(false);
@@ -846,8 +874,10 @@ export function SignupEmailView({
     verificationCodeSchema,
     verificationCode,
   );
-  const isEmailReady = emailValidation.isValid && isVerificationConfirmed;
+  const isEmailReady =
+    emailValidation.isValid && isEmailChecked && isVerificationConfirmed;
   const signupEmailErrorId = "signup-email-error";
+  const signupEmailCheckId = "signup-email-check";
   const signupVerificationCodeErrorId = "signup-verification-code-error";
   const formattedVerificationTime = `${Math.floor(
     remainingVerificationSeconds / 60,
@@ -864,7 +894,13 @@ export function SignupEmailView({
     setRemainingVerificationSeconds(0);
   }
 
-  function startVerificationCode() {
+  async function startVerificationCode() {
+    const isAvailable = await checkEmailDuplicate();
+
+    if (!isAvailable) {
+      return;
+    }
+
     if (verificationTimerRef.current !== null) {
       window.clearTimeout(verificationTimerRef.current);
     }
@@ -873,6 +909,49 @@ export function SignupEmailView({
     setIsVerificationConfirmed(false);
     setIsVerificationSent(true);
     setRemainingVerificationSeconds(180);
+  }
+
+  async function checkEmailDuplicate() {
+    emailValidation.markTouched();
+
+    if (!emailValidation.isValid) {
+      setIsEmailChecked(false);
+      setEmailCheckMessage("");
+      resetVerificationCode();
+      return false;
+    }
+
+    setIsEmailChecking(true);
+
+    let isAvailable = false;
+
+    try {
+      isAvailable = await onCheckEmail(email.trim());
+    } catch {
+      isAvailable = false;
+    } finally {
+      setIsEmailChecking(false);
+    }
+
+    setIsEmailChecked(isAvailable);
+    setEmailCheckMessage(
+      !isAvailable
+        ? "이미 가입된 이메일이에요."
+        : "사용 가능한 이메일이에요.",
+    );
+
+    if (!isAvailable) {
+      resetVerificationCode();
+    }
+
+    return isAvailable;
+  }
+
+  function updateEmail(value: string) {
+    setEmail(value);
+    setIsEmailChecked(false);
+    setEmailCheckMessage("");
+    resetVerificationCode();
   }
 
   function confirmVerificationCode() {
@@ -939,32 +1018,47 @@ export function SignupEmailView({
             <div className="wrapper_authField">
               <div className="wrapper_signupEmailField">
                 <TransparentTextInput
-                  aria-describedby={
-                    emailValidation.errorMessage ? signupEmailErrorId : undefined
-                  }
+                  aria-describedby={[
+                    emailValidation.errorMessage ? signupEmailErrorId : "",
+                    emailCheckMessage ? signupEmailCheckId : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || undefined}
                   aria-invalid={Boolean(emailValidation.errorMessage)}
                   aria-label="회원가입 이메일 입력"
                   autoComplete="email"
                   onBlur={emailValidation.markTouched}
-                  onChange={(event) => setEmail(event.currentTarget.value)}
+                  onChange={(event) => updateEmail(event.currentTarget.value)}
                   placeholder="이메일"
                   state={emailValidation.errorMessage ? "error" : "default"}
                   type="email"
                   value={email}
                 />
-                <Button
-                  className="btn_commentMineFilter btn_signupVerificationSend"
-                  disabled={!emailValidation.isValid}
+                <SignupFieldActionButton
+                  disabled={
+                    !emailValidation.isValid ||
+                    isEmailChecking ||
+                    isVerificationSent ||
+                    isVerificationConfirmed
+                  }
                   onClick={startVerificationCode}
-                  type="button"
                 >
                   인증번호 발송
-                </Button>
+                </SignupFieldActionButton>
               </div>
               <AuthValidationError
                 id={signupEmailErrorId}
                 message={emailValidation.errorMessage}
               />
+              {emailCheckMessage ? (
+                <p
+                  className="text_authValidation"
+                  data-state={isEmailChecked ? "success" : "error"}
+                  id={signupEmailCheckId}
+                >
+                  {emailCheckMessage}
+                </p>
+              ) : null}
             </div>
             {isVerificationSent ? (
               <div className="wrapper_authField">
@@ -996,16 +1090,12 @@ export function SignupEmailView({
                       {formattedVerificationTime}
                     </span>
                   </div>
-                  <Button
-                    className="btn_commentMineFilter btn_signupVerificationSend"
-                    disabled={
-                      !verificationCodeValidation.isValid || isVerificationConfirmed
-                    }
+                  <SignupFieldActionButton
+                    disabled={isVerificationConfirmed}
                     onClick={confirmVerificationCode}
-                    type="button"
                   >
                     인증하기
-                  </Button>
+                  </SignupFieldActionButton>
                 </div>
                 <AuthValidationError
                   id={signupVerificationCodeErrorId}
@@ -1133,14 +1223,16 @@ export function SignupNicknameView({
                   type="text"
                   value={nickname}
                 />
-                <Button
-                  className="btn_commentMineFilter btn_signupVerificationSend"
-                  disabled={!nicknameValidation.isValid || isNicknameChecking}
+                <SignupFieldActionButton
+                  disabled={
+                    !nicknameValidation.isValid ||
+                    isNicknameChecking ||
+                    isNicknameChecked
+                  }
                   onClick={checkNicknameDuplicate}
-                  type="button"
                 >
                   중복확인
-                </Button>
+                </SignupFieldActionButton>
               </div>
               <AuthValidationError
                 id={signupNicknameErrorId}
@@ -1161,6 +1253,144 @@ export function SignupNicknameView({
           <Button
             className="btn_signupStepNext"
             disabled={!isNicknameReady}
+            radius="rounded"
+            size="large"
+            type="submit"
+            variant="filled"
+          >
+            다음
+          </Button>
+        </form>
+      </div>
+    </AuthLayout>
+  );
+}
+
+const reservedSignupLoginIds = ["admin", "newsroll", "root", "system"];
+
+export function SignupLoginIdView({
+  onCheckLoginId,
+  onNext,
+}: {
+  onCheckLoginId: (loginId: string) => Promise<boolean>;
+  onNext: (loginId: string) => void;
+}) {
+  const [loginId, setLoginId] = useState("");
+  const [isLoginIdChecked, setIsLoginIdChecked] = useState(false);
+  const [isLoginIdChecking, setIsLoginIdChecking] = useState(false);
+  const [loginIdCheckMessage, setLoginIdCheckMessage] = useState("");
+  const loginIdValidation = useZodFieldValidation(signupLoginIdSchema, loginId);
+  const isLoginIdReady = loginIdValidation.isValid && isLoginIdChecked;
+  const signupLoginIdErrorId = "signup-login-id-error";
+  const signupLoginIdCheckId = "signup-login-id-check";
+
+  async function checkLoginIdDuplicate() {
+    loginIdValidation.markTouched();
+
+    if (!loginIdValidation.isValid) {
+      setIsLoginIdChecked(false);
+      setLoginIdCheckMessage("");
+      return;
+    }
+
+    const normalizedLoginId = loginId.trim().toLocaleLowerCase("en-US");
+    const isReserved = reservedSignupLoginIds.includes(normalizedLoginId);
+    setIsLoginIdChecking(true);
+
+    let isAvailable = false;
+
+    try {
+      isAvailable = isReserved ? false : await onCheckLoginId(normalizedLoginId);
+    } catch {
+      isAvailable = false;
+    }
+
+    setIsLoginIdChecking(false);
+    setIsLoginIdChecked(isAvailable);
+    setLoginIdCheckMessage(
+      !isAvailable
+        ? "이미 사용 중인 아이디예요."
+        : "사용 가능한 아이디예요.",
+    );
+  }
+
+  function updateLoginId(value: string) {
+    setLoginId(value);
+    setIsLoginIdChecked(false);
+    setLoginIdCheckMessage("");
+  }
+
+  return (
+    <AuthLayout ariaLabel="회원가입 아이디 설정">
+      <div className="wrapper_signupStepContent">
+        <div className="wrapper_loginHeader">
+          <p className="text_authStepLabel">Step 4</p>
+          <h1 className="text_authPageTitle">아이디 설정</h1>
+          <p className="text_signupStepDescription">
+            로그인과 계정 식별에 사용할 아이디를 입력해 주세요.
+          </p>
+        </div>
+
+        <form
+          className="form_signupStep"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (isLoginIdReady) {
+              onNext(loginId.trim().toLocaleLowerCase("en-US"));
+            }
+          }}
+        >
+          <div className="wrapper_loginInputs">
+            <div className="wrapper_authField">
+              <div className="wrapper_signupEmailField">
+                <TransparentTextInput
+                  aria-describedby={[
+                    loginIdValidation.errorMessage ? signupLoginIdErrorId : "",
+                    loginIdCheckMessage ? signupLoginIdCheckId : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || undefined}
+                  aria-invalid={Boolean(loginIdValidation.errorMessage)}
+                  aria-label="회원가입 아이디 입력"
+                  autoComplete="username"
+                  maxLength={20}
+                  onBlur={loginIdValidation.markTouched}
+                  onChange={(event) => updateLoginId(event.currentTarget.value)}
+                  placeholder="아이디"
+                  state={loginIdValidation.errorMessage ? "error" : "default"}
+                  type="text"
+                  value={loginId}
+                />
+                <SignupFieldActionButton
+                  disabled={
+                    !loginIdValidation.isValid ||
+                    isLoginIdChecking ||
+                    isLoginIdChecked
+                  }
+                  onClick={checkLoginIdDuplicate}
+                >
+                  중복확인
+                </SignupFieldActionButton>
+              </div>
+              <AuthValidationError
+                id={signupLoginIdErrorId}
+                message={loginIdValidation.errorMessage}
+              />
+              {loginIdCheckMessage ? (
+                <p
+                  className="text_authValidation"
+                  data-state={isLoginIdChecked ? "success" : "error"}
+                  id={signupLoginIdCheckId}
+                >
+                  {loginIdCheckMessage}
+                </p>
+              ) : null}
+            </div>
+          </div>
+
+          <Button
+            className="btn_signupStepNext"
+            disabled={!isLoginIdReady}
             radius="rounded"
             size="large"
             type="submit"
@@ -1346,7 +1576,7 @@ export function SignupAgeView({
     <AuthLayout ariaLabel="나의 연령대 선택">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 4</p>
+          <p className="text_authStepLabel">Step 5</p>
           <h1 className="text_authPageTitle">나의 연령대 선택</h1>
           <p className="text_signupStepDescription">
             맞춤형 뉴스 추천에 사용할 연령대를 선택해주세요.
@@ -1412,7 +1642,7 @@ export function SignupCategoryView({
     <AuthLayout ariaLabel="관심 카테고리 선택">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 5</p>
+          <p className="text_authStepLabel">Step 6</p>
           <h1 className="text_authPageTitle">관심 카테고리 선택</h1>
           <p className="text_signupStepDescription">
             보고 싶은 뉴스 카테고리를 하나 이상 선택해주세요.

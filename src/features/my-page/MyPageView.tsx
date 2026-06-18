@@ -129,8 +129,24 @@ const myCategoryGroups = [
   },
 ];
 
+const myAgeGroupPreferenceIds = ["minor", "youth", "middle", "senior"] as const;
+
 function getMyCategoryOptionId(groupIndex: number, itemIndex: number) {
   return `${groupIndex}-${itemIndex}`;
+}
+
+function getAgeGroupOptionId(ageGroupId?: string) {
+  const itemIndex = myAgeGroupPreferenceIds.findIndex((id) => id === ageGroupId);
+
+  return itemIndex >= 0 ? getMyCategoryOptionId(1, itemIndex) : "";
+}
+
+function getAgeGroupPreferenceId(optionId?: string) {
+  const itemIndex = myAgeGroupPreferenceIds.findIndex(
+    (_, index) => getMyCategoryOptionId(1, index) === optionId,
+  );
+
+  return itemIndex >= 0 ? myAgeGroupPreferenceIds[itemIndex] : "";
 }
 
 function getMyCategoryTabItems(groupIndex: number) {
@@ -167,7 +183,8 @@ function getCategorySettingsFromPreference(preference: UserPreference | null) {
   };
 
   const categoryIds = getValidOptionIds(0, preference.categoryIds);
-  const ageGroupIds = getValidOptionIds(1, preference.ageGroupId ? [preference.ageGroupId] : []);
+  const ageGroupOptionId = getAgeGroupOptionId(preference.ageGroupId);
+  const ageGroupIds = ageGroupOptionId ? [ageGroupOptionId] : [];
   const pressIds = getValidOptionIds(2, preference.pressIds);
 
   return [
@@ -437,6 +454,7 @@ export function MyPageView({
   });
   const [notificationItems, setNotificationItems] = useState<AppNotification[]>([]);
   const [profileUser, setProfileUser] = useState<User | null>(null);
+  const [profileUsers, setProfileUsers] = useState<User[]>([]);
   const [myInquiryItems, setMyInquiryItems] = useState<Inquiry[]>([]);
   const [myContentActionItems, setMyContentActionItems] = useState<
     UserContentAction[]
@@ -663,6 +681,7 @@ export function MyPageView({
         newsViewTimes,
         nextNotificationItems,
         nextProfileUser,
+        nextProfileUsers,
         nextInquiryItems,
         nextContentActionItems,
       ] = await Promise.all([
@@ -671,6 +690,7 @@ export function MyPageView({
         settingsApi.getUserNewsViewTimes(currentUserId),
         notificationApi.getNotifications(currentUserId).catch(() => []),
         userApi.getCurrentUser(currentUserId).catch(() => null),
+        userApi.getUsers().catch(() => []),
         inquiryApi.getInquiries(currentUserId).catch(() => []),
         userContentActionApi.getActions(currentUserId).catch(() => []),
       ]);
@@ -688,6 +708,7 @@ export function MyPageView({
       setSelectedNewsViewTimes(getNewsViewTimesFromApi(newsViewTimes));
       setNotificationItems(nextNotificationItems);
       setProfileUser(nextProfileUser);
+      setProfileUsers(nextProfileUsers);
       setMyInquiryItems(nextInquiryItems);
       setMyContentActionItems(nextContentActionItems);
       onDarkModeChange(notifications?.darkMode ?? false);
@@ -746,7 +767,7 @@ export function MyPageView({
     userApi
       .updateUserPreferences(preferenceId, {
         categoryIds: Array.from(nextSettings[0] ?? []),
-        ageGroupId: Array.from(nextSettings[1] ?? [])[0] ?? "",
+        ageGroupId: getAgeGroupPreferenceId(Array.from(nextSettings[1] ?? [])[0]),
         pressIds: Array.from(nextSettings[2] ?? []),
       })
       .catch(() => undefined);
@@ -928,10 +949,17 @@ export function MyPageView({
   const refreshProfileSettingsData = useCallback(() => {
     void Promise.all([
       userApi.getCurrentUser(currentUserId).catch(() => null),
+      userApi.getUsers().catch(() => []),
       inquiryApi.getInquiries(currentUserId).catch(() => []),
       userContentActionApi.getActions(currentUserId).catch(() => []),
-    ]).then(([nextProfileUser, nextInquiryItems, nextContentActionItems]) => {
+    ]).then(([
+      nextProfileUser,
+      nextProfileUsers,
+      nextInquiryItems,
+      nextContentActionItems,
+    ]) => {
       setProfileUser(nextProfileUser);
+      setProfileUsers(nextProfileUsers);
       setMyInquiryItems(nextInquiryItems);
       setMyContentActionItems(nextContentActionItems);
     });
@@ -1239,6 +1267,7 @@ export function MyPageView({
                 onPasswordSubmit={updateProfilePassword}
                 onUserSubmit={updateProfileUser}
                 user={profileUser}
+                users={profileUsers}
               />
             ) : (
               <MyProfileSettingsPage

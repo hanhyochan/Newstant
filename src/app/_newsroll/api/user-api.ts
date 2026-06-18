@@ -7,7 +7,14 @@ function normalizeEmail(email: string) {
   return email.trim().toLocaleLowerCase("en-US");
 }
 
+function normalizeLoginId(loginId: string) {
+  return loginId.trim().toLocaleLowerCase("en-US");
+}
+
 export const userApi = {
+  getUsers() {
+    return apiClient.get<User[]>("/users");
+  },
   getCurrentUser(userId = currentUserId) {
     return apiClient.get<User>(`/users/${userId}`);
   },
@@ -21,6 +28,13 @@ export const userApi = {
   async getUserByNickname(nickname: string) {
     const users = await apiClient.get<User[]>("/users", {
       nickname: nickname.trim(),
+    });
+
+    return users[0] ?? null;
+  },
+  async getUserByLoginId(loginId: string) {
+    const users = await apiClient.get<User[]>("/users", {
+      loginId: normalizeLoginId(loginId),
     });
 
     return users[0] ?? null;
@@ -39,6 +53,7 @@ export const userApi = {
 
     return apiClient.post<User, User>("/users", {
       id: createMockId("user"),
+      loginId: normalizeLoginId(input.loginId),
       nickname: input.nickname.trim(),
       email: normalizeEmail(input.email),
       password: input.password,
@@ -53,6 +68,7 @@ export const userApi = {
     const nextInput = {
       ...input,
       email: input.email ? normalizeEmail(input.email) : undefined,
+      loginId: input.loginId ? normalizeLoginId(input.loginId) : undefined,
       nickname: input.nickname?.trim(),
       updatedAt: createTimestamp(),
     };

@@ -117,7 +117,7 @@ export type BodySearchSelectionInput =
   | { article: HomeArticle; kind: "news" }
   | { kind: "policy"; policy: PolicyItem };
 
-const commentPanelOpenHintOffset = 56;
+const commentPanelOpenHintOffset = 112;
 
 export type HomeArticle = {
   body?: string;

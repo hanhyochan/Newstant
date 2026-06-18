@@ -27,6 +27,7 @@ import {
   SignupAgreementView,
   SignupCategoryView,
   SignupEmailView,
+  SignupLoginIdView,
   SignupNicknameView,
   SignupPasswordView,
 } from "@/features/auth/AuthViews";
@@ -70,6 +71,7 @@ type View =
   | "signupAgreement"
   | "signupEmail"
   | "signupNickname"
+  | "signupLoginId"
   | "signupPassword"
   | "signupAge"
   | "signupCategory";
@@ -79,6 +81,7 @@ type SignupDraft = {
   agreementIds?: string[];
   categoryIds?: string[];
   email?: string;
+  loginId?: string;
   marketingAgreed?: boolean;
   nickname?: string;
   password?: string;
@@ -135,6 +138,8 @@ function ActiveView({
   authError,
   isAuthSubmitting,
   onAddBlockedKeyword,
+  onCheckSignupEmail,
+  onCheckSignupLoginId,
   onCheckSignupNickname,
   onDarkModeChange,
   onDeleteBlockedKeyword,
@@ -145,6 +150,7 @@ function ActiveView({
   onSignupAgreementNext,
   onSignupCategoryNext,
   onSignupEmailNext,
+  onSignupLoginIdNext,
   onSignupNicknameNext,
   onSignupPasswordNext,
   onSignupStart,
@@ -167,6 +173,8 @@ function ActiveView({
   authError?: string;
   isAuthSubmitting: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
+  onCheckSignupEmail: (email: string) => Promise<boolean>;
+  onCheckSignupLoginId: (loginId: string) => Promise<boolean>;
   onCheckSignupNickname: (nickname: string) => Promise<boolean>;
   onDarkModeChange: (isDarkMode: boolean) => void;
   onDeleteBlockedKeyword: (keyword: string) => void;
@@ -181,6 +189,7 @@ function ActiveView({
   onSignupAgreementNext: (agreements: Record<string, boolean>) => void;
   onSignupCategoryNext: (categoryIds: string[]) => Promise<void>;
   onSignupEmailNext: (email: string) => void;
+  onSignupLoginIdNext: (loginId: string) => void;
   onSignupNicknameNext: (nickname: string) => void;
   onSignupPasswordNext: (password: string) => void;
   onSignupStart: () => void;
@@ -216,7 +225,12 @@ function ActiveView({
   }
 
   if (view === "signupEmail") {
-    return <SignupEmailView onNext={onSignupEmailNext} />;
+    return (
+      <SignupEmailView
+        onCheckEmail={onCheckSignupEmail}
+        onNext={onSignupEmailNext}
+      />
+    );
   }
 
   if (view === "signupNickname") {
@@ -224,6 +238,15 @@ function ActiveView({
       <SignupNicknameView
         onCheckNickname={onCheckSignupNickname}
         onNext={onSignupNicknameNext}
+      />
+    );
+  }
+
+  if (view === "signupLoginId") {
+    return (
+      <SignupLoginIdView
+        onCheckLoginId={onCheckSignupLoginId}
+        onNext={onSignupLoginIdNext}
       />
     );
   }
@@ -372,6 +395,7 @@ export function NewsHomeScreen() {
     activeView === "signupAgreement" ||
     activeView === "signupEmail" ||
     activeView === "signupNickname" ||
+    activeView === "signupLoginId" ||
     activeView === "signupPassword" ||
     activeView === "signupAge" ||
     activeView === "signupCategory"
@@ -432,6 +456,7 @@ export function NewsHomeScreen() {
           activeView === "signupAgreement" ||
           activeView === "signupEmail" ||
           activeView === "signupNickname" ||
+          activeView === "signupLoginId" ||
           activeView === "signupPassword" ||
           activeView === "signupAge" ||
           activeView === "signupCategory"
@@ -546,6 +571,18 @@ export function NewsHomeScreen() {
     return !user;
   }
 
+  async function checkSignupEmail(email: string) {
+    const user = await userApi.getUserByEmail(email);
+
+    return !user;
+  }
+
+  async function checkSignupLoginId(loginId: string) {
+    const user = await userApi.getUserByLoginId(loginId);
+
+    return !user;
+  }
+
   async function loginWithEmail(input: {
     email: string;
     isAutoLogin: boolean;
@@ -635,6 +672,7 @@ export function NewsHomeScreen() {
     if (
       !nextDraft.email ||
       !nextDraft.nickname ||
+      !nextDraft.loginId ||
       !nextDraft.password ||
       !nextDraft.ageGroupId ||
       !nextDraft.agreementIds
@@ -648,6 +686,12 @@ export function NewsHomeScreen() {
 
     try {
       const existingUser = await userApi.getUserByEmail(nextDraft.email);
+      const existingLoginIdUser = await userApi.getUserByLoginId(nextDraft.loginId);
+
+      if (existingLoginIdUser && existingLoginIdUser.email !== nextDraft.email) {
+        setAuthError("이미 사용 중인 아이디입니다.");
+        return;
+      }
 
       if (existingUser) {
         if (existingUser.password !== nextDraft.password) {
@@ -671,6 +715,7 @@ export function NewsHomeScreen() {
         agreementIds: nextDraft.agreementIds,
         categoryIds: nextDraft.categoryIds ?? [],
         email: nextDraft.email,
+        loginId: nextDraft.loginId,
         marketingAgreed: Boolean(nextDraft.marketingAgreed),
         nickname: nextDraft.nickname,
         password: nextDraft.password,
@@ -847,6 +892,7 @@ export function NewsHomeScreen() {
         activeView === "signupAgreement" ||
         activeView === "signupEmail" ||
         activeView === "signupNickname" ||
+        activeView === "signupLoginId" ||
         activeView === "signupPassword" ||
         activeView === "signupAge" ||
         activeView === "signupCategory"
@@ -871,6 +917,8 @@ export function NewsHomeScreen() {
           isAuthSubmitting={isAuthSubmitting}
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
+          onCheckSignupEmail={checkSignupEmail}
+          onCheckSignupLoginId={checkSignupLoginId}
           onCheckSignupNickname={checkSignupNickname}
           onDarkModeChange={setIsDarkMode}
           onDeleteBlockedKeyword={deleteBlockedKeyword}
@@ -900,6 +948,9 @@ export function NewsHomeScreen() {
           onSignupNicknameNext={(nickname) =>
             moveToNextAuthStepWithDraft({ nickname })
           }
+          onSignupLoginIdNext={(loginId) =>
+            moveToNextAuthStepWithDraft({ loginId })
+          }
           onSignupPasswordNext={(password) =>
             moveToNextAuthStepWithDraft({ password })
           }
@@ -922,6 +973,7 @@ export function NewsHomeScreen() {
       activeView !== "signupAgreement" &&
       activeView !== "signupEmail" &&
       activeView !== "signupNickname" &&
+      activeView !== "signupLoginId" &&
       activeView !== "signupPassword" &&
       activeView !== "signupAge" &&
       activeView !== "signupCategory" ? (

@@ -1638,6 +1638,20 @@
         background: var(--color-newsroll-purple-20);
     }
 
+    .container_authLayout .input_transparent input::placeholder,
+    .container_authLayout .btn_loginPasswordToggle {
+        color: var(--color-common-100);
+    }
+
+    .container_authLayout .input_transparent input:-webkit-autofill,
+    .container_authLayout .input_transparent input:-webkit-autofill:hover,
+    .container_authLayout .input_transparent input:-webkit-autofill:focus {
+        caret-color: var(--color-common-100);
+        -webkit-text-fill-color: var(--color-common-100);
+        box-shadow: 0 0 0 1000px var(--color-newsroll-purple-20) inset;
+        transition: background-color 9999s ease-out;
+    }
+
     .wrapper_loginContent {
         width: 100%;
         min-width: 0;
@@ -1877,6 +1891,10 @@
         color: var(--color-common-100);
         background: transparent;
         transform: translateY(-50%);
+    }
+
+    .btn_mySettingsPasswordToggle {
+        color: var(--color-label-strong);
     }
 
     .btn_loginSubmit {
@@ -2812,6 +2830,10 @@
         gap: var(--spacing-gap-vertical-16);
     }
 
+    .wrapper_myInquiryItemContent {
+        gap: var(--spacing-gap-vertical-8);
+    }
+
     .newsroll_policy_list_body {
         width: 100%;
         min-width: 0;
@@ -2888,10 +2910,21 @@
         min-width: 0;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         gap: var(--spacing-gap-vertical-24);
+        flex: 1 1 auto;
+        min-height: 100%;
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    .newsroll_policy_detail_main {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .newsroll_policy_detail_header {
@@ -3052,6 +3085,11 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    .container_mySettingsPage.is_mySettingsNestedDetail {
+        flex: 1 1 auto;
+        min-height: 100%;
     }
 
     .wrapper_myVoteItem {

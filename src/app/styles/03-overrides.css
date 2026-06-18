@@ -1445,6 +1445,18 @@
         background: var(--color-cool-neutral-96);
     }
 
+    .container_authLayout .btn_signupVerificationSend {
+        border: 0;
+        color: var(--color-common-0);
+        background: var(--color-common-100);
+    }
+
+    .container_authLayout .btn_signupVerificationSend:disabled {
+        border: 0;
+        color: var(--color-cool-neutral-70);
+        background: var(--color-cool-neutral-50);
+    }
+
     .btn_textAction {
         display: inline-flex;
         align-items: center;

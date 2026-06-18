@@ -238,6 +238,7 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
           <label className="input_searchField">
             <span className="sr_only">통합검색어 입력</span>
             <input
+              name="global-search"
               onChange={(event) => setQuery(event.currentTarget.value)}
               placeholder="검색 키워드를 입력해주세요"
               ref={searchInputRef}

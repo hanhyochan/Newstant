@@ -84,6 +84,7 @@ export function PolicyDetailContent({
     <div
       className={`newsroll_policy_detail_content ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
+      <div className="newsroll_policy_detail_main">
       <div className="newsroll_policy_detail_header">
         <div className="newsroll_policy_detail_titleMeta">
           <div className="newsroll_policy_detail_body">
@@ -146,6 +147,7 @@ export function PolicyDetailContent({
           상세보기
         </Button>
       )}
+      </div>
 
       <div
         className="newsroll_policy_detail_pagination"

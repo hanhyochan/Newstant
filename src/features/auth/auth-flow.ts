@@ -2,6 +2,7 @@ export const signupViewOrder = [
   "signupAgreement",
   "signupEmail",
   "signupNickname",
+  "signupLoginId",
   "signupPassword",
   "signupAge",
   "signupCategory",
