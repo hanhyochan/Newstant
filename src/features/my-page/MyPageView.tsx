@@ -339,8 +339,16 @@ const myProfileSettingSections = [
   },
 ] as const;
 
+const myOrderedProfileSettingSections = [
+  myProfileSettingSections[0],
+  myProfileSettingSections[2],
+  myProfileSettingSections[1],
+  myProfileSettingSections[3],
+] as readonly (typeof myProfileSettingSections)[number][];
+
 const myProfileSettingItemIds: MyProfileSettingItemId[][] = [
   ["accountEdit", "passwordReset"],
+  ["inquiryHistory", "reportHistory", "blockedHiddenSettings"],
   [
     "agreement",
     "privacyPolicy",
@@ -348,7 +356,6 @@ const myProfileSettingItemIds: MyProfileSettingItemId[][] = [
     "privacyConsent",
     "marketingConsent",
   ],
-  ["inquiryHistory", "reportHistory", "blockedHiddenSettings"],
   ["appInfo", "openSourceLicenses", "privacyPolicyHistory", "termsHistory"],
 ];
 
@@ -1003,10 +1010,15 @@ export function MyPageView({
   };
 
   const deleteContentAction = async (actionId: string) => {
-    await userContentActionApi.deleteAction(actionId);
     setMyContentActionItems((currentItems) =>
       currentItems.filter((item) => item.id !== actionId),
     );
+
+    try {
+      await userContentActionApi.deleteAction(actionId);
+    } catch {
+      return;
+    }
   };
 
   const openSummaryDetail = (view: MySummaryView) => {
@@ -1232,7 +1244,7 @@ export function MyPageView({
               <MyProfileSettingsPage
                 isLeaving={myDetailExitMotion.isLeaving}
                 onItemSelect={openProfileSettingItem}
-                sections={myProfileSettingSections}
+                sections={myOrderedProfileSettingSections}
               />
             )
         ) : (

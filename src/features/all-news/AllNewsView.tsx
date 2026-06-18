@@ -52,7 +52,6 @@ import {
   allNewsRelayCategories,
   allNewsSwipeAxisThresholdPx,
   createAllNewsArticle,
-  filterArticlesByBlockedKeywords,
   getAllNewsPreviewFromArticle,
   getBreakingNewsItems,
   getHomeArticleFromNews,
@@ -63,7 +62,6 @@ import {
 } from "@/features/news/NewsViews";
 
 export function AllNewsView({
-  blockedKeywords = [],
   entryMotionClassName = "",
   initialShowAllBreaking = false,
   isTextLarge,
@@ -71,7 +69,6 @@ export function AllNewsView({
   onOpenSearch,
   onToggleTextSize,
 }: {
-  blockedKeywords?: string[];
   entryMotionClassName?: string;
   initialShowAllBreaking?: boolean;
   isTextLarge: boolean;
@@ -113,17 +110,13 @@ export function AllNewsView({
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
   const [allNewsSheetUndockSignal, setAllNewsSheetUndockSignal] = useState(0);
-  const visibleAllNewsArticles = useMemo(
-    () => filterArticlesByBlockedKeywords(allNewsArticles, blockedKeywords),
-    [allNewsArticles, blockedKeywords],
-  );
   const allNewsLatestItems = useMemo(
-    () => visibleAllNewsArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
-    [visibleAllNewsArticles],
+    () => allNewsArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
+    [allNewsArticles],
   );
   const allNewsHeadlinesByActivePress = useMemo(
-    () => groupAllNewsByValue(visibleAllNewsArticles, (article) => article.pressName),
-    [visibleAllNewsArticles],
+    () => groupAllNewsByValue(allNewsArticles, (article) => article.pressName),
+    [allNewsArticles],
   );
   const currentAllNewsPresses = useMemo(
     () => Object.keys(allNewsHeadlinesByActivePress),
@@ -132,8 +125,8 @@ export function AllNewsView({
   const visibleAllNewsPresses =
     currentAllNewsPresses.length > 0 ? currentAllNewsPresses : allNewsPresses;
   const allNewsRelayByActiveCategory = useMemo(
-    () => groupAllNewsByValue(visibleAllNewsArticles, (article) => article.category),
-    [visibleAllNewsArticles],
+    () => groupAllNewsByValue(allNewsArticles, (article) => article.category),
+    [allNewsArticles],
   );
   const currentAllNewsRelayCategories = useMemo(
     () => Object.keys(allNewsRelayByActiveCategory),
@@ -144,8 +137,8 @@ export function AllNewsView({
       ? currentAllNewsRelayCategories
       : allNewsRelayCategories;
   const allBreakingItems = useMemo(
-    () => getBreakingNewsItems(visibleAllNewsArticles),
-    [visibleAllNewsArticles],
+    () => getBreakingNewsItems(allNewsArticles),
+    [allNewsArticles],
   );
   const breakingItems = showAllBreaking
     ? allBreakingItems.slice(0, 5)

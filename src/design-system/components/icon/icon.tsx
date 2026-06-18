@@ -29,8 +29,11 @@ export type IconName =
   | "user"
   | "vote";
 
-export function Icon({ name }: { name: IconName }) {
-  const sizeClassName = name === "detail" ? "newsroll_icon_18" : "newsroll_icon_20";
+type IconSize = 12 | 18 | 20;
+
+export function Icon({ name, size }: { name: IconName; size?: IconSize }) {
+  const iconSize = size ?? (name === "detail" ? 18 : 20);
+  const sizeClassName = `newsroll_icon_${iconSize}`;
 
   return <span aria-hidden="true" className={`${sizeClassName} newsroll_icon_${name}`} />;
 }

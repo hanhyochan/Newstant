@@ -97,6 +97,12 @@ const settingMeta: Record<MyProfileSettingItemId, SettingMeta> = {
   },
 };
 
+const compactHeaderSettingItemIds = new Set<MyProfileSettingItemId>([
+  "inquiryHistory",
+  "reportHistory",
+  "blockedHiddenSettings",
+]);
+
 const documentSections: Partial<Record<MyProfileSettingItemId, string[]>> = {
   agreement: [
     "필수 동의 항목은 만 14세 이상 확인, 서비스 이용약관, 개인정보 수집·이용 동의입니다.",
@@ -152,30 +158,6 @@ function formatDate(value: string) {
   const minute = String(date.getMinutes()).padStart(2, "0");
 
   return `${year}.${month}.${day}. ${hour}:${minute}`;
-}
-
-function getActionLabel(action: UserContentAction) {
-  if (action.type === "report") {
-    return "신고";
-  }
-
-  if (action.type === "block") {
-    return "차단";
-  }
-
-  return "숨김";
-}
-
-function getTargetLabel(action: UserContentAction) {
-  if (action.targetType === "reply") {
-    return "대댓글";
-  }
-
-  if (action.targetType === "user") {
-    return "유저";
-  }
-
-  return "댓글";
 }
 
 function SettingDocument({ itemId }: { itemId: MyProfileSettingItemId }) {
@@ -256,30 +238,29 @@ function ModerationHistory({
             <article className="wrapper_mySettingsHistoryItem" key={action.id}>
               {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
               <div className="wrapper_mySettingsHistoryText">
-                <span className="text_mySettingsHistoryMeta">
-                  {getActionLabel(action)} · {getTargetLabel(action)} ·{" "}
-                  {formatDate(action.createdAt)}
-                </span>
+                <div className="wrapper_mySettingsHistoryHeader">
+                  <span className="text_mySettingsHistoryMeta">
+                    {formatDate(action.createdAt)}
+                  </span>
+                  {isReport ? null : (
+                    <button
+                      aria-pressed="true"
+                      className="btn_textAction btn_mySettingsReleaseAction"
+                      disabled={pendingActionId === action.id}
+                      onClick={() => {
+                        setPendingActionId(action.id);
+                        onDeleteAction(action.id).finally(() => {
+                          setPendingActionId(null);
+                        });
+                      }}
+                      type="button"
+                    >
+                      {pendingActionId === action.id ? "\uCC98\uB9AC \uC911" : "\uD574\uC81C"}
+                    </button>
+                  )}
+                </div>
                 <strong>{action.targetUserId ?? action.targetId}</strong>
-                {isReport ? null : (
-                  <Button
-                    className="btn_mySettingsHistoryAction"
-                    disabled={pendingActionId === action.id}
-                    onClick={() => {
-                      setPendingActionId(action.id);
-                      onDeleteAction(action.id).finally(() => {
-                        setPendingActionId(null);
-                      });
-                    }}
-                    radius="rounded"
-                    size="medium"
-                    type="button"
-                    variant="outline"
-                  >
-                    {pendingActionId === action.id ? "처리 중" : "해제"}
-                  </Button>
-                )}
-                <p>{action.reason ?? "사용자 메뉴에서 등록된 내역입니다."}</p>
+                {isReport && action.reason ? <p>{action.reason}</p> : null}
               </div>
             </article>
           ))}
@@ -553,6 +534,7 @@ export function MyProfileSettingDetailPage({
   user: User | null;
 }) {
   const meta = settingMeta[itemId];
+  const shouldUseCompactHeader = compactHeaderSettingItemIds.has(itemId);
 
   return (
     <div
@@ -560,9 +542,13 @@ export function MyProfileSettingDetailPage({
     >
       <section className="container_mySettingsDetailSection">
         <h2 className="text_myTimeTitle">{meta.title}</h2>
-        <p className="text_mySettingsDescription">{meta.description}</p>
+        {shouldUseCompactHeader ? null : (
+          <p className="text_mySettingsDescription">{meta.description}</p>
+        )}
       </section>
-      <NewsRollDivider className="divider_mySection" />
+      {shouldUseCompactHeader ? null : (
+        <NewsRollDivider className="divider_mySection" />
+      )}
       {itemId === "accountEdit" ? (
         <AccountEditForm onSubmit={onUserSubmit} user={user} />
       ) : itemId === "passwordReset" ? (

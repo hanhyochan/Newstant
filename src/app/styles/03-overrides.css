@@ -2381,7 +2381,6 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    padding-bottom: var(--spacing-padding-vertical-24);
     background: var(--color-background-elevated-normal);
 }
 
@@ -2473,6 +2472,7 @@
 
 .newsroll_all_category_tabs button,
 .tab_myCategoryMenu button,
+.tab_myBlockedKeywordMenu .tab,
 .newsroll_all_press_tabScroller .newsroll_all_press_tabButton {
     min-width: 0;
     min-height: 40px;
@@ -2485,6 +2485,7 @@
 
 .newsroll_all_category_tabs button:not([aria-selected='true']),
 .tab_myCategoryMenu button[data-state='default'],
+.tab_myBlockedKeywordMenu .tab[data-state='default'],
 .newsroll_all_press_tabScroller .newsroll_all_press_tabButton:not([aria-selected='true']) {
     border: var(--border-1) solid var(--newsroll-divider-color);
     background: transparent;
@@ -2688,6 +2689,12 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 .newsroll_dark .wrapper_commentReplyItem,
 .newsroll_dark .wrapper_commentReplyItem :where(p, strong, time) {
     color: var(--color-cool-neutral-100);
+}
+
+.newsroll_dark .btn_textAction.btn_mySettingsReleaseAction,
+.newsroll_dark .btn_textAction.btn_mySettingsReleaseAction:active,
+.newsroll_dark .btn_textAction.btn_mySettingsReleaseAction[aria-pressed='true'] {
+    color: var(--color-red-50);
 }
 
 .newsroll_dark .btn_articleGuideOption_binary .text_articleGuideOption,

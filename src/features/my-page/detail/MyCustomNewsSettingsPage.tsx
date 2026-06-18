@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { createPortal } from "react-dom";
 
 import {
   Button,
@@ -25,7 +26,11 @@ function BlockedKeywordDialog({
   onSave: () => void;
   value: string;
 }) {
-  return (
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
     <div
       className="container_myDialog"
       onClick={onCancel}
@@ -47,30 +52,32 @@ function BlockedKeywordDialog({
           value={value}
           variant="outline"
         />
-        <div className="wrapper_myDialogActions">
+        <div className="wrapper_commentEditActions">
           <Button
-            className="btn_myDialogCancel"
+            className="btn_commentEditCancel"
             onClick={onCancel}
             radius="rounded"
-            size="medium"
+            size="large"
             type="button"
-            variant="outline"
+            variant="filled"
           >
             취소
           </Button>
           <Button
-            className="btn_myDialogSave"
+            className="btn_commentEditSave"
             disabled={!value.trim()}
             onClick={onSave}
             radius="rounded"
-            size="medium"
+            size="large"
             type="button"
+            variant="filled"
           >
             저장
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -97,43 +104,51 @@ function BlockedKeywordSettingsSection({
 }) {
   return (
     <section className="container_myBlockedKeywordSection">
-      <div className="wrapper_myBlockedKeywordHeader">
-        <div>
-          <h2 className="text_mySectionTitle">차단/숨김 키워드 설정</h2>
-          <p className="text_myBlockedKeywordDescription">
-            보고 싶지 않은 키워드가 들어간 뉴스를 숨길 수 있습니다.
-          </p>
-        </div>
+      <h2 className="text_mySectionTitle">
+        {"\uCC28\uB2E8/\uC228\uAE40 \uD0A4\uC6CC\uB4DC \uC124\uC815"}
+      </h2>
+      <p className="text_myBlockedKeywordDescription">
+        {"\uBCF4\uACE0 \uC2F6\uC9C0 \uC54A\uC740 \uD0A4\uC6CC\uB4DC\uAC00 \uB4E4\uC5B4\uAC04 \uB274\uC2A4\uB97C \uC228\uAE38 \uC218 \uC788\uC2B5\uB2C8\uB2E4."}
+      </p>
+      <div className="wrapper_myBlockedKeywordChips">
+        <PillTabMenu
+          ariaLabel={"\uCC28\uB2E8 \uD0A4\uC6CC\uB4DC \uBAA9\uB85D"}
+          className="tab_myBlockedKeywordMenu"
+          getItemState={(keyword) =>
+            blockedKeywordSettings.find((setting) => setting.keyword === keyword)
+              ?.isActive
+              ? "active"
+              : "default"
+          }
+          getItemWrapperClassName={() => "wrapper_myBlockedKeywordTab"}
+          items={blockedKeywordSettings.map((setting) => ({
+            id: setting.keyword,
+            label: setting.keyword,
+          }))}
+          onChange={onKeywordToggle}
+          renderItemAddon={(item, state) =>
+            state === "active" ? null : (
+                <button
+                  aria-label={`${item.label} \uC0AD\uC81C`}
+                  className="btn_myBlockedKeywordDelete"
+                  onClick={() => onKeywordDelete(item.id)}
+                  type="button"
+                >
+                  <span aria-hidden="true" />
+                </button>
+              )
+          }
+          role="group"
+          value={blockedKeywordSettings.find((setting) => setting.isActive)?.keyword ?? ""}
+        />
         <button
-          aria-label="차단 키워드 추가"
+          aria-label={"\uCC28\uB2E8 \uD0A4\uC6CC\uB4DC \uCD94\uAC00"}
           className="btn_myBlockedKeywordAdd"
           onClick={onOpenDialog}
           type="button"
         >
-          <Icon name="plus" />
+          <Icon name="plus" size={12} />
         </button>
-      </div>
-      <div className="wrapper_myBlockedKeywordList">
-        {blockedKeywordSettings.map((setting) => (
-          <div className="wrapper_myBlockedKeywordItem" key={setting.id}>
-            <button
-              aria-pressed={setting.isActive}
-              className="btn_myBlockedKeywordToggle"
-              onClick={() => onKeywordToggle(setting.keyword)}
-              type="button"
-            >
-              {setting.keyword}
-            </button>
-            <button
-              aria-label={`${setting.keyword} 삭제`}
-              className="btn_myBlockedKeywordDelete"
-              onClick={() => onKeywordDelete(setting.keyword)}
-              type="button"
-            >
-              삭제
-            </button>
-          </div>
-        ))}
       </div>
       {isDialogOpen ? (
         <BlockedKeywordDialog
