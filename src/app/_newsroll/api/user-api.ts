@@ -1,7 +1,7 @@
 import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
-import type { CreateUserInput, User, UserPreference } from "./types";
+import type { CreateUserInput, UpdateUserInput, User, UserPreference } from "./types";
 
 function normalizeEmail(email: string) {
   return email.trim().toLocaleLowerCase("en-US");
@@ -48,6 +48,19 @@ export const userApi = {
       createdAt: timestamp,
       updatedAt: timestamp,
     });
+  },
+  updateUser(userId: string, input: UpdateUserInput) {
+    const nextInput = {
+      ...input,
+      email: input.email ? normalizeEmail(input.email) : undefined,
+      nickname: input.nickname?.trim(),
+      updatedAt: createTimestamp(),
+    };
+
+    return apiClient.patch<User, UpdateUserInput & { updatedAt: string }>(
+      `/users/${userId}`,
+      nextInput,
+    );
   },
   getUserPreferences(userId = currentUserId) {
     return apiClient.get<UserPreference[]>("/userPreferences", {

@@ -351,21 +351,10 @@
         line-height: 0;
     }
 
-    .wrapper_newsViewToggle {
-        width: 87.5px;
-        height: 48px;
-        display: inline-flex;
-        align-items: center;
-        gap: 2.8px;
-        padding: 5.65px;
-        border-radius: var(--radius-full);
-        background: var(--color-background-transparent-alternative);
-    }
-
-    .wrapper_homeDockedControls {
-        display: flex;
-        align-items: center;
-    }
+.wrapper_homeDockedControls {
+    display: flex;
+    align-items: center;
+}
 
     .newsroll_motion_dockedPop {
         opacity: 0;
@@ -453,81 +442,7 @@
         display: none;
     }
 
-    .newsroll_homeDockedAlarm {
-        border-color: var(--color-newsroll-purple-50);
-        color: var(--color-common-0);
-        background: var(--color-newsroll-purple-50);
-    }
-
-    .newsroll_homeDockedAlarm .newsroll_icon_alarm {
-        width: 20px;
-        height: 20px;
-    }
-
-    .newsroll_homeDetailBack {
-        flex: 0 0 auto;
-    }
-
-    .container_homeScreen .container_hero .newsroll_homeDockedAlarm {
-        display: inline-flex;
-    }
-
-    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedAlarm {
-        display: inline-flex;
-    }
-
-    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_homeDockedAlarm {
-        display: inline-flex;
-    }
-
-    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedAlarm .newsroll_icon_alarm {
-        width: 20px;
-        height: 20px;
-    }
-
-    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_homeDockedAlarm .newsroll_icon_alarm {
-        width: 20px;
-        height: 20px;
-    }
-
-    .btn_newsViewOption {
-        width: 36.7px;
-        height: 36.7px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-full);
-        color: var(--color-common-100);
-        background: transparent;
-    }
-
-    .btn_newsViewOption :is(.newsroll_icon_20, .newsroll_icon_18) {
-        width: 20px;
-        height: 20px;
-    }
-
-    .btn_newsViewOption[aria-selected='true'] {
-        color: var(--color-label-strong);
-        background: var(--color-common-100);
-    }
-
-    .newsroll_home_alarm {
-        width: 48px;
-        height: 48px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-full);
-        color: var(--color-label-strong);
-        background: var(--color-newsroll-purple-50);
-    }
-
-    .newsroll_home_alarm .newsroll_icon_alarm {
-        width: 24px;
-        height: 24px;
-    }
-
-    .container_newsGrid {
+.container_newsGrid {
         flex: 1 1 0;
         min-height: 0;
         overflow: hidden;
@@ -835,16 +750,7 @@
         color: var(--color-newsroll-purple-50);
     }
 
-    .newsroll_home_alarm[aria-pressed='true'] {
-        color: var(--color-common-100);
-        background: var(--color-common-0);
-    }
-
-    .newsroll_home_alarm[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18) {
-        --newsroll-icon-url: var(--newsroll-icon-fill-url);
-    }
-
-    .container_newsGrid_block {
+.container_newsGrid_block {
         min-height: 0;
     }
 
@@ -1856,6 +1762,10 @@
         background: var(--color-cool-neutral-90);
     }
 
+    .wrapper_commentReportActions {
+        flex-direction: row-reverse;
+    }
+
     .wrapper_commentItem > footer {
         display: flex;
         align-items: center;
@@ -2580,32 +2490,6 @@
     background: transparent;
 }
 
-.wrapper_newsViewToggle {
-    width: auto;
-    height: auto;
-    gap: var(--spacing-gap-horizontal-8);
-    padding: var(--spacing-padding-vertical-4);
-}
-
-.btn_newsViewOption {
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
-    min-height: 40px;
-    padding: 0;
-}
-
-.btn_newsViewOption :is(.newsroll_icon_20, .newsroll_icon_18) {
-    width: 20px;
-    height: 20px;
-}
-
-.btn_newsViewOption:not([aria-selected='true']) {
-    border: 0;
-    color: var(--color-common-100);
-    background: transparent;
-}
-
 .chip_articleCategory,
 .chip_policy,
 .badge_commentChoice,
@@ -2902,22 +2786,6 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 .newsroll_dark .container_articleCard .text_articlePublisherName,
 .newsroll_dark .container_articleCard .text_articleReporter {
     color: var(--color-common-100);
-}
-
-.newsroll_dark .wrapper_newsViewToggle {
-    background: inherit;
-}
-
-.newsroll_dark .btn_newsViewOption,
-.newsroll_dark .btn_newsViewOption:not([aria-selected='true']) {
-    border: 0;
-    color: var(--color-common-100);
-    background: transparent;
-}
-
-.newsroll_dark .btn_newsViewOption[aria-selected='true'] {
-    color: var(--color-common-0);
-    background: var(--color-common-100);
 }
 
 .newsroll_dark .tab:not(.btn_newsViewOption),

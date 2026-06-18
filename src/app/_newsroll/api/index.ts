@@ -7,5 +7,6 @@ export { notificationApi } from "./notification-api";
 export { pollApi } from "./poll-api";
 export { settingsApi } from "./settings-api";
 export { userApi } from "./user-api";
+export { userContentActionApi } from "./user-content-action-api";
 export { welfareApi } from "./welfare-api";
 export type * from "./types";

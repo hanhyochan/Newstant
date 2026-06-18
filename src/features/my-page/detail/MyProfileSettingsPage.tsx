@@ -11,9 +11,11 @@ type ProfileSettingSection = {
 
 export function MyProfileSettingsPage({
   isLeaving,
+  onItemSelect,
   sections,
 }: {
   isLeaving: boolean;
+  onItemSelect: (sectionIndex: number, itemIndex: number) => void;
   sections: readonly ProfileSettingSection[];
 }) {
   return (
@@ -31,10 +33,11 @@ export function MyProfileSettingsPage({
             className="container_mySettingsDetailSection"
           >
             <div className="wrapper_mySettingsList">
-              {section.items.map((item) => (
+              {section.items.map((item, itemIndex) => (
                 <MySettingRow
                   key={item}
                   label={item}
+                  onClick={() => onItemSelect(sectionIndex, itemIndex)}
                   showChevron
                 />
               ))}

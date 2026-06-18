@@ -78,6 +78,10 @@ export type User = {
   updatedAt?: string;
 };
 
+export type UpdateUserInput = Partial<
+  Pick<User, "ageGroupId" | "email" | "marketingAgreed" | "nickname" | "password">
+>;
+
 export type UserPreference = {
   id: string;
   userId: string;
@@ -248,6 +252,27 @@ export type Inquiry = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type UserContentActionType = "block" | "hide" | "report";
+export type UserContentActionTargetType = "comment" | "reply" | "user";
+
+export type UserContentAction = {
+  id: string;
+  userId: string;
+  type: UserContentActionType;
+  targetType: UserContentActionTargetType;
+  targetId: string;
+  targetUserId?: string;
+  newsId?: string;
+  reason?: string;
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export type CreateUserContentActionInput = Omit<
+  UserContentAction,
+  "createdAt" | "id" | "updatedAt"
+>;
 
 export type CreateCommentInput = {
   newsId: string;

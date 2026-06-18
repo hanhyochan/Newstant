@@ -19,9 +19,11 @@ import {
   commentApi,
   newsApi,
   pollApi,
+  userContentActionApi,
   type ArticleReactionType,
   type Comment,
-  type NewsListItem
+  type NewsListItem,
+  type UserContentAction
 } from "@/app/_newsroll/api";
 import {
   currentUserId,
@@ -36,6 +38,7 @@ import {
   Icon,
   IconButton,
   NewsRollDivider,
+  NewsRollDropdownArrow,
   NewsRollDropdownMenu,
   NewsViewToggle,
   PillTabMenu,
@@ -86,6 +89,11 @@ type Reaction = "like" | "dislike" | "neutral" | null;
 type ReactionValue = Exclude<Reaction, null>;
 type CommentSortOrder = "latest" | "popular";
 type CommentAction = "block" | "delete" | "edit" | "hide" | "report";
+type CommentReportTarget = {
+  targetId: string;
+  targetType: "comment" | "reply";
+  targetUserId: string;
+};
 type GuideKind = "stacked" | "binary";
 type CommentScrollTarget = {
   bottomGap?: number;
@@ -433,6 +441,7 @@ export const commentTemplates: Omit<CommentItem, "choice">[] = [
     id: "template-comment-1",
     likes: 0,
     replies: 13,
+    userId: "template-user-1",
   },
   {
     author: "콩콩이",
@@ -442,6 +451,7 @@ export const commentTemplates: Omit<CommentItem, "choice">[] = [
     id: "template-comment-2",
     likes: 0,
     replies: 13,
+    userId: "template-user-2",
   },
   {
     author: "콩콩이",
@@ -451,6 +461,7 @@ export const commentTemplates: Omit<CommentItem, "choice">[] = [
     id: "template-comment-3",
     likes: 0,
     replies: 13,
+    userId: "template-user-3",
   },
 ];
 
@@ -477,6 +488,7 @@ export const commentReplyTemplates = [
 export type CommentReplyItem = (typeof commentReplyTemplates)[number] & {
   id: string;
   isMine?: boolean;
+  userId?: string;
 };
 
 const commentSortOptions: { label: string; value: CommentSortOrder }[] = [
@@ -493,6 +505,15 @@ const otherCommentActionOptions: { label: string; value: CommentAction }[] = [
   { label: "신고", value: "report" },
   { label: "차단", value: "block" },
   { label: "숨김", value: "hide" },
+];
+
+const commentReportReasons = [
+  "스팸/광고",
+  "욕설/비방",
+  "혐오/차별",
+  "개인정보 노출",
+  "허위 정보",
+  "기타",
 ];
 
 const allNewsAssets = {
@@ -1287,6 +1308,7 @@ function CommentReactionPanel({
   } = useCommentThread(newsId);
   const [deletedCommentIds, setDeletedCommentIds] = useState<CommentId[]>([]);
   const [deletedReplyIds, setDeletedReplyIds] = useState<string[]>([]);
+  const [contentActions, setContentActions] = useState<UserContentAction[]>([]);
   const [expandedReplyId, setExpandedReplyId] = useState<CommentId | null>(
     null,
   );
@@ -1305,6 +1327,12 @@ function CommentReactionPanel({
   const [sortOrder, setSortOrder] = useState<CommentSortOrder>("popular");
   const [pendingScrollTarget, setPendingScrollTarget] =
     useState<CommentScrollTarget | null>(null);
+  const [reportTarget, setReportTarget] = useState<CommentReportTarget | null>(
+    null,
+  );
+  const [reportReason, setReportReason] = useState(commentReportReasons[0]);
+  const [isReportReasonOpen, setIsReportReasonOpen] = useState(false);
+  const [isReportSubmitting, setIsReportSubmitting] = useState(false);
   const commentEdit = useInlineTextEdit<CommentId>();
   const replyEdit = useInlineTextEdit<string>();
   const initialCommentScrollKeyRef = useRef<string | null>(null);
@@ -1340,6 +1368,55 @@ function CommentReactionPanel({
     () => new Set(deletedReplyIds),
     [deletedReplyIds],
   );
+  const blockedUserIdSet = useMemo(
+    () =>
+      new Set(
+        contentActions
+          .filter((action) => action.type === "block" && action.targetUserId)
+          .map((action) => action.targetUserId as string),
+      ),
+    [contentActions],
+  );
+  const hiddenCommentIdSet = useMemo(
+    () =>
+      new Set(
+        contentActions
+          .filter(
+            (action) =>
+              action.type === "hide" && action.targetType === "comment",
+          )
+          .map((action) => action.targetId),
+      ),
+    [contentActions],
+  );
+  const hiddenReplyIdSet = useMemo(
+    () =>
+      new Set(
+        contentActions
+          .filter(
+            (action) => action.type === "hide" && action.targetType === "reply",
+          )
+          .map((action) => action.targetId),
+      ),
+    [contentActions],
+  );
+
+  useEffect(() => {
+    let ignore = false;
+
+    userContentActionApi
+      .getActions(currentUserId)
+      .then((actions) => {
+        if (!ignore) {
+          setContentActions(actions);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      ignore = true;
+    };
+  }, [newsId]);
   const commentsByParentId = useMemo(() => {
     const groups: Record<string, Comment[]> = {};
 
@@ -1370,13 +1447,20 @@ function CommentReactionPanel({
 
           return editedBody ? { ...comment, body: editedBody } : comment;
         })
-        .filter((comment) => !deletedCommentIdSet.has(comment.id)),
+        .filter(
+          (comment) =>
+            !deletedCommentIdSet.has(comment.id) &&
+            !hiddenCommentIdSet.has(comment.id) &&
+            !blockedUserIdSet.has(comment.userId),
+        ),
     [
       apiComments,
+      blockedUserIdSet,
       commentEdit.editedValues,
       commentsByParentId,
       deletedCommentIdSet,
       guideChoices,
+      hiddenCommentIdSet,
       pollOptionLabelById,
     ],
   );
@@ -2009,6 +2093,108 @@ function CommentReactionPanel({
     })();
   }
 
+  function addContentAction(action: UserContentAction) {
+    setContentActions((currentActions) =>
+      currentActions.some((currentAction) => currentAction.id === action.id)
+        ? currentActions
+        : [action, ...currentActions],
+    );
+  }
+
+  function hideTargetContent(targetId: string, targetType: "comment" | "reply") {
+    if (targetType === "comment") {
+      setDeletedCommentIds((currentIds) =>
+        currentIds.includes(targetId) ? currentIds : [...currentIds, targetId],
+      );
+      setExpandedReplyId((currentId) => (currentId === targetId ? null : currentId));
+      if (replyTargetCommentId === targetId) {
+        resetComposer();
+      }
+      return;
+    }
+
+    setDeletedReplyIds((currentIds) =>
+      currentIds.includes(targetId) ? currentIds : [...currentIds, targetId],
+    );
+  }
+
+  function blockUserContent(targetUserId: string) {
+    const targetCommentIds = apiComments
+      .filter(
+        (comment) => comment.userId === targetUserId && comment.parentId === null,
+      )
+      .map((comment) => comment.id);
+    const targetReplyIds = apiComments
+      .filter(
+        (comment) => comment.userId === targetUserId && comment.parentId !== null,
+      )
+      .map((comment) => comment.id);
+
+    setDeletedCommentIds((currentIds) =>
+      Array.from(new Set([...currentIds, ...targetCommentIds])),
+    );
+    setDeletedReplyIds((currentIds) =>
+      Array.from(new Set([...currentIds, ...targetReplyIds])),
+    );
+    if (replyTargetCommentId) {
+      const replyTarget = apiComments.find(
+        (comment) => comment.id === replyTargetCommentId,
+      );
+
+      if (replyTarget?.userId === targetUserId) {
+        resetComposer();
+      }
+    }
+  }
+
+  function saveCommentModerationAction({
+    action,
+    reason,
+    targetId,
+    targetType,
+    targetUserId,
+  }: CommentReportTarget & { action: "block" | "hide" | "report"; reason?: string }) {
+    return userContentActionApi
+      .createAction({
+        newsId,
+        reason,
+        targetId,
+        targetType,
+        targetUserId,
+        type: action,
+        userId: currentUserId,
+      })
+      .then((createdAction) => {
+        addContentAction(createdAction);
+        return createdAction;
+      });
+  }
+
+  function openReportDialog(target: CommentReportTarget) {
+    setReportTarget(target);
+    setReportReason(commentReportReasons[0]);
+    setIsReportReasonOpen(false);
+  }
+
+  function submitReport() {
+    if (!reportTarget) {
+      return;
+    }
+
+    setIsReportSubmitting(true);
+    saveCommentModerationAction({
+      ...reportTarget,
+      action: "report",
+      reason: reportReason,
+    })
+      .then(() => {
+        setReportTarget(null);
+      })
+      .finally(() => {
+        setIsReportSubmitting(false);
+      });
+  }
+
   function handleCommentAction(commentId: CommentId, action: CommentAction) {
     setOpenCommentActionId(null);
     setOpenReplyActionId(null);
@@ -2038,7 +2224,39 @@ function CommentReactionPanel({
 
     if (action === "edit") {
       startEditComment(commentId);
+      return;
     }
+
+    if (action === "report" || action === "block" || action === "hide") {
+      const targetComment = apiComments.find((comment) => comment.id === commentId);
+
+      if (!targetComment || targetComment.userId === currentUserId) {
+        return;
+      }
+
+      const target = {
+        targetId: commentId,
+        targetType: "comment",
+        targetUserId: targetComment.userId,
+      } as const;
+
+      if (action === "report") {
+        openReportDialog(target);
+        return;
+      }
+
+      void saveCommentModerationAction({
+        ...target,
+        action,
+      }).then(() => {
+        if (action === "hide") {
+          hideTargetContent(commentId, "comment");
+          return;
+        }
+
+        blockUserContent(targetComment.userId);
+      });
+      }
   }
 
   function handleReplyAction(reply: CommentReplyItem, action: CommentAction) {
@@ -2055,6 +2273,36 @@ function CommentReactionPanel({
 
     if (action === "edit") {
       startEditReply(reply, replyEdit.getEditedValue(reply.id) ?? reply.body);
+      return;
+    }
+
+    if (action === "report" || action === "block" || action === "hide") {
+      if (!reply.userId || reply.userId === currentUserId) {
+        return;
+      }
+
+      const target = {
+        targetId: reply.id,
+        targetType: "reply",
+        targetUserId: reply.userId,
+      } as const;
+
+      if (action === "report") {
+        openReportDialog(target);
+        return;
+      }
+
+      void saveCommentModerationAction({
+        ...target,
+        action,
+      }).then(() => {
+        if (action === "hide") {
+          hideTargetContent(reply.id, "reply");
+          return;
+        }
+
+        blockUserContent(target.targetUserId);
+      });
     }
   }
 
@@ -2146,8 +2394,14 @@ function CommentReactionPanel({
                       id: reply.id,
                       isMine: reply.userId === currentUserId,
                       likes: reply.likeCount,
+                      userId: reply.userId,
                     }))
-                    .filter((reply) => !deletedReplyIdSet.has(reply.id));
+                    .filter(
+                      (reply) =>
+                        !deletedReplyIdSet.has(reply.id) &&
+                        !hiddenReplyIdSet.has(reply.id) &&
+                        !blockedUserIdSet.has(reply.userId),
+                    );
 
                   return (
                     <Fragment key={comment.id}>
@@ -2429,6 +2683,90 @@ function CommentReactionPanel({
           </div>
         </section>
       </section>
+      {reportTarget ? (
+        <ClientPortal>
+          <div
+            className="container_myDialog"
+            onClick={() => setReportTarget(null)}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className="wrapper_myDialogContent"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <h3 className="text_myDialogTitle">신고 사유 선택</h3>
+              <label className="wrapper_infoField">
+                <span className="text_infoFieldLabel">신고 경위</span>
+                <div className="wrapper_infoSelectControl">
+                  <button
+                  aria-label="신고 경위"
+                  aria-controls={
+                    isReportReasonOpen
+                      ? `${panelId}-report-reason-menu`
+                      : undefined
+                  }
+                  aria-expanded={isReportReasonOpen}
+                  aria-haspopup="listbox"
+                  className="btn_commentDropdown select_infoField"
+                  onClick={() => setIsReportReasonOpen((current) => !current)}
+                  type="button"
+                >
+                  {reportReason}
+                  <NewsRollDropdownArrow />
+                </button>
+                {isReportReasonOpen ? (
+                  <div
+                    className="listbox_commentDropdown listbox_infoInquiryType"
+                    id={`${panelId}-report-reason-menu`}
+                    role="listbox"
+                  >
+                  {commentReportReasons.map((reason) => (
+                    <button
+                      aria-selected={reportReason === reason}
+                      key={reason}
+                      onClick={() => {
+                        setReportReason(reason);
+                        setIsReportReasonOpen(false);
+                      }}
+                      role="option"
+                      type="button"
+                    >
+                      {reason}
+                    </button>
+                  ))}
+                  </div>
+                ) : null}
+                </div>
+              </label>
+              <div className="wrapper_commentEditActions wrapper_commentReportActions">
+                <Button
+                  className="btn_commentEditCancel"
+                  disabled={isReportSubmitting}
+                  onClick={() => setReportTarget(null)}
+                  radius="rounded"
+                  size="large"
+                  type="button"
+                  variant="filled"
+                >
+                  취소
+                </Button>
+                <Button
+                  className="btn_commentEditSave"
+                  disabled={isReportSubmitting}
+                  onClick={submitReport}
+                  radius="rounded"
+                  size="large"
+                  type="button"
+                  variant="filled"
+                >
+                  {isReportSubmitting ? "신고 중" : "신고하기"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </ClientPortal>
+      ) : null}
       {isComposerVisible ? (
         <ClientPortal>
           <div

@@ -13,13 +13,7 @@ export type SeparatedListProps<T> = {
 };
 
 function Divider({ className }: { className: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`newsroll_divider newsroll_divider_horizontal ${className}`}
-      role="presentation"
-    />
-  );
+  return <NewsRollDivider className={className} />;
 }
 
 export function SeparatedList<T>({

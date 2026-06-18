@@ -3297,6 +3297,60 @@
         background: transparent;
     }
 
+    .container_myDialog {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        width: 100%;
+        min-width: 0;
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.72);
+    }
+
+    .wrapper_myDialogContent {
+        width: min(100%, 360px);
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
+        box-sizing: border-box;
+        border-radius: var(--radius-24);
+        background: var(--color-background-elevated-normal);
+    }
+
+    .text_myDialogTitle {
+        margin: 0;
+        padding: 0;
+        color: var(--color-label-strong);
+        font-size: var(--font-size-18);
+        font-weight: var(--font-weight-600);
+        line-height: 26px;
+    }
+
+    .wrapper_myDialogActions {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-gap-horizontal-16);
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .wrapper_myDialogActions > .btn {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
     .text_myKeywordDialogTitle {
         margin: 0;
         padding: 0;
@@ -3592,6 +3646,76 @@
         gap: var(--spacing-gap-vertical-24);
     }
 
+    .form_mySettingsDetail,
+    .wrapper_mySettingsDetailBody,
+    .wrapper_mySettingsField,
+    .wrapper_mySettingsHistoryText {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form_mySettingsDetail,
+    .wrapper_mySettingsDetailBody {
+        gap: var(--spacing-gap-vertical-24);
+    }
+
+    .wrapper_mySettingsField,
+    .wrapper_mySettingsHistoryText {
+        gap: var(--spacing-gap-vertical-8);
+    }
+
+    .wrapper_mySettingsHistoryItem {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-gap-vertical-24);
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .text_mySettingsDescription,
+    .text_mySettingsDetailBody,
+    .text_mySettingsHistoryMeta,
+    .text_mySettingsStatus,
+    .wrapper_mySettingsHistoryText p {
+        margin: 0;
+        padding: 0;
+        color: var(--color-cool-neutral-40);
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-20);
+    }
+
+    .text_mySettingsDetailBody,
+    .wrapper_mySettingsHistoryText p {
+        color: var(--color-label-neutral);
+        font-size: var(--font-size-16);
+        line-height: var(--line-height-24);
+    }
+
+    .wrapper_mySettingsHistoryText strong {
+        color: var(--color-label-strong);
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-600);
+        line-height: var(--line-height-24);
+    }
+
+    .btn_mySettingsHistoryAction {
+        width: fit-content;
+        align-self: flex-start;
+    }
+
+    .text_mySettingsStatus.is_error {
+        color: var(--color-red-50);
+    }
+
     .wrapper_myNotificationHeader {
         width: 100%;
         min-width: 0;
@@ -3804,7 +3928,7 @@
         min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-gap-vertical-8);
+        gap: 0;
         margin: 0;
         padding: 0;
         border: 0;
@@ -3815,6 +3939,10 @@
 
     .btn_infoNoticeItem {
         gap: var(--spacing-gap-vertical-16);
+    }
+
+    .container_infoFaqItem[open] {
+        gap: var(--spacing-gap-vertical-8);
     }
 
     .wrapper_infoNoticeContent {
@@ -3924,7 +4052,7 @@
         line-height: var(--line-height-fixed-20);
     }
 
-    .wrapper_infoInquiry .select_infoField {
+    .wrapper_infoSelectControl .select_infoField {
         width: 100%;
         min-height: var(--size-52);
         justify-content: space-between;
@@ -3987,106 +4115,6 @@
 
     .text_infoSubmitStatus.is_error {
         color: var(--color-red-50);
-    }
-
-    .newsroll_dark .newsroll_common_sheet,
-    .newsroll_dark .container_homeSheet,
-    .newsroll_dark .container_articleCard,
-    .newsroll_dark .newsroll_all_panel,
-    .newsroll_dark .newsroll_all_latest_panel,
-    .newsroll_dark .container_infoList,
-    .newsroll_dark .wrapper_infoInquiry,
-    .newsroll_dark .container_myKeywordDialog,
-    .newsroll_dark .container_quickMenuDrawer {
-        color: var(--color-cool-neutral-100);
-        background: var(--color-cool-neutral-10);
-    }
-
-    .newsroll_dark .wrapper_articleCardContent,
-    .newsroll_dark .newsroll_homeStateContent,
-    .newsroll_dark .newsroll_all_relay_item,
-    .newsroll_dark .newsroll_all_headline_item,
-    .newsroll_dark .btn_infoNoticeItem,
-    .newsroll_dark .container_infoFaqItem,
-    .newsroll_dark .wrapper_commentRepliesInner,
-    .newsroll_dark .container_commentComposerFixed,
-    .newsroll_dark .form_searchComposer {
-        color: var(--color-cool-neutral-100);
-        background: var(--color-cool-neutral-15);
-    }
-
-    .newsroll_dark .text_mySectionTitle,
-    .newsroll_dark .text_myTimeTitle,
-    .newsroll_dark .text_myTimeSectionLabel,
-    .newsroll_dark .text_mySettingLabel,
-    .newsroll_dark .text_myNotificationTitle,
-    .newsroll_dark .wrapper_myNotificationText strong,
-    .newsroll_dark .text_infoFieldLabel,
-    .newsroll_dark .text_infoItemTitle,
-    .newsroll_dark .newsroll_all_section_title,
-    .newsroll_dark .newsroll_all_relay_item strong,
-    .newsroll_dark .newsroll_all_headline_body strong,
-    .newsroll_dark .container_articleCard :where(h1, h2, p),
-    .newsroll_dark .wrapper_commentItem,
-    .newsroll_dark .wrapper_commentReplyItem {
-        color: var(--color-cool-neutral-100);
-    }
-
-    .newsroll_dark .text_infoBody,
-    .newsroll_dark .text_infoMeta,
-    .newsroll_dark .text_myBlockedKeywordDescription,
-    .newsroll_dark .wrapper_myNotificationText span,
-    .newsroll_dark .text_commentEmpty,
-    .newsroll_dark .newsroll_createdTime,
-    .newsroll_dark .newsroll_all_meta,
-    .newsroll_dark .text_infoSubmitStatus {
-        color: var(--color-cool-neutral-100);
-    }
-
-    .newsroll_dark .newsroll_divider,
-    .newsroll_dark .divider_mySection,
-    .newsroll_dark .divider_commentItem,
-    .newsroll_dark .newsroll_policy_itemDivider,
-    .newsroll_dark .newsroll_all_itemDivider {
-        background: var(--color-cool-neutral-30);
-        border-color: var(--color-cool-neutral-30);
-    }
-
-    .newsroll_dark .text_input,
-    .newsroll_dark .textarea,
-    .newsroll_dark .wrapper_infoInquiry .textarea_infoComposer {
-        color: var(--color-cool-neutral-100);
-        background: var(--color-cool-neutral-22);
-        border-color: var(--color-newsroll-purple-50);
-    }
-
-    .newsroll_dark .text_input input,
-    .newsroll_dark .textarea::placeholder,
-    .newsroll_dark .text_input input::placeholder {
-        color: var(--color-cool-neutral-100);
-    }
-
-    .newsroll_dark .tab_myCategoryMenu button[data-state='default'] {
-        color: var(--color-cool-neutral-100);
-        background: transparent;
-        border-color: var(--color-cool-neutral-40);
-    }
-
-    .newsroll_dark .btn_myBlockedKeywordAdd,
-    .newsroll_dark .btn_originalArticle {
-        color: var(--color-cool-neutral-100);
-        background: var(--color-cool-neutral-15);
-        border-color: var(--color-cool-neutral-30);
-    }
-
-    .newsroll_dark
-        :is(.newsroll_icon_20, .newsroll_icon_18):not(.newsroll_icon_thumbUp):not(
-            .newsroll_icon_thumbDown
-        ):not(.newsroll_icon_dots):not(.newsroll_icon_bookmark):not(.newsroll_icon_vote):not(
-            .newsroll_icon_chat
-        ):not(.newsroll_icon_share),
-    .newsroll_dark .icon_myChevron {
-        color: currentColor;
     }
 
     :root {
@@ -4701,12 +4729,12 @@
     }
 
     .wrapper_newsViewToggle {
-        width: 87.5px;
-        height: 48px;
+        width: auto;
+        height: auto;
         display: inline-flex;
         align-items: center;
-        gap: 2.8px;
-        padding: 5.65px;
+        gap: var(--spacing-gap-horizontal-8);
+        padding: var(--spacing-padding-vertical-4);
         border-radius: var(--radius-full);
         background: var(--color-background-transparent-alternative);
     }
@@ -4835,11 +4863,14 @@
     }
 
     .btn_newsViewOption {
-        width: 36.7px;
-        height: 36.7px;
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        min-height: 40px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        padding: 0;
         border-radius: var(--radius-full);
         color: var(--color-common-100);
         background: transparent;
@@ -4851,7 +4882,7 @@
     }
 
     .btn_newsViewOption[aria-selected='true'] {
-        color: var(--color-label-strong);
+        color: var(--color-common-0);
         background: var(--color-common-100);
     }
 
@@ -4862,7 +4893,7 @@
         align-items: center;
         justify-content: center;
         border-radius: var(--radius-full);
-        color: var(--color-label-strong);
+        color: var(--color-common-0);
         background: var(--color-newsroll-purple-50);
     }
 

@@ -26,8 +26,16 @@ function BlockedKeywordDialog({
   value: string;
 }) {
   return (
-    <div className="container_myDialog" role="dialog" aria-modal="true">
-      <div className="wrapper_myDialogContent">
+    <div
+      className="container_myDialog"
+      onClick={onCancel}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="wrapper_myDialogContent"
+        onClick={(event) => event.stopPropagation()}
+      >
         <h3 className="text_myDialogTitle">차단 키워드 추가</h3>
         <TextInput
           aria-label="차단할 키워드"

@@ -18,6 +18,7 @@ export type CommentItem = {
   isMine?: boolean;
   likes: number;
   replies: number;
+  userId: string;
 };
 
 export const emptyCommentReactionCounts: Record<CommentReactionValue, number> = {
@@ -74,5 +75,6 @@ export function getCommentItemFromApi(
     isMine: comment.userId === currentUserId,
     likes: comment.likeCount,
     replies: replyCount,
+    userId: comment.userId,
   };
 }

@@ -12,19 +12,26 @@ import {
   type AppNotification,
   bookmarkApi,
   commentApi,
+  inquiryApi,
   newsApi,
   notificationApi,
   pollApi,
   settingsApi,
   userApi,
+  userContentActionApi,
   welfareApi,
+  type Inquiry,
   type NotificationSettings,
+  type UpdateUserInput,
+  type User,
+  type UserContentAction,
   type UserNewsViewTime,
   type UserPreference
 } from "@/app/_newsroll/api";
 import {
   currentUserId,
   getCurrentUserSnapshot,
+  setCurrentUserSession,
 } from "@/app/_newsroll/auth/current-user";
 import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import {
@@ -67,6 +74,10 @@ import {
 import { MyCustomNewsSettingsPage } from "@/features/my-page/detail/MyCustomNewsSettingsPage";
 import { MyNewsViewTimePage } from "@/features/my-page/detail/MyNewsViewTimePage";
 import { MyProfileSettingsPage } from "@/features/my-page/detail/MyProfileSettingsPage";
+import {
+  MyProfileSettingDetailPage,
+  type MyProfileSettingItemId,
+} from "@/features/my-page/detail/MyProfileSettingDetailPage";
 import {
   MyRecentDetailPage,
   createMyRecentArticle,
@@ -328,6 +339,23 @@ const myProfileSettingSections = [
   },
 ] as const;
 
+const myProfileSettingItemIds: MyProfileSettingItemId[][] = [
+  ["accountEdit", "passwordReset"],
+  [
+    "agreement",
+    "privacyPolicy",
+    "termsOfService",
+    "privacyConsent",
+    "marketingConsent",
+  ],
+  ["inquiryHistory", "reportHistory", "blockedHiddenSettings"],
+  ["appInfo", "openSourceLicenses", "privacyPolicyHistory", "termsHistory"],
+];
+
+function getMyProfileSettingItemId(sectionIndex: number, itemIndex: number) {
+  return myProfileSettingItemIds[sectionIndex]?.[itemIndex] ?? null;
+}
+
 export function MyPageView({
   blockedKeywordSettings,
   isDarkMode,
@@ -401,6 +429,13 @@ export function MyPageView({
     속보: true,
   });
   const [notificationItems, setNotificationItems] = useState<AppNotification[]>([]);
+  const [profileUser, setProfileUser] = useState<User | null>(null);
+  const [myInquiryItems, setMyInquiryItems] = useState<Inquiry[]>([]);
+  const [myContentActionItems, setMyContentActionItems] = useState<
+    UserContentAction[]
+  >([]);
+  const [activeProfileSettingItemId, setActiveProfileSettingItemId] =
+    useState<MyProfileSettingItemId | null>(null);
   const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
     () => new Set(["07:00", "21:00"]),
   );
@@ -481,6 +516,7 @@ export function MyPageView({
     myDetailScrollRestore.requestRestore();
     setMyArticleDetail(null);
     setMyPolicyDetail(null);
+    setActiveProfileSettingItemId(null);
     setActiveDetailView(null);
   }, [myDetailScrollRestore]);
   const myArticleDetailExitMotion = useEnterFromRightExitMotion({
@@ -619,11 +655,17 @@ export function MyPageView({
         notifications,
         newsViewTimes,
         nextNotificationItems,
+        nextProfileUser,
+        nextInquiryItems,
+        nextContentActionItems,
       ] = await Promise.all([
         userApi.getUserPreferences(currentUserId),
         notificationApi.getNotificationSettings(currentUserId),
         settingsApi.getUserNewsViewTimes(currentUserId),
         notificationApi.getNotifications(currentUserId).catch(() => []),
+        userApi.getCurrentUser(currentUserId).catch(() => null),
+        inquiryApi.getInquiries(currentUserId).catch(() => []),
+        userContentActionApi.getActions(currentUserId).catch(() => []),
       ]);
       const currentPreference = preference[0] ?? null;
 
@@ -638,6 +680,9 @@ export function MyPageView({
       setNotificationSettings(getNotificationSettingsFromApi(notifications));
       setSelectedNewsViewTimes(getNewsViewTimesFromApi(newsViewTimes));
       setNotificationItems(nextNotificationItems);
+      setProfileUser(nextProfileUser);
+      setMyInquiryItems(nextInquiryItems);
+      setMyContentActionItems(nextContentActionItems);
       onDarkModeChange(notifications?.darkMode ?? false);
     }
 
@@ -665,6 +710,7 @@ export function MyPageView({
     if (quickMenuRequest.target === "profileSettings") {
       setMyArticleDetail(null);
       setMyPolicyDetail(null);
+      setActiveProfileSettingItemId(null);
       setActiveDetailView("profileSettings");
       return;
     }
@@ -872,6 +918,18 @@ export function MyPageView({
     Array.from(selectedCategorySettings[groupIndex] ?? [])[0] ??
     getMyCategoryOptionId(groupIndex, 0);
 
+  const refreshProfileSettingsData = useCallback(() => {
+    void Promise.all([
+      userApi.getCurrentUser(currentUserId).catch(() => null),
+      inquiryApi.getInquiries(currentUserId).catch(() => []),
+      userContentActionApi.getActions(currentUserId).catch(() => []),
+    ]).then(([nextProfileUser, nextInquiryItems, nextContentActionItems]) => {
+      setProfileUser(nextProfileUser);
+      setMyInquiryItems(nextInquiryItems);
+      setMyContentActionItems(nextContentActionItems);
+    });
+  }, []);
+
   const openNewsViewTime = () => {
     myDetailScrollRestore.captureScroll();
     setActiveDetailView("newsViewTime");
@@ -884,7 +942,71 @@ export function MyPageView({
 
   const openProfileSettings = () => {
     myDetailScrollRestore.captureScroll();
+    refreshProfileSettingsData();
+    setActiveProfileSettingItemId(null);
     setActiveDetailView("profileSettings");
+  };
+
+  const openProfileSettingItem = (
+    sectionIndex: number,
+    itemIndex: number,
+  ) => {
+    const itemId = getMyProfileSettingItemId(sectionIndex, itemIndex);
+
+    if (!itemId) {
+      return;
+    }
+
+    refreshProfileSettingsData();
+    setActiveProfileSettingItemId(itemId);
+  };
+
+  const updateProfileUser = async (input: UpdateUserInput) => {
+    if (input.email) {
+      const sameEmailUser = await userApi.getUserByEmail(input.email);
+
+      if (sameEmailUser && sameEmailUser.id !== currentUserId) {
+        throw new Error("Duplicate email");
+      }
+    }
+
+    if (input.nickname) {
+      const sameNicknameUser = await userApi.getUserByNickname(input.nickname);
+
+      if (sameNicknameUser && sameNicknameUser.id !== currentUserId) {
+        throw new Error("Duplicate nickname");
+      }
+    }
+
+    const nextUser = await userApi.updateUser(currentUserId, input);
+    setProfileUser(nextUser);
+    setCurrentUserSession(
+      { id: nextUser.id, nickname: nextUser.nickname },
+      { remember: true },
+    );
+  };
+
+  const updateProfilePassword = async (
+    currentPassword: string,
+    nextPassword: string,
+  ) => {
+    const nextProfileUser = profileUser ?? (await userApi.getCurrentUser(currentUserId));
+
+    if (nextProfileUser.password !== currentPassword) {
+      throw new Error("Invalid password");
+    }
+
+    const nextUser = await userApi.updateUser(currentUserId, {
+      password: nextPassword,
+    });
+    setProfileUser(nextUser);
+  };
+
+  const deleteContentAction = async (actionId: string) => {
+    await userContentActionApi.deleteAction(actionId);
+    setMyContentActionItems((currentItems) =>
+      currentItems.filter((item) => item.id !== actionId),
+    );
   };
 
   const openSummaryDetail = (view: MySummaryView) => {
@@ -935,6 +1057,8 @@ export function MyPageView({
     : null;
   const handleMyDetailBack = isMyNestedDetailOpen
     ? myArticleDetailExitMotion.closeWithMotion
+    : activeProfileSettingItemId
+      ? () => setActiveProfileSettingItemId(null)
     : quickMenuReturnView
       ? () => onQuickMenuBack(quickMenuReturnView)
     : myDetailExitMotion.closeWithMotion;
@@ -1093,10 +1217,24 @@ export function MyPageView({
               selectedTimes={selectedNewsViewTimes}
             />
           ) : isProfileSettingsOpen ? (
-          <MyProfileSettingsPage
-            isLeaving={myDetailExitMotion.isLeaving}
-            sections={myProfileSettingSections}
-          />
+            activeProfileSettingItemId ? (
+              <MyProfileSettingDetailPage
+                actions={myContentActionItems}
+                inquiries={myInquiryItems}
+                isLeaving={myDetailExitMotion.isLeaving}
+                itemId={activeProfileSettingItemId}
+                onDeleteContentAction={deleteContentAction}
+                onPasswordSubmit={updateProfilePassword}
+                onUserSubmit={updateProfileUser}
+                user={profileUser}
+              />
+            ) : (
+              <MyProfileSettingsPage
+                isLeaving={myDetailExitMotion.isLeaving}
+                onItemSelect={openProfileSettingItem}
+                sections={myProfileSettingSections}
+              />
+            )
         ) : (
           <div className="container_myContent">
           <section className="container_myProfile" aria-label="프로필">
