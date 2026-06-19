@@ -466,15 +466,23 @@ function AccountEditForm({
               : "입력값을 확인해주세요."}
         </p>
       ) : null}
-      <Button
-        disabled={status === "saving"}
-        radius="rounded"
-        size="large"
-        type="submit"
-        variant="filled"
-      >
-        저장
-      </Button>
+      <div className="wrapper_mySettingsBottomActions">
+        <Button
+          disabled={status === "saving"}
+          radius="rounded"
+          size="large"
+          type="submit"
+          variant="filled"
+        >
+          저장
+        </Button>
+        <button
+          className="btn_textAction btn_mySettingsReleaseAction"
+          type="button"
+        >
+          회원탈퇴
+        </button>
+      </div>
     </form>
   );
 }
@@ -702,7 +710,7 @@ export function MyProfileSettingDetailPage({
 
   return (
     <div
-      className={`container_mySettingsPage ${isInquiryDetailOpen ? "is_mySettingsNestedDetail " : ""}${getEnterFromRightMotionClassName(isLeaving)}`}
+      className={`container_mySettingsPage ${itemId === "accountEdit" ? "is_mySettingsAccountEdit " : ""}${isInquiryDetailOpen ? "is_mySettingsNestedDetail " : ""}${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       {shouldShowHeader ? (
         <section className="container_mySettingsDetailSection">

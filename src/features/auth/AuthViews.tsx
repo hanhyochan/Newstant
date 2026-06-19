@@ -26,7 +26,6 @@ import {
   authEmailSchema,
   createSignupPasswordConfirmSchema,
   loginPasswordSchema,
-  signupLoginIdSchema,
   signupNicknameSchema,
   signupPasswordSchema,
   verificationCodeSchema,
@@ -34,6 +33,43 @@ import {
 import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation";
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
+
+const socialLoginProviders = [
+  {
+    icon: "/icons/icon_google_login.svg",
+    label: "구글 로그인",
+  },
+  {
+    icon: "/icons/icon_naver_login.svg",
+    label: "네이버 로그인",
+  },
+  {
+    icon: "/icons/icon_kakao_login.svg",
+    label: "카카오 로그인",
+  },
+] as const;
+
+function SocialLoginButtons() {
+  return (
+    <div className="wrapper_socialLogin" aria-label="소셜 로그인">
+      {socialLoginProviders.map((provider) => (
+        <button
+          aria-label={provider.label}
+          className="btn_socialLogin"
+          key={provider.label}
+          type="button"
+        >
+          <img
+            alt=""
+            aria-hidden="true"
+            className="img_socialLoginIcon"
+            src={provider.icon}
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function AuthValidationError({
   id,
@@ -89,6 +125,7 @@ export function LoginView({
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isAutoLogin, setIsAutoLogin] = useState(false);
+  const [isEmailLoginVisible, setIsEmailLoginVisible] = useState(false);
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
   const passwordValidation = useZodFieldValidation(loginPasswordSchema, password);
   const isLoginReady = emailValidation.isValid && passwordValidation.isValid;
@@ -97,10 +134,25 @@ export function LoginView({
 
   return (
     <AuthLayout ariaLabel="로그인">
-      <div className="wrapper_loginContent">
+      {!isEmailLoginVisible ? (
+        <div className="wrapper_loginContent wrapper_loginLandingContent">
+          <h1 className="text_loginLandingHero">세상을 스크롤하다</h1>
+          <div className="wrapper_loginLandingActions">
+            <SocialLoginButtons />
+            <button
+              className="btn_loginEmailEntry"
+              onClick={() => setIsEmailLoginVisible(true)}
+              type="button"
+            >
+              이메일로 로그인·회원가입
+            </button>
+          </div>
+        </div>
+      ) : (
+      <div className="wrapper_loginContent wrapper_loginEmailContent">
         <div className="wrapper_loginHeader">
           <p className="text_loginEyebrow">NewsRoll</p>
-          <h1 className="text_loginTitle">로그인</h1>
+          <h1 className="text_loginTitle">세상을 스크롤하다</h1>
         </div>
 
         <form
@@ -120,9 +172,13 @@ export function LoginView({
                 aria-invalid={Boolean(emailValidation.errorMessage)}
                 aria-label="이메일 입력"
                 autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                className="input_authEmailControl"
                 onBlur={emailValidation.markTouched}
                 onChange={(event) => setEmail(event.currentTarget.value)}
                 placeholder="이메일"
+                spellCheck={false}
                 state={emailValidation.errorMessage ? "error" : "default"}
                 type="email"
                 value={email}
@@ -185,16 +241,6 @@ export function LoginView({
             </div>
           </div>
 
-          <div className="wrapper_socialLogin" aria-label="소셜 로그인">
-            {["kakao", "naver", "google"].map((provider) => (
-              <span
-                aria-label={`${provider} 로그인 아이콘 영역`}
-                className="box_socialLoginIcon"
-                key={provider}
-                role="img"
-              />
-            ))}
-          </div>
           <div className="wrapper_loginSignup">
             <button
               className="btn_loginSignup"
@@ -206,6 +252,7 @@ export function LoginView({
           </div>
         </form>
       </div>
+      )}
     </AuthLayout>
   );
 }
@@ -1026,9 +1073,13 @@ export function SignupEmailView({
                   aria-invalid={Boolean(emailValidation.errorMessage)}
                   aria-label="회원가입 이메일 입력"
                   autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  className="input_authEmailControl"
                   onBlur={emailValidation.markTouched}
                   onChange={(event) => updateEmail(event.currentTarget.value)}
                   placeholder="이메일"
+                  spellCheck={false}
                   state={emailValidation.errorMessage ? "error" : "default"}
                   type="email"
                   value={email}
@@ -1265,144 +1316,6 @@ export function SignupNicknameView({
   );
 }
 
-const reservedSignupLoginIds = ["admin", "newsroll", "root", "system"];
-
-export function SignupLoginIdView({
-  onCheckLoginId,
-  onNext,
-}: {
-  onCheckLoginId: (loginId: string) => Promise<boolean>;
-  onNext: (loginId: string) => void;
-}) {
-  const [loginId, setLoginId] = useState("");
-  const [isLoginIdChecked, setIsLoginIdChecked] = useState(false);
-  const [isLoginIdChecking, setIsLoginIdChecking] = useState(false);
-  const [loginIdCheckMessage, setLoginIdCheckMessage] = useState("");
-  const loginIdValidation = useZodFieldValidation(signupLoginIdSchema, loginId);
-  const isLoginIdReady = loginIdValidation.isValid && isLoginIdChecked;
-  const signupLoginIdErrorId = "signup-login-id-error";
-  const signupLoginIdCheckId = "signup-login-id-check";
-
-  async function checkLoginIdDuplicate() {
-    loginIdValidation.markTouched();
-
-    if (!loginIdValidation.isValid) {
-      setIsLoginIdChecked(false);
-      setLoginIdCheckMessage("");
-      return;
-    }
-
-    const normalizedLoginId = loginId.trim().toLocaleLowerCase("en-US");
-    const isReserved = reservedSignupLoginIds.includes(normalizedLoginId);
-    setIsLoginIdChecking(true);
-
-    let isAvailable = false;
-
-    try {
-      isAvailable = isReserved ? false : await onCheckLoginId(normalizedLoginId);
-    } catch {
-      isAvailable = false;
-    }
-
-    setIsLoginIdChecking(false);
-    setIsLoginIdChecked(isAvailable);
-    setLoginIdCheckMessage(
-      !isAvailable
-        ? "이미 사용 중인 아이디예요."
-        : "사용 가능한 아이디예요.",
-    );
-  }
-
-  function updateLoginId(value: string) {
-    setLoginId(value);
-    setIsLoginIdChecked(false);
-    setLoginIdCheckMessage("");
-  }
-
-  return (
-    <AuthLayout ariaLabel="회원가입 아이디 설정">
-      <div className="wrapper_signupStepContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 4</p>
-          <h1 className="text_authPageTitle">아이디 설정</h1>
-          <p className="text_signupStepDescription">
-            로그인과 계정 식별에 사용할 아이디를 입력해 주세요.
-          </p>
-        </div>
-
-        <form
-          className="form_signupStep"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (isLoginIdReady) {
-              onNext(loginId.trim().toLocaleLowerCase("en-US"));
-            }
-          }}
-        >
-          <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
-              <div className="wrapper_signupEmailField">
-                <TransparentTextInput
-                  aria-describedby={[
-                    loginIdValidation.errorMessage ? signupLoginIdErrorId : "",
-                    loginIdCheckMessage ? signupLoginIdCheckId : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ") || undefined}
-                  aria-invalid={Boolean(loginIdValidation.errorMessage)}
-                  aria-label="회원가입 아이디 입력"
-                  autoComplete="username"
-                  maxLength={20}
-                  onBlur={loginIdValidation.markTouched}
-                  onChange={(event) => updateLoginId(event.currentTarget.value)}
-                  placeholder="아이디"
-                  state={loginIdValidation.errorMessage ? "error" : "default"}
-                  type="text"
-                  value={loginId}
-                />
-                <SignupFieldActionButton
-                  disabled={
-                    !loginIdValidation.isValid ||
-                    isLoginIdChecking ||
-                    isLoginIdChecked
-                  }
-                  onClick={checkLoginIdDuplicate}
-                >
-                  중복확인
-                </SignupFieldActionButton>
-              </div>
-              <AuthValidationError
-                id={signupLoginIdErrorId}
-                message={loginIdValidation.errorMessage}
-              />
-              {loginIdCheckMessage ? (
-                <p
-                  className="text_authValidation"
-                  data-state={isLoginIdChecked ? "success" : "error"}
-                  id={signupLoginIdCheckId}
-                >
-                  {loginIdCheckMessage}
-                </p>
-              ) : null}
-            </div>
-          </div>
-
-          <Button
-            className="btn_signupStepNext"
-            disabled={!isLoginIdReady}
-            radius="rounded"
-            size="large"
-            type="submit"
-            variant="filled"
-          >
-            다음
-          </Button>
-        </form>
-      </div>
-    </AuthLayout>
-  );
-}
-
 export function SignupPasswordView({
   onNext,
 }: {
@@ -1575,7 +1488,7 @@ export function SignupAgeView({
     <AuthLayout ariaLabel="나의 연령대 선택">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 5</p>
+          <p className="text_authStepLabel">Step 4</p>
           <h1 className="text_authPageTitle">나의 연령대 선택</h1>
           <p className="text_signupStepDescription">
             맞춤형 뉴스 추천에 사용할 연령대를 선택해주세요.
@@ -1641,7 +1554,7 @@ export function SignupCategoryView({
     <AuthLayout ariaLabel="관심 카테고리 선택">
       <div className="wrapper_signupStepContent">
         <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 6</p>
+          <p className="text_authStepLabel">Step 5</p>
           <h1 className="text_authPageTitle">관심 카테고리 선택</h1>
           <p className="text_signupStepDescription">
             보고 싶은 뉴스 카테고리를 하나 이상 선택해주세요.

@@ -58,6 +58,7 @@ import {
   getCommentItemFromApi,
   type CommentId
 } from "@/features/comments/utils/comment-data";
+import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { MySettingRow } from "@/features/my-page/components/MySettingRow";
 import {
   MyBookmarkDetailPage,
@@ -398,6 +399,7 @@ export function MyPageView({
   onOpenBreakingNews,
   onOpenNotifications,
   onOpenSearch,
+  onLogout,
   onToggleTextSize,
 }: {
   blockedKeywordSettings: BlockedKeywordSetting[];
@@ -410,6 +412,7 @@ export function MyPageView({
   onOpenBreakingNews: () => void;
   onOpenNotifications: () => void;
   onOpenSearch: () => void;
+  onLogout: () => void;
   onToggleTextSize: () => void;
 }) {
   const currentUser = getCurrentUserSnapshot();
@@ -473,6 +476,7 @@ export function MyPageView({
   const userNewsViewTimeIdRef = useRef<string | null>(null);
   const [isBlockedKeywordDialogOpen, setIsBlockedKeywordDialogOpen] =
     useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [blockedKeywordInputValue, setBlockedKeywordInputValue] = useState("");
   const myPanelContentRef = useRef<HTMLDivElement>(null);
   const isRecentOpen = activeDetailView === "recent";
@@ -1312,6 +1316,27 @@ export function MyPageView({
               />
             </div>
           </section>
+
+          <section className="container_mySettingsSection">
+            <NewsRollDivider className="divider_mySection" />
+            <button
+              className="btn_textAction btn_myLogout"
+              type="button"
+              onClick={() => setIsLogoutDialogOpen(true)}
+            >
+              로그아웃
+            </button>
+          </section>
+          {isLogoutDialogOpen ? (
+            <ConfirmDialog
+              message="로그아웃 하시겠습니까?"
+              onCancel={() => setIsLogoutDialogOpen(false)}
+              onConfirm={() => {
+                setIsLogoutDialogOpen(false);
+                onLogout();
+              }}
+            />
+          ) : null}
           </div>
         )}
       </NewsRollPagePanel>

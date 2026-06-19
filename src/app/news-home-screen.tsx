@@ -27,7 +27,6 @@ import {
   SignupAgreementView,
   SignupCategoryView,
   SignupEmailView,
-  SignupLoginIdView,
   SignupNicknameView,
   SignupPasswordView,
 } from "@/features/auth/AuthViews";
@@ -59,6 +58,7 @@ import {
   type BlockedKeywordPreference
 } from "./_newsroll/api";
 import {
+  clearCurrentUserSession,
   currentUserId,
   hydrateCurrentUserSession,
   setCurrentUserSession,
@@ -72,7 +72,6 @@ type View =
   | "signupAgreement"
   | "signupEmail"
   | "signupNickname"
-  | "signupLoginId"
   | "signupPassword"
   | "signupAge"
   | "signupCategory";
@@ -82,11 +81,18 @@ type SignupDraft = {
   agreementIds?: string[];
   categoryIds?: string[];
   email?: string;
-  loginId?: string;
   marketingAgreed?: boolean;
   nickname?: string;
   password?: string;
 };
+
+function NewsRollSplashScreen() {
+  return (
+    <section className="container_newsrollSplash" aria-label="NewsRoll 로딩">
+      <span aria-hidden="true" className="box_newsrollSplashLogo" />
+    </section>
+  );
+}
 
 function normalizeBlockedKeyword(value: string) {
   return value.trim().toLocaleLowerCase("ko-KR");
@@ -140,18 +146,17 @@ function ActiveView({
   isAuthSubmitting,
   onAddBlockedKeyword,
   onCheckSignupEmail,
-  onCheckSignupLoginId,
   onCheckSignupNickname,
   onDarkModeChange,
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
   onCloseSearch,
   onLogin,
+  onLogout,
   onSignupAgeNext,
   onSignupAgreementNext,
   onSignupCategoryNext,
   onSignupEmailNext,
-  onSignupLoginIdNext,
   onSignupNicknameNext,
   onSignupPasswordNext,
   onSignupStart,
@@ -174,7 +179,6 @@ function ActiveView({
   isAuthSubmitting: boolean;
   onAddBlockedKeyword: (keyword: string) => void;
   onCheckSignupEmail: (email: string) => Promise<boolean>;
-  onCheckSignupLoginId: (loginId: string) => Promise<boolean>;
   onCheckSignupNickname: (nickname: string) => Promise<boolean>;
   onDarkModeChange: (isDarkMode: boolean) => void;
   onDeleteBlockedKeyword: (keyword: string) => void;
@@ -185,11 +189,11 @@ function ActiveView({
     isAutoLogin: boolean;
     password: string;
   }) => Promise<void>;
+  onLogout: () => void;
   onSignupAgeNext: (ageId: string) => void;
   onSignupAgreementNext: (agreements: Record<string, boolean>) => void;
   onSignupCategoryNext: (categoryIds: string[]) => Promise<void>;
   onSignupEmailNext: (email: string) => void;
-  onSignupLoginIdNext: (loginId: string) => void;
   onSignupNicknameNext: (nickname: string) => void;
   onSignupPasswordNext: (password: string) => void;
   onSignupStart: () => void;
@@ -237,15 +241,6 @@ function ActiveView({
       <SignupNicknameView
         onCheckNickname={onCheckSignupNickname}
         onNext={onSignupNicknameNext}
-      />
-    );
-  }
-
-  if (view === "signupLoginId") {
-    return (
-      <SignupLoginIdView
-        onCheckLoginId={onCheckSignupLoginId}
-        onNext={onSignupLoginIdNext}
       />
     );
   }
@@ -325,6 +320,7 @@ function ActiveView({
         onDarkModeChange={onDarkModeChange}
         onDeleteBlockedKeyword={onDeleteBlockedKeyword}
         onToggleBlockedKeyword={onToggleBlockedKeyword}
+        onLogout={onLogout}
         onOpenBreakingNews={onOpenAllNews}
         onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
@@ -360,6 +356,7 @@ function ActiveView({
 
 export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("login");
+  const [isSplashVisible, setIsSplashVisible] = useState(true);
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
   const viewNavigationTimerRef = useRef<number | null>(null);
   const allNewsEntryMotionTimerRef = useRef<number | null>(null);
@@ -399,7 +396,6 @@ export function NewsHomeScreen() {
     activeView === "signupAgreement" ||
     activeView === "signupEmail" ||
     activeView === "signupNickname" ||
-    activeView === "signupLoginId" ||
     activeView === "signupPassword" ||
     activeView === "signupAge" ||
     activeView === "signupCategory"
@@ -427,19 +423,49 @@ export function NewsHomeScreen() {
     [],
   );
 
+  const loadInitialContentData = useCallback(
+    async (userId = currentUserId, options: { ignore?: () => boolean } = {}) => {
+      await Promise.allSettled([
+        loadRootSettings(userId, options),
+        userApi.getUserPreferences(userId),
+        newsApi.getNewsList(),
+        newsApi.getRecentNewsViews(userId),
+        welfareApi.getWelfarePolicyList("all"),
+      ]);
+    },
+    [loadRootSettings],
+  );
+
   useEffect(() => {
     let ignore = false;
-    const storedUser = hydrateCurrentUserSession();
+    async function boot() {
+      setIsSplashVisible(true);
+      const storedUser = hydrateCurrentUserSession();
 
-    if (storedUser) {
-      setActiveView("home");
-      loadRootSettings(storedUser.id, { ignore: () => ignore }).catch(() => undefined);
+      if (storedUser) {
+        setActiveView("home");
+        await loadInitialContentData(storedUser.id, { ignore: () => ignore });
+      } else {
+        setActiveView("login");
+        await Promise.resolve();
+      }
+
+      if (!ignore) {
+        setIsSplashVisible(false);
+      }
     }
+
+    boot().catch(() => {
+      if (!ignore) {
+        setActiveView("login");
+        setIsSplashVisible(false);
+      }
+    });
 
     return () => {
       ignore = true;
     };
-  }, [loadRootSettings]);
+  }, [loadInitialContentData]);
 
   useEffect(() => {
     return () => {
@@ -461,7 +487,6 @@ export function NewsHomeScreen() {
           activeView === "signupAgreement" ||
           activeView === "signupEmail" ||
           activeView === "signupNickname" ||
-          activeView === "signupLoginId" ||
           activeView === "signupPassword" ||
           activeView === "signupAge" ||
           activeView === "signupCategory"
@@ -481,7 +506,6 @@ export function NewsHomeScreen() {
           activeView === "signupAgreement" ||
           activeView === "signupEmail" ||
           activeView === "signupNickname" ||
-          activeView === "signupLoginId" ||
           activeView === "signupPassword" ||
           activeView === "signupAge" ||
           activeView === "signupCategory"
@@ -602,12 +626,6 @@ export function NewsHomeScreen() {
     return !user;
   }
 
-  async function checkSignupLoginId(loginId: string) {
-    const user = await userApi.getUserByLoginId(loginId);
-
-    return !user;
-  }
-
   async function loginWithEmail(input: {
     email: string;
     isAutoLogin: boolean;
@@ -628,13 +646,28 @@ export function NewsHomeScreen() {
       }
 
       setCurrentUserSession(user, { remember: input.isAutoLogin });
-      await loadRootSettings(user.id).catch(() => undefined);
+      setIsSplashVisible(true);
+      await loadInitialContentData(user.id).catch(() => undefined);
       setActiveView("home");
+      setIsSplashVisible(false);
     } catch {
       setAuthError("로그인 정보를 확인하지 못했습니다.");
+      setIsSplashVisible(false);
     } finally {
       setIsAuthSubmitting(false);
     }
+  }
+
+  function logout() {
+    clearCurrentUserSession();
+    setIsSplashVisible(false);
+    setAuthError("");
+    setSignupDraft({});
+    setBodySearchSelection(null);
+    setAllNewsEntryMotionClassName("");
+    setIsAllNewsBreakingEntry(false);
+    setSearchBackView("home");
+    setActiveView("login");
   }
 
   function startSignup() {
@@ -697,7 +730,6 @@ export function NewsHomeScreen() {
     if (
       !nextDraft.email ||
       !nextDraft.nickname ||
-      !nextDraft.loginId ||
       !nextDraft.password ||
       !nextDraft.ageGroupId ||
       !nextDraft.agreementIds
@@ -711,10 +743,10 @@ export function NewsHomeScreen() {
 
     try {
       const existingUser = await userApi.getUserByEmail(nextDraft.email);
-      const existingLoginIdUser = await userApi.getUserByLoginId(nextDraft.loginId);
+      const existingNicknameUser = await userApi.getUserByNickname(nextDraft.nickname);
 
-      if (existingLoginIdUser && existingLoginIdUser.email !== nextDraft.email) {
-        setAuthError("이미 사용 중인 아이디입니다.");
+      if (existingNicknameUser && existingNicknameUser.email !== nextDraft.email) {
+        setAuthError("이미 사용 중인 닉네임입니다.");
         return;
       }
 
@@ -729,9 +761,11 @@ export function NewsHomeScreen() {
           categoryIds: nextDraft.categoryIds ?? [],
         });
         setCurrentUserSession(existingUser, { remember: true });
-        await loadRootSettings(existingUser.id).catch(() => undefined);
+        setIsSplashVisible(true);
+        await loadInitialContentData(existingUser.id).catch(() => undefined);
         setSignupDraft({});
         setActiveView("home");
+        setIsSplashVisible(false);
         return;
       }
 
@@ -740,7 +774,7 @@ export function NewsHomeScreen() {
         agreementIds: nextDraft.agreementIds,
         categoryIds: nextDraft.categoryIds ?? [],
         email: nextDraft.email,
-        loginId: nextDraft.loginId,
+        loginId: nextDraft.nickname,
         marketingAgreed: Boolean(nextDraft.marketingAgreed),
         nickname: nextDraft.nickname,
         password: nextDraft.password,
@@ -752,11 +786,14 @@ export function NewsHomeScreen() {
       });
 
       setCurrentUserSession(user, { remember: true });
-      await loadRootSettings(user.id).catch(() => undefined);
+      setIsSplashVisible(true);
+      await loadInitialContentData(user.id).catch(() => undefined);
       setSignupDraft({});
       setActiveView("home");
+      setIsSplashVisible(false);
     } catch {
       setAuthError("회원가입 정보를 저장하지 못했습니다.");
+      setIsSplashVisible(false);
     } finally {
       setIsAuthSubmitting(false);
     }
@@ -909,6 +946,16 @@ export function NewsHomeScreen() {
     setSearchBackView("home");
   }
 
+  if (isSplashVisible) {
+    return (
+      <main className="newsroll_screen newsroll_screen_splash">
+        <div className="newsroll_phone" aria-label="NewsRoll">
+          <NewsRollSplashScreen />
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main
       className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
@@ -918,7 +965,6 @@ export function NewsHomeScreen() {
         activeView === "signupAgreement" ||
         activeView === "signupEmail" ||
         activeView === "signupNickname" ||
-        activeView === "signupLoginId" ||
         activeView === "signupPassword" ||
         activeView === "signupAge" ||
         activeView === "signupCategory"
@@ -946,13 +992,13 @@ export function NewsHomeScreen() {
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
           onCheckSignupEmail={checkSignupEmail}
-          onCheckSignupLoginId={checkSignupLoginId}
           onCheckSignupNickname={checkSignupNickname}
           onDarkModeChange={setIsDarkMode}
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
           onLogin={loginWithEmail}
+          onLogout={logout}
           onOpenAllNews={openBreakingNewsView}
           onOpenNotifications={openNotifications}
           onOpenSearch={openSearch}
@@ -976,9 +1022,6 @@ export function NewsHomeScreen() {
           onSignupNicknameNext={(nickname) =>
             moveToNextAuthStepWithDraft({ nickname })
           }
-          onSignupLoginIdNext={(loginId) =>
-            moveToNextAuthStepWithDraft({ loginId })
-          }
           onSignupPasswordNext={(password) =>
             moveToNextAuthStepWithDraft({ password })
           }
@@ -994,7 +1037,6 @@ export function NewsHomeScreen() {
       activeView !== "signupAgreement" &&
       activeView !== "signupEmail" &&
       activeView !== "signupNickname" &&
-      activeView !== "signupLoginId" &&
       activeView !== "signupPassword" &&
       activeView !== "signupAge" &&
       activeView !== "signupCategory" ? (

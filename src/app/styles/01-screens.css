@@ -23,6 +23,39 @@
         background: var(--color-newsroll-purple-20);
     }
 
+    .newsroll_screen_splash {
+        height: 100dvh;
+        min-height: 100dvh;
+        overflow: hidden;
+        background: var(--color-newsroll-purple-20);
+    }
+
+    .newsroll_screen_splash .newsroll_phone {
+        min-height: 100dvh;
+        background: var(--color-newsroll-purple-20);
+    }
+
+    .container_newsrollSplash {
+        width: 100%;
+        min-height: 100dvh;
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+        background: var(--color-newsroll-purple-20);
+        box-sizing: border-box;
+    }
+
+    .box_newsrollSplashLogo {
+        width: var(--size-52);
+        height: var(--size-52);
+        display: block;
+        border-radius: var(--radius-full);
+        background: var(--color-newsroll-purple-50);
+    }
+
     .newsroll_header {
         gap: var(--spacing-gap-vertical-24);
         padding: var(--spacing-padding-vertical-24) 0 0;
@@ -1639,12 +1672,46 @@
         color: var(--color-common-100);
     }
 
+    .container_authLayout .input_transparent input {
+        color: var(--color-common-100);
+        caret-color: var(--color-common-100);
+        -webkit-text-fill-color: var(--color-common-100);
+    }
+
+    .container_authLayout .input_transparent input.input_authEmailControl,
+    .container_authLayout .input_transparent input.input_authEmailControl:focus,
+    .container_authLayout .input_transparent input.input_authEmailControl:active,
+    .container_authLayout .input_transparent input.input_authEmailControl:valid,
+    .container_authLayout .input_transparent input.input_authEmailControl:invalid {
+        color: var(--color-common-100);
+        caret-color: var(--color-common-100);
+        -webkit-text-fill-color: var(--color-common-100);
+        text-shadow: 0 0 0 var(--color-common-100);
+    }
+
+    .container_authLayout .input_transparent input.input_authEmailControl::selection {
+        color: var(--color-common-0);
+        background: var(--color-common-100);
+        -webkit-text-fill-color: var(--color-common-0);
+    }
+
     .container_authLayout .input_transparent input:-webkit-autofill,
     .container_authLayout .input_transparent input:-webkit-autofill:hover,
     .container_authLayout .input_transparent input:-webkit-autofill:focus {
         caret-color: var(--color-common-100);
         -webkit-text-fill-color: var(--color-common-100);
         box-shadow: 0 0 0 1000px var(--color-newsroll-purple-20) inset;
+        transition: background-color 9999s ease-out;
+    }
+
+    .container_authLayout .input_transparent input.input_authEmailControl:-webkit-autofill,
+    .container_authLayout .input_transparent input.input_authEmailControl:-webkit-autofill:hover,
+    .container_authLayout .input_transparent input.input_authEmailControl:-webkit-autofill:focus {
+        color: var(--color-common-100);
+        caret-color: var(--color-common-100);
+        -webkit-text-fill-color: var(--color-common-100);
+        box-shadow: 0 0 0 1000px var(--color-newsroll-purple-20) inset;
+        text-shadow: 0 0 0 var(--color-common-100);
         transition: background-color 9999s ease-out;
     }
 
@@ -1657,6 +1724,38 @@
         box-sizing: border-box;
         gap: var(--spacing-gap-vertical-40);
         padding: 0;
+    }
+
+    .wrapper_loginLandingContent {
+        min-height: 0;
+        height: 100%;
+        justify-content: space-between;
+    }
+
+    .wrapper_loginEmailContent {
+        justify-content: flex-start;
+    }
+
+    .text_loginLandingHero {
+        margin: 0;
+        padding: 0;
+        color: var(--color-common-100);
+        font-size: var(--font-size-28);
+        font-weight: var(--font-weight-700);
+        line-height: var(--line-height-40);
+        word-break: keep-all;
+    }
+
+    .wrapper_loginLandingActions {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-gap-vertical-24);
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
     .wrapper_signupAgreementContent {
@@ -1858,7 +1957,7 @@
     }
 
     .wrapper_loginInputs {
-        gap: var(--spacing-gap-vertical-16);
+        gap: var(--spacing-gap-vertical-24);
     }
 
     .wrapper_loginPasswordField {
@@ -2015,6 +2114,23 @@
         text-align: center;
     }
 
+    .btn_loginEmailEntry {
+        width: auto;
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        color: var(--color-common-100);
+        background: transparent;
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+        text-align: center;
+        cursor: pointer;
+    }
+
     .wrapper_socialLogin {
         width: 100%;
         min-width: 0;
@@ -2024,14 +2140,31 @@
         padding: 0;
     }
 
-    .box_socialLoginIcon {
+    .btn_socialLogin {
         width: 48px;
         height: 48px;
         flex: 0 0 48px;
         display: inline-flex;
-        border: var(--border-1) solid var(--color-common-100);
-        border-radius: var(--radius-8);
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        border-radius: var(--radius-full);
         background: transparent;
+        cursor: pointer;
+    }
+
+    .img_socialLoginIcon {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        display: block;
+        object-fit: contain;
+    }
+
+    .btn_socialLogin:focus-visible {
+        outline: var(--border-2) solid var(--color-common-100);
+        outline-offset: var(--spacing-gap-horizontal-4);
     }
 
     .wrapper_signupAgreementList {
@@ -3088,6 +3221,11 @@
         min-height: 100%;
     }
 
+    .container_mySettingsPage.is_mySettingsAccountEdit {
+        flex: 1 1 auto;
+        min-height: 100%;
+    }
+
     .wrapper_myVoteItem {
         width: 100%;
         min-width: 0;
@@ -3643,6 +3781,26 @@
     .form_mySettingsDetail,
     .wrapper_mySettingsDetailBody {
         gap: var(--spacing-gap-vertical-24);
+    }
+
+    .form_mySettingsDetail {
+        flex: 1 1 auto;
+    }
+
+    .wrapper_mySettingsBottomActions {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-gap-vertical-16);
+        margin-top: auto;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .wrapper_mySettingsBottomActions > .btn {
+        width: 100%;
     }
 
     .wrapper_mySettingsField,
@@ -5723,6 +5881,10 @@
     .btn_textAction.btn_mySettingsReleaseAction:active,
     .btn_textAction.btn_mySettingsReleaseAction[aria-pressed='true'] {
         color: var(--color-red-50);
+    }
+
+    .btn_myLogout {
+        align-self: flex-start;
     }
 
     .btn_commentPanel {
