@@ -12,6 +12,7 @@ import {
   TextInput,
   Textarea,
 } from "@/design-system/components";
+import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 
 export function InfoInquirySection({ items }: { items: InquiryType[] }) {
@@ -20,6 +21,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
   );
   const [inquiryTitle, setInquiryTitle] = useState("");
   const [inquiryContent, setInquiryContent] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
   const [inquiryStatus, setInquiryStatus] = useState<"error" | "sent" | "sending" | null>(
     null,
   );
@@ -65,7 +67,8 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           .then(() => {
             setInquiryTitle("");
             setInquiryContent("");
-            setInquiryStatus("sent");
+            setInquiryStatus(null);
+            setConfirmMessage("문의가 등록되었습니다.");
           })
           .catch(() => {
             setInquiryStatus("error");
@@ -138,11 +141,6 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           value={inquiryContent}
         />
       </div>
-      {inquiryStatus === "sent" ? (
-        <p className="text_infoSubmitStatus" role="status">
-          문의가 접수되었습니다.
-        </p>
-      ) : null}
       {inquiryStatus === "error" ? (
         <p className="text_infoSubmitStatus is_error" role="alert">
           문의 내용을 확인해주세요.
@@ -158,6 +156,12 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
         <Icon name="submit" />
         {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}
       </Button>
+      {confirmMessage ? (
+        <ConfirmDialog
+          message={confirmMessage}
+          onConfirm={() => setConfirmMessage("")}
+        />
+      ) : null}
     </form>
   );
 }

@@ -24,35 +24,47 @@ export function InfoFaqSection({ items }: { items: Faq[] }) {
             const isOpen = openFaqIndexes.has(index);
 
             return (
-              <details
+              <div
                 className="container_infoFaqItem"
-                onToggle={(event) => {
-                  const isDetailOpen = event.currentTarget.open;
-
-                  setOpenFaqIndexes((current) => {
-                    const next = new Set(current);
-
-                    if (isDetailOpen) {
-                      next.add(index);
-                    } else {
-                      next.delete(index);
-                    }
-
-                    return next;
-                  });
-                }}
-                open={isOpen}
+                data-state={isOpen ? "open" : "closed"}
               >
-                <summary className="btn_infoFaqSummary">
+                <button
+                  aria-controls={`info-faq-answer-${index}`}
+                  aria-expanded={isOpen}
+                  className="btn_infoFaqSummary"
+                  id={`info-faq-summary-${index}`}
+                  onClick={() => {
+                    setOpenFaqIndexes((current) => {
+                      const next = new Set(current);
+
+                      if (next.has(index)) {
+                        next.delete(index);
+                      } else {
+                        next.add(index);
+                      }
+
+                      return next;
+                    });
+                  }}
+                  type="button"
+                >
                   <span className="text_infoItemTitle">
                     Q. {formatQuestion(item.question)}
                   </span>
                   <span className="icon_infoChevron" aria-hidden="true" />
-                </summary>
-                {isOpen ? (
-                  <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
-                ) : null}
-              </details>
+                </button>
+                <div
+                  aria-hidden={!isOpen}
+                  aria-labelledby={`info-faq-summary-${index}`}
+                  className="wrapper_infoFaqBodyMotion"
+                  id={`info-faq-answer-${index}`}
+                  role="region"
+                >
+                  <div className="wrapper_infoFaqBodyInner">
+                    <p className="text_infoBody text_infoFaqBody">{item.answer}</p>
+                  </div>
+                </div>
+              </div>
             );
           }}
         />

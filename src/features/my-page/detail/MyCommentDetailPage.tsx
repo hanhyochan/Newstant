@@ -239,6 +239,7 @@ export function MyCommentDetailPage({
       className={`container_myCommentPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">댓글</h2>
+      <div className="wrapper_myTabbedDetailContent">
       {showTabs ? (
         <PillTabMenu
           ariaLabel="내 댓글 카테고리"
@@ -276,6 +277,7 @@ export function MyCommentDetailPage({
             )}
           />
         )}
+      </div>
       </div>
     </div>
   );

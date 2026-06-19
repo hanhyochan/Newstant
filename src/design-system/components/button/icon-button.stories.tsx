@@ -23,7 +23,7 @@ export const Toolbar: Story = {
   render: () => (
     <div className="ds_inline_stack">
       <IconButton baseClassName="newsroll_toolbar_icon" icon="search" label="검색" />
-      <IconButton baseClassName="newsroll_toolbar_icon" icon="menu" label="메뉴" />
+      <IconButton baseClassName="newsroll_toolbar_icon" icon="alarm" label="알림" />
     </div>
   ),
 };

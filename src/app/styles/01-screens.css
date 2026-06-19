@@ -93,7 +93,6 @@
 
     .newsroll_breaking_card {
         width: 100%;
-        min-height: calc(var(--spacing-padding-vertical-40) + var(--spacing-padding-vertical-40));
         display: flex;
         align-items: center;
         gap: var(--spacing-gap-horizontal-16);
@@ -1008,11 +1007,10 @@
 
     .newsroll_breaking_card {
         width: 100%;
-        min-height: calc(var(--spacing-padding-vertical-40) + var(--spacing-padding-vertical-40));
         display: flex;
         align-items: center;
         gap: var(--spacing-gap-horizontal-16);
-        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
+        padding: var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
         background: var(--color-newsroll-purple-50);
@@ -1322,11 +1320,6 @@
         --newsroll-icon-fill-url: url('/icons/icon_policy_active.svg');
     }
 
-    .newsroll_icon_menu {
-        --newsroll-icon-outline-url: url('/icons/icon_navigation_menu.svg');
-        --newsroll-icon-fill-url: url('/icons/icon_navigation_menu.svg');
-    }
-
     .newsroll_icon_plus {
         --newsroll-icon-outline-url: url('/icons/icon_plus.svg');
         --newsroll-icon-fill-url: url('/icons/icon_plus.svg');
@@ -1454,11 +1447,10 @@
 
     .newsroll_breaking_card {
         width: 100%;
-        min-height: calc(var(--spacing-padding-vertical-40) + var(--spacing-padding-vertical-40));
         display: flex;
         align-items: center;
         gap: var(--spacing-gap-horizontal-16);
-        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
+        padding: var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
         background: var(--color-newsroll-purple-50);
@@ -1556,9 +1548,13 @@
 
     .newsroll_search_top {
         width: 100%;
+        position: sticky;
+        top: var(--spacing-padding-vertical-48);
+        z-index: 2;
         justify-content: flex-end;
         gap: var(--spacing-gap-horizontal-16);
-        padding: 0;
+        padding: 0 0 var(--spacing-padding-vertical-24);
+        background: var(--color-newsroll-purple-20);
     }
 
     .newsroll_search_close {
@@ -2247,6 +2243,10 @@
         padding: 0;
     }
 
+    .list_notificationResults {
+        gap: var(--spacing-gap-vertical-16);
+    }
+
     .btn_searchResult {
         width: 100%;
         min-width: 0;
@@ -2331,7 +2331,7 @@
         line-height: var(--line-height-24);
     }
 
-    .newsroll_all_breaking_label .newsroll_icon_alarm {
+    .newsroll_all_breaking_label .newsroll_icon_policy {
         width: var(--spacing-padding-horizontal-24);
         height: var(--spacing-padding-vertical-24);
     }
@@ -2343,7 +2343,6 @@
     }
 
     .newsroll_all_breaking_card {
-        min-height: 56px;
         display: flex;
         align-items: center;
         padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
@@ -2354,11 +2353,6 @@
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
         text-align: left;
-    }
-
-    .newsroll_all_breaking_card:first-child,
-    .newsroll_all_breaking_card:last-child {
-        min-height: 71px;
     }
 
     .newsroll_all_more {
@@ -3073,8 +3067,10 @@
     .container_mySettingsPage,
     .container_myTimeSection,
     .container_mySettingsDetailSection,
+    .wrapper_myBookmarkList,
     .wrapper_myVoteList,
     .wrapper_myCommentList,
+    .wrapper_myTabbedDetailContent,
     .wrapper_myTimeRows {
         width: 100%;
         min-width: 0;
@@ -3105,6 +3101,18 @@
 
     .wrapper_myVoteItem .btn_articleGuideOption {
         width: 100%;
+    }
+
+    .wrapper_myVoteItem .btn_articleGuideOption_binary[data-result-visible='true']::before {
+        display: none;
+    }
+
+    .wrapper_myVoteItem .btn_articleGuideOption_binary[data-result-visible='true'][data-binary-tone='yes'] {
+        background: var(--color-blue-80);
+    }
+
+    .wrapper_myVoteItem .btn_articleGuideOption_binary[data-result-visible='true'][data-binary-tone='no'] {
+        background: var(--color-red-80);
     }
 
     .text_myVoteQuestion {
@@ -3388,76 +3396,6 @@
         font-size: var(--font-size-18);
         font-weight: var(--font-weight-600);
         line-height: 26px;
-    }
-
-    .container_quickMenuOverlay {
-        position: absolute;
-        inset: 0;
-        z-index: 1100;
-        display: flex;
-        align-items: stretch;
-        justify-content: flex-end;
-        margin: 0;
-        padding: 0;
-        background: rgba(0, 0, 0, 0.56);
-    }
-
-    .container_quickMenuDrawer {
-        width: min(292px, calc(100% - 56px));
-        min-width: 0;
-        min-height: 100%;
-        max-height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: var(--spacing-gap-vertical-24);
-        margin: 0;
-        padding: var(--spacing-padding-vertical-24) var(--spacing-padding-horizontal-16);
-        box-sizing: border-box;
-        color: var(--color-label-strong);
-        background: var(--color-background-elevated-normal);
-    }
-
-    .wrapper_quickMenuList {
-        width: 100%;
-        min-width: 0;
-        flex: 1 1 auto;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-gap-vertical-24);
-        margin: 0;
-        padding: 0;
-        overflow-y: auto;
-    }
-
-    .btn_quickMenuItem,
-    .btn_quickMenuLogout {
-        width: 100%;
-        min-height: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-24);
-        margin: 0;
-        padding: 0;
-        color: inherit;
-        background: transparent;
-        text-align: left;
-    }
-
-    .btn_quickMenuLogout {
-        justify-content: flex-start;
-        color: var(--color-label-neutral);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-500);
-        line-height: var(--line-height-20);
-    }
-
-    .container_quickMenuDrawer > .btn_quickMenuLogout {
-        display: flex;
-        flex: 0 0 auto;
-        margin-top: auto;
     }
 
     .form_myKeywordDialog,
@@ -3766,57 +3704,6 @@
         color: var(--color-red-50);
     }
 
-    .wrapper_myNotificationHeader {
-        width: 100%;
-        min-width: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-gap-horizontal-16);
-    }
-
-    .wrapper_myNotificationList {
-        width: 100%;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-gap-vertical-16);
-    }
-
-    .wrapper_myNotificationText {
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-gap-vertical-8);
-    }
-
-    .wrapper_myNotificationText strong,
-    .text_myNotificationTitle {
-        color: var(--color-label-strong);
-        font-size: var(--font-size-16);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-24);
-    }
-
-    .wrapper_myNotificationText span {
-        color: var(--color-cool-neutral-40);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-400);
-        line-height: var(--line-height-20);
-    }
-
-    .btn_myNotificationItem {
-        align-items: flex-start;
-    }
-
-    .badge_myNotificationUnread {
-        flex: 0 0 auto;
-        color: var(--color-newsroll-purple-50);
-        font-size: var(--font-size-14);
-        font-weight: var(--font-weight-600);
-        line-height: var(--line-height-20);
-    }
-
     .btn_mySettingRow,
     .btn_myTimeRow {
         width: 100%;
@@ -3939,11 +3826,24 @@
 
     .container_myBookmarkPage > .tab_myCategoryMenu,
     .container_myVotePage > .tab_myCategoryMenu,
-    .container_myCommentPage > .tab_myCategoryMenu {
+    .container_myCommentPage > .tab_myCategoryMenu,
+    .wrapper_myTabbedDetailContent > .tab_myCategoryMenu {
         position: sticky;
         top: 0;
         z-index: 2;
+        padding-bottom: var(--spacing-padding-vertical-24);
         background: var(--color-background-elevated-normal);
+    }
+
+    .wrapper_myTabbedDetailContent {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
     .container_infoList .wrapper_separatedItem {
@@ -3988,10 +3888,6 @@
 
     .btn_infoNoticeItem {
         gap: var(--spacing-gap-vertical-16);
-    }
-
-    .container_infoFaqItem[open] {
-        gap: var(--spacing-gap-vertical-8);
     }
 
     .wrapper_infoNoticeContent {
@@ -4041,10 +3937,14 @@
         gap: var(--spacing-gap-horizontal-16);
         margin: 0;
         padding: 0;
+        border: 0;
         overflow: visible;
+        color: inherit;
         background: transparent;
         cursor: pointer;
+        font: inherit;
         list-style: none;
+        text-align: left;
     }
 
     .btn_infoFaqSummary .text_infoItemTitle {
@@ -4075,8 +3975,51 @@
         transition: var(--newsroll-chevron-transition);
     }
 
-    .container_infoFaqItem[open] .icon_infoChevron {
+    .container_infoFaqItem[data-state='open'] .icon_infoChevron {
         transform: translateX(-2px) rotate(225deg);
+    }
+
+    .wrapper_infoFaqBodyMotion {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-4px);
+        transition:
+            grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+    }
+
+    .container_infoFaqItem[data-state='open'] .wrapper_infoFaqBodyMotion {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        transition:
+            grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            transform var(--newsroll-docked-pop-motion-duration, 260ms)
+                var(--newsroll-docked-pop-motion-easing, ease),
+            visibility 0ms linear 0ms;
+    }
+
+    .wrapper_infoFaqBodyInner {
+        min-height: 0;
+        overflow: hidden;
+        padding-top: 0;
+        transition: padding-top var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease);
+    }
+
+    .container_infoFaqItem[data-state='open'] .wrapper_infoFaqBodyInner {
+        padding-top: var(--spacing-gap-vertical-8);
     }
 
     .text_infoFaqBody {
@@ -4664,11 +4607,10 @@
 
     .btn_link_breakingNews {
         width: 100%;
-        min-height: 80px;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
-        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
+        padding: var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
         background: var(--color-newsroll-purple-50);
@@ -4684,7 +4626,15 @@
         transition: none;
     }
 
-    .btn_link_breakingNews > .newsroll_icon_alarm {
+    .newsroll_breakingCardLink_white {
+        background: var(--color-common-100);
+    }
+
+    .newsroll_notificationCard_read {
+        background: var(--color-cool-neutral-98);
+    }
+
+    .btn_link_breakingNews > .newsroll_icon_policy {
         width: 20px;
         height: 20px;
         flex: 0 0 auto;
@@ -4901,12 +4851,12 @@
         display: inline-flex;
     }
 
-    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedAlarm .newsroll_icon_alarm {
+    .container_homeScreen.is_homeSheetDocked .newsroll_homeDockedAlarm .newsroll_icon_policy {
         width: 20px;
         height: 20px;
     }
 
-    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_homeDockedAlarm .newsroll_icon_alarm {
+    .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_homeDockedAlarm .newsroll_icon_policy {
         width: 20px;
         height: 20px;
     }
@@ -4933,22 +4883,6 @@
     .btn_newsViewOption[aria-selected='true'] {
         color: var(--color-common-0);
         background: var(--color-common-100);
-    }
-
-    .newsroll_home_alarm {
-        width: 48px;
-        height: 48px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-full);
-        color: var(--color-common-0);
-        background: var(--color-newsroll-purple-50);
-    }
-
-    .newsroll_home_alarm .newsroll_icon_alarm {
-        width: 24px;
-        height: 24px;
     }
 
     .container_newsGrid {
@@ -5066,18 +5000,12 @@
     }
 
     .newsroll_all_breaking_card {
-        min-height: 56px;
         padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         background: var(--color-newsroll-purple-50);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
-    }
-
-    .newsroll_all_breaking_card:first-child,
-    .newsroll_all_breaking_card:last-child {
-        min-height: 71px;
     }
 
     .newsroll_all_more {
@@ -5257,15 +5185,6 @@
 
     .newsroll_text_size_button[aria-pressed='true'] {
         color: var(--color-newsroll-purple-50);
-    }
-
-    .newsroll_home_alarm[aria-pressed='true'] {
-        color: var(--color-common-100);
-        background: var(--color-common-0);
-    }
-
-    .newsroll_home_alarm[aria-pressed='true'] :is(.newsroll_icon_20, .newsroll_icon_18) {
-        --newsroll-icon-url: var(--newsroll-icon-fill-url);
     }
 
     .container_newsGrid_block {

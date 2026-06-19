@@ -34,15 +34,13 @@ import {
 import { HomeView } from "@/features/home/HomeView";
 import { InfoView } from "@/features/info/InfoView";
 import { MyPageView } from "@/features/my-page/MyPageView";
+import { NotificationView } from "@/features/notifications/NotificationView";
 import {
   getHomeArticleFromNews,
   navItems,
-  QuickMenuDrawer,
   type BlockedKeywordSetting,
   type BodySearchSelection,
   type BodySearchSelectionInput,
-  type QuickMenuRequest,
-  type QuickMenuTarget,
   type Tab
 } from "@/features/news/NewsViews";
 import {
@@ -52,13 +50,15 @@ import {
 import { SearchView } from "@/features/search/SearchView";
 import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import {
+  newsApi,
   notificationApi,
   settingsApi,
   userApi,
+  welfareApi,
+  type AppNotification,
   type BlockedKeywordPreference
 } from "./_newsroll/api";
 import {
-  clearCurrentUserSession,
   currentUserId,
   hydrateCurrentUserSession,
   setCurrentUserSession,
@@ -66,6 +66,7 @@ import {
 
 type View =
   | Tab
+  | "notifications"
   | "search"
   | "login"
   | "signupAgreement"
@@ -155,12 +156,11 @@ function ActiveView({
   onSignupPasswordNext,
   onSignupStart,
   onOpenAllNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
-  onQuickMenuBack,
+  onSelectNotification,
   onSelectSearchResult,
   onToggleTextSize,
-  quickMenuRequest,
   view,
 }: {
   allNewsEntryMotionClassName?: string;
@@ -194,12 +194,11 @@ function ActiveView({
   onSignupPasswordNext: (password: string) => void;
   onSignupStart: () => void;
   onOpenAllNews: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
-  onQuickMenuBack: (returnView: Tab) => void;
+  onSelectNotification: (notification: AppNotification) => void;
   onSelectSearchResult: (selection: BodySearchSelectionInput) => void;
   onToggleTextSize: () => void;
-  quickMenuRequest?: QuickMenuRequest | null;
   view: View;
 }) {
   if (view === "login") {
@@ -218,7 +217,7 @@ function ActiveView({
       <SignupAgreementView
         isTextLarge={isTextLarge}
         onNext={onSignupAgreementNext}
-        onOpenMenu={onOpenMenu}
+        onOpenNotifications={onOpenNotifications}
         onToggleTextSize={onToggleTextSize}
       />
     );
@@ -281,13 +280,22 @@ function ActiveView({
     );
   }
 
+  if (view === "notifications") {
+    return (
+      <NotificationView
+        onClose={onCloseSearch}
+        onSelectNotification={onSelectNotification}
+      />
+    );
+  }
+
   if (view === "all") {
     return (
       <AllNewsView
         entryMotionClassName={allNewsEntryMotionClassName}
         initialShowAllBreaking={isAllNewsBreakingEntry}
         isTextLarge={isTextLarge}
-        onOpenMenu={onOpenMenu}
+        onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -300,7 +308,7 @@ function ActiveView({
         bodySearchSelection={bodySearchSelection}
         isTextLarge={isTextLarge}
         onOpenBreakingNews={onOpenAllNews}
-        onOpenMenu={onOpenMenu}
+        onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -318,11 +326,9 @@ function ActiveView({
         onDeleteBlockedKeyword={onDeleteBlockedKeyword}
         onToggleBlockedKeyword={onToggleBlockedKeyword}
         onOpenBreakingNews={onOpenAllNews}
-        onOpenMenu={onOpenMenu}
+        onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
-        onQuickMenuBack={onQuickMenuBack}
         onToggleTextSize={onToggleTextSize}
-        quickMenuRequest={quickMenuRequest}
       />
     );
   }
@@ -332,7 +338,7 @@ function ActiveView({
       <InfoView
         isTextLarge={isTextLarge}
         onOpenBreakingNews={onOpenAllNews}
-        onOpenMenu={onOpenMenu}
+        onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
       />
@@ -345,7 +351,7 @@ function ActiveView({
       blockedKeywords={blockedKeywords}
       isTextLarge={isTextLarge}
       onOpenBreakingNews={onOpenAllNews}
-      onOpenMenu={onOpenMenu}
+      onOpenNotifications={onOpenNotifications}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
     />
@@ -368,9 +374,6 @@ export function NewsHomeScreen() {
     useState("");
   const [isAllNewsBreakingEntry, setIsAllNewsBreakingEntry] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
-  const [quickMenuRequest, setQuickMenuRequest] =
-    useState<QuickMenuRequest | null>(null);
   const [isTextLarge, setIsTextLarge] = useState(false);
   const [authError, setAuthError] = useState("");
   const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
@@ -391,6 +394,7 @@ export function NewsHomeScreen() {
     activeView === "policy" || activeView === "my" || activeView === "info";
   const activeViewResetKey =
     activeView === "search" ||
+    activeView === "notifications" ||
     activeView === "login" ||
     activeView === "signupAgreement" ||
     activeView === "signupEmail" ||
@@ -452,7 +456,8 @@ export function NewsHomeScreen() {
   function openSearch() {
     if (activeView !== "search") {
       setSearchBackView(
-        activeView === "login" ||
+        activeView === "notifications" ||
+          activeView === "login" ||
           activeView === "signupAgreement" ||
           activeView === "signupEmail" ||
           activeView === "signupNickname" ||
@@ -466,6 +471,26 @@ export function NewsHomeScreen() {
     }
 
     setActiveView("search");
+  }
+
+  function openNotifications() {
+    if (activeView !== "notifications") {
+      setSearchBackView(
+        activeView === "search" ||
+          activeView === "login" ||
+          activeView === "signupAgreement" ||
+          activeView === "signupEmail" ||
+          activeView === "signupNickname" ||
+          activeView === "signupLoginId" ||
+          activeView === "signupPassword" ||
+          activeView === "signupAge" ||
+          activeView === "signupCategory"
+          ? "home"
+          : activeView,
+      );
+    }
+
+    setActiveView("notifications");
   }
 
   function openDefaultTab(tab: Tab) {
@@ -737,55 +762,6 @@ export function NewsHomeScreen() {
     }
   }
 
-  function openQuickMenuTarget(target: QuickMenuTarget) {
-    const returnView: Tab =
-      activeView === "search"
-        ? searchBackView
-        : isAuthView(activeView)
-          ? "home"
-          : activeView;
-
-    setIsQuickMenuOpen(false);
-    setAllNewsEntryMotionClassName("");
-    setIsAllNewsBreakingEntry(false);
-    setBodySearchSelection(null);
-    setActiveView("my");
-    setSearchBackView(returnView);
-    setQuickMenuRequest({ id: Date.now(), returnView, target });
-    setViewResetKeys((current) => ({
-      ...current,
-      my: current.my + 1,
-    }));
-  }
-
-  function returnFromQuickMenuTarget(returnView: Tab) {
-    setQuickMenuRequest(null);
-    setAllNewsEntryMotionClassName("");
-    setIsAllNewsBreakingEntry(false);
-    setBodySearchSelection(null);
-    setActiveView(returnView);
-    setSearchBackView(returnView);
-    setViewResetKeys((current) => ({
-      ...current,
-      [returnView]: current[returnView] + 1,
-    }));
-  }
-
-  function logout() {
-    clearCurrentUserSession();
-    setIsQuickMenuOpen(false);
-    setQuickMenuRequest(null);
-    setAuthError("");
-    setSignupDraft({});
-    setBlockedKeywordSettings([]);
-    setIsDarkMode(false);
-    setAllNewsEntryMotionClassName("");
-    setIsAllNewsBreakingEntry(false);
-    setBodySearchSelection(null);
-    setSearchBackView("home");
-    setActiveView("login");
-  }
-
   function addBlockedKeyword(keyword: string) {
     const normalizedKeyword = normalizeBlockedKeyword(keyword);
 
@@ -873,7 +849,6 @@ export function NewsHomeScreen() {
 
     setAllNewsEntryMotionClassName("");
     setIsAllNewsBreakingEntry(false);
-    setQuickMenuRequest(null);
     setBodySearchSelection({ ...selection, id: Date.now() });
     setActiveView(nextView);
     setSearchBackView(nextView);
@@ -881,6 +856,57 @@ export function NewsHomeScreen() {
       ...current,
       [nextView]: current[nextView] + 1,
     }));
+  }
+
+  async function openNotificationTarget(notification: AppNotification) {
+    if (notification.targetType === "news" && notification.targetId) {
+      try {
+        const news = await newsApi.getNewsList();
+        const targetIndex = news.findIndex((item) => item.id === notification.targetId);
+        const targetNews = targetIndex >= 0 ? news[targetIndex] : null;
+
+        if (targetNews) {
+          openBodySearchResult({
+            article: getHomeArticleFromNews(targetNews, targetIndex),
+            kind: "news",
+          });
+          return;
+        }
+      } catch {
+        setActiveView("home");
+        setSearchBackView("home");
+        return;
+      }
+    }
+
+    if (notification.targetType === "policy" && notification.targetId) {
+      try {
+        const policy = await welfareApi.getWelfarePolicyDetail(notification.targetId);
+
+        openBodySearchResult({
+          kind: "policy",
+          policy: getPolicyItemFromWelfarePolicy(policy),
+        });
+        return;
+      } catch {
+        setActiveView("policy");
+        setSearchBackView("policy");
+        return;
+      }
+    }
+
+    if (notification.targetType === "inquiry") {
+      setActiveView("my");
+      setSearchBackView("my");
+      setViewResetKeys((current) => ({
+        ...current,
+        my: current.my + 1,
+      }));
+      return;
+    }
+
+    setActiveView("home");
+    setSearchBackView("home");
   }
 
   return (
@@ -899,7 +925,9 @@ export function NewsHomeScreen() {
           ? " newsroll_screen_login"
           : ""
       }${
-        activeView === "search" ? " newsroll_screen_search" : ""
+        activeView === "search" || activeView === "notifications"
+          ? " newsroll_screen_search"
+          : ""
       }${isPanelView ? " newsroll_screen_panel" : ""}${
         isTextLarge ? " newsroll_text_large" : ""
       }${isDarkMode ? " newsroll_dark" : ""}`}
@@ -926,9 +954,9 @@ export function NewsHomeScreen() {
           onCloseSearch={() => setActiveView(searchBackView)}
           onLogin={loginWithEmail}
           onOpenAllNews={openBreakingNewsView}
-          onOpenMenu={() => setIsQuickMenuOpen(true)}
+          onOpenNotifications={openNotifications}
           onOpenSearch={openSearch}
-          onQuickMenuBack={returnFromQuickMenuTarget}
+          onSelectNotification={openNotificationTarget}
           onSelectSearchResult={openBodySearchResult}
           onSignupAgeNext={(ageId) =>
             moveToNextAuthStepWithDraft({
@@ -956,19 +984,12 @@ export function NewsHomeScreen() {
           }
           onSignupStart={startSignup}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
-          quickMenuRequest={quickMenuRequest}
           view={activeView}
-        />
-        <QuickMenuDrawer
-          isOpen={isQuickMenuOpen}
-          isDarkMode={isDarkMode}
-          onClose={() => setIsQuickMenuOpen(false)}
-          onLogout={logout}
-          onNavigate={openQuickMenuTarget}
         />
       </div>
 
       {activeView !== "search" &&
+      activeView !== "notifications" &&
       activeView !== "login" &&
       activeView !== "signupAgreement" &&
       activeView !== "signupEmail" &&

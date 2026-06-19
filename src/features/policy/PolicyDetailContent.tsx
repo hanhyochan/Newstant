@@ -1,7 +1,9 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
+import { bookmarkApi } from "@/app/_newsroll/api";
+import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
   ArticleActionButtons,
   Button,
@@ -18,6 +20,7 @@ type PolicyDetailItem = {
 
 export type PolicyDetailContentItem = {
   details: PolicyDetailItem[];
+  id?: string;
   registeredAt: string;
   summary: string;
   tags: string[];
@@ -70,6 +73,7 @@ export function PolicyDetailContent({
   onPreviousItem?: () => void;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState<string | null>(null);
   const policyDate = getPolicyDateDisplay(item);
   const sharePolicy = useShareContent({
     text: item.summary,
@@ -79,6 +83,63 @@ export function PolicyDetailContent({
   useLayoutEffect(() => {
     resetNewsRollViewport();
   }, []);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadBookmarkState() {
+      if (!item.id) {
+        setIsBookmarked(false);
+        setBookmarkId(null);
+        return;
+      }
+
+      const bookmarks = await bookmarkApi.getBookmarks(currentUserId);
+      const bookmark = bookmarks.find(
+        (entry) =>
+          entry.targetType === "welfarePolicy" && entry.targetId === item.id,
+      );
+
+      if (!ignore) {
+        setIsBookmarked(Boolean(bookmark));
+        setBookmarkId(bookmark?.id ?? null);
+      }
+    }
+
+    loadBookmarkState().catch(() => {
+      if (!ignore) {
+        setIsBookmarked(false);
+        setBookmarkId(null);
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, [item.id]);
+
+  async function togglePolicyBookmark() {
+    if (!item.id) {
+      setIsBookmarked((current) => !current);
+      return;
+    }
+
+    if (isBookmarked && bookmarkId) {
+      setIsBookmarked(false);
+      setBookmarkId(null);
+      await bookmarkApi.removeBookmark(bookmarkId);
+      return;
+    }
+
+    const bookmark = await bookmarkApi.addBookmark({
+      targetId: item.id,
+      targetType: "welfarePolicy",
+      userId: currentUserId,
+    });
+
+    setIsBookmarked(true);
+    setBookmarkId(bookmark.id);
+  }
 
   return (
     <div
@@ -102,7 +163,9 @@ export function PolicyDetailContent({
             <ArticleActionButtons
               ariaLabel="정책 도구"
               isBookmarked={isBookmarked}
-              onBookmark={() => setIsBookmarked((current) => !current)}
+              onBookmark={() => {
+                void togglePolicyBookmark();
+              }}
               onShare={() => {
                 void sharePolicy();
               }}

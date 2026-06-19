@@ -64,13 +64,16 @@ export function MyBookmarkDetailPage({
   showTabs: boolean;
   tabs: string[];
 }) {
-  const visibleBookmarkItems = getVisibleItems(items, activeCategory);
+  const visibleBookmarkItems = showTabs
+    ? getVisibleItems(items, activeCategory)
+    : items;
 
   return (
     <div
       className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">북마크</h2>
+      <div className="wrapper_myTabbedDetailContent">
       {showTabs ? (
         <PillTabMenu
           ariaLabel="북마크 뉴스 카테고리"
@@ -83,49 +86,52 @@ export function MyBookmarkDetailPage({
           value={activeCategory}
         />
       ) : null}
-      {visibleBookmarkItems.length === 0 ? (
-        <DataUnavailableMessage target="북마크" />
-      ) : (
-        <SeparatedList
-          dividerClassName="newsroll_all_itemDivider"
-          getKey={(item, index) => `${item.title}-${index}`}
-          items={visibleBookmarkItems}
-          renderItem={(item, index) => (
-            item.bookmarkType === "news" ? (
-              <AllNewsRelayItem
-                featured={index === 0 || index === 5}
-                item={item}
-                onClick={() =>
-                  onOpenArticle(
-                    createAllNewsArticle(item, item.newsCategory, index),
-                  )
-                }
-              />
-            ) : (
-              <button
-                className="newsroll_policy_list_item"
-                onClick={() => onOpenPolicy(item.policy)}
-                type="button"
-              >
-                <div className="newsroll_policy_list_tags">
-                  {item.tags.map((tag, tagIndex) => (
-                    <ChipLabel
-                      kind={tagIndex === item.tags.length - 1 ? "policyAccent" : "policy"}
-                      key={`${item.title}-${tag}`}
-                    >
-                      {tag}
-                    </ChipLabel>
-                  ))}
-                </div>
-                <div className="wrapper_policyItemContent">
-                  <h2>{item.title}</h2>
-                  <p className="text_infoBody text_lineClamp2">{item.summary}</p>
-                </div>
-              </button>
-            )
-          )}
-        />
-      )}
+      <div className="wrapper_myBookmarkList">
+        {visibleBookmarkItems.length === 0 ? (
+          <DataUnavailableMessage target="북마크" />
+        ) : (
+          <SeparatedList
+            dividerClassName="divider_mySection"
+            getKey={(item, index) => `${item.title}-${index}`}
+            items={visibleBookmarkItems}
+            renderItem={(item, index) => (
+              item.bookmarkType === "news" ? (
+                <AllNewsRelayItem
+                  featured={index === 0 || index === 5}
+                  item={item}
+                  onClick={() =>
+                    onOpenArticle(
+                      createAllNewsArticle(item, item.newsCategory, index),
+                    )
+                  }
+                />
+              ) : (
+                <button
+                  className="newsroll_policy_list_item"
+                  onClick={() => onOpenPolicy(item.policy)}
+                  type="button"
+                >
+                  <div className="newsroll_policy_list_tags">
+                    {item.tags.map((tag, tagIndex) => (
+                      <ChipLabel
+                        kind={tagIndex === item.tags.length - 1 ? "policyAccent" : "policy"}
+                        key={`${item.title}-${tag}`}
+                      >
+                        {tag}
+                      </ChipLabel>
+                    ))}
+                  </div>
+                  <div className="wrapper_policyItemContent">
+                    <h2>{item.title}</h2>
+                    <p className="text_infoBody text_lineClamp2">{item.summary}</p>
+                  </div>
+                </button>
+              )
+            )}
+          />
+        )}
+      </div>
+      </div>
     </div>
   );
 }

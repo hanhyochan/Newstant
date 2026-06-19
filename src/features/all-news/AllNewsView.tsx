@@ -65,14 +65,14 @@ export function AllNewsView({
   entryMotionClassName = "",
   initialShowAllBreaking = false,
   isTextLarge,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
 }: {
   entryMotionClassName?: string;
   initialShowAllBreaking?: boolean;
   isTextLarge: boolean;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -465,7 +465,7 @@ export function AllNewsView({
         <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
-            onOpenMenu={onOpenMenu}
+            onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
@@ -491,11 +491,11 @@ export function AllNewsView({
               size="large"
               variant="outline"
             >
-              <Icon name="alarm" />
+              <Icon name="policy" />
             </Button>
           </NewsRollDockedControls>
           <div className="newsroll_all_breaking_label">
-            <Icon name="alarm" />
+            <Icon name="policy" />
             <span>속보</span>
           </div>
           <div className="newsroll_all_breakingBody" ref={breakingBodyRef}>

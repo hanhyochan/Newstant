@@ -207,7 +207,9 @@ export type NotificationSettings = {
   userId: string;
   breakingNews: boolean;
   commentReplies: boolean;
-  notices: boolean;
+  inquiryReplies: boolean;
+  newsViewTime: boolean;
+  policyUpdates: boolean;
   darkMode: boolean;
   updatedAt: string;
 };
@@ -215,10 +217,15 @@ export type NotificationSettings = {
 export type AppNotification = {
   id: string;
   userId: string;
-  type: "breakingNews" | "commentReply" | "notice";
+  type:
+    | "breakingNews"
+    | "commentReaction"
+    | "inquiryReply"
+    | "newsViewTime"
+    | "policyUpdate";
   title: string;
   body: string;
-  targetType: "news" | "notice" | "policy" | null;
+  targetType: "inquiry" | "news" | "policy" | null;
   targetId: string | null;
   isRead: boolean;
   createdAt: string;
@@ -253,6 +260,8 @@ export type Inquiry = {
   title: string;
   content: string;
   status: "received" | "answered";
+  replyChannel?: "email";
+  replyEmail?: string;
   emailSent?: boolean;
   createdAt: string;
   updatedAt: string;
@@ -327,7 +336,15 @@ export type CreatePollInput = {
 };
 
 export type UpdateNotificationSettingsInput = Partial<
-  Pick<NotificationSettings, "breakingNews" | "commentReplies" | "notices" | "darkMode">
+  Pick<
+    NotificationSettings,
+    | "breakingNews"
+    | "commentReplies"
+    | "darkMode"
+    | "inquiryReplies"
+    | "newsViewTime"
+    | "policyUpdates"
+  >
 >;
 
 export type CreateNotificationSettingsInput = Pick<NotificationSettings, "userId"> &

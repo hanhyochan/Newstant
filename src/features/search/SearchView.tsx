@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -9,6 +9,7 @@ import {
   type WelfarePolicy,
 } from "@/app/_newsroll/api";
 import { Icon } from "@/design-system/components";
+import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
 
 type SearchArticle = {
   body?: string;
@@ -126,7 +127,7 @@ function getBodySearchResults<
         kind: "news",
         meta: [article.category, article.pressName, article.date]
           .filter(Boolean)
-          .join(" · "),
+          .join(" 쨌 "),
         snippet: getBodySearchSnippet(article.body ?? article.title, normalizedQuery),
         title: article.title,
       }));
@@ -135,7 +136,7 @@ function getBodySearchResults<
     .map((policy, index) => ({
       id: `policy-search-${policy.title}-${index}`,
       kind: "policy",
-      meta: ["국가정책", ...policy.tags].filter(Boolean).join(" · "),
+      meta: ["援???뺤콉", ...policy.tags].filter(Boolean).join(" 쨌 "),
       policy,
       snippet: getBodySearchSnippet(
         [
@@ -218,29 +219,21 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
   }, []);
 
   return (
-    <section className="newsroll_search_page" aria-label="검색">
-      <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
-        <button
-          aria-label="검색 닫기"
-          className="newsroll_toolbar_icon newsroll_search_close"
-          onClick={onClose}
-          type="button"
-        >
-          <span aria-hidden="true" />
-        </button>
-      </div>
-
-      <div className="wrapper_searchContent">
+    <NewsRollPurpleOverlayPage
+      ariaLabel="검색"
+      closeLabel="검색 닫기"
+      onClose={onClose}
+    >
         <form
           className="form_searchComposer newsroll_motion_enterUp"
           onSubmit={(event) => event.preventDefault()}
         >
           <label className="input_searchField">
-            <span className="sr_only">통합검색어 입력</span>
+            <span className="sr_only">?듯빀寃?됱뼱 ?낅젰</span>
             <input
               name="global-search"
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="검색 키워드를 입력해주세요"
+              placeholder="寃???ㅼ썙?쒕? ?낅젰?댁＜?몄슂"
               ref={searchInputRef}
               type="search"
               value={query}
@@ -252,14 +245,14 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
         {normalizedQuery ? (
           isSearchLoading ? (
             <p className="text_searchStatus" role="status">
-              뉴스를 불러오는 중입니다.
+              ?댁뒪瑜?遺덈윭?ㅻ뒗 以묒엯?덈떎.
             </p>
           ) : searchError ? (
             <p className="text_searchStatus" role="alert">
               {searchError}
             </p>
           ) : searchResults.length > 0 ? (
-            <div className="list_searchResults" aria-label="통합검색 결과">
+            <div className="list_searchResults" aria-label="?듯빀寃??寃곌낵">
               {searchResults.map((result) => (
                 <button
                   className="btn_searchResult"
@@ -282,10 +275,9 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
               ))}
             </div>
           ) : (
-            <p className="text_searchStatus">검색 결과가 없습니다.</p>
+            <p className="text_searchStatus">寃??寃곌낵媛 ?놁뒿?덈떎.</p>
           )
         ) : null}
-      </div>
-    </section>
+    </NewsRollPurpleOverlayPage>
   );
 }

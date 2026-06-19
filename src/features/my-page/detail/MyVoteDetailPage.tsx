@@ -55,6 +55,7 @@ export function MyVoteDetailPage({
       className={`container_myVotePage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">투표</h2>
+      <div className="wrapper_myTabbedDetailContent">
       {showTabs ? (
         <PillTabMenu
           ariaLabel="내가 참여한 투표 카테고리"
@@ -98,6 +99,7 @@ export function MyVoteDetailPage({
             )}
           />
         )}
+      </div>
       </div>
     </div>
   );

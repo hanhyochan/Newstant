@@ -1,4 +1,8 @@
-export { BreakingNewsCardLink, BreakingNewsLink } from "./button/breaking-news-link";
+export {
+  BreakingNewsCardLink,
+  BreakingNewsLink,
+  WhiteBreakingNewsCardLink,
+} from "./button/breaking-news-link";
 export type {
   BreakingNewsCardLinkProps,
   BreakingNewsLinkProps,

@@ -39,7 +39,7 @@ export function HomeView({
   bodySearchSelection,
   isTextLarge,
   onOpenBreakingNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
 }: {
@@ -47,7 +47,7 @@ export function HomeView({
   bodySearchSelection?: BodySearchSelection | null;
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -170,7 +170,7 @@ export function HomeView({
         setHomeViewMode(nextMode);
       }}
       onOpenBreakingNews={onOpenBreakingNews}
-      onOpenMenu={onOpenMenu}
+      onOpenNotifications={onOpenNotifications}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
     >

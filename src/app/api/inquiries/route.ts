@@ -12,6 +12,10 @@ const inquirySchema = z.object({
 
 type InquiryRequest = z.infer<typeof inquirySchema>;
 
+type InquiryUser = {
+  email?: string;
+};
+
 function createTimestamp() {
   return new Date().toISOString();
 }
@@ -20,7 +24,30 @@ function createInquiryId() {
   return `inquiry-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-async function postMockInquiry(input: InquiryRequest, emailSent: boolean) {
+async function getInquiryReplyEmail(userId: string) {
+  const response = await fetch(buildApiUrl(`/users/${userId}`), {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Inquiry user lookup failed: ${response.status}`);
+  }
+
+  const user = (await response.json()) as InquiryUser;
+  const replyEmail = user.email?.trim();
+
+  if (!replyEmail) {
+    throw new Error("Inquiry user email is empty");
+  }
+
+  return replyEmail;
+}
+
+async function postMockInquiry(
+  input: InquiryRequest,
+  replyEmail: string,
+  emailSent: boolean,
+) {
   const now = createTimestamp();
   const response = await fetch(buildApiUrl("/inquiries"), {
     method: "POST",
@@ -34,6 +61,8 @@ async function postMockInquiry(input: InquiryRequest, emailSent: boolean) {
       title: input.title,
       content: input.content,
       status: "received",
+      replyChannel: "email",
+      replyEmail,
       emailSent,
       createdAt: now,
       updatedAt: now,
@@ -47,7 +76,7 @@ async function postMockInquiry(input: InquiryRequest, emailSent: boolean) {
   return response.json();
 }
 
-async function sendInquiryEmail(input: InquiryRequest) {
+async function sendInquiryEmail(input: InquiryRequest, replyEmail: string) {
   const resendApiKey = process.env.RESEND_API_KEY;
   const to = process.env.INQUIRY_NOTIFY_EMAIL;
 
@@ -68,6 +97,7 @@ async function sendInquiryEmail(input: InquiryRequest) {
       text: [
         `userId: ${input.userId}`,
         `typeId: ${input.typeId}`,
+        `replyEmail: ${replyEmail}`,
         "",
         input.content,
       ].join("\n"),
@@ -84,8 +114,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Invalid inquiry payload" }, { status: 400 });
   }
 
-  const emailSent = await sendInquiryEmail(parsed.data);
-  const inquiry = await postMockInquiry(parsed.data, emailSent);
+  const replyEmail = await getInquiryReplyEmail(parsed.data.userId);
+  const emailSent = await sendInquiryEmail(parsed.data, replyEmail);
+  const inquiry = await postMockInquiry(parsed.data, replyEmail, emailSent);
 
   return NextResponse.json(inquiry, { status: 201 });
 }

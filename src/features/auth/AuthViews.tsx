@@ -515,7 +515,7 @@ function SignupAgreementDetailView({
   agreementId,
   isTextLarge,
   onBack,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   searchTarget,
   onToggleTextSize,
@@ -524,7 +524,7 @@ function SignupAgreementDetailView({
   agreementId: SignupAgreementKey;
   isTextLarge: boolean;
   onBack: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
   searchTarget?: SignupAgreementSearchTarget | null;
   onToggleTextSize: () => void;
@@ -560,9 +560,8 @@ function SignupAgreementDetailView({
         <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
-            onOpenMenu={onOpenMenu}
+            onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
-            showMenu={false}
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
@@ -720,12 +719,12 @@ function SignupAgreementSearchView({
 export function SignupAgreementView({
   isTextLarge,
   onNext,
-  onOpenMenu,
+  onOpenNotifications,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onNext: (agreements: Record<SignupAgreementKey, boolean>) => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onToggleTextSize: () => void;
 }) {
   const [agreements, setAgreements] = useState<Record<SignupAgreementKey, boolean>>({
@@ -785,7 +784,7 @@ export function SignupAgreementView({
           setDetailAgreementId(null);
           setAgreementSearchTarget(null);
         }}
-        onOpenMenu={onOpenMenu}
+        onOpenNotifications={onOpenNotifications}
         onOpenSearch={() => setIsAgreementSearchOpen(true)}
         searchTarget={agreementSearchTarget}
         onToggleTextSize={onToggleTextSize}

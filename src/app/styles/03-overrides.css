@@ -238,11 +238,10 @@
 
     .btn_link_breakingNews {
         width: 100%;
-        min-height: 80px;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
-        padding: var(--spacing-padding-vertical-16) var(--spacing-padding-horizontal-16);
+        padding: var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         color: var(--color-label-strong);
         background: var(--color-newsroll-purple-50);
@@ -258,7 +257,15 @@
         transition: none;
     }
 
-    .btn_link_breakingNews > .newsroll_icon_alarm {
+    .newsroll_breakingCardLink_white {
+        background: var(--color-common-100);
+    }
+
+    .newsroll_notificationCard_read {
+        background: var(--color-cool-neutral-98);
+    }
+
+    .btn_link_breakingNews > .newsroll_icon_policy {
         width: 20px;
         height: 20px;
         flex: 0 0 auto;
@@ -557,18 +564,12 @@
     }
 
     .newsroll_all_breaking_card {
-        min-height: 56px;
         padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
         border-radius: var(--radius-20);
         background: var(--color-newsroll-purple-50);
         font-size: var(--font-size-16);
         font-weight: var(--font-weight-500);
         line-height: var(--line-height-24);
-    }
-
-    .newsroll_all_breaking_card:first-child,
-    .newsroll_all_breaking_card:last-child {
-        min-height: 71px;
     }
 
     .newsroll_all_more {
@@ -2012,6 +2013,9 @@
     }
 
     .newsroll_search_top {
+        position: sticky;
+        top: var(--spacing-padding-vertical-48);
+        z-index: 2;
         min-height: 40px;
         display: flex;
         align-items: center;
@@ -2019,7 +2023,7 @@
         gap: var(--spacing-gap-horizontal-16);
         padding-right: 0;
         padding-top: 0;
-        padding-bottom: 0;
+        padding-bottom: var(--spacing-padding-vertical-24);
         background: var(--color-newsroll-purple-20);
     }
 
@@ -2207,8 +2211,10 @@
     .container_infoFaqItem,
     .wrapper_myRecentScroller,
     .wrapper_mySettingsList,
+    .wrapper_myBookmarkList,
     .wrapper_myVoteList,
     .wrapper_myCommentList,
+    .wrapper_myTabbedDetailContent,
     .wrapper_myTimeRows,
     .wrapper_infoInquiry,
     .wrapper_infoField,
@@ -2224,6 +2230,22 @@
     }
 
 .container_mySettingsPage > .container_myCategorySection {
+    gap: var(--spacing-gap-vertical-16);
+}
+
+.wrapper_myVoteItem .btn_articleGuideOption_binary[data-result-visible='true']::before {
+    display: none;
+}
+
+.wrapper_myVoteItem .btn_articleGuideOption_binary[data-result-visible='true'][data-binary-tone='yes'] {
+    background: var(--color-blue-80);
+}
+
+.wrapper_myVoteItem .btn_articleGuideOption_binary[data-result-visible='true'][data-binary-tone='no'] {
+    background: var(--color-red-80);
+}
+
+.list_notificationResults {
     gap: var(--spacing-gap-vertical-16);
 }
 
@@ -2389,11 +2411,24 @@
 
 .container_myBookmarkPage > .tab_myCategoryMenu,
 .container_myVotePage > .tab_myCategoryMenu,
-.container_myCommentPage > .tab_myCategoryMenu {
+.container_myCommentPage > .tab_myCategoryMenu,
+.wrapper_myTabbedDetailContent > .tab_myCategoryMenu {
     position: sticky;
     top: 0;
     z-index: 2;
+    padding-bottom: var(--spacing-padding-vertical-24);
     background: var(--color-background-elevated-normal);
+}
+
+.wrapper_myTabbedDetailContent {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .newsroll_all_press_tabScroller::-webkit-scrollbar,
@@ -2461,6 +2496,25 @@
     align-self: stretch;
 }
 
+.text_confirmDialogMessage {
+    font-size: var(--font-size-16);
+}
+
+.newsroll_toolbar_icon.has_unread_notification {
+    width: auto;
+    min-width: calc(5px + 2px + var(--spacing-padding-horizontal-24));
+    gap: 2px;
+}
+
+.newsroll_toolbar_icon.has_unread_notification::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    flex: 0 0 5px;
+    border-radius: var(--radius-full);
+    background: var(--color-orange-50);
+}
+
 .newsroll_policy_detail_list dt,
 .text_myTimeSectionLabel,
 .text_infoFieldLabel {
@@ -2480,6 +2534,18 @@
 
 .newsroll_all_section_title strong {
     font-weight: inherit;
+}
+
+.container_mySettingsPage .container_myCategorySection .text_mySectionTitle,
+.container_mySettingsPage .container_myBlockedKeywordSection .text_mySectionTitle {
+    font-size: var(--font-size-fixed-16);
+    line-height: var(--line-height-fixed-20);
+}
+
+.btn_infoFaqSummary .text_infoItemTitle,
+.text_infoFaqBody {
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
 }
 
 .newsroll_all_category_tabs button,
@@ -2544,7 +2610,9 @@
     .newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_allDockedControls,
     .wrapper_commentReplies,
     .wrapper_commentReplies.is_open,
-    .wrapper_commentRepliesInner {
+    .wrapper_commentRepliesInner,
+    .wrapper_infoFaqBodyMotion,
+    .wrapper_infoFaqBodyInner {
         transition: none;
         transform: none;
     }
@@ -2580,8 +2648,7 @@
     .newsroll_all_latest_panel,
     .container_infoList,
     .wrapper_infoInquiry,
-    .container_myKeywordDialog,
-    .container_quickMenuDrawer
+    .container_myKeywordDialog
 ) {
     box-shadow:
         0 -7px 16px color-mix(in srgb, var(--color-newsroll-purple-50) 4%, transparent),
@@ -2862,12 +2929,15 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     color: var(--color-common-0);
 }
 
-.newsroll_dark .container_quickMenuDrawer {
-    border-left: var(--newsroll-divider-thickness) solid var(--newsroll-divider-color);
+.newsroll_dark .newsroll_breakingCardLink_white {
+    color: var(--color-label-strong);
+    background: var(--color-common-100);
 }
 
-.newsroll_dark .container_quickMenuDrawer,
-.newsroll_dark .btn_quickMenuItem,
-.newsroll_dark .btn_quickMenuLogout {
-    color: var(--color-common-100);
+.newsroll_dark .newsroll_notificationCard_read {
+    background: var(--color-cool-neutral-98);
+}
+
+.newsroll_dark .newsroll_breakingCardLink_white .text_breakingNewsTitle {
+    color: var(--color-label-strong);
 }

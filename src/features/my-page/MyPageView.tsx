@@ -9,7 +9,6 @@ import {
 } from "react";
 
 import {
-  type AppNotification,
   bookmarkApi,
   commentApi,
   inquiryApi,
@@ -102,9 +101,7 @@ import {
   type BlockedKeywordSetting,
   type HomeArticle,
   type OpenArticleDetail,
-  type PolicyItem,
-  type QuickMenuRequest,
-  type Tab
+  type PolicyItem
 } from "@/features/news/NewsViews";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
@@ -197,8 +194,10 @@ function getCategorySettingsFromPreference(preference: UserPreference | null) {
 function getNotificationSettingsFromApi(settings: NotificationSettings | null) {
   return {
     "속보": settings?.breakingNews ?? true,
-    "내 댓글에 좋아요, 답글": settings?.commentReplies ?? true,
-    "공지사항": settings?.notices ?? true,
+    "내 댓글/대댓글 반응": settings?.commentReplies ?? true,
+    "내 국가정책 업데이트": settings?.policyUpdates ?? true,
+    "문의글 답변": settings?.inquiryReplies ?? true,
+    "뉴스 보기 타임 알림": settings?.newsViewTime ?? true,
   };
 }
 
@@ -211,7 +210,13 @@ const mySummaryItems = [
   { count: 54, icon: "vote", label: "투표", tone: "dislike", value: "vote" },
   { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
 ] as const;
-const myNotificationLabels = ["속보", "내 댓글에 좋아요, 답글", "공지사항"] as const;
+const myNotificationLabels = [
+  "속보",
+  "내 댓글/대댓글 반응",
+  "내 국가정책 업데이트",
+  "문의글 답변",
+  "뉴스 보기 타임 알림",
+] as const;
 type MySummaryView = (typeof mySummaryItems)[number]["value"];
 type MyPageDetailView =
   | "recent"
@@ -271,6 +276,7 @@ function getPolicyBookmarkItem(policy: {
   businessStartDate: string;
   category: string;
   documents: string;
+  id: string;
   institution: string;
   label: string;
   registeredAt: string;
@@ -299,6 +305,7 @@ function getPolicyBookmarkItem(policy: {
       { label: "선발 방식", value: policy.selectionMethod },
       { label: "제출 서류", value: policy.documents },
     ],
+    id: policy.id,
     registeredAt: formatPolicyBookmarkDate(policy.registeredAt),
     summary: policy.summary,
     tags: [policy.category, policy.subcategory, policy.label],
@@ -389,11 +396,9 @@ export function MyPageView({
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
   onOpenBreakingNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
-  onQuickMenuBack,
   onToggleTextSize,
-  quickMenuRequest,
 }: {
   blockedKeywordSettings: BlockedKeywordSetting[];
   isDarkMode: boolean;
@@ -403,11 +408,9 @@ export function MyPageView({
   onDeleteBlockedKeyword: (keyword: string) => void;
   onToggleBlockedKeyword: (keyword: string) => void;
   onOpenBreakingNews: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
-  onQuickMenuBack: (returnView: Tab) => void;
   onToggleTextSize: () => void;
-  quickMenuRequest?: QuickMenuRequest | null;
 }) {
   const currentUser = getCurrentUserSnapshot();
   const [activeDetailView, setActiveDetailView] =
@@ -448,11 +451,12 @@ export function MyPageView({
   const [notificationSettings, setNotificationSettings] = useState<
     Record<string, boolean>
   >({
-    "내 댓글에 좋아요, 답글": true,
-    공지사항: true,
+    "내 댓글/대댓글 반응": true,
+    "내 국가정책 업데이트": true,
+    "문의글 답변": true,
+    "뉴스 보기 타임 알림": true,
     속보: true,
   });
-  const [notificationItems, setNotificationItems] = useState<AppNotification[]>([]);
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [profileUsers, setProfileUsers] = useState<User[]>([]);
   const [myInquiryItems, setMyInquiryItems] = useState<Inquiry[]>([]);
@@ -467,7 +471,6 @@ export function MyPageView({
   const userPreferenceIdRef = useRef<string | null>(null);
   const notificationSettingsIdRef = useRef<string | null>(null);
   const userNewsViewTimeIdRef = useRef<string | null>(null);
-  const lastQuickMenuRequestIdRef = useRef<number | null>(null);
   const [isBlockedKeywordDialogOpen, setIsBlockedKeywordDialogOpen] =
     useState(false);
   const [blockedKeywordInputValue, setBlockedKeywordInputValue] = useState("");
@@ -480,22 +483,26 @@ export function MyPageView({
   const isVoteOpen = activeDetailView === "vote";
   const isCommentOpen = activeDetailView === "comment";
   const isMyArticleDetailOpen = myArticleDetail !== null;
-  const isMyNestedDetailOpen = isMyArticleDetailOpen || myPolicyDetail !== null;
+  const isMyPolicyDetailOpen = myPolicyDetail !== null;
+  const isMyNestedDetailOpen = isMyArticleDetailOpen || isMyPolicyDetailOpen;
   const dynamicCommentCategoryTabs = useMemo(
     () => myCommentTabs,
     [],
   );
   const dynamicBookmarkCategoryTabs = useMemo(
-    () => [...myBookmarkTabs],
-    [],
+    () =>
+      myBookmarkTabs.filter((category) =>
+        myDynamicBookmarkItems.some((item) => item.category === category),
+      ),
+    [myDynamicBookmarkItems],
   );
   const dynamicVoteCategoryTabs = useMemo(
     () => getMySummaryCategoryTabs(myDynamicVoteItems),
     [myDynamicVoteItems],
   );
   const shouldShowBookmarkCategoryTabs = useMemo(
-    () => true,
-    [],
+    () => dynamicBookmarkCategoryTabs.length > 1,
+    [dynamicBookmarkCategoryTabs],
   );
   const shouldShowVoteCategoryTabs = useMemo(
     () => hasMultipleMySummaryCategories(myDynamicVoteItems),
@@ -679,7 +686,6 @@ export function MyPageView({
         preference,
         notifications,
         newsViewTimes,
-        nextNotificationItems,
         nextProfileUser,
         nextProfileUsers,
         nextInquiryItems,
@@ -688,7 +694,6 @@ export function MyPageView({
         userApi.getUserPreferences(currentUserId),
         notificationApi.getNotificationSettings(currentUserId),
         settingsApi.getUserNewsViewTimes(currentUserId),
-        notificationApi.getNotifications(currentUserId).catch(() => []),
         userApi.getCurrentUser(currentUserId).catch(() => null),
         userApi.getUsers().catch(() => []),
         inquiryApi.getInquiries(currentUserId).catch(() => []),
@@ -706,7 +711,6 @@ export function MyPageView({
       setSelectedCategorySettings(getCategorySettingsFromPreference(currentPreference));
       setNotificationSettings(getNotificationSettingsFromApi(notifications));
       setSelectedNewsViewTimes(getNewsViewTimesFromApi(newsViewTimes));
-      setNotificationItems(nextNotificationItems);
       setProfileUser(nextProfileUser);
       setProfileUsers(nextProfileUsers);
       setMyInquiryItems(nextInquiryItems);
@@ -720,40 +724,6 @@ export function MyPageView({
       ignore = true;
     };
   }, [onDarkModeChange]);
-
-  useEffect(() => {
-    if (!quickMenuRequest || lastQuickMenuRequestIdRef.current === quickMenuRequest.id) {
-      return;
-    }
-
-    lastQuickMenuRequestIdRef.current = quickMenuRequest.id;
-
-    if (quickMenuRequest.target === "customNewsSettings") {
-      setMyArticleDetail(null);
-      setMyPolicyDetail(null);
-      setActiveDetailView("customNewsSettings");
-      return;
-    }
-
-    if (quickMenuRequest.target === "profileSettings") {
-      setMyArticleDetail(null);
-      setMyPolicyDetail(null);
-      setActiveProfileSettingItemId(null);
-      setActiveDetailView("profileSettings");
-      return;
-    }
-
-    setMyArticleDetail(null);
-    setMyPolicyDetail(null);
-    setActiveDetailView(null);
-    window.requestAnimationFrame(() => {
-      const target = myPanelContentRef.current?.querySelector<HTMLElement>(
-        "[data-my-section='notification-settings']",
-      );
-
-      target?.scrollIntoView({ block: "start" });
-    });
-  }, [quickMenuRequest]);
 
   const saveUserPreference = (
     nextSettings: Array<Set<string>>,
@@ -780,9 +750,11 @@ export function MyPageView({
     const settingsId = notificationSettingsIdRef.current;
     const nextNotificationSettings = {
       breakingNews: nextSettings["속보"],
-      commentReplies: nextSettings["내 댓글에 좋아요, 답글"],
+      commentReplies: nextSettings["내 댓글/대댓글 반응"],
       darkMode: nextDarkMode,
-      notices: nextSettings["공지사항"],
+      inquiryReplies: nextSettings["문의글 답변"],
+      newsViewTime: nextSettings["뉴스 보기 타임 알림"],
+      policyUpdates: nextSettings["내 국가정책 업데이트"],
     };
 
     if (!settingsId) {
@@ -811,58 +783,6 @@ export function MyPageView({
 
     setNotificationSettings(nextSettings);
     saveNotificationSettings(nextSettings);
-  };
-
-  const markNotificationAsRead = (notificationId: string) => {
-    setNotificationItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === notificationId
-          ? {
-              ...item,
-              isRead: true,
-              readAt: item.readAt ?? new Date().toISOString(),
-            }
-          : item,
-      ),
-    );
-
-    notificationApi.markNotificationAsRead(notificationId).catch(() => undefined);
-  };
-
-  const markAllNotificationsAsRead = () => {
-    setNotificationItems((currentItems) =>
-      currentItems.map((item) => ({
-        ...item,
-        isRead: true,
-        readAt: item.readAt ?? new Date().toISOString(),
-      })),
-    );
-
-    notificationApi.markAllNotificationsAsRead(currentUserId).catch(() => undefined);
-  };
-
-  const openNotificationTarget = async (notification: AppNotification) => {
-    markNotificationAsRead(notification.id);
-
-    if (notification.targetType === "news" && notification.targetId) {
-      const news = await newsApi.getNewsList().catch(() => []);
-      const targetNews = news.find((item) => item.id === notification.targetId);
-
-      if (targetNews) {
-        openMyArticleDetail(getHomeArticleFromNews(targetNews, 0));
-      }
-
-      return;
-    }
-
-    if (notification.targetType === "policy" && notification.targetId) {
-      const policies = await welfareApi.getWelfarePolicyList("all").catch(() => []);
-      const targetPolicy = policies.find((policy) => policy.id === notification.targetId);
-
-      if (targetPolicy) {
-        openMyPolicyDetail(getPolicyBookmarkItem(targetPolicy));
-      }
-    }
   };
 
   const saveNewsViewTimes = (nextTimes: Set<string>) => {
@@ -1088,19 +1008,10 @@ export function MyPageView({
       : activeDetailView === "customNewsSettings"
       ? "맞춤형 뉴스 설정에서 마이페이지로 돌아가기"
       : "뉴스 보기 타임 설정에서 마이페이지로 돌아가기";
-  const quickMenuReturnView =
-    !isMyNestedDetailOpen &&
-    quickMenuRequest &&
-    (activeDetailView === "customNewsSettings" ||
-      activeDetailView === "profileSettings")
-    ? quickMenuRequest.returnView
-    : null;
   const handleMyDetailBack = isMyNestedDetailOpen
     ? myArticleDetailExitMotion.closeWithMotion
     : activeProfileSettingItemId
       ? () => setActiveProfileSettingItemId(null)
-    : quickMenuReturnView
-      ? () => onQuickMenuBack(quickMenuReturnView)
     : myDetailExitMotion.closeWithMotion;
 
   return (
@@ -1113,20 +1024,19 @@ export function MyPageView({
       minInitialTop={pagePanelInitialTop}
       sheetClassName="newsroll_sheetFrameSheet container_homeSheet container_mySheet"
       sheetNestedScrollResetSelector={
-        isMyNestedDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
+        isMyArticleDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
       }
       sheetScrollSelector={
-        isMyNestedDetailOpen ? newsrollNewsFeedDetailSelector : pagePanelContentSelector
+        isMyArticleDetailOpen ? newsrollNewsFeedDetailSelector : pagePanelContentSelector
       }
       top={
         isMyDetailOpen ? (
           <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
-              onOpenMenu={onOpenMenu}
+              onOpenNotifications={onOpenNotifications}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
-              showSearch={false}
             />
             <NewsRollDockedControls
               className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
@@ -1146,7 +1056,7 @@ export function MyPageView({
           <NewsRollHeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
-              onOpenMenu={onOpenMenu}
+              onOpenNotifications={onOpenNotifications}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
@@ -1170,11 +1080,17 @@ export function MyPageView({
           isLeaving={myArticleDetailExitMotion.isLeaving}
         />
       ) : myPolicyDetail ? (
-        <PolicyDetailContent
-          hideDetailToggle
-          isLeaving={myArticleDetailExitMotion.isLeaving}
-          item={myPolicyDetail}
-        />
+        <NewsRollPagePanel
+          ariaLabel="국가정책 상세 콘텐츠 영역"
+          contentRef={myPanelContentRef}
+          key={`my-policy-detail-${myPolicyDetail.id ?? myPolicyDetail.title}`}
+        >
+          <PolicyDetailContent
+            hideDetailToggle
+            isLeaving={myArticleDetailExitMotion.isLeaving}
+            item={myPolicyDetail}
+          />
+        </NewsRollPagePanel>
       ) : (
         <NewsRollPagePanel
           ariaLabel={
@@ -1377,45 +1293,6 @@ export function MyPageView({
                 onClick={openNewsViewTime}
                 showChevron
               />
-            </div>
-            <div className="wrapper_myNotificationList" aria-label="최근 알림">
-              <div className="wrapper_myNotificationHeader">
-                <h3 className="text_myNotificationTitle">최근 알림</h3>
-                {notificationItems.some((item) => !item.isRead) ? (
-                  <button
-                    className="btn_textAction"
-                    onClick={markAllNotificationsAsRead}
-                    type="button"
-                  >
-                    모두 읽음
-                  </button>
-                ) : null}
-              </div>
-              {notificationItems.length === 0 ? (
-                <p className="text_commentEmpty">받은 알림이 없습니다.</p>
-              ) : (
-                <div className="wrapper_mySettingsList">
-                  {notificationItems.slice(0, 5).map((notification) => (
-                    <button
-                      aria-label={`${notification.title} 알림 열기`}
-                      className={`btn_mySettingRow btn_myNotificationItem${
-                        notification.isRead ? "" : " is_unread"
-                      }`}
-                      key={notification.id}
-                      onClick={() => openNotificationTarget(notification)}
-                      type="button"
-                    >
-                      <span className="wrapper_myNotificationText">
-                        <strong>{notification.title}</strong>
-                        <span>{notification.body}</span>
-                      </span>
-                      {notification.isRead ? null : (
-                        <span className="badge_myNotificationUnread">새 알림</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           </section>
 

@@ -544,7 +544,6 @@
         }
 
         .newsroll_all_breaking_card {
-            min-height: 56px;
             display: flex;
             align-items: center;
             padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
@@ -555,11 +554,6 @@
             font-weight: var(--font-weight-500);
             line-height: var(--line-height-24);
             text-align: left;
-        }
-
-        .newsroll_all_breaking_card:first-child,
-        .newsroll_all_breaking_card:last-child {
-            min-height: 71px;
         }
 
         .newsroll_all_more {

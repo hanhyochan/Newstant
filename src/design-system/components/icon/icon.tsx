@@ -14,7 +14,6 @@ export type IconName =
   | "information"
   | "list"
   | "loudspeaker"
-  | "menu"
   | "myPage"
   | "plus"
   | "policy"

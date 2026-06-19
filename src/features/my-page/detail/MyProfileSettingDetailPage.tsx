@@ -184,11 +184,15 @@ function InquiryDetailContent({
   inquiry,
   onNextItem,
   onPreviousItem,
+  replyEmail,
 }: {
   inquiry: Inquiry;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
+  replyEmail?: string;
 }) {
+  const inquiryReplyEmail = inquiry.replyEmail ?? replyEmail;
+
   return (
     <div className="newsroll_policy_detail_content">
       <div className="newsroll_policy_detail_main">
@@ -209,6 +213,11 @@ function InquiryDetailContent({
       <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
 
       <p className="newsroll_policy_detail_summary">{inquiry.content}</p>
+      {inquiryReplyEmail ? (
+        <p className="text_mySettingsDetailBody">
+          답변은 {inquiryReplyEmail}로 발송됩니다.
+        </p>
+      ) : null}
       </div>
 
       <div
@@ -243,10 +252,12 @@ function InquiryDetailContent({
 
 function InquiryHistory({
   inquiries,
+  replyEmail,
   selectedInquiryId,
   onSelectInquiry,
 }: {
   inquiries: Inquiry[];
+  replyEmail?: string;
   selectedInquiryId: string | null;
   onSelectInquiry: (inquiryId: string | null) => void;
 }) {
@@ -270,6 +281,7 @@ function InquiryHistory({
             ? () => onSelectInquiry(inquiries[selectedInquiryIndex - 1].id)
             : undefined
         }
+        replyEmail={replyEmail}
       />
     );
   }
@@ -711,6 +723,7 @@ export function MyProfileSettingDetailPage({
         <InquiryHistory
           inquiries={inquiries}
           onSelectInquiry={setSelectedInquiryId}
+          replyEmail={user?.email}
           selectedInquiryId={selectedInquiryId}
         />
       ) : itemId === "reportHistory" || itemId === "blockedHiddenSettings" ? (

@@ -6437,6 +6437,34 @@
       "targetType": "news",
       "targetId": "news-080",
       "createdAt": "2026-06-18T10:23:00.000Z"
+    },
+    {
+      "id": "bookmark-662f7aa7-0d6f-4422-a9ff-7e3314393a8b",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "targetType": "welfarePolicy",
+      "targetId": "policy-002",
+      "createdAt": "2026-06-19T02:52:06.546Z"
+    },
+    {
+      "id": "bookmark-8b1272bf-775f-4c4f-bf5b-06d95a4370e9",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "targetType": "welfarePolicy",
+      "targetId": "policy-youth-001",
+      "createdAt": "2026-06-19T02:52:09.537Z"
+    },
+    {
+      "id": "bookmark-8c785335-9687-41fe-99ac-9fc4447e217f",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "targetType": "welfarePolicy",
+      "targetId": "policy-middle-001",
+      "createdAt": "2026-06-19T02:52:21.297Z"
+    },
+    {
+      "id": "bookmark-18ac3500-cfd5-4990-99f3-334f82090ee6",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "targetType": "welfarePolicy",
+      "targetId": "policy-middle-002",
+      "createdAt": "2026-06-19T02:52:24.377Z"
     }
   ],
   "articleReactions": [
@@ -12634,481 +12662,481 @@
       "id": "recent-b43c3d2b-ca13-4a7d-bde7-c6388b9b41ac",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-001",
-      "viewedAt": "2026-06-18T07:15:31.900Z"
+      "viewedAt": "2026-06-19T05:48:13.657Z"
     },
     {
       "id": "recent-993518cd-c298-4d5d-b559-d0e97c800d6b",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-002",
-      "viewedAt": "2026-06-18T07:15:31.895Z"
+      "viewedAt": "2026-06-19T05:48:13.661Z"
     },
     {
       "id": "recent-07b95f5d-526d-4f1c-875b-97a1f224f160",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-003",
-      "viewedAt": "2026-06-18T07:15:31.894Z"
+      "viewedAt": "2026-06-19T05:48:13.661Z"
     },
     {
       "id": "recent-05c264a9-f239-4225-963c-069d4a40eed8",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-006",
-      "viewedAt": "2026-06-18T07:15:31.901Z"
+      "viewedAt": "2026-06-19T05:48:13.670Z"
     },
     {
       "id": "recent-f321b1a2-74bb-4d41-b9d4-446780fccca7",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-007",
-      "viewedAt": "2026-06-18T07:15:31.934Z"
+      "viewedAt": "2026-06-19T05:48:13.676Z"
     },
     {
       "id": "recent-85767137-cb19-4528-a322-d561e549d323",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-008",
-      "viewedAt": "2026-06-18T07:15:31.937Z"
+      "viewedAt": "2026-06-19T05:48:13.679Z"
     },
     {
       "id": "recent-ecaeef41-987e-4033-867e-9ac3f6b6d24e",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-004",
-      "viewedAt": "2026-06-18T07:15:31.910Z"
+      "viewedAt": "2026-06-19T05:48:13.662Z"
     },
     {
       "id": "recent-8763ce45-cd8c-4238-9082-5993c0cb11cd",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-005",
-      "viewedAt": "2026-06-18T07:15:31.901Z"
+      "viewedAt": "2026-06-19T05:48:13.668Z"
     },
     {
       "id": "recent-231851c7-56f7-4889-b28a-1cae9ae1bc3a",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-022",
-      "viewedAt": "2026-06-18T07:15:31.455Z"
+      "viewedAt": "2026-06-19T05:48:13.443Z"
     },
     {
       "id": "recent-80af3727-7d57-4067-b65e-62c4cf0a1cc0",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-015",
-      "viewedAt": "2026-06-18T07:15:31.451Z"
+      "viewedAt": "2026-06-19T05:48:13.444Z"
     },
     {
       "id": "recent-bc2fb47f-cccb-400b-b928-23004fe5de97",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-030",
-      "viewedAt": "2026-06-18T07:15:31.461Z"
+      "viewedAt": "2026-06-19T05:48:13.452Z"
     },
     {
       "id": "recent-240900dc-4c06-4bcf-a0fd-3b8cbf7f7313",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-014",
-      "viewedAt": "2026-06-18T07:15:31.462Z"
+      "viewedAt": "2026-06-19T05:48:13.451Z"
     },
     {
       "id": "recent-2622e1f6-78d3-490e-9145-4e82afecdcbf",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-021",
-      "viewedAt": "2026-06-18T07:15:31.480Z"
+      "viewedAt": "2026-06-19T05:48:13.465Z"
     },
     {
       "id": "recent-56518e97-87d8-4a51-b539-eeabbfc81953",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-029",
-      "viewedAt": "2026-06-18T07:15:31.484Z"
+      "viewedAt": "2026-06-19T05:48:13.468Z"
     },
     {
       "id": "recent-e2a275f2-1797-488d-8ab9-a936bd032dc1",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-036",
-      "viewedAt": "2026-06-18T07:15:31.516Z"
+      "viewedAt": "2026-06-19T05:48:13.472Z"
     },
     {
       "id": "recent-92903026-ee97-4d85-91d2-e704a4f4e125",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-042",
-      "viewedAt": "2026-06-18T07:15:31.532Z"
+      "viewedAt": "2026-06-19T05:48:13.469Z"
     },
     {
       "id": "recent-2f015066-3e37-4c4d-97d4-ba1815de3118",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-056",
-      "viewedAt": "2026-06-18T07:15:31.534Z"
+      "viewedAt": "2026-06-19T05:48:13.479Z"
     },
     {
       "id": "recent-653a4e7a-0eb5-4b87-88f4-821334a38323",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-050",
-      "viewedAt": "2026-06-18T07:15:31.533Z"
+      "viewedAt": "2026-06-19T05:48:13.478Z"
     },
     {
       "id": "recent-c5d085dc-cdba-41df-90e0-5afd28a78999",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-047",
-      "viewedAt": "2026-06-18T07:15:31.533Z"
+      "viewedAt": "2026-06-19T05:48:13.474Z"
     },
     {
       "id": "recent-3142308e-51d4-4a64-8cfe-a6d41c31860a",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-062",
-      "viewedAt": "2026-06-18T07:15:31.535Z"
+      "viewedAt": "2026-06-19T05:48:13.483Z"
     },
     {
       "id": "recent-b8afb057-5a34-4fa6-9f5a-9138869a09c4",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-071",
-      "viewedAt": "2026-06-18T07:15:31.539Z"
+      "viewedAt": "2026-06-19T05:48:13.484Z"
     },
     {
       "id": "recent-c1cf725b-4c74-4506-92cb-11284c17cec9",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-080",
-      "viewedAt": "2026-06-18T07:15:31.550Z"
+      "viewedAt": "2026-06-19T05:48:13.486Z"
     },
     {
       "id": "recent-c41931f4-61b1-4ab7-b6db-1348181d6271",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-013",
-      "viewedAt": "2026-06-18T07:15:31.549Z"
+      "viewedAt": "2026-06-19T05:48:13.489Z"
     },
     {
       "id": "recent-7e6700c0-57cc-48ca-9610-6ce0c326c2e2",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-020",
-      "viewedAt": "2026-06-18T07:15:31.551Z"
+      "viewedAt": "2026-06-19T05:48:13.491Z"
     },
     {
       "id": "recent-9cf3e807-b9cd-4d1e-9b74-62371af1ce60",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-028",
-      "viewedAt": "2026-06-18T07:15:31.563Z"
+      "viewedAt": "2026-06-19T05:48:13.492Z"
     },
     {
       "id": "recent-cc9ffa4b-585b-4027-8240-ac4199217fb8",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-035",
-      "viewedAt": "2026-06-18T07:15:31.565Z"
+      "viewedAt": "2026-06-19T05:48:13.493Z"
     },
     {
       "id": "recent-543d2ef4-8f75-4996-ab42-7039b8ca5301",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-046",
-      "viewedAt": "2026-06-18T07:15:31.577Z"
+      "viewedAt": "2026-06-19T05:48:13.514Z"
     },
     {
       "id": "recent-9c4a1b3c-78b8-4782-a1ea-4313f9f8cf54",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-049",
-      "viewedAt": "2026-06-18T07:15:31.578Z"
+      "viewedAt": "2026-06-19T05:48:13.518Z"
     },
     {
       "id": "recent-d9cb669b-ddd9-4f66-88e0-eb7e2c8da5fa",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-041",
-      "viewedAt": "2026-06-18T07:15:31.570Z"
+      "viewedAt": "2026-06-19T05:48:13.516Z"
     },
     {
       "id": "recent-a39273f1-9ff8-47ea-ab02-a53ab739b106",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-055",
-      "viewedAt": "2026-06-18T07:15:31.578Z"
+      "viewedAt": "2026-06-19T05:48:13.526Z"
     },
     {
       "id": "recent-3524a09e-82bc-417f-a482-f5b344e570ad",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-061",
-      "viewedAt": "2026-06-18T07:15:31.579Z"
+      "viewedAt": "2026-06-19T05:48:13.530Z"
     },
     {
       "id": "recent-52972c4c-298d-4cca-a975-782f0fde30b0",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-079",
-      "viewedAt": "2026-06-18T07:15:31.587Z"
+      "viewedAt": "2026-06-19T05:48:13.533Z"
     },
     {
       "id": "recent-6e598b87-0e96-4989-ac11-f08f5b87ca1b",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-070",
-      "viewedAt": "2026-06-18T07:15:31.586Z"
+      "viewedAt": "2026-06-19T05:48:13.531Z"
     },
     {
       "id": "recent-ae269fb9-4669-4ffe-881d-c4b019c3d713",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-012",
-      "viewedAt": "2026-06-18T07:15:31.588Z"
+      "viewedAt": "2026-06-19T05:48:13.547Z"
     },
     {
       "id": "recent-3243b35c-7f37-4992-a332-9302c6dde50f",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-034",
-      "viewedAt": "2026-06-18T07:15:31.613Z"
+      "viewedAt": "2026-06-19T05:48:13.553Z"
     },
     {
       "id": "recent-b03d00ee-eb5d-401f-a057-a8f431be1186",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-027",
-      "viewedAt": "2026-06-18T07:15:31.611Z"
+      "viewedAt": "2026-06-19T05:48:13.551Z"
     },
     {
       "id": "recent-26d584df-2cec-4349-876b-b917d5220d20",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-019",
-      "viewedAt": "2026-06-18T07:15:31.610Z"
+      "viewedAt": "2026-06-19T05:48:13.550Z"
     },
     {
       "id": "recent-2a73cd34-bb66-4695-8fc8-4101a9192658",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-040",
-      "viewedAt": "2026-06-18T07:15:31.612Z"
+      "viewedAt": "2026-06-19T05:48:13.556Z"
     },
     {
       "id": "recent-4d42740d-fe02-4f3e-9d37-758748a27a30",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-045",
-      "viewedAt": "2026-06-18T07:15:31.625Z"
+      "viewedAt": "2026-06-19T05:48:13.558Z"
     },
     {
       "id": "recent-f5b4fbe6-1195-4140-93b0-703d7be3c1cd",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-048",
-      "viewedAt": "2026-06-18T07:15:31.636Z"
+      "viewedAt": "2026-06-19T05:48:13.560Z"
     },
     {
       "id": "recent-9dc9f692-8c48-42ee-adcb-4ece8e0d2072",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-054",
-      "viewedAt": "2026-06-18T07:15:31.660Z"
+      "viewedAt": "2026-06-19T05:48:13.561Z"
     },
     {
       "id": "recent-7c88065f-cb7d-4290-a943-35381f6ad2da",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-078",
-      "viewedAt": "2026-06-18T07:15:31.667Z"
+      "viewedAt": "2026-06-19T05:48:13.572Z"
     },
     {
       "id": "recent-0e886b2b-da1d-449a-b8ba-901644d2af94",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-069",
-      "viewedAt": "2026-06-18T07:15:31.663Z"
+      "viewedAt": "2026-06-19T05:48:13.567Z"
     },
     {
       "id": "recent-40bcbd11-cbda-4ffc-a085-0c341a917a05",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-060",
-      "viewedAt": "2026-06-18T07:15:31.662Z"
+      "viewedAt": "2026-06-19T05:48:13.563Z"
     },
     {
       "id": "recent-48ad2e41-f880-4777-833e-17fec2c33b2b",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-011",
-      "viewedAt": "2026-06-18T07:15:31.678Z"
+      "viewedAt": "2026-06-19T05:48:13.573Z"
     },
     {
       "id": "recent-f020c763-b959-47ea-ab6b-e71fd4862b97",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-018",
-      "viewedAt": "2026-06-18T07:15:31.672Z"
+      "viewedAt": "2026-06-19T05:48:13.575Z"
     },
     {
       "id": "recent-c0c94166-a2e3-4eef-bf70-f16c7a67a3a6",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-026",
-      "viewedAt": "2026-06-18T07:15:31.685Z"
+      "viewedAt": "2026-06-19T05:48:13.576Z"
     },
     {
       "id": "recent-e7fbe9e0-4553-4d5b-b2c0-7df3c8cbf06f",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-033",
-      "viewedAt": "2026-06-18T07:15:31.680Z"
+      "viewedAt": "2026-06-19T05:48:13.580Z"
     },
     {
       "id": "recent-f6d5ff31-b585-4789-82cc-f22abc417cb9",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-039",
-      "viewedAt": "2026-06-18T07:15:31.701Z"
+      "viewedAt": "2026-06-19T05:48:13.590Z"
     },
     {
       "id": "recent-71eb282b-0228-42c1-b720-8ec677596edf",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-044",
-      "viewedAt": "2026-06-18T07:15:31.715Z"
+      "viewedAt": "2026-06-19T05:48:13.593Z"
     },
     {
       "id": "recent-50def968-827e-4a84-8968-20e7bfe10d7a",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-053",
-      "viewedAt": "2026-06-18T07:15:31.757Z"
+      "viewedAt": "2026-06-19T05:48:13.594Z"
     },
     {
       "id": "recent-92cd322f-1199-4f6d-8636-f06737f1519d",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-059",
-      "viewedAt": "2026-06-18T07:15:31.758Z"
+      "viewedAt": "2026-06-19T05:48:13.595Z"
     },
     {
       "id": "recent-b93eac3a-ff11-4b0c-8af5-2b5ba4ccd3e9",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-068",
-      "viewedAt": "2026-06-18T07:15:31.759Z"
+      "viewedAt": "2026-06-19T05:48:13.596Z"
     },
     {
       "id": "recent-5a608e38-d657-462e-a41d-2686d8c70a20",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-077",
-      "viewedAt": "2026-06-18T07:15:31.763Z"
+      "viewedAt": "2026-06-19T05:48:13.599Z"
     },
     {
       "id": "recent-f70837b6-8ebe-48ed-add5-37a4b71753f5",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-032",
-      "viewedAt": "2026-06-18T07:15:31.773Z"
+      "viewedAt": "2026-06-19T05:48:13.601Z"
     },
     {
       "id": "recent-ff557a3c-2c03-46ed-8230-9b104923cb63",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-038",
-      "viewedAt": "2026-06-18T07:15:31.773Z"
+      "viewedAt": "2026-06-19T05:48:13.610Z"
     },
     {
       "id": "recent-d098ecfc-a377-43c2-b7a1-dc2e3b892d9c",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-043",
-      "viewedAt": "2026-06-18T07:15:31.774Z"
+      "viewedAt": "2026-06-19T05:48:13.606Z"
     },
     {
       "id": "recent-40def8a3-b3ed-4d5f-a554-52485f42cd62",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-052",
-      "viewedAt": "2026-06-18T07:15:31.794Z"
+      "viewedAt": "2026-06-19T05:48:13.606Z"
     },
     {
       "id": "recent-9200eaac-65f7-4206-a007-5586188a4291",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-058",
-      "viewedAt": "2026-06-18T07:15:31.805Z"
+      "viewedAt": "2026-06-19T05:48:13.602Z"
     },
     {
       "id": "recent-1c8e00f0-4d8f-4fe7-aaf9-e016829faf8a",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-067",
-      "viewedAt": "2026-06-18T07:15:31.797Z"
+      "viewedAt": "2026-06-19T05:48:13.619Z"
     },
     {
       "id": "recent-e24700b4-8f65-4f23-a101-e4177b3f0f7e",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-076",
-      "viewedAt": "2026-06-18T07:15:31.801Z"
+      "viewedAt": "2026-06-19T05:48:13.618Z"
     },
     {
       "id": "recent-77223840-0c9a-4e3f-85f8-03cc3f2184cd",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-010",
-      "viewedAt": "2026-06-18T07:15:31.806Z"
+      "viewedAt": "2026-06-19T05:48:13.616Z"
     },
     {
       "id": "recent-6d6e845c-3782-453a-8165-8193d25a1e17",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-017",
-      "viewedAt": "2026-06-18T07:15:31.809Z"
+      "viewedAt": "2026-06-19T05:48:13.611Z"
     },
     {
       "id": "recent-3e2fb846-d38e-4304-a692-1128be73dca9",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-025",
-      "viewedAt": "2026-06-18T07:15:31.807Z"
+      "viewedAt": "2026-06-19T05:48:13.622Z"
     },
     {
       "id": "recent-12850dd8-0643-44ea-bc83-5c6be9b980e5",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-031",
-      "viewedAt": "2026-06-18T07:15:31.808Z"
+      "viewedAt": "2026-06-19T05:48:13.624Z"
     },
     {
       "id": "recent-66d8c746-8fc5-4fa3-83a1-7fcd998ec328",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-037",
-      "viewedAt": "2026-06-18T07:15:31.814Z"
+      "viewedAt": "2026-06-19T05:48:13.624Z"
     },
     {
       "id": "recent-f3743605-9115-40e0-ac1f-65167769f2d7",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-051",
-      "viewedAt": "2026-06-18T07:15:31.816Z"
+      "viewedAt": "2026-06-19T05:48:13.625Z"
     },
     {
       "id": "recent-e8482b11-7eb2-4a4f-a2ff-d36de9ae7c24",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-075",
-      "viewedAt": "2026-06-18T07:15:31.827Z"
+      "viewedAt": "2026-06-19T05:48:13.632Z"
     },
     {
       "id": "recent-20f5685d-48d1-419d-a61d-66bf94003f8f",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-057",
-      "viewedAt": "2026-06-18T07:15:31.820Z"
+      "viewedAt": "2026-06-19T05:48:13.630Z"
     },
     {
       "id": "recent-a290b315-d54f-479f-9291-3f98fb851a89",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-066",
-      "viewedAt": "2026-06-18T07:15:31.826Z"
+      "viewedAt": "2026-06-19T05:48:13.631Z"
     },
     {
       "id": "recent-9ebbaa34-d7a2-4ecf-a5a5-51aed0764b85",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-009",
-      "viewedAt": "2026-06-18T07:15:31.832Z"
+      "viewedAt": "2026-06-19T05:48:13.633Z"
     },
     {
       "id": "recent-be3f4f9f-f321-462f-945d-afa5e47f818a",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-016",
-      "viewedAt": "2026-06-18T07:15:31.838Z"
+      "viewedAt": "2026-06-19T05:48:13.645Z"
     },
     {
       "id": "recent-54437921-87e2-445f-be36-18cf8b9df855",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-024",
-      "viewedAt": "2026-06-18T07:15:31.869Z"
+      "viewedAt": "2026-06-19T05:48:13.646Z"
     },
     {
       "id": "recent-9026956c-25fc-41fd-8521-7c50d80f93d2",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-065",
-      "viewedAt": "2026-06-18T07:15:31.877Z"
+      "viewedAt": "2026-06-19T05:48:13.646Z"
     },
     {
       "id": "recent-aee4efc0-706b-4f94-9c06-c860f5031da2",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-074",
-      "viewedAt": "2026-06-18T07:15:31.878Z"
+      "viewedAt": "2026-06-19T05:48:13.647Z"
     },
     {
       "id": "recent-f261e4c0-5fd3-4102-9ebe-53c4f622d57d",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-023",
-      "viewedAt": "2026-06-18T07:15:31.884Z"
+      "viewedAt": "2026-06-19T05:48:13.648Z"
     },
     {
       "id": "recent-15422da6-27fa-4e07-814f-f7e7cb4a0a5f",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-063",
-      "viewedAt": "2026-06-18T07:15:31.890Z"
+      "viewedAt": "2026-06-19T05:48:13.654Z"
     },
     {
       "id": "recent-d115ff62-2f74-436f-8c68-0a9449a039c6",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-073",
-      "viewedAt": "2026-06-18T07:15:31.885Z"
+      "viewedAt": "2026-06-19T05:48:13.649Z"
     },
     {
       "id": "recent-28953342-5ae6-4a40-a42b-fa407fe56aa8",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-064",
-      "viewedAt": "2026-06-18T07:15:31.878Z"
+      "viewedAt": "2026-06-19T05:48:13.648Z"
     },
     {
       "id": "recent-76ffd09f-7450-44f2-9cfe-99ccd4afed09",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-072",
-      "viewedAt": "2026-06-18T07:15:31.889Z"
+      "viewedAt": "2026-06-19T05:48:13.655Z"
     },
     {
       "id": "seed-recent-user-kongkong-news-001",
@@ -14924,9 +14952,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "dfsdfdsfdsfdsfdsfsd꼬기오",
-      "likeCount": 0,
-      "dislikeCount": 0,
-      "replyCount": 1,
+      "likeCount": 4,
+      "dislikeCount": 2,
+      "replyCount": 3,
       "createdAt": "2026-06-16T03:01:52.669Z",
       "updatedAt": "2026-06-16T03:02:07.747Z"
     },
@@ -14937,8 +14965,8 @@
       "parentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
       "pollOptionId": null,
       "content": "뀨앙",
-      "likeCount": 0,
-      "dislikeCount": 0,
+      "likeCount": 5,
+      "dislikeCount": 1,
       "replyCount": 0,
       "createdAt": "2026-06-16T03:02:17.193Z",
       "updatedAt": "2026-06-16T03:02:22.987Z"
@@ -14950,9 +14978,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "dk",
-      "likeCount": 0,
-      "dislikeCount": 0,
-      "replyCount": 0,
+      "likeCount": 5,
+      "dislikeCount": 1,
+      "replyCount": 2,
       "createdAt": "2026-06-16T04:41:58.020Z",
       "updatedAt": "2026-06-16T04:41:58.020Z"
     },
@@ -14963,9 +14991,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "왜 안돼",
-      "likeCount": 0,
-      "dislikeCount": 0,
-      "replyCount": 1,
+      "likeCount": 4,
+      "dislikeCount": 2,
+      "replyCount": 3,
       "createdAt": "2026-06-16T04:42:54.381Z",
       "updatedAt": "2026-06-16T04:42:54.381Z"
     },
@@ -14976,8 +15004,8 @@
       "parentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
       "pollOptionId": null,
       "content": "어쩌라고",
-      "likeCount": 0,
-      "dislikeCount": 0,
+      "likeCount": 4,
+      "dislikeCount": 2,
       "replyCount": 0,
       "createdAt": "2026-06-16T04:43:08.075Z",
       "updatedAt": "2026-06-16T04:43:08.075Z"
@@ -14989,9 +15017,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "ㄷㅇ",
-      "likeCount": 0,
-      "dislikeCount": 0,
-      "replyCount": 2,
+      "likeCount": 5,
+      "dislikeCount": 1,
+      "replyCount": 4,
       "createdAt": "2026-06-16T04:46:07.485Z",
       "updatedAt": "2026-06-16T04:46:07.485Z"
     },
@@ -15002,8 +15030,8 @@
       "parentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
       "pollOptionId": null,
       "content": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
-      "likeCount": 0,
-      "dislikeCount": 0,
+      "likeCount": 5,
+      "dislikeCount": 1,
       "replyCount": 0,
       "createdAt": "2026-06-16T04:46:16.052Z",
       "updatedAt": "2026-06-16T04:46:16.052Z"
@@ -15015,8 +15043,8 @@
       "parentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
       "pollOptionId": null,
       "content": "할로",
-      "likeCount": 0,
-      "dislikeCount": 0,
+      "likeCount": 4,
+      "dislikeCount": 2,
       "replyCount": 0,
       "createdAt": "2026-06-16T05:16:02.243Z",
       "updatedAt": "2026-06-16T05:16:02.243Z"
@@ -15028,9 +15056,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "ㅇㅇ",
-      "likeCount": 0,
-      "dislikeCount": 0,
-      "replyCount": 0,
+      "likeCount": 4,
+      "dislikeCount": 2,
+      "replyCount": 2,
       "createdAt": "2026-06-16T05:16:11.522Z",
       "updatedAt": "2026-06-16T05:16:11.522Z"
     },
@@ -15041,9 +15069,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "응애",
-      "likeCount": 0,
-      "dislikeCount": 0,
-      "replyCount": 0,
+      "likeCount": 5,
+      "dislikeCount": 1,
+      "replyCount": 2,
       "createdAt": "2026-06-17T07:39:14.332Z",
       "updatedAt": "2026-06-17T07:39:14.332Z"
     },
@@ -15054,9 +15082,9 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "뭐야",
-      "likeCount": 0,
-      "dislikeCount": 1,
-      "replyCount": 1,
+      "likeCount": 5,
+      "dislikeCount": 2,
+      "replyCount": 3,
       "createdAt": "2026-06-17T07:45:02.739Z",
       "updatedAt": "2026-06-17T07:45:02.739Z"
     },
@@ -15067,8 +15095,8 @@
       "parentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
       "pollOptionId": null,
       "content": "이런 샤갈",
-      "likeCount": 0,
-      "dislikeCount": 0,
+      "likeCount": 4,
+      "dislikeCount": 2,
       "replyCount": 0,
       "createdAt": "2026-06-17T07:45:08.683Z",
       "updatedAt": "2026-06-17T07:45:08.683Z"
@@ -30672,6 +30700,188 @@
       "replyCount": 0,
       "createdAt": "2026-06-18T15:11:00.000Z",
       "updatedAt": "2026-06-18T15:11:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-kongkong",
+      "newsId": "news-007",
+      "userId": "user-kongkong",
+      "parentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "pollOptionId": null,
+      "content": "이 의견에 공감합니다.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:00:00.000Z",
+      "updatedAt": "2026-06-19T03:01:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-junho",
+      "newsId": "news-007",
+      "userId": "user-junho",
+      "parentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "pollOptionId": null,
+      "content": "저도 비슷하게 봤어요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:01:00.000Z",
+      "updatedAt": "2026-06-19T03:02:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-hong",
+      "newsId": "news-001",
+      "userId": "user-hong",
+      "parentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "pollOptionId": null,
+      "content": "저도 비슷하게 봤어요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:02:00.000Z",
+      "updatedAt": "2026-06-19T03:03:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-soyeon",
+      "newsId": "news-001",
+      "userId": "user-soyeon",
+      "parentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "pollOptionId": null,
+      "content": "근거를 조금 더 봐야겠네요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:03:00.000Z",
+      "updatedAt": "2026-06-19T03:04:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-minji",
+      "newsId": "news-001",
+      "userId": "user-minji",
+      "parentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "pollOptionId": null,
+      "content": "근거를 조금 더 봐야겠네요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:04:00.000Z",
+      "updatedAt": "2026-06-19T03:05:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-taeho",
+      "newsId": "news-001",
+      "userId": "user-taeho",
+      "parentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "pollOptionId": null,
+      "content": "좋은 포인트네요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:05:00.000Z",
+      "updatedAt": "2026-06-19T03:06:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-junho",
+      "newsId": "news-001",
+      "userId": "user-junho",
+      "parentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "pollOptionId": null,
+      "content": "좋은 포인트네요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:06:00.000Z",
+      "updatedAt": "2026-06-19T03:07:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-yuna",
+      "newsId": "news-001",
+      "userId": "user-yuna",
+      "parentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "pollOptionId": null,
+      "content": "현실적인 의견이라고 생각합니다.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:07:00.000Z",
+      "updatedAt": "2026-06-19T03:08:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-soyeon",
+      "newsId": "news-001",
+      "userId": "user-soyeon",
+      "parentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "pollOptionId": null,
+      "content": "현실적인 의견이라고 생각합니다.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:08:00.000Z",
+      "updatedAt": "2026-06-19T03:09:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-doyun",
+      "newsId": "news-001",
+      "userId": "user-doyun",
+      "parentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "pollOptionId": null,
+      "content": "이 부분은 다시 논의가 필요해 보여요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:09:00.000Z",
+      "updatedAt": "2026-06-19T03:10:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-taeho",
+      "newsId": "news-042",
+      "userId": "user-taeho",
+      "parentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "pollOptionId": null,
+      "content": "이 부분은 다시 논의가 필요해 보여요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:10:00.000Z",
+      "updatedAt": "2026-06-19T03:11:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-jisoo",
+      "newsId": "news-042",
+      "userId": "user-jisoo",
+      "parentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "pollOptionId": null,
+      "content": "이 의견에 공감합니다.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:11:00.000Z",
+      "updatedAt": "2026-06-19T03:12:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-yuna",
+      "newsId": "news-015",
+      "userId": "user-yuna",
+      "parentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "pollOptionId": null,
+      "content": "이 의견에 공감합니다.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:12:00.000Z",
+      "updatedAt": "2026-06-19T03:13:00.000Z"
+    },
+    {
+      "id": "seed-reply-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-haneul",
+      "newsId": "news-015",
+      "userId": "user-haneul",
+      "parentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "pollOptionId": null,
+      "content": "저도 비슷하게 봤어요.",
+      "likeCount": 0,
+      "dislikeCount": 0,
+      "replyCount": 0,
+      "createdAt": "2026-06-19T03:13:00.000Z",
+      "updatedAt": "2026-06-19T03:14:00.000Z"
     }
   ],
   "commentReactions": [
@@ -102361,6 +102571,510 @@
       "userId": "user-seojin",
       "type": "dislike",
       "createdAt": "2026-06-18T17:34:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-kongkong",
+      "commentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "userId": "user-kongkong",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:14:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-hong",
+      "commentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:15:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-minji",
+      "commentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T03:16:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-junho",
+      "commentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:17:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-soyeon",
+      "commentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "userId": "user-soyeon",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:18:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-taeho",
+      "commentId": "comment-460741fe-4327-47b9-8bd4-80f8c9188318",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:19:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-kongkong",
+      "commentId": "comment-db735682-3694-487a-8d11-e50a851a819d",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:20:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-hong",
+      "commentId": "comment-db735682-3694-487a-8d11-e50a851a819d",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:21:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-minji",
+      "commentId": "comment-db735682-3694-487a-8d11-e50a851a819d",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T03:22:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-junho",
+      "commentId": "comment-db735682-3694-487a-8d11-e50a851a819d",
+      "userId": "user-junho",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:23:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-soyeon",
+      "commentId": "comment-db735682-3694-487a-8d11-e50a851a819d",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T03:24:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-taeho",
+      "commentId": "comment-db735682-3694-487a-8d11-e50a851a819d",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:25:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-kongkong",
+      "commentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:26:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-hong",
+      "commentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:27:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-minji",
+      "commentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "userId": "user-minji",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:28:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-junho",
+      "commentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:29:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-soyeon",
+      "commentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T03:30:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-taeho",
+      "commentId": "comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:31:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-kongkong",
+      "commentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:32:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-hong",
+      "commentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "userId": "user-hong",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:33:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-minji",
+      "commentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T03:34:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-junho",
+      "commentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:35:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-soyeon",
+      "commentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T03:36:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-taeho",
+      "commentId": "comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064",
+      "userId": "user-taeho",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:37:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-kongkong",
+      "commentId": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "userId": "user-kongkong",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:38:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-hong",
+      "commentId": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:39:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-minji",
+      "commentId": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T03:40:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-junho",
+      "commentId": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:41:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-soyeon",
+      "commentId": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "userId": "user-soyeon",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:42:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-taeho",
+      "commentId": "comment-d343d52b-8377-4880-a483-65b88e20ecdb",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:43:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-kongkong",
+      "commentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:44:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-hong",
+      "commentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:45:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-minji",
+      "commentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T03:46:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-junho",
+      "commentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "userId": "user-junho",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:47:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-soyeon",
+      "commentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T03:48:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-taeho",
+      "commentId": "comment-db4901bb-095b-4cad-938d-c40eebb736c5",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:49:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-kongkong",
+      "commentId": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:50:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-hong",
+      "commentId": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:51:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-minji",
+      "commentId": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "userId": "user-minji",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:52:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-junho",
+      "commentId": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:53:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-soyeon",
+      "commentId": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T03:54:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-taeho",
+      "commentId": "comment-9afe6231-c518-489d-8c44-59fec70bc759",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:55:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-kongkong",
+      "commentId": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T03:56:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-hong",
+      "commentId": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "userId": "user-hong",
+      "type": "dislike",
+      "createdAt": "2026-06-19T03:57:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-minji",
+      "commentId": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T03:58:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-junho",
+      "commentId": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T03:59:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-soyeon",
+      "commentId": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T04:00:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-taeho",
+      "commentId": "comment-e495e252-2de2-4243-8d39-18252df9b19f",
+      "userId": "user-taeho",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:01:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-kongkong",
+      "commentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "userId": "user-kongkong",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:02:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-hong",
+      "commentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T04:03:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-minji",
+      "commentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T04:04:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-junho",
+      "commentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T04:05:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-soyeon",
+      "commentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "userId": "user-soyeon",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:06:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-taeho",
+      "commentId": "comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T04:07:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-kongkong",
+      "commentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T04:08:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-hong",
+      "commentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T04:09:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-minji",
+      "commentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T04:10:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-junho",
+      "commentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "userId": "user-junho",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:11:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-soyeon",
+      "commentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T04:12:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-taeho",
+      "commentId": "comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T04:13:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-kongkong",
+      "commentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T04:14:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-hong",
+      "commentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "userId": "user-hong",
+      "type": "like",
+      "createdAt": "2026-06-19T04:15:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-minji",
+      "commentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "userId": "user-minji",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:16:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-junho",
+      "commentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T04:17:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-soyeon",
+      "commentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T04:18:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-taeho",
+      "commentId": "comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4",
+      "userId": "user-taeho",
+      "type": "like",
+      "createdAt": "2026-06-19T04:19:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-kongkong",
+      "commentId": "comment-320cbbd6-5a15-400a-b6bb-3a0cae586099",
+      "userId": "user-kongkong",
+      "type": "like",
+      "createdAt": "2026-06-19T04:20:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-hong",
+      "commentId": "comment-320cbbd6-5a15-400a-b6bb-3a0cae586099",
+      "userId": "user-hong",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:21:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-minji",
+      "commentId": "comment-320cbbd6-5a15-400a-b6bb-3a0cae586099",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-06-19T04:22:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-junho",
+      "commentId": "comment-320cbbd6-5a15-400a-b6bb-3a0cae586099",
+      "userId": "user-junho",
+      "type": "like",
+      "createdAt": "2026-06-19T04:23:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-soyeon",
+      "commentId": "comment-320cbbd6-5a15-400a-b6bb-3a0cae586099",
+      "userId": "user-soyeon",
+      "type": "like",
+      "createdAt": "2026-06-19T04:24:00.000Z"
+    },
+    {
+      "id": "seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-taeho",
+      "commentId": "comment-320cbbd6-5a15-400a-b6bb-3a0cae586099",
+      "userId": "user-taeho",
+      "type": "dislike",
+      "createdAt": "2026-06-19T04:25:00.000Z"
     }
   ],
   "blockedKeywordSettings": [
@@ -102395,18 +103109,22 @@
       "userId": "user-kongkong",
       "breakingNews": true,
       "commentReplies": true,
-      "notices": true,
       "darkMode": true,
-      "updatedAt": "2026-06-07T03:25:12.475Z"
+      "updatedAt": "2026-06-07T03:25:12.475Z",
+      "inquiryReplies": true,
+      "newsViewTime": true,
+      "policyUpdates": true
     },
     {
       "id": "notification-bf74a123-0f3b-401c-a486-8c3445a421cc",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "breakingNews": true,
       "commentReplies": true,
-      "notices": true,
       "darkMode": false,
-      "updatedAt": "2026-06-18T01:06:21.998Z"
+      "updatedAt": "2026-06-18T01:06:21.998Z",
+      "inquiryReplies": true,
+      "newsViewTime": true,
+      "policyUpdates": true
     }
   ],
   "userPreferences": [
@@ -102713,6 +103431,19 @@
       "emailSent": false,
       "createdAt": "2026-06-18T06:47:00.542Z",
       "updatedAt": "2026-06-18T06:47:00.542Z"
+    },
+    {
+      "id": "inquiry-1781837597708-sldfa7",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "typeId": "news-tip",
+      "title": "ㅇㅇㅇㅇ",
+      "content": "ㅇㅇㅇㅇㅇ",
+      "status": "received",
+      "replyChannel": "email",
+      "replyEmail": "hcartist@naver.com",
+      "emailSent": false,
+      "createdAt": "2026-06-19T02:53:17.708Z",
+      "updatedAt": "2026-06-19T02:53:17.708Z"
     }
   ],
   "searchSuggestions": [
@@ -102804,6 +103535,1110 @@
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "createdAt": "2026-06-18T06:40:21.862Z",
       "updatedAt": "2026-06-18T06:40:21.862Z"
+    },
+    {
+      "id": "comment-action-5819b829-22ef-47ed-9ce5-acc13b2d5c2b",
+      "newsId": "news-015",
+      "reason": "기타",
+      "targetId": "community-comment-news-015-3",
+      "targetType": "comment",
+      "targetUserId": "user-doyun",
+      "type": "report",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "createdAt": "2026-06-19T02:53:36.489Z",
+      "updatedAt": "2026-06-19T02:53:36.489Z"
+    },
+    {
+      "id": "comment-action-8e590166-a296-4470-ab94-61d5d741606d",
+      "newsId": "news-015",
+      "targetId": "community-comment-news-015-3",
+      "targetType": "comment",
+      "targetUserId": "user-doyun",
+      "type": "block",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "createdAt": "2026-06-19T02:53:40.204Z",
+      "updatedAt": "2026-06-19T02:53:40.204Z"
+    },
+    {
+      "id": "comment-action-2a74d60d-aaed-46e2-87b4-d3ee93f75fe9",
+      "newsId": "news-015",
+      "targetId": "community-comment-news-015-2",
+      "targetType": "comment",
+      "targetUserId": "user-yuna",
+      "type": "hide",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "createdAt": "2026-06-19T02:53:43.676Z",
+      "updatedAt": "2026-06-19T02:53:43.676Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "이 의견에 공감합니다.",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:00:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.068Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "저도 비슷하게 봤어요.",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:01:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.068Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "저도 비슷하게 봤어요.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:02:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.067Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "근거를 조금 더 봐야겠네요.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:03:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.067Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "근거를 조금 더 봐야겠네요.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:04:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.067Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "좋은 포인트네요.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:05:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.067Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "좋은 포인트네요.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:06:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.066Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-yuna",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "현실적인 의견이라고 생각합니다.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:07:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.066Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "현실적인 의견이라고 생각합니다.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:08:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.065Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-doyun",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "이 부분은 다시 논의가 필요해 보여요.",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:09:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.064Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "이 부분은 다시 논의가 필요해 보여요.",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T03:10:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.064Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-jisoo",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "이 의견에 공감합니다.",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T03:11:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.063Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-yuna",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "이 의견에 공감합니다.",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T03:12:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.063Z"
+    },
+    {
+      "id": "notification-commentReply-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reply-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-haneul",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글에 대댓글이 달렸습니다",
+      "body": "저도 비슷하게 봤어요.",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T03:13:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.062Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "dfsdfdsfdsfdsfdsfsd꼬기오",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:14:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.062Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dfsdfdsfdsfdsfdsfsd꼬기오",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:15:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.062Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dfsdfdsfdsfdsfdsfsd꼬기오",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:16:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.061Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dfsdfdsfdsfdsfdsfsd꼬기오",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:17:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.061Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "dfsdfdsfdsfdsfdsfsd꼬기오",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:18:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.061Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-460741fe-4327-47b9-8bd4-80f8c9188318-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dfsdfdsfdsfdsfdsfsd꼬기오",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:19:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.060Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뀨앙",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:20:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.060Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뀨앙",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:21:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.059Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뀨앙",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:22:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.059Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "뀨앙",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:23:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.059Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뀨앙",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:24:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.058Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db735682-3694-487a-8d11-e50a851a819d-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뀨앙",
+      "targetType": "news",
+      "targetId": "news-007",
+      "createdAt": "2026-06-19T03:25:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.058Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dk",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:26:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.057Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dk",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:27:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.057Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "dk",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:28:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.057Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dk",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:29:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.056Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dk",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:30:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.056Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-319cb6e5-b4e5-423f-b93c-2032883cb8a7-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "dk",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:31:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.056Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "왜 안돼",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:32:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.055Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "왜 안돼",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:33:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.054Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "왜 안돼",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:34:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.054Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "왜 안돼",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:35:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.054Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "왜 안돼",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:36:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.053Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-4855eec7-cf54-4a78-851e-ac5fe1f4b064-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "왜 안돼",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:37:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.053Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "어쩌라고",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:38:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.053Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "어쩌라고",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:39:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.052Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "어쩌라고",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:40:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.052Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "어쩌라고",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:41:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.052Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "어쩌라고",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:42:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.051Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-d343d52b-8377-4880-a483-65b88e20ecdb-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "어쩌라고",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:43:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.051Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㄷㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:44:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.051Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㄷㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:45:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.050Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㄷㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:46:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.050Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "ㄷㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:47:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.049Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㄷㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:48:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.049Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-db4901bb-095b-4cad-938d-c40eebb736c5-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㄷㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:49:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.048Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:50:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.047Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:51:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.047Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:52:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.046Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:53:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.046Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:54:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.045Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-9afe6231-c518-489d-8c44-59fec70bc759-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇㅇㅇㅇㅇㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:55:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.045Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "할로",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:56:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.044Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "할로",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:57:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.044Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "할로",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:58:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.043Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "할로",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T03:59:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.043Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "할로",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:00:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.043Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e495e252-2de2-4243-8d39-18252df9b19f-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "할로",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:01:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.042Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "ㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:02:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.042Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:03:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.042Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:04:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.041Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:05:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.041Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "ㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:06:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.041Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-a72aea29-7cc2-46c7-9a46-206ccc5c0966-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "ㅇㅇ",
+      "targetType": "news",
+      "targetId": "news-001",
+      "createdAt": "2026-06-19T04:07:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.040Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "응애",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T04:08:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.040Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "응애",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T04:09:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.040Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "응애",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T04:10:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.039Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "응애",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T04:11:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.039Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "응애",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T04:12:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.039Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-add51350-3f8f-4ad5-9d0b-7cda99d8e80f-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "응애",
+      "targetType": "news",
+      "targetId": "news-042",
+      "createdAt": "2026-06-19T04:13:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.038Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뭐야",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:14:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.038Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뭐야",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:15:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:10:01.344Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "뭐야",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:16:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.037Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뭐야",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:17:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.037Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뭐야",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:18:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.037Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-e16b7fd2-9004-4c28-9208-b698a2ac79a4-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "뭐야",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:19:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.036Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-kongkong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "이런 샤갈",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:20:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.036Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-hong",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "이런 샤갈",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:21:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.035Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-minji",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "이런 샤갈",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:22:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.035Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-junho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "이런 샤갈",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:23:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.035Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-soyeon",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "이런 샤갈",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:24:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.034Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-seed-reaction-to-hamster-comment-320cbbd6-5a15-400a-b6bb-3a0cae586099-user-taeho",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 싫어요 반응이 달렸습니다",
+      "body": "이런 샤갈",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-06-19T04:25:00.000Z",
+      "isRead": true,
+      "readAt": "2026-06-19T05:09:32.703Z"
+    },
+    {
+      "id": "notification-breakingNews-user-5da62014-46f6-453f-8e3c-47bb64bdc700-news-003",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "breakingNews",
+      "title": "속보 뉴스 발행",
+      "body": "여야, 예산안 세부 쟁점 두고 막판 협상",
+      "targetType": "news",
+      "targetId": "news-003",
+      "createdAt": "2026-12-31T08:30:00+09:00",
+      "isRead": true,
+      "readAt": "2026-06-19T05:09:37.199Z"
+    },
+    {
+      "id": "notification-policyUpdate-user-5da62014-46f6-453f-8e3c-47bb64bdc700-policy-002-2026-12-28T00_00_00_09_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "policyUpdate",
+      "title": "내 국가정책 업데이트",
+      "body": "청년 월세 한시 지원",
+      "targetType": "policy",
+      "targetId": "policy-002",
+      "createdAt": "2026-12-28T00:00:00+09:00",
+      "isRead": true,
+      "readAt": "2026-06-19T05:12:07.034Z"
+    },
+    {
+      "id": "notification-policyUpdate-user-5da62014-46f6-453f-8e3c-47bb64bdc700-policy-middle-002-2026-12-20T00_00_00_09_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "policyUpdate",
+      "title": "내 국가정책 업데이트",
+      "body": "중장년 창업 전환 컨설팅",
+      "targetType": "policy",
+      "targetId": "policy-middle-002",
+      "createdAt": "2026-12-20T00:00:00+09:00",
+      "isRead": true,
+      "readAt": "2026-06-19T05:09:41.280Z"
     }
   ]
 }

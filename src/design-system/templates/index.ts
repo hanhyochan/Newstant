@@ -4,6 +4,7 @@ export { NewsRollDockedControls } from "./docked-controls";
 export { NewsRollDetailBackButton } from "./detail-back-button";
 export { NewsRollHeaderTop } from "./header-top";
 export { NewsRollPagePanel } from "./page-panel";
+export { NewsRollPurpleOverlayPage } from "./purple-overlay-page";
 export { NewsRollSummaryHero, NewsRollSummaryHeroTop } from "./summary-hero";
 export { NewsRollTopFrame } from "./top-frame";
 export {

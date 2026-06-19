@@ -109,13 +109,13 @@ function getNoticeDetailItem(notice: InfoNoticeItem): PolicyItem {
 export function InfoView({
   isTextLarge,
   onOpenBreakingNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -221,7 +221,7 @@ export function InfoView({
         <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
-            onOpenMenu={onOpenMenu}
+            onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />

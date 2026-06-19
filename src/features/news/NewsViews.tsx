@@ -80,6 +80,7 @@ import {
   type CommentItem,
   type CommentReactionValue,
 } from "@/features/comments/utils/comment-data";
+import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
@@ -155,7 +156,7 @@ type HomeHeaderControls = {
   onOpenBreakingArticle?: (article: HomeArticle) => void;
   onModeChange: (mode: HomeViewMode) => void;
   onOpenBreakingNews: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 };
@@ -165,22 +166,13 @@ type PolicyDetailItem = {
 };
 export type PolicyItem = {
   details: PolicyDetailItem[];
+  id: string;
   registeredAt: string;
   summary: string;
   tags: string[];
   title: string;
   updatedAt: string;
 };
-export type QuickMenuTarget =
-  | "customNewsSettings"
-  | "notificationSettings"
-  | "profileSettings";
-export type QuickMenuRequest = {
-  id: number;
-  returnView: Tab;
-  target: QuickMenuTarget;
-};
-
 export const articleImage = "/images/news-apartment.png";
 export const defaultNewsDateTime = "2026-12-31T08:30:00";
 export const defaultNewsDateLabel = "2026년 12월 31일 08:30";
@@ -605,88 +597,6 @@ export const allNewsHeadlinesByPress: Record<
 
 export const allNewsRelayCategories = ["정치", "경제", "사회", "문화", "국제"];
 
-export function QuickMenuDrawer({
-  isOpen,
-  isDarkMode,
-  onClose,
-  onLogout,
-  onNavigate,
-}: {
-  isOpen: boolean;
-  isDarkMode: boolean;
-  onClose: () => void;
-  onLogout: () => void;
-  onNavigate: (target: QuickMenuTarget) => void;
-}) {
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-
-    function closeOnEscape(event: globalThis.KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-
-    document.addEventListener("keydown", closeOnEscape);
-
-    return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) {
-    return null;
-  }
-
-  const quickMenuItems: Array<{ label: string; target: QuickMenuTarget }> = [
-    { label: "내 정보 수정", target: "profileSettings" },
-    { label: "맞춤형 뉴스 설정", target: "customNewsSettings" },
-    { label: "알림 설정", target: "notificationSettings" },
-  ];
-
-  return (
-    <div
-      className={`container_quickMenuOverlay${isDarkMode ? " newsroll_dark" : ""}`}
-      onClick={onClose}
-      role="presentation"
-    >
-      <section
-        aria-label="퀵메뉴"
-        aria-modal="true"
-        className="container_quickMenuDrawer"
-        onClick={(event) => event.stopPropagation()}
-        role="dialog"
-      >
-        <div className="wrapper_quickMenuList">
-          {quickMenuItems.map((item, index) => (
-            <Fragment key={item.target}>
-              {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
-              <button
-                className="btn_quickMenuItem"
-                onClick={() => onNavigate(item.target)}
-                type="button"
-              >
-                <span className="text_mySettingLabel">{item.label}</span>
-                <span className="icon_myChevron" aria-hidden="true" />
-              </button>
-            </Fragment>
-          ))}
-        </div>
-        <button
-          aria-label="로그아웃"
-          className="btn_quickMenuLogout"
-          onClick={onLogout}
-          type="button"
-        >
-          로그아웃
-        </button>
-      </section>
-    </div>
-  );
-}
-
 function HomeArticleMeta({
   className = "newsroll_article_meta",
   date,
@@ -715,7 +625,7 @@ function HomeMainHeader({
   onOpenBreakingArticle,
   onModeChange,
   onOpenBreakingNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls) {
@@ -747,7 +657,7 @@ function HomeMainHeader({
         toolbar={
           <NewsToolbar
             isTextLarge={isTextLarge}
-            onOpenMenu={onOpenMenu}
+            onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
@@ -778,7 +688,7 @@ function HomeMainHeader({
                 size="large"
                 variant="outline"
               >
-                <Icon name="alarm" />
+                <Icon name="policy" />
               </Button>
             </NewsRollDockedControls>
           ),
@@ -806,7 +716,7 @@ export function HomeShell({
   onOpenBreakingArticle,
   onModeChange,
   onOpenBreakingNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
 }: HomeHeaderControls & { children: ReactNode }) {
@@ -914,7 +824,7 @@ export function HomeShell({
           onOpenBreakingArticle={onOpenBreakingArticle}
           onModeChange={onModeChange}
           onOpenBreakingNews={onOpenBreakingNews}
-          onOpenMenu={onOpenMenu}
+          onOpenNotifications={onOpenNotifications}
           onOpenSearch={onOpenSearch}
           onToggleTextSize={onToggleTextSize}
         />
@@ -1333,6 +1243,7 @@ function CommentReactionPanel({
   const [reportReason, setReportReason] = useState(commentReportReasons[0]);
   const [isReportReasonOpen, setIsReportReasonOpen] = useState(false);
   const [isReportSubmitting, setIsReportSubmitting] = useState(false);
+  const [moderationConfirmMessage, setModerationConfirmMessage] = useState("");
   const commentEdit = useInlineTextEdit<CommentId>();
   const replyEdit = useInlineTextEdit<string>();
   const initialCommentScrollKeyRef = useRef<string | null>(null);
@@ -2189,6 +2100,7 @@ function CommentReactionPanel({
     })
       .then(() => {
         setReportTarget(null);
+        setModerationConfirmMessage("신고되었습니다.");
       })
       .finally(() => {
         setIsReportSubmitting(false);
@@ -2251,10 +2163,12 @@ function CommentReactionPanel({
       }).then(() => {
         if (action === "hide") {
           hideTargetContent(commentId, "comment");
+          setModerationConfirmMessage("숨김처리되었습니다.");
           return;
         }
 
         blockUserContent(targetComment.userId);
+        setModerationConfirmMessage("차단되었습니다.");
       });
       }
   }
@@ -2298,10 +2212,12 @@ function CommentReactionPanel({
       }).then(() => {
         if (action === "hide") {
           hideTargetContent(reply.id, "reply");
+          setModerationConfirmMessage("숨김처리되었습니다.");
           return;
         }
 
         blockUserContent(target.targetUserId);
+        setModerationConfirmMessage("차단되었습니다.");
       });
     }
   }
@@ -2766,6 +2682,12 @@ function CommentReactionPanel({
             </div>
           </div>
         </ClientPortal>
+      ) : null}
+      {moderationConfirmMessage ? (
+        <ConfirmDialog
+          message={moderationConfirmMessage}
+          onConfirm={() => setModerationConfirmMessage("")}
+        />
       ) : null}
       {isComposerVisible ? (
         <ClientPortal>

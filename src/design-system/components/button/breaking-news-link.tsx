@@ -9,33 +9,43 @@ export type BreakingNewsLinkProps = {
 };
 
 export type BreakingNewsCardLinkProps = {
+  className?: string;
   href?: string;
   id?: string;
   onClick?: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   showIcon?: boolean;
   title: string;
+  tone?: "purple" | "white";
   updatedAt?: string;
   variant?: "home" | "list";
 };
 
 export function BreakingNewsCardLink({
+  className: extraClassName,
   href,
   id,
   onClick,
   showIcon = false,
   title,
+  tone = "purple",
   updatedAt,
   variant = "list",
 }: BreakingNewsCardLinkProps) {
-  const className =
-    variant === "home"
-      ? "btn_link_breakingNews newsroll_breakingCardLink"
-      : "newsroll_all_breaking_card newsroll_breakingCardLink";
+  const baseClassName =
+    variant === "home" ? "btn_link_breakingNews" : "newsroll_all_breaking_card";
+  const cardClassName = [
+    baseClassName,
+    "newsroll_breakingCardLink",
+    tone === "white" ? "newsroll_breakingCardLink_white" : "",
+    extraClassName,
+  ]
+    .filter(Boolean)
+    .join(" ");
   const titleClassName =
     variant === "home" ? "text_breakingNewsTitle" : "text_breakingCardTitle";
   const content = (
     <>
-      {showIcon ? <Icon name="alarm" /> : null}
+      {showIcon ? <Icon name="policy" /> : null}
       <span className={titleClassName}>{title}</span>
     </>
   );
@@ -43,7 +53,7 @@ export function BreakingNewsCardLink({
   if (href) {
     return (
       <a
-        className={className}
+        className={cardClassName}
         data-updated-at={updatedAt}
         href={href}
         id={id}
@@ -56,7 +66,7 @@ export function BreakingNewsCardLink({
 
   return (
     <button
-      className={className}
+      className={cardClassName}
       data-updated-at={updatedAt}
       id={id}
       onClick={onClick as MouseEventHandler<HTMLButtonElement>}
@@ -77,4 +87,8 @@ export function BreakingNewsLink({ href, onClick, title }: BreakingNewsLinkProps
       variant="home"
     />
   );
+}
+
+export function WhiteBreakingNewsCardLink(props: Omit<BreakingNewsCardLinkProps, "tone">) {
+  return <BreakingNewsCardLink {...props} tone="white" variant="home" />;
 }

@@ -41,6 +41,7 @@ type PolicyDetailItem = {
 
 type PolicyItem = {
   details: PolicyDetailItem[];
+  id: string;
   registeredAt: string;
   summary: string;
   tags: string[];
@@ -105,6 +106,7 @@ export function getPolicyItemFromWelfarePolicy(policy: WelfarePolicy): PolicyIte
       { label: "선발 방식", value: policy.selectionMethod },
       { label: "제출 서류", value: policy.documents },
     ],
+    id: policy.id,
     registeredAt: formatPolicyDate(policy.registeredAt),
     summary: policy.summary,
     tags: [policy.category, policy.subcategory, policy.label],
@@ -170,14 +172,14 @@ export function PolicyView({
   bodySearchSelection,
   isTextLarge,
   onOpenBreakingNews,
-  onOpenMenu,
+  onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
 }: {
   bodySearchSelection?: BodySearchSelection | null;
   isTextLarge: boolean;
   onOpenBreakingNews: () => void;
-  onOpenMenu: () => void;
+  onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
 }) {
@@ -199,7 +201,7 @@ export function PolicyView({
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
   const activeAgeIndex = Math.max(0, policyAgeTabs.indexOf(activeAge));
   const detailItemIndex = detailItem
-    ? visiblePolicyItems.findIndex((item) => item.title === detailItem.title)
+    ? visiblePolicyItems.findIndex((item) => item.id === detailItem.id)
     : -1;
   const previousPolicyItem =
     detailItemIndex > 0 ? visiblePolicyItems[detailItemIndex - 1] : null;
@@ -340,7 +342,7 @@ export function PolicyView({
           toolbar={
             <NewsToolbar
               isTextLarge={isTextLarge}
-              onOpenMenu={onOpenMenu}
+              onOpenNotifications={onOpenNotifications}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
@@ -359,7 +361,7 @@ export function PolicyView({
       <NewsRollPagePanel
         ariaLabel="국가정책 콘텐츠 영역"
         contentRef={policyPanelContentRef}
-        key={detailItem ? `policy-detail-${detailItem.title}` : "policy-list"}
+        key={detailItem ? `policy-detail-${detailItem.id}` : "policy-list"}
       >
         {detailItem ? (
           <PolicyDetailContent
@@ -441,7 +443,7 @@ export function PolicyView({
                     dividerClassName="newsroll_policy_itemDivider"
                     dividerPlacement="after-wrapped-item"
                     getKey={(item, index) =>
-                      `${activeAge}-${sortOrder}-${item.title}-${index}`
+                      `${activeAge}-${sortOrder}-${item.id}-${index}`
                     }
                     items={visiblePolicyItems}
                     renderItem={(item, index) => (
