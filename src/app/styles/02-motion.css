@@ -3,6 +3,12 @@
             var(--newsroll-docked-pop-motion-easing, ease) both;
     }
 
+    .newsroll_motion_exitDown {
+        pointer-events: none;
+        animation: newsroll_exitDown var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease) both;
+    }
+
     .newsroll_motion_enterFromRight {
         animation: newsroll_enterFromRight var(--newsroll-docked-pop-motion-duration, 260ms)
             var(--newsroll-docked-pop-motion-easing, ease) both;
@@ -23,6 +29,18 @@
         to {
             opacity: 1;
             transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+    }
+
+    @keyframes newsroll_exitDown {
+        from {
+            opacity: 1;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
         }
     }
 

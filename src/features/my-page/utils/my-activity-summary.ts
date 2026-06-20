@@ -163,6 +163,7 @@ export function buildMyActivitySummary<Article extends ArticleBase, Headline>({
         image: article.image,
         time: formatNewsDate(view.viewedAt),
         title: article.title,
+        viewId: view.id,
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));

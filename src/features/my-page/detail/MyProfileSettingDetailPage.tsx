@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   Inquiry,
@@ -10,12 +10,18 @@ import type {
 import {
   Button,
   Icon,
+  NewsRollCheckBox,
   NewsRollDivider,
+  NewsRollSmallCheckField,
   NewsRollSwitch,
   PillTabMenu,
   TextInput,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
+import {
+  BottomFixedActionBar,
+  bottomFixedActionBarExitDurationMs,
+} from "@/features/shared/BottomFixedActionBar";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 
 export type MyProfileSettingItemId =
@@ -327,7 +333,15 @@ function ModerationHistory({
   users: User[];
 }) {
   const [activeTab, setActiveTab] = useState<UserContentActionType>("block");
-  const [pendingActionId, setPendingActionId] = useState<string | null>(null);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [isReleaseBarLeaving, setIsReleaseBarLeaving] = useState(false);
+  const [isReleasing, setIsReleasing] = useState(false);
+  const [selectedActionIds, setSelectedActionIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const closeSelectionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const isReport = itemId === "reportHistory";
   const userNameById = useMemo(
     () => new Map(users.map((user) => [user.id, user.nickname])),
@@ -340,6 +354,123 @@ function ModerationHistory({
       ),
     [actions, activeTab, isReport],
   );
+  const selectableActionIds = useMemo(
+    () => filteredActions.map((action) => action.id),
+    [filteredActions],
+  );
+  const selectedCount = selectedActionIds.size;
+  const isAllSelected =
+    !isReport &&
+    selectableActionIds.length > 0 &&
+    selectableActionIds.every((actionId) => selectedActionIds.has(actionId));
+
+  useEffect(() => {
+    if (closeSelectionTimeoutRef.current) {
+      clearTimeout(closeSelectionTimeoutRef.current);
+      closeSelectionTimeoutRef.current = null;
+    }
+
+    setIsSelectionMode(false);
+    setIsReleaseBarLeaving(false);
+    setIsReleasing(false);
+    setSelectedActionIds(new Set());
+  }, [activeTab, itemId]);
+
+  useEffect(() => {
+    if (isReleaseBarLeaving) {
+      return;
+    }
+
+    setSelectedActionIds((current) => {
+      const selectableIdSet = new Set(selectableActionIds);
+      const next = new Set(
+        Array.from(current).filter((actionId) => selectableIdSet.has(actionId)),
+      );
+
+      return next.size === current.size ? current : next;
+    });
+  }, [isReleaseBarLeaving, selectableActionIds]);
+
+  useEffect(
+    () => () => {
+      if (closeSelectionTimeoutRef.current) {
+        clearTimeout(closeSelectionTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
+  function toggleAllSelection() {
+    if (isReport) {
+      return;
+    }
+
+    if (closeSelectionTimeoutRef.current) {
+      clearTimeout(closeSelectionTimeoutRef.current);
+      closeSelectionTimeoutRef.current = null;
+    }
+
+    setIsReleaseBarLeaving(false);
+    setIsReleasing(false);
+    setIsSelectionMode(true);
+    setSelectedActionIds(isAllSelected ? new Set() : new Set(selectableActionIds));
+  }
+
+  function toggleActionSelection(actionId: string) {
+    if (isReport) {
+      return;
+    }
+
+    if (closeSelectionTimeoutRef.current) {
+      clearTimeout(closeSelectionTimeoutRef.current);
+      closeSelectionTimeoutRef.current = null;
+    }
+
+    setIsReleaseBarLeaving(false);
+    setIsReleasing(false);
+    setIsSelectionMode(true);
+    setSelectedActionIds((current) => {
+      const next = new Set(current);
+
+      if (next.has(actionId)) {
+        next.delete(actionId);
+      } else {
+        next.add(actionId);
+      }
+
+      return next;
+    });
+  }
+
+  async function releaseSelectedActions() {
+    const actionIds = Array.from(selectedActionIds);
+
+    if (actionIds.length === 0 || isReleasing) {
+      return;
+    }
+
+    setIsReleasing(true);
+
+    try {
+      await Promise.all(actionIds.map((actionId) => onDeleteAction(actionId)));
+      setIsReleaseBarLeaving(true);
+
+      if (closeSelectionTimeoutRef.current) {
+        clearTimeout(closeSelectionTimeoutRef.current);
+      }
+
+      closeSelectionTimeoutRef.current = setTimeout(() => {
+        setSelectedActionIds(new Set());
+        setIsSelectionMode(false);
+        setIsReleaseBarLeaving(false);
+        setIsReleasing(false);
+        closeSelectionTimeoutRef.current = null;
+      }, bottomFixedActionBarExitDurationMs);
+    } catch (error) {
+      setIsReleasing(false);
+      throw error;
+    }
+  }
 
   return (
     <div className="wrapper_mySettingsDetailBody">
@@ -353,46 +484,84 @@ function ModerationHistory({
           value={activeTab}
         />
       )}
+      {isReport ? null : (
+        <NewsRollSmallCheckField
+          checked={isAllSelected}
+          className="btn_myModerationSelectAll"
+          disabled={selectableActionIds.length === 0 || isReleasing}
+          label="전체 선택"
+          onClick={toggleAllSelection}
+        />
+      )}
       {filteredActions.length === 0 ? (
         <DataUnavailableMessage target={isReport ? "신고 내역" : "차단/숨김 내역"} />
       ) : (
-        <div className="wrapper_mySettingsList">
-          {filteredActions.map((action, index) => (
-            <article className="wrapper_mySettingsHistoryItem" key={action.id}>
-              {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
-              <div className="wrapper_mySettingsHistoryText">
-                <span className="text_mySettingsHistoryMeta">
-                  {formatDate(action.createdAt)}
-                </span>
-                <div className="wrapper_mySettingsHistoryHeader">
-                  <strong>
-                    {action.targetUserId
-                      ? userNameById.get(action.targetUserId) ?? action.targetUserId
-                      : action.targetId}
-                  </strong>
-                  {isReport ? null : (
-                    <button
-                      aria-pressed="true"
-                      className="btn_textAction btn_mySettingsReleaseAction"
-                      disabled={pendingActionId === action.id}
-                      onClick={() => {
-                        setPendingActionId(action.id);
-                        onDeleteAction(action.id).finally(() => {
-                          setPendingActionId(null);
-                        });
-                      }}
-                      type="button"
-                    >
-                      {pendingActionId === action.id ? "\uCC98\uB9AC \uC911" : "\uD574\uC81C"}
-                    </button>
-                  )}
-                </div>
-                {isReport && action.reason ? <p>{action.reason}</p> : null}
-              </div>
-            </article>
-          ))}
-        </div>
+        <>
+          <div className="wrapper_mySettingsList">
+            {filteredActions.map((action, index) => {
+              const isSelected = selectedActionIds.has(action.id);
+              const targetLabel = action.targetUserId
+                ? userNameById.get(action.targetUserId) ?? action.targetUserId
+                : action.targetId;
+
+              return (
+                <article className="wrapper_mySettingsHistoryItem" key={action.id}>
+                  {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
+                  <div
+                    className="wrapper_myModerationSelectableItem"
+                    data-selection-mode={isSelectionMode ? "true" : "false"}
+                  >
+                    {!isReport && isSelectionMode ? (
+                      <button
+                        aria-label={`${targetLabel} 선택`}
+                        aria-pressed={isSelected}
+                        className="btn_myModerationItemCheck"
+                        onClick={() => toggleActionSelection(action.id)}
+                        type="button"
+                      >
+                        <NewsRollCheckBox
+                          checked={isSelected}
+                          className="box_myModerationItemCheck"
+                          size="small"
+                        />
+                      </button>
+                    ) : null}
+                    <div className="wrapper_mySettingsHistoryText">
+                      <span className="text_mySettingsHistoryMeta">
+                        {formatDate(action.createdAt)}
+                      </span>
+                      <div className="wrapper_mySettingsHistoryHeader">
+                        <strong>{targetLabel}</strong>
+                      </div>
+                      {isReport && action.reason ? <p>{action.reason}</p> : null}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </>
       )}
+      {!isReport && selectedCount > 0 ? (
+        <BottomFixedActionBar
+          ariaLabel="차단 숨김 선택 해제"
+          className="container_myModerationReleaseFixed"
+          isLeaving={isReleaseBarLeaving}
+        >
+          <Button
+            className="btn_myModerationRelease"
+            disabled={isReleasing}
+            onClick={releaseSelectedActions}
+            radius="rounded"
+            size="large"
+            tone="danger"
+            type="button"
+            variant="filled"
+          >
+            해제하기
+          </Button>
+        </BottomFixedActionBar>
+      ) : null}
     </div>
   );
 }
@@ -477,7 +646,7 @@ function AccountEditForm({
           저장
         </Button>
         <button
-          className="btn_textAction btn_mySettingsReleaseAction"
+          className="btn_textAction btn_mySettingsWithdrawAction"
           type="button"
         >
           회원탈퇴

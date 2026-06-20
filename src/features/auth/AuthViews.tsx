@@ -1,6 +1,14 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react";
 
 import {
   Button,
@@ -49,24 +57,50 @@ const socialLoginProviders = [
   },
 ] as const;
 
-function SocialLoginButtons() {
+function AuthTextActionButton({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+}) {
   return (
-    <div className="wrapper_socialLogin" aria-label="소셜 로그인">
-      {socialLoginProviders.map((provider) => (
-        <button
-          aria-label={provider.label}
-          className="btn_socialLogin"
-          key={provider.label}
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="img_socialLoginIcon"
-            src={provider.icon}
-          />
-        </button>
-      ))}
+    <Button className="btn_loginTextAction" classNameOnly onClick={onClick} type="button">
+      {children}
+    </Button>
+  );
+}
+
+function SocialLoginButtons({
+  onEmailLoginClick,
+}: {
+  onEmailLoginClick: () => void;
+}) {
+  return (
+    <div className="wrapper_socialLoginGroup">
+      <div className="wrapper_socialLoginOptions">
+        <span className="text_socialLoginTitle">빠른 로그인</span>
+        <div className="wrapper_socialLogin" aria-label="소셜 로그인">
+          {socialLoginProviders.map((provider) => (
+            <button
+              aria-label={provider.label}
+              className="btn_socialLogin"
+              key={provider.label}
+              type="button"
+            >
+              <img
+                alt=""
+                aria-hidden="true"
+                className="img_socialLoginIcon"
+                src={provider.icon}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+      <AuthTextActionButton onClick={onEmailLoginClick}>
+        이메일로 로그인·회원가입
+      </AuthTextActionButton>
     </div>
   );
 }
@@ -106,6 +140,16 @@ function SignupFieldActionButton({
   );
 }
 
+function AuthBackButton({ onClick }: { onClick: () => void }) {
+  return (
+    <NewsRollDetailBackButton
+      ariaLabel="이전 화면으로 돌아가기"
+      className="btn_authBack"
+      onClick={onClick}
+    />
+  );
+}
+
 export function LoginView({
   isSubmitting = false,
   loginError,
@@ -133,27 +177,19 @@ export function LoginView({
   const loginPasswordErrorId = "login-password-error";
 
   return (
-    <AuthLayout ariaLabel="로그인">
+    <AuthLayout
+      ariaLabel="로그인"
+      className={!isEmailLoginVisible ? "container_authLayout_loginLanding" : undefined}
+    >
       {!isEmailLoginVisible ? (
         <div className="wrapper_loginContent wrapper_loginLandingContent">
           <h1 className="text_loginLandingHero">세상을 스크롤하다</h1>
-          <div className="wrapper_loginLandingActions">
-            <SocialLoginButtons />
-            <button
-              className="btn_loginEmailEntry"
-              onClick={() => setIsEmailLoginVisible(true)}
-              type="button"
-            >
-              이메일로 로그인·회원가입
-            </button>
-          </div>
+          <SocialLoginButtons onEmailLoginClick={() => setIsEmailLoginVisible(true)} />
         </div>
       ) : (
       <div className="wrapper_loginContent wrapper_loginEmailContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_loginEyebrow">NewsRoll</p>
-          <h1 className="text_loginTitle">세상을 스크롤하다</h1>
-        </div>
+        <AuthBackButton onClick={() => setIsEmailLoginVisible(false)} />
+        <h1 className="text_loginTitle">세상을 스크롤하다</h1>
 
         <form
           className="form_login"
@@ -242,13 +278,9 @@ export function LoginView({
           </div>
 
           <div className="wrapper_loginSignup">
-            <button
-              className="btn_loginSignup"
-              onClick={onSignup}
-              type="button"
-            >
+            <AuthTextActionButton onClick={onSignup}>
               회원가입
-            </button>
+            </AuthTextActionButton>
           </div>
         </form>
       </div>
@@ -260,12 +292,18 @@ export function LoginView({
 function AuthLayout({
   ariaLabel,
   children,
+  className,
 }: {
   ariaLabel: string;
   children: ReactNode;
+  className?: string;
 }) {
+  const classNames = ["container_authLayout", className]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <section className="container_authLayout" aria-label={ariaLabel}>
+    <section className={classNames} aria-label={ariaLabel}>
       {children}
     </section>
   );
@@ -609,6 +647,7 @@ function SignupAgreementDetailView({
             isTextLarge={isTextLarge}
             onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
+            showNotifications={false}
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
@@ -625,17 +664,14 @@ function SignupAgreementDetailView({
     >
       <NewsRollPagePanel ariaLabel={`${agreement.title} 본문 영역`}>
         <div className="wrapper_authAgreementDetail">
-          <div className="wrapper_loginHeader">
-            <p className="text_authStepLabel">Agreement</p>
-            <h1
-              className="text_authPageTitle"
-              id={getAgreementTargetElementId(agreementId, "title")}
-            >
-              <AgreementSearchText query={highlightedQuery}>
-                {agreement.title}
-              </AgreementSearchText>
-            </h1>
-          </div>
+          <h1
+            className="text_loginTitle"
+            id={getAgreementTargetElementId(agreementId, "title")}
+          >
+            <AgreementSearchText query={highlightedQuery}>
+              {agreement.title}
+            </AgreementSearchText>
+          </h1>
 
           <div className="wrapper_authAgreementArticle">
             {agreement.sections.map((section, sectionIndex) => (
@@ -765,11 +801,13 @@ function SignupAgreementSearchView({
 
 export function SignupAgreementView({
   isTextLarge,
+  onBack,
   onNext,
   onOpenNotifications,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
+  onBack: () => void;
   onNext: (agreements: Record<SignupAgreementKey, boolean>) => void;
   onOpenNotifications: () => void;
   onToggleTextSize: () => void;
@@ -842,10 +880,8 @@ export function SignupAgreementView({
   return (
     <AuthLayout ariaLabel="회원가입 동의">
       <div className="wrapper_loginContent wrapper_signupAgreementContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Create Account</p>
-          <h1 className="text_authPageTitle">회원가입 동의</h1>
-        </div>
+        <AuthBackButton onClick={onBack} />
+        <h1 className="text_loginTitle">회원가입 동의</h1>
 
         <div className="wrapper_signupAgreementBody">
           <div className="wrapper_signupAgreementList">
@@ -853,7 +889,7 @@ export function SignupAgreementView({
               <div className="wrapper_signupAgreementItem" key={item.id}>
                 <NewsRollSmallCheckField
                   checked={agreements[item.id]}
-                  className="btn_signupAgreementCheckField"
+                  className="btn_signupAgreementDetailCheckField"
                   label={`(${item.required ? "필수" : "선택"}) ${item.title}`}
                   onClick={() => toggleAgreement(item.id)}
                 />
@@ -900,9 +936,11 @@ export function SignupAgreementView({
 }
 
 export function SignupEmailView({
+  onBack,
   onCheckEmail,
   onNext,
 }: {
+  onBack: () => void;
   onCheckEmail: (email: string) => Promise<boolean>;
   onNext: (email: string) => void;
 }) {
@@ -1043,13 +1081,8 @@ export function SignupEmailView({
   return (
     <AuthLayout ariaLabel="회원가입 이메일 인증">
       <div className="wrapper_signupStepContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 1</p>
-          <h1 className="text_authPageTitle">이메일 인증</h1>
-          <p className="text_signupStepDescription">
-            가입에 사용할 이메일과 전송된 6자리 인증번호를 입력해주세요.
-          </p>
-        </div>
+        <AuthBackButton onClick={onBack} />
+        <h1 className="text_loginTitle">이메일 인증</h1>
 
         <form
           className="form_signupStep"
@@ -1179,9 +1212,11 @@ export function SignupEmailView({
 const reservedSignupNicknames = ["콩콩이", "홍길동", "관리자", "뉴스롤"];
 
 export function SignupNicknameView({
+  onBack,
   onCheckNickname,
   onNext,
 }: {
+  onBack: () => void;
   onCheckNickname: (nickname: string) => Promise<boolean>;
   onNext: (nickname: string) => void;
 }) {
@@ -1191,6 +1226,7 @@ export function SignupNicknameView({
   const [nicknameCheckMessage, setNicknameCheckMessage] = useState("");
   const nicknameValidation = useZodFieldValidation(signupNicknameSchema, nickname);
   const isNicknameReady = nicknameValidation.isValid && isNicknameChecked;
+  const hasNicknameCheckError = Boolean(nicknameCheckMessage && !isNicknameChecked);
   const signupNicknameErrorId = "signup-nickname-error";
   const signupNicknameCheckId = "signup-nickname-check";
 
@@ -1221,8 +1257,8 @@ export function SignupNicknameView({
     setIsNicknameChecked(isAvailable);
     setNicknameCheckMessage(
       !isAvailable
-        ? "이미 사용 중인 닉네임이에요."
-        : "사용 가능한 닉네임이에요.",
+        ? "중복되는 닉네임입니다."
+        : "사용 가능한 닉네임입니다.",
     );
   }
 
@@ -1235,13 +1271,8 @@ export function SignupNicknameView({
   return (
     <AuthLayout ariaLabel="회원가입 닉네임 설정">
       <div className="wrapper_signupStepContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 2</p>
-          <h1 className="text_authPageTitle">닉네임 설정</h1>
-          <p className="text_signupStepDescription">
-            댓글과 마이페이지에 표시될 닉네임을 입력해주세요.
-          </p>
-        </div>
+        <AuthBackButton onClick={onBack} />
+        <h1 className="text_loginTitle">닉네임 설정</h1>
 
         <form
           className="form_signupStep"
@@ -1262,14 +1293,20 @@ export function SignupNicknameView({
                   ]
                     .filter(Boolean)
                     .join(" ") || undefined}
-                  aria-invalid={Boolean(nicknameValidation.errorMessage)}
+                  aria-invalid={Boolean(
+                    nicknameValidation.errorMessage || hasNicknameCheckError,
+                  )}
                   aria-label="회원가입 닉네임 입력"
                   autoComplete="nickname"
                   maxLength={12}
                   onBlur={nicknameValidation.markTouched}
                   onChange={(event) => updateNickname(event.currentTarget.value)}
                   placeholder="닉네임"
-                  state={nicknameValidation.errorMessage ? "error" : "default"}
+                  state={
+                    nicknameValidation.errorMessage || hasNicknameCheckError
+                      ? "error"
+                      : "default"
+                  }
                   type="text"
                   value={nickname}
                 />
@@ -1317,8 +1354,10 @@ export function SignupNicknameView({
 }
 
 export function SignupPasswordView({
+  onBack,
   onNext,
 }: {
+  onBack: () => void;
   onNext: (password: string) => void;
 }) {
   const [password, setPassword] = useState("");
@@ -1342,13 +1381,8 @@ export function SignupPasswordView({
   return (
     <AuthLayout ariaLabel="회원가입 비밀번호 설정">
       <div className="wrapper_signupStepContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 3</p>
-          <h1 className="text_authPageTitle">비밀번호 설정</h1>
-          <p className="text_signupStepDescription">
-            NewsRoll 계정에 사용할 비밀번호를 입력해주세요.
-          </p>
-        </div>
+        <AuthBackButton onClick={onBack} />
+        <h1 className="text_loginTitle">비밀번호 설정</h1>
 
         <form
           className="form_signupStep"
@@ -1478,8 +1512,10 @@ const signupCategoryItems: Array<{ id: SignupCategoryId; label: string }> = [
 ];
 
 export function SignupAgeView({
+  onBack,
   onNext,
 }: {
+  onBack: () => void;
   onNext: (ageId: SignupAgeId) => void;
 }) {
   const [selectedAge, setSelectedAge] = useState<SignupAgeId | null>(null);
@@ -1487,13 +1523,8 @@ export function SignupAgeView({
   return (
     <AuthLayout ariaLabel="나의 연령대 선택">
       <div className="wrapper_signupStepContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 4</p>
-          <h1 className="text_authPageTitle">나의 연령대 선택</h1>
-          <p className="text_signupStepDescription">
-            맞춤형 뉴스 추천에 사용할 연령대를 선택해주세요.
-          </p>
-        </div>
+        <AuthBackButton onClick={onBack} />
+        <h1 className="text_loginTitle">나의 연령대 선택</h1>
 
         <form
           className="form_signupStep"
@@ -1532,10 +1563,12 @@ export function SignupAgeView({
 
 export function SignupCategoryView({
   isSubmitting = false,
+  onBack,
   submitError,
   onNext,
 }: {
   isSubmitting?: boolean;
+  onBack: () => void;
   submitError?: string;
   onNext: (categoryIds: SignupCategoryId[]) => Promise<void> | void;
 }) {
@@ -1553,13 +1586,8 @@ export function SignupCategoryView({
   return (
     <AuthLayout ariaLabel="관심 카테고리 선택">
       <div className="wrapper_signupStepContent">
-        <div className="wrapper_loginHeader">
-          <p className="text_authStepLabel">Step 5</p>
-          <h1 className="text_authPageTitle">관심 카테고리 선택</h1>
-          <p className="text_signupStepDescription">
-            보고 싶은 뉴스 카테고리를 하나 이상 선택해주세요.
-          </p>
-        </div>
+        <AuthBackButton onClick={onBack} />
+        <h1 className="text_loginTitle">관심 카테고리 선택</h1>
 
         <form
           className="form_signupStep"

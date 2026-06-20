@@ -4,14 +4,12 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState
 } from "react";
 
 import {
   newsApi
 } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
   NewsBlockItem
 } from "@/design-system/components";
@@ -64,7 +62,6 @@ export function HomeView({
   const [articles, setArticles] = useState<HomeArticle[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
-  const homeReelsRecentKeyRef = useRef("");
   const closeHomeDetailImmediately = useCallback(() => {
     setDetailOpen(false);
   }, []);
@@ -117,33 +114,6 @@ export function HomeView({
       ignore = true;
     };
   }, []);
-
-  useEffect(() => {
-    const visibleArticles = filterArticlesByBlockedKeywords(articles, blockedKeywords);
-
-    if (homeViewMode !== "reels" || detailOpen || visibleArticles.length === 0) {
-      return;
-    }
-
-    const articleIds = visibleArticles
-      .map((article) => article.id)
-      .filter((id): id is string => Boolean(id));
-    const recentKey = articleIds.join("|");
-
-    if (!recentKey || homeReelsRecentKeyRef.current === recentKey) {
-      return;
-    }
-
-    homeReelsRecentKeyRef.current = recentKey;
-    articleIds.forEach((newsId) => {
-      newsApi
-        .addRecentNewsView({
-          newsId,
-          userId: currentUserId,
-        })
-        .catch(() => undefined);
-    });
-  }, [articles, blockedKeywords, detailOpen, homeViewMode]);
 
   const visibleArticles = useMemo(
     () => filterArticlesByBlockedKeywords(articles, blockedKeywords),

@@ -99,4 +99,7 @@ export const newsApi = {
       viewedAt,
     });
   },
+  deleteRecentNewsView(viewId: string) {
+    return apiClient.delete(`/recentNewsViews/${viewId}`);
+  },
 };

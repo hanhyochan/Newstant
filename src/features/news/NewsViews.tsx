@@ -80,6 +80,7 @@ import {
   type CommentItem,
   type CommentReactionValue,
 } from "@/features/comments/utils/comment-data";
+import { BottomFixedActionBar } from "@/features/shared/BottomFixedActionBar";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
@@ -1030,6 +1031,19 @@ function ArticleGuideSection({
     };
   }, [fallbackOptions, newsId]);
 
+  async function recordPollArticleActivity() {
+    if (!newsId) {
+      return;
+    }
+
+    await newsApi
+      .addRecentNewsView({
+        newsId,
+        userId: currentUserId,
+      })
+      .catch(() => undefined);
+  }
+
   async function vote(index: number) {
     if (selectedGuideOption === index) {
       setSelectedGuideOption(null);
@@ -1078,14 +1092,16 @@ function ArticleGuideSection({
     if (nextPollDetail && option) {
       if (currentPollVoteId) {
         await pollApi.updatePollVote(currentPollVoteId, option.id);
+        await recordPollArticleActivity();
         return;
       }
 
       const nextVote = await pollApi.submitPollVote({
-          pollId: nextPollDetail.id,
-          pollOptionId: option.id,
-          userId: currentUserId,
-        });
+        pollId: nextPollDetail.id,
+        pollOptionId: option.id,
+        userId: currentUserId,
+      });
+      await recordPollArticleActivity();
       setCurrentPollVoteId(nextVote.id);
     }
   }
@@ -1872,6 +1888,19 @@ function CommentReactionPanel({
     }
   }
 
+  async function recordCommentArticleActivity() {
+    if (!newsId) {
+      return;
+    }
+
+    await newsApi
+      .addRecentNewsView({
+        newsId,
+        userId: currentUserId,
+      })
+      .catch(() => undefined);
+  }
+
   async function submitComposer() {
     const body = composerDraft.trim();
 
@@ -1895,6 +1924,7 @@ function CommentReactionPanel({
         parentId: targetComment.id,
         userId: currentUserId,
       });
+      await recordCommentArticleActivity();
 
       setPendingScrollTarget({
         bottomGap: 0,
@@ -1915,6 +1945,7 @@ function CommentReactionPanel({
       pollOptionId: selectedPollOptionId ?? null,
       userId: currentUserId,
     });
+    await recordCommentArticleActivity();
 
     setPendingScrollTarget({
       bottomGap: 0,
@@ -2690,36 +2721,32 @@ function CommentReactionPanel({
         />
       ) : null}
       {isComposerVisible ? (
-        <ClientPortal>
-          <div
-            aria-label={composerMode === "reply" ? "대댓글 작성" : "댓글 작성"}
-            className="container_commentComposerFixed newsroll_motion_enterUp"
-            id={composerId}
-            role="region"
+        <BottomFixedActionBar
+          ariaLabel={composerMode === "reply" ? "대댓글 작성" : "댓글 작성"}
+          id={composerId}
+        >
+          <form
+            className="form_commentComposer"
+            onSubmit={(event) => {
+              event.preventDefault();
+              submitComposer();
+            }}
           >
-            <form
-              className="form_commentComposer"
-              onSubmit={(event) => {
-                event.preventDefault();
-                submitComposer();
-              }}
-            >
-              <CommentComposerInput
-                label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
-                onChange={(event) => setComposerDraft(event.target.value)}
-                placeholder={
-                  composerMode === "reply"
-                    ? "대댓글을 입력해 주세요."
-                    : "홍길동님은 어떻게 생각하시나요?"
-                }
-                submitLabel={
-                  composerMode === "reply" ? "대댓글 등록" : "댓글 등록"
-                }
-                value={composerDraft}
-              />
-            </form>
-          </div>
-        </ClientPortal>
+            <CommentComposerInput
+              label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
+              onChange={(event) => setComposerDraft(event.target.value)}
+              placeholder={
+                composerMode === "reply"
+                  ? "대댓글을 입력해 주세요."
+                  : "홍길동님은 어떻게 생각하시나요?"
+              }
+              submitLabel={
+                composerMode === "reply" ? "대댓글 등록" : "댓글 등록"
+              }
+              value={composerDraft}
+            />
+          </form>
+        </BottomFixedActionBar>
       ) : null}
     </>
   );
@@ -2920,6 +2947,19 @@ export function HomeReelCard({
     };
   }, [article.id, framed, recordRecentOnView]);
 
+  async function recordArticleActivity() {
+    if (!article.id) {
+      return;
+    }
+
+    await newsApi
+      .addRecentNewsView({
+        newsId: article.id,
+        userId: currentUserId,
+      })
+      .catch(() => undefined);
+  }
+
   async function toggleBookmark() {
     if (!article.id) {
       return;
@@ -2937,6 +2977,7 @@ export function HomeReelCard({
       targetType: "news",
       userId: currentUserId,
     });
+    await recordArticleActivity();
 
     setIsBookmarked(true);
     setBookmarkId(bookmark.id);
@@ -2976,6 +3017,7 @@ export function HomeReelCard({
         articleReactionId,
         nextReaction as ArticleReactionType,
       );
+      await recordArticleActivity();
       return;
     }
 
@@ -2984,6 +3026,7 @@ export function HomeReelCard({
       type: nextReaction as ArticleReactionType,
       userId: currentUserId,
     });
+    await recordArticleActivity();
 
     setArticleReactionId(createdReaction.id);
   }

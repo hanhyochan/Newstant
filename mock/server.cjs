@@ -8,6 +8,18 @@ const port = Number(process.env.MOCK_API_PORT ?? 4000);
 const host = process.env.MOCK_API_HOST;
 
 server.use(middlewares);
+server.delete("/recentNewsViews/:id", (req, res) => {
+  const collection = router.db.get("recentNewsViews");
+  const existingView = collection.find({ id: req.params.id }).value();
+
+  if (!existingView) {
+    res.status(404).jsonp({});
+    return;
+  }
+
+  collection.remove({ id: req.params.id }).write();
+  res.status(204).end();
+});
 server.use(router);
 
 const logServerUrl = (address) => {

@@ -5,6 +5,7 @@ import { cn } from "../shared/utils";
 type ButtonSize = "small" | "medium" | "large";
 type ButtonVariant = "filled" | "outline";
 type ButtonRadius = "square" | "rounded" | "full";
+type ButtonTone = "default" | "danger";
 
 type SharedButtonProps = {
   active?: boolean;
@@ -18,6 +19,7 @@ type SharedButtonProps = {
   shadow?: boolean;
   shape?: ButtonRadius;
   size?: ButtonSize;
+  tone?: ButtonTone;
   variant?: ButtonVariant;
 };
 
@@ -45,6 +47,7 @@ export function Button({
   shadow = false,
   shape,
   size = "medium",
+  tone = "default",
   variant = "outline",
   ...props
 }: ButtonProps) {
@@ -59,6 +62,7 @@ export function Button({
         resolvedRadius === "rounded" && "btn_rounded",
         resolvedRadius === "full" && "btn_full_rounded",
         active && "btn_active",
+        tone !== "default" && `btn_${tone}`,
         iconOnly && "btn_icon",
         shadow && "btn_shadow",
         className,

@@ -9,7 +9,7 @@ const pretendard = localFont({
   src: "../../public/fonts/woff2/PretendardVariable.woff2",
   display: "swap",
   style: "normal",
-  weight: "45 930",
+  weight: "45 920",
   variable: "--font-pretendard",
 });
 
@@ -23,7 +23,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html className={pretendard.variable} lang="ko">
-      <body className={pretendard.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

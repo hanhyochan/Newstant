@@ -555,6 +555,22 @@ export function MyPageView({
     setActiveProfileSettingItemId(null);
     setActiveDetailView(null);
   }, [myDetailScrollRestore]);
+  const deleteRecentViews = useCallback(async (viewIds: string[]) => {
+    const targetViewIds = new Set(viewIds);
+
+    if (targetViewIds.size === 0) {
+      return;
+    }
+
+    await Promise.allSettled(
+      Array.from(targetViewIds).map((viewId) =>
+        newsApi.deleteRecentNewsView(viewId),
+      ),
+    );
+    setMyDynamicRecentItems((current) =>
+      current.filter((item) => !targetViewIds.has(item.viewId)),
+    );
+  }, []);
   const myArticleDetailExitMotion = useEnterFromRightExitMotion({
     isOpen: isMyNestedDetailOpen,
     onClose: closeMyArticleDetailImmediately,
@@ -1118,6 +1134,7 @@ export function MyPageView({
             <MyRecentDetailPage
               items={myDynamicRecentItems}
               isLeaving={myDetailExitMotion.isLeaving}
+              onDeleteRecentViews={deleteRecentViews}
               onOpenArticle={openMyArticleDetail}
             />
           ) : isBookmarkOpen ? (

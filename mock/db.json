@@ -124,6 +124,23 @@
       "createdAt": "2026-06-18T08:09:00.000Z",
       "updatedAt": "2026-06-18T08:09:00.000Z",
       "loginId": "jiho"
+    },
+    {
+      "id": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "loginId": "햄스어",
+      "nickname": "햄스어",
+      "email": "hcartist569@gmail.com",
+      "password": "qqq222**",
+      "ageGroupId": "middle",
+      "agreementIds": [
+        "age",
+        "marketing",
+        "privacy",
+        "terms"
+      ],
+      "marketingAgreed": true,
+      "createdAt": "2026-06-20T03:16:00.369Z",
+      "updatedAt": "2026-06-20T03:16:00.369Z"
     }
   ],
   "userAgeGroups": [
@@ -12655,6 +12672,20 @@
       "userId": "user-jiho",
       "type": "neutral",
       "createdAt": "2026-06-18T10:23:00.000Z"
+    },
+    {
+      "id": "article-reaction-0f21e78e-dc0d-46dd-b880-e6f57f5d0cca",
+      "newsId": "news-015",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "type": "dislike",
+      "createdAt": "2026-06-20T15:27:40.317Z"
+    },
+    {
+      "id": "article-reaction-24dfd652-d36e-41b2-9a5b-877352897507",
+      "newsId": "news-022",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "type": "neutral",
+      "createdAt": "2026-06-20T15:27:51.724Z"
     }
   ],
   "recentNewsViews": [
@@ -14097,6 +14128,24 @@
       "userId": "user-hong",
       "newsId": "news-080",
       "viewedAt": "2026-06-19T00:53:00.000Z"
+    },
+    {
+      "id": "recent-9be4b704-5bb4-4c9e-8a18-c7152830a7ce",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "newsId": "news-015",
+      "viewedAt": "2026-06-20T15:28:17.285Z"
+    },
+    {
+      "id": "recent-786d922d-5171-44cd-8071-b86f8b815975",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "newsId": "news-022",
+      "viewedAt": "2026-06-20T15:27:51.849Z"
+    },
+    {
+      "id": "recent-804e5c07-e4d2-4186-bacb-fdf7cbee43e7",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "newsId": "news-030",
+      "viewedAt": "2026-06-20T15:28:25.047Z"
     }
   ],
   "polls": [
@@ -14147,6 +14196,12 @@
       "newsId": "news-019",
       "title": "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
       "createdAt": "2026-06-17T07:33:57.101Z"
+    },
+    {
+      "id": "poll-9a34d26e-5e8d-4c35-b967-3f9070b451a9",
+      "newsId": "news-022",
+      "title": "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
+      "createdAt": "2026-06-20T03:16:14.442Z"
     }
   ],
   "pollOptions": [
@@ -14275,6 +14330,18 @@
       "pollId": "poll-d8ba3aca-6306-480d-ae54-70f1475bacf6",
       "label": "정책 지원을 먼저 확대해야 한다.",
       "order": 3
+    },
+    {
+      "id": "poll-option-14735b66-7dff-4b74-9b11-ed6b73ef7d20",
+      "pollId": "poll-9a34d26e-5e8d-4c35-b967-3f9070b451a9",
+      "label": "그렇다",
+      "order": 1
+    },
+    {
+      "id": "poll-option-0d823240-9c7a-4d9a-9bdd-a3c59b683da5",
+      "pollId": "poll-9a34d26e-5e8d-4c35-b967-3f9070b451a9",
+      "label": "아니다",
+      "order": 2
     }
   ],
   "pollVotes": [
@@ -14942,6 +15009,13 @@
       "pollOptionId": "poll-option-3495987f-272f-47b6-a2cc-0161cab9db30",
       "userId": "user-jiho",
       "createdAt": "2026-06-18T10:23:00.000Z"
+    },
+    {
+      "id": "poll-vote-72fe8fb0-37bb-4957-b1a3-15dcac565307",
+      "pollId": "poll-9a34d26e-5e8d-4c35-b967-3f9070b451a9",
+      "pollOptionId": "poll-option-14735b66-7dff-4b74-9b11-ed6b73ef7d20",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "createdAt": "2026-06-20T03:16:17.577Z"
     }
   ],
   "comments": [
@@ -103125,6 +103199,17 @@
       "inquiryReplies": true,
       "newsViewTime": true,
       "policyUpdates": true
+    },
+    {
+      "id": "notification-4ce02b92-9401-4ffc-8083-a160857904ff",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "breakingNews": true,
+      "commentReplies": true,
+      "inquiryReplies": true,
+      "newsViewTime": true,
+      "policyUpdates": true,
+      "darkMode": false,
+      "updatedAt": "2026-06-20T03:16:00.573Z"
     }
   ],
   "userPreferences": [
@@ -103150,6 +103235,22 @@
       "pressIds": [],
       "ageGroupId": "minor",
       "updatedAt": "2026-06-17T02:12:45.682Z"
+    },
+    {
+      "id": "user-preference-055ce45f-63f9-42a9-bb6e-06198f3f9e58",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "categoryIds": [
+        "sports",
+        "economy",
+        "policy"
+      ],
+      "pressIds": [
+        "joongang",
+        "kukmin",
+        "hani"
+      ],
+      "ageGroupId": "middle",
+      "updatedAt": "2026-06-20T03:16:00.572Z"
     }
   ],
   "newsViewTimeOptions": [
@@ -103569,6 +103670,17 @@
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "createdAt": "2026-06-19T02:53:43.676Z",
       "updatedAt": "2026-06-19T02:53:43.676Z"
+    },
+    {
+      "id": "comment-action-9d707c83-c816-421a-82c1-8d9f8f54638a",
+      "newsId": "news-015",
+      "targetId": "community-comment-news-015-3",
+      "targetType": "comment",
+      "targetUserId": "user-doyun",
+      "type": "hide",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "createdAt": "2026-06-20T06:18:03.362Z",
+      "updatedAt": "2026-06-20T06:18:03.362Z"
     }
   ],
   "notifications": [
@@ -104639,6 +104751,42 @@
       "createdAt": "2026-12-20T00:00:00+09:00",
       "isRead": true,
       "readAt": "2026-06-19T05:09:41.280Z"
+    },
+    {
+      "id": "notification-breakingNews-user-kongkong-news-003",
+      "userId": "user-kongkong",
+      "type": "breakingNews",
+      "title": "속보 뉴스 발행",
+      "body": "여야, 예산안 세부 쟁점 두고 막판 협상",
+      "targetType": "news",
+      "targetId": "news-003",
+      "createdAt": "2026-12-31T08:30:00+09:00",
+      "isRead": true,
+      "readAt": "2026-06-20T02:49:44.351Z"
+    },
+    {
+      "id": "notification-newsViewTime-user-kongkong-2026-06-20-08_00",
+      "userId": "user-kongkong",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "아침 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-20T02:49:35.844Z",
+      "isRead": true,
+      "readAt": "2026-06-20T02:49:44.352Z"
+    },
+    {
+      "id": "notification-breakingNews-user-29773038-96e9-44ff-90a7-7cf1f0481bff-news-003",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "type": "breakingNews",
+      "title": "속보 뉴스 발행",
+      "body": "여야, 예산안 세부 쟁점 두고 막판 협상",
+      "targetType": "news",
+      "targetId": "news-003",
+      "createdAt": "2026-12-31T08:30:00+09:00",
+      "isRead": false,
+      "readAt": null
     }
   ]
 }

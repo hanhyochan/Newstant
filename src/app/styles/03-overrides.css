@@ -1294,6 +1294,12 @@
             var(--newsroll-docked-pop-motion-easing, ease) both;
     }
 
+    .newsroll_motion_exitDown {
+        pointer-events: none;
+        animation: newsroll_exitDown var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease) both;
+    }
+
     .newsroll_motion_enterFromRight {
         animation: newsroll_enterFromRight var(--newsroll-docked-pop-motion-duration, 260ms)
             var(--newsroll-docked-pop-motion-easing, ease) both;
@@ -1314,6 +1320,18 @@
         to {
             opacity: 1;
             transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+    }
+
+    @keyframes newsroll_exitDown {
+        from {
+            opacity: 1;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
         }
     }
 
@@ -1385,6 +1403,8 @@
         padding-right: calc(var(--spacing-padding-horizontal-12) + var(--spacing-gap-horizontal-12));
         color: var(--color-label-strong);
         background: transparent;
+        font-size: 16px;
+        line-height: 24px;
     }
 
     .input_commentComposer input::placeholder {
@@ -1454,8 +1474,8 @@
 
     .container_authLayout .btn_signupVerificationSend:disabled {
         border: 0;
-        color: var(--color-cool-neutral-70);
-        background: var(--color-cool-neutral-50);
+        color: var(--color-newsroll-purple-40);
+        background: var(--color-newsroll-purple-30);
     }
 
     .btn_textAction {
@@ -1746,9 +1766,9 @@
         box-sizing: border-box;
         resize: vertical;
         color: var(--color-label-strong);
-        font-size: var(--font-size-14);
+        font-size: 16px;
         font-weight: var(--font-weight-500);
-        line-height: var(--line-height-24);
+        line-height: 24px;
     }
 
     .wrapper_commentEditActions {
@@ -2770,9 +2790,9 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     color: var(--color-cool-neutral-100);
 }
 
-.newsroll_dark .btn_textAction.btn_mySettingsReleaseAction,
-.newsroll_dark .btn_textAction.btn_mySettingsReleaseAction:active,
-.newsroll_dark .btn_textAction.btn_mySettingsReleaseAction[aria-pressed='true'] {
+.newsroll_dark .btn_textAction.btn_mySettingsWithdrawAction,
+.newsroll_dark .btn_textAction.btn_mySettingsWithdrawAction:active,
+.newsroll_dark .btn_textAction.btn_mySettingsWithdrawAction[aria-pressed='true'] {
     color: var(--color-red-50);
 }
 
@@ -2940,4 +2960,25 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 
 .newsroll_dark .newsroll_breakingCardLink_white .text_breakingNewsTitle {
     color: var(--color-label-strong);
+}
+
+.newsroll_screen input,
+.newsroll_screen textarea,
+.newsroll_screen select,
+.text_input input,
+.input_transparent input,
+.input_searchField input,
+.input_commentComposer input,
+.textarea,
+.textarea_commentEdit,
+.wrapper_infoInquiry .textarea_infoComposer,
+.wrapper_infoSelectControl .select_infoField,
+.container_authLayout .input_transparent input,
+.container_authLayout .input_transparent input.input_authEmailControl,
+.container_authLayout .input_transparent input.input_authEmailControl:focus,
+.container_authLayout .input_transparent input.input_authEmailControl:active,
+.container_authLayout .input_transparent input.input_authEmailControl:valid,
+.container_authLayout .input_transparent input.input_authEmailControl:invalid {
+    font-size: 16px;
+    line-height: 24px;
 }

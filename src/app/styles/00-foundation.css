@@ -1,6 +1,6 @@
 :root {
     --font-sans:
-        var(--font-pretendard), 'Pretendard Variable', 'Apple SD Gothic Neo', 'Malgun Gothic',
+        var(--font-pretendard, 'Pretendard Variable'), 'Apple SD Gothic Neo', 'Malgun Gothic',
         sans-serif;
 }
 

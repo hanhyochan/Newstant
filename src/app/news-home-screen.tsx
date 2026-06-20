@@ -19,6 +19,7 @@ import {
 import { AllNewsView } from "@/features/all-news/AllNewsView";
 import {
   getNextAuthView,
+  getPreviousAuthView,
   isAuthView,
 } from "@/features/auth/auth-flow";
 import {
@@ -86,6 +87,10 @@ type SignupDraft = {
   password?: string;
 };
 
+function isProtectedView(view: View) {
+  return !isAuthView(view);
+}
+
 function NewsRollSplashScreen() {
   return (
     <section className="container_newsrollSplash" aria-label="NewsRoll 로딩">
@@ -147,6 +152,7 @@ function ActiveView({
   onAddBlockedKeyword,
   onCheckSignupEmail,
   onCheckSignupNickname,
+  onAuthBack,
   onDarkModeChange,
   onDeleteBlockedKeyword,
   onToggleBlockedKeyword,
@@ -180,6 +186,7 @@ function ActiveView({
   onAddBlockedKeyword: (keyword: string) => void;
   onCheckSignupEmail: (email: string) => Promise<boolean>;
   onCheckSignupNickname: (nickname: string) => Promise<boolean>;
+  onAuthBack: () => void;
   onDarkModeChange: (isDarkMode: boolean) => void;
   onDeleteBlockedKeyword: (keyword: string) => void;
   onToggleBlockedKeyword: (keyword: string) => void;
@@ -220,6 +227,7 @@ function ActiveView({
     return (
       <SignupAgreementView
         isTextLarge={isTextLarge}
+        onBack={onAuthBack}
         onNext={onSignupAgreementNext}
         onOpenNotifications={onOpenNotifications}
         onToggleTextSize={onToggleTextSize}
@@ -230,6 +238,7 @@ function ActiveView({
   if (view === "signupEmail") {
     return (
       <SignupEmailView
+        onBack={onAuthBack}
         onCheckEmail={onCheckSignupEmail}
         onNext={onSignupEmailNext}
       />
@@ -239,6 +248,7 @@ function ActiveView({
   if (view === "signupNickname") {
     return (
       <SignupNicknameView
+        onBack={onAuthBack}
         onCheckNickname={onCheckSignupNickname}
         onNext={onSignupNicknameNext}
       />
@@ -246,17 +256,18 @@ function ActiveView({
   }
 
   if (view === "signupPassword") {
-    return <SignupPasswordView onNext={onSignupPasswordNext} />;
+    return <SignupPasswordView onBack={onAuthBack} onNext={onSignupPasswordNext} />;
   }
 
   if (view === "signupAge") {
-    return <SignupAgeView onNext={onSignupAgeNext} />;
+    return <SignupAgeView onBack={onAuthBack} onNext={onSignupAgeNext} />;
   }
 
   if (view === "signupCategory") {
     return (
       <SignupCategoryView
         isSubmitting={isAuthSubmitting}
+        onBack={onAuthBack}
         onNext={onSignupCategoryNext}
         submitError={authError}
       />
@@ -356,6 +367,7 @@ function ActiveView({
 
 export function NewsHomeScreen() {
   const [activeView, setActiveView] = useState<View>("login");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
   const viewNavigationTimerRef = useRef<number | null>(null);
@@ -387,8 +399,6 @@ export function NewsHomeScreen() {
         .map((setting) => setting.keyword),
     [blockedKeywordSettings],
   );
-  const isPanelView =
-    activeView === "policy" || activeView === "my" || activeView === "info";
   const activeViewResetKey =
     activeView === "search" ||
     activeView === "notifications" ||
@@ -443,9 +453,11 @@ export function NewsHomeScreen() {
       const storedUser = hydrateCurrentUserSession();
 
       if (storedUser) {
+        setIsAuthenticated(true);
         setActiveView("home");
         await loadInitialContentData(storedUser.id, { ignore: () => ignore });
       } else {
+        setIsAuthenticated(false);
         setActiveView("login");
         await Promise.resolve();
       }
@@ -457,6 +469,7 @@ export function NewsHomeScreen() {
 
     boot().catch(() => {
       if (!ignore) {
+        setIsAuthenticated(false);
         setActiveView("login");
         setIsSplashVisible(false);
       }
@@ -466,6 +479,16 @@ export function NewsHomeScreen() {
       ignore = true;
     };
   }, [loadInitialContentData]);
+
+  useEffect(() => {
+    if (!isAuthenticated && isProtectedView(activeView)) {
+      setBodySearchSelection(null);
+      setAllNewsEntryMotionClassName("");
+      setIsAllNewsBreakingEntry(false);
+      setSearchBackView("home");
+      setActiveView("login");
+    }
+  }, [activeView, isAuthenticated]);
 
   useEffect(() => {
     return () => {
@@ -479,19 +502,31 @@ export function NewsHomeScreen() {
     };
   }, []);
 
+  function requireAuthenticatedView() {
+    const storedUser = hydrateCurrentUserSession();
+
+    if (storedUser) {
+      setIsAuthenticated(true);
+      return true;
+    }
+
+    setIsAuthenticated(false);
+    setBodySearchSelection(null);
+    setAllNewsEntryMotionClassName("");
+    setIsAllNewsBreakingEntry(false);
+    setSearchBackView("home");
+    setActiveView("login");
+    return false;
+  }
+
   function openSearch() {
+    if (!requireAuthenticatedView()) {
+      return;
+    }
+
     if (activeView !== "search") {
       setSearchBackView(
-        activeView === "notifications" ||
-          activeView === "login" ||
-          activeView === "signupAgreement" ||
-          activeView === "signupEmail" ||
-          activeView === "signupNickname" ||
-          activeView === "signupPassword" ||
-          activeView === "signupAge" ||
-          activeView === "signupCategory"
-          ? "home"
-          : activeView,
+        activeView === "notifications" || isAuthView(activeView) ? "home" : activeView,
       );
     }
 
@@ -499,18 +534,13 @@ export function NewsHomeScreen() {
   }
 
   function openNotifications() {
+    if (!requireAuthenticatedView()) {
+      return;
+    }
+
     if (activeView !== "notifications") {
       setSearchBackView(
-        activeView === "search" ||
-          activeView === "login" ||
-          activeView === "signupAgreement" ||
-          activeView === "signupEmail" ||
-          activeView === "signupNickname" ||
-          activeView === "signupPassword" ||
-          activeView === "signupAge" ||
-          activeView === "signupCategory"
-          ? "home"
-          : activeView,
+        activeView === "search" || isAuthView(activeView) ? "home" : activeView,
       );
     }
 
@@ -518,6 +548,10 @@ export function NewsHomeScreen() {
   }
 
   function openDefaultTab(tab: Tab) {
+    if (!requireAuthenticatedView()) {
+      return;
+    }
+
     const moveToTab = () => {
       setAllNewsEntryMotionClassName("");
       setIsAllNewsBreakingEntry(false);
@@ -549,6 +583,10 @@ export function NewsHomeScreen() {
   }
 
   function openBreakingNewsView() {
+    if (!requireAuthenticatedView()) {
+      return;
+    }
+
     const moveToBreakingNews = () => {
       setAllNewsEntryMotionClassName(getEnterFromRightMotionClassName());
       setIsAllNewsBreakingEntry(true);
@@ -590,7 +628,13 @@ export function NewsHomeScreen() {
 
   function openNextAuthStep() {
     setActiveView((current) => {
-      return isAuthView(current) ? getNextAuthView(current) : "home";
+      if (!isAuthView(current)) {
+        return "signupAgreement";
+      }
+
+      const nextAuthView = getNextAuthView(current);
+
+      return nextAuthView === "home" ? "signupAgreement" : nextAuthView;
     });
   }
 
@@ -646,6 +690,7 @@ export function NewsHomeScreen() {
       }
 
       setCurrentUserSession(user, { remember: input.isAutoLogin });
+      setIsAuthenticated(true);
       setIsSplashVisible(true);
       await loadInitialContentData(user.id).catch(() => undefined);
       setActiveView("home");
@@ -660,6 +705,7 @@ export function NewsHomeScreen() {
 
   function logout() {
     clearCurrentUserSession();
+    setIsAuthenticated(false);
     setIsSplashVisible(false);
     setAuthError("");
     setSignupDraft({});
@@ -672,8 +718,20 @@ export function NewsHomeScreen() {
 
   function startSignup() {
     setAuthError("");
+    setIsAuthenticated(false);
     setSignupDraft({});
     setActiveView("signupAgreement");
+  }
+
+  function moveToPreviousAuthStep() {
+    setAuthError("");
+    setActiveView((current) => {
+      if (!isAuthView(current)) {
+        return "login";
+      }
+
+      return getPreviousAuthView(current);
+    });
   }
 
   function moveToNextAuthStepWithDraft(nextDraft: SignupDraft) {
@@ -761,6 +819,7 @@ export function NewsHomeScreen() {
           categoryIds: nextDraft.categoryIds ?? [],
         });
         setCurrentUserSession(existingUser, { remember: true });
+        setIsAuthenticated(true);
         setIsSplashVisible(true);
         await loadInitialContentData(existingUser.id).catch(() => undefined);
         setSignupDraft({});
@@ -786,6 +845,7 @@ export function NewsHomeScreen() {
       });
 
       setCurrentUserSession(user, { remember: true });
+      setIsAuthenticated(true);
       setIsSplashVisible(true);
       await loadInitialContentData(user.id).catch(() => undefined);
       setSignupDraft({});
@@ -882,6 +942,10 @@ export function NewsHomeScreen() {
   }
 
   function openBodySearchResult(selection: BodySearchSelectionInput) {
+    if (!requireAuthenticatedView()) {
+      return;
+    }
+
     const nextView = selection.kind === "news" ? "home" : "policy";
 
     setAllNewsEntryMotionClassName("");
@@ -896,6 +960,10 @@ export function NewsHomeScreen() {
   }
 
   async function openNotificationTarget(notification: AppNotification) {
+    if (!requireAuthenticatedView()) {
+      return;
+    }
+
     if (notification.targetType === "news" && notification.targetId) {
       try {
         const news = await newsApi.getNewsList();
@@ -956,25 +1024,30 @@ export function NewsHomeScreen() {
     );
   }
 
+  const effectiveView: View =
+    !isAuthenticated && isProtectedView(activeView) ? "login" : activeView;
+  const isEffectivePanelView =
+    effectiveView === "policy" || effectiveView === "my" || effectiveView === "info";
+
   return (
     <main
-      className={`newsroll_screen${activeView === "home" ? " newsroll_screen_home" : ""}${
-        activeView === "all" ? " newsroll_screen_all" : ""
+      className={`newsroll_screen${effectiveView === "home" ? " newsroll_screen_home" : ""}${
+        effectiveView === "all" ? " newsroll_screen_all" : ""
       }${
-        activeView === "login" ||
-        activeView === "signupAgreement" ||
-        activeView === "signupEmail" ||
-        activeView === "signupNickname" ||
-        activeView === "signupPassword" ||
-        activeView === "signupAge" ||
-        activeView === "signupCategory"
+        effectiveView === "login" ||
+        effectiveView === "signupAgreement" ||
+        effectiveView === "signupEmail" ||
+        effectiveView === "signupNickname" ||
+        effectiveView === "signupPassword" ||
+        effectiveView === "signupAge" ||
+        effectiveView === "signupCategory"
           ? " newsroll_screen_login"
           : ""
       }${
-        activeView === "search" || activeView === "notifications"
+        effectiveView === "search" || effectiveView === "notifications"
           ? " newsroll_screen_search"
           : ""
-      }${isPanelView ? " newsroll_screen_panel" : ""}${
+      }${isEffectivePanelView ? " newsroll_screen_panel" : ""}${
         isTextLarge ? " newsroll_text_large" : ""
       }${isDarkMode ? " newsroll_dark" : ""}`}
     >
@@ -986,11 +1059,12 @@ export function NewsHomeScreen() {
           blockedKeywords={blockedKeywords}
           blockedKeywordSettings={blockedKeywordSettings}
           isDarkMode={isDarkMode}
-          key={`${activeView}-${activeViewResetKey}`}
+          key={`${effectiveView}-${activeViewResetKey}`}
           isAllNewsBreakingEntry={isAllNewsBreakingEntry}
           isAuthSubmitting={isAuthSubmitting}
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
+          onAuthBack={moveToPreviousAuthStep}
           onCheckSignupEmail={checkSignupEmail}
           onCheckSignupNickname={checkSignupNickname}
           onDarkModeChange={setIsDarkMode}
@@ -1027,23 +1101,24 @@ export function NewsHomeScreen() {
           }
           onSignupStart={startSignup}
           onToggleTextSize={() => setIsTextLarge((current) => !current)}
-          view={activeView}
+          view={effectiveView}
         />
       </div>
 
-      {activeView !== "search" &&
-      activeView !== "notifications" &&
-      activeView !== "login" &&
-      activeView !== "signupAgreement" &&
-      activeView !== "signupEmail" &&
-      activeView !== "signupNickname" &&
-      activeView !== "signupPassword" &&
-      activeView !== "signupAge" &&
-      activeView !== "signupCategory" ? (
+      {isAuthenticated &&
+      effectiveView !== "search" &&
+      effectiveView !== "notifications" &&
+      effectiveView !== "login" &&
+      effectiveView !== "signupAgreement" &&
+      effectiveView !== "signupEmail" &&
+      effectiveView !== "signupNickname" &&
+      effectiveView !== "signupPassword" &&
+      effectiveView !== "signupAge" &&
+      effectiveView !== "signupCategory" ? (
         <nav className="newsroll_bottom_nav" aria-label="하단 탐색">
           {navItems.map((item) => (
             <IconButton
-              aria-current={activeView === item.tab ? "page" : undefined}
+              aria-current={effectiveView === item.tab ? "page" : undefined}
               baseClassName="newsroll_nav_item"
               icon={item.icon}
               key={item.label}

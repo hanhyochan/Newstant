@@ -12,12 +12,14 @@ export function NewsToolbar({
   isTextLarge,
   onOpenNotifications,
   onOpenSearch,
+  showNotifications = true,
   showSearch = true,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onOpenNotifications: () => void;
   onOpenSearch: () => void;
+  showNotifications?: boolean;
   showSearch?: boolean;
   onToggleTextSize: () => void;
 }) {
@@ -27,6 +29,11 @@ export function NewsToolbar({
     let ignore = false;
 
     async function loadUnreadNotifications() {
+      if (!showNotifications) {
+        setHasUnreadNotifications(false);
+        return;
+      }
+
       try {
         hydrateCurrentUserSession();
         await notificationApi.syncNotifications();
@@ -53,7 +60,7 @@ export function NewsToolbar({
       window.removeEventListener("focus", loadUnreadNotifications);
       window.removeEventListener(notificationsUpdatedEventName, loadUnreadNotifications);
     };
-  }, []);
+  }, [showNotifications]);
 
   return (
     <div className="newsroll_toolbar" aria-label="상단 도구">
@@ -76,13 +83,15 @@ export function NewsToolbar({
           onClick={onOpenSearch}
         />
       ) : null}
-      <IconButton
-        baseClassName="newsroll_toolbar_icon"
-        className={hasUnreadNotifications ? "has_unread_notification" : undefined}
-        icon="alarm"
-        label="알림"
-        onClick={onOpenNotifications}
-      />
+      {showNotifications ? (
+        <IconButton
+          baseClassName="newsroll_toolbar_icon"
+          className={hasUnreadNotifications ? "has_unread_notification" : undefined}
+          icon="alarm"
+          label="알림"
+          onClick={onOpenNotifications}
+        />
+      ) : null}
     </div>
   );
 }
