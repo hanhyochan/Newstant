@@ -3317,6 +3317,25 @@
   color: var(--color-label-strong);
 }
 
+.wrapper_myRecentCategoryControls {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}
+
+.wrapper_myRecentCategoryControls .tab_myCategoryMenu {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.wrapper_myRecentCategoryControls .btn_myRecentSelectAll {
+  align-self: center;
+  flex: 0 0 auto;
+}
+
 .btn_myRecentSelectAll .box_newsrollCheck,
 .btn_myModerationSelectAll .box_newsrollCheck,
 .btn_myModerationItemCheck .box_myModerationItemCheck,
@@ -4169,6 +4188,7 @@
 .container_myBookmarkPage > .tab_myCategoryMenu,
 .container_myVotePage > .tab_myCategoryMenu,
 .container_myCommentPage > .tab_myCategoryMenu,
+.wrapper_myTabbedDetailContent > .wrapper_myRecentCategoryControls,
 .wrapper_myTabbedDetailContent > .tab_myCategoryMenu {
   position: sticky;
   top: 0;

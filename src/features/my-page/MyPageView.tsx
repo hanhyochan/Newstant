@@ -108,6 +108,7 @@ import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 
 const myRecentPreviewLimit = 10;
+const myCategoryTabMinimumItemCount = 12;
 
 const myCategoryGroups = [
   {
@@ -247,8 +248,11 @@ function getMySummaryCategoryTabs(items: { category: string }[]) {
   ];
 }
 
-function hasMultipleMySummaryCategories(items: { category: string }[]) {
-  return getUniqueValues(items.map((item) => item.category)).length > 1;
+function shouldShowMyCategoryTabs(items: { category: string }[]) {
+  return (
+    items.length >= myCategoryTabMinimumItemCount &&
+    getUniqueValues(items.map((item) => item.category)).length > 1
+  );
 }
 
 function hasMultipleMyCommentKinds(items: { commentKind: Exclude<MyCommentKind, "all"> }[]) {
@@ -425,6 +429,9 @@ export function MyPageView({
     scrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
   } | null>(null);
   const [myPolicyDetail, setMyPolicyDetail] = useState<PolicyItem | null>(null);
+  const [activeRecentCategory, setActiveRecentCategory] = useState(
+    () => mySummaryAllTabLabel,
+  );
   const [activeVoteCategory, setActiveVoteCategory] = useState(
     () => myVoteCategoryTabs[0] ?? "",
   );
@@ -500,16 +507,24 @@ export function MyPageView({
       ),
     [myDynamicBookmarkItems],
   );
+  const dynamicRecentCategoryTabs = useMemo(
+    () => getMySummaryCategoryTabs(myDynamicRecentItems),
+    [myDynamicRecentItems],
+  );
   const dynamicVoteCategoryTabs = useMemo(
     () => getMySummaryCategoryTabs(myDynamicVoteItems),
     [myDynamicVoteItems],
   );
   const shouldShowBookmarkCategoryTabs = useMemo(
-    () => dynamicBookmarkCategoryTabs.length > 1,
-    [dynamicBookmarkCategoryTabs],
+    () => shouldShowMyCategoryTabs(myDynamicBookmarkItems),
+    [myDynamicBookmarkItems],
+  );
+  const shouldShowRecentCategoryTabs = useMemo(
+    () => shouldShowMyCategoryTabs(myDynamicRecentItems),
+    [myDynamicRecentItems],
   );
   const shouldShowVoteCategoryTabs = useMemo(
-    () => hasMultipleMySummaryCategories(myDynamicVoteItems),
+    () => shouldShowMyCategoryTabs(myDynamicVoteItems),
     [myDynamicVoteItems],
   );
   const shouldShowCommentKindTabs = useMemo(
@@ -676,6 +691,7 @@ export function MyPageView({
         setMyVoteCount(nextVoteItems.length);
         setActiveCommentCategory("all");
         setActiveBookmarkCategory(myBookmarkTabs[0]);
+        setActiveRecentCategory(getMySummaryCategoryTabs(nextRecentItems)[0] ?? "");
         if (nextVoteItems.length > 0) {
           setActiveVoteCategory(getMySummaryCategoryTabs(nextVoteItems)[0] ?? "");
         }
@@ -690,6 +706,7 @@ export function MyPageView({
         setMyDynamicVoteItems([]);
         setMyBookmarkCount(0);
         setMyVoteCount(0);
+        setActiveRecentCategory(mySummaryAllTabLabel);
       }
     });
 
@@ -1132,10 +1149,14 @@ export function MyPageView({
         >
           {isRecentOpen ? (
             <MyRecentDetailPage
+              activeCategory={activeRecentCategory}
               items={myDynamicRecentItems}
               isLeaving={myDetailExitMotion.isLeaving}
+              onCategoryChange={setActiveRecentCategory}
               onDeleteRecentViews={deleteRecentViews}
               onOpenArticle={openMyArticleDetail}
+              showTabs={shouldShowRecentCategoryTabs}
+              tabs={dynamicRecentCategoryTabs}
             />
           ) : isBookmarkOpen ? (
             <MyBookmarkDetailPage

@@ -5,6 +5,7 @@ import {
   Button,
   NewsRollCheckBox,
   NewsRollSmallCheckField,
+  PillTabMenu,
 } from "@/design-system/components";
 import {
   AllNewsRelayItem,
@@ -22,6 +23,7 @@ import { SeparatedList } from "@/features/shared/SeparatedList";
 
 export type MyRecentSummaryItem = {
   article: HomeArticle;
+  category: string;
   dateTime: string;
   image: string;
   time: string;
@@ -45,16 +47,37 @@ export function createMyRecentArticle(
   };
 }
 
+function isAllCategory(category: string) {
+  return category === "전체";
+}
+
+function getVisibleItems(
+  items: MyRecentSummaryItem[],
+  activeCategory: string,
+) {
+  return isAllCategory(activeCategory)
+    ? items
+    : items.filter((item) => item.category === activeCategory);
+}
+
 export function MyRecentDetailPage({
+  activeCategory,
   items,
   isLeaving = false,
+  onCategoryChange,
   onDeleteRecentViews,
   onOpenArticle,
+  showTabs,
+  tabs,
 }: {
+  activeCategory: string;
   items: MyRecentSummaryItem[];
   isLeaving?: boolean;
+  onCategoryChange: (category: string) => void;
   onDeleteRecentViews: (viewIds: string[]) => Promise<void> | void;
   onOpenArticle: OpenArticleDetail;
+  showTabs: boolean;
+  tabs: string[];
 }) {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -65,11 +88,27 @@ export function MyRecentDetailPage({
   const closeSelectionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const visibleRecentItems = useMemo(
+    () => (showTabs ? getVisibleItems(items, activeCategory) : items),
+    [activeCategory, items, showTabs],
+  );
   const selectedCount = selectedViewIds.size;
-  const selectableViewIds = useMemo(() => items.map((item) => item.viewId), [items]);
+  const selectableViewIds = useMemo(
+    () => visibleRecentItems.map((item) => item.viewId),
+    [visibleRecentItems],
+  );
   const isAllSelected =
     selectableViewIds.length > 0 &&
     selectableViewIds.every((viewId) => selectedViewIds.has(viewId));
+  const selectAllControl = (
+    <NewsRollSmallCheckField
+      checked={isAllSelected}
+      className="btn_myRecentSelectAll"
+      disabled={selectableViewIds.length === 0 || isDeleting}
+      label="전체 선택"
+      onClick={toggleAllSelection}
+    />
+  );
 
   useEffect(
     () => () => {
@@ -79,6 +118,21 @@ export function MyRecentDetailPage({
     },
     [],
   );
+
+  useEffect(() => {
+    if (isDeleteBarLeaving) {
+      return;
+    }
+
+    setSelectedViewIds((current) => {
+      const selectableIdSet = new Set(selectableViewIds);
+      const next = new Set(
+        Array.from(current).filter((viewId) => selectableIdSet.has(viewId)),
+      );
+
+      return next.size === current.size ? current : next;
+    });
+  }, [isDeleteBarLeaving, selectableViewIds]);
 
   function toggleAllSelection() {
     if (closeSelectionTimeoutRef.current) {
@@ -149,55 +203,69 @@ export function MyRecentDetailPage({
       className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
-      <NewsRollSmallCheckField
-        checked={isAllSelected}
-        className="btn_myRecentSelectAll"
-        disabled={selectableViewIds.length === 0 || isDeleting}
-        label="전체 선택"
-        onClick={toggleAllSelection}
-      />
-      {items.length === 0 ? (
-        <DataUnavailableMessage target="최근 본 뉴스" />
-      ) : (
-        <>
-          <SeparatedList
-            dividerClassName="newsroll_all_itemDivider"
-            getKey={(item, index) => `${item.viewId}-${item.title}-${index}`}
-            items={items}
-            renderItem={(item, index) => {
-              const isSelected = selectedViewIds.has(item.viewId);
+      <div className="wrapper_myTabbedDetailContent">
+        {showTabs ? (
+          <div className="wrapper_myRecentCategoryControls">
+            <PillTabMenu
+              ariaLabel="최근 본 뉴스 카테고리"
+              className="tab_myCategoryMenu"
+              items={tabs.map((category) => ({
+                id: category,
+                label: category,
+              }))}
+              onChange={onCategoryChange}
+              value={activeCategory}
+            />
+            {selectAllControl}
+          </div>
+        ) : (
+          selectAllControl
+        )}
+        {visibleRecentItems.length === 0 ? (
+          <DataUnavailableMessage target="최근 본 뉴스" />
+        ) : (
+          <>
+            <SeparatedList
+              dividerClassName="newsroll_all_itemDivider"
+              getKey={(item, index) => `${item.viewId}-${item.title}-${index}`}
+              items={visibleRecentItems}
+              renderItem={(item, index) => {
+                const isSelected = selectedViewIds.has(item.viewId);
 
-              return (
-                <div
-                  className="wrapper_myRecentSelectableItem"
-                  data-selection-mode={isSelectionMode ? "true" : "false"}
-                >
-                  {isSelectionMode ? (
-                    <button
-                      aria-label={`${item.title} 선택`}
-                      aria-pressed={isSelected}
-                      className="btn_myRecentItemCheck"
-                      onClick={() => toggleItemSelection(item.viewId)}
-                      type="button"
-                    >
-                      <NewsRollCheckBox
-                        checked={isSelected}
-                        className="box_myRecentItemCheck"
-                        size="small"
-                      />
-                    </button>
-                  ) : null}
-                  <AllNewsRelayItem
-                    featured={index === 0 || index === 5}
-                    item={item}
-                    onClick={() => onOpenArticle(createMyRecentArticle(item, index))}
-                  />
-                </div>
-              );
-            }}
-          />
-        </>
-      )}
+                return (
+                  <div
+                    className="wrapper_myRecentSelectableItem"
+                    data-selection-mode={isSelectionMode ? "true" : "false"}
+                  >
+                    {isSelectionMode ? (
+                      <button
+                        aria-label={`${item.title} 선택`}
+                        aria-pressed={isSelected}
+                        className="btn_myRecentItemCheck"
+                        onClick={() => toggleItemSelection(item.viewId)}
+                        type="button"
+                      >
+                        <NewsRollCheckBox
+                          checked={isSelected}
+                          className="box_myRecentItemCheck"
+                          size="small"
+                        />
+                      </button>
+                    ) : null}
+                    <AllNewsRelayItem
+                      featured={index === 0 || index === 5}
+                      item={item}
+                      onClick={() =>
+                        onOpenArticle(createMyRecentArticle(item, index))
+                      }
+                    />
+                  </div>
+                );
+              }}
+            />
+          </>
+        )}
+      </div>
       {selectedCount > 0 ? (
         <BottomFixedActionBar
           ariaLabel="최근 본 뉴스 선택 삭제"

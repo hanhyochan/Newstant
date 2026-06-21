@@ -2432,6 +2432,7 @@
 .container_myBookmarkPage > .tab_myCategoryMenu,
 .container_myVotePage > .tab_myCategoryMenu,
 .container_myCommentPage > .tab_myCategoryMenu,
+.wrapper_myTabbedDetailContent > .wrapper_myRecentCategoryControls,
 .wrapper_myTabbedDetailContent > .tab_myCategoryMenu {
     position: sticky;
     top: 0;
