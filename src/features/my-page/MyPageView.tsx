@@ -37,7 +37,8 @@ import {
   IconButton,
   NewsBlockItem,
   NewsRollDivider,
-  ReactionButton
+  ReactionButton,
+  TextButton
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
@@ -1357,13 +1358,13 @@ export function MyPageView({
 
           <section className="container_mySettingsSection">
             <NewsRollDivider className="divider_mySection" />
-            <button
-              className="btn_textAction btn_myLogout"
+            <TextButton
+              className="btn_myLogout"
               type="button"
               onClick={() => setIsLogoutDialogOpen(true)}
             >
               로그아웃
-            </button>
+            </TextButton>
           </section>
           {isLogoutDialogOpen ? (
             <ConfirmDialog

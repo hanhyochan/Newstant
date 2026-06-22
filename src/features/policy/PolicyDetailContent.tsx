@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
 
@@ -6,10 +6,12 @@ import { bookmarkApi } from "@/app/_newsroll/api";
 import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
   ArticleActionButtons,
-  Button,
   ChipLabel,
+  DetailPaginationButton,
   Icon,
   NewsRollDivider,
+  PrimaryButton,
+  PrimaryButtonGroup,
 } from "@/design-system/components";
 import { useShareContent } from "@/design-system/templates";
 
@@ -201,14 +203,14 @@ export function PolicyDetailContent({
       )}
 
       {hideDetailToggle ? null : (
-        <Button
-          className="newsroll_policy_detail_toggle"
-          size="large"
-          variant="filled"
+        <PrimaryButtonGroup>
+        <PrimaryButton
+          className="newsroll_policy_detail_toggle"
         >
           <Icon name="plus" />
           상세보기
-        </Button>
+        </PrimaryButton>
+      </PrimaryButtonGroup>
       )}
       </div>
 
@@ -217,26 +219,16 @@ export function PolicyDetailContent({
         role="group"
         aria-label="이전글 다음글"
       >
-        <Button
-          className="btn_originalArticle newsroll_policy_detail_page_button"
-          classNameOnly
+        <DetailPaginationButton
+          direction="previous"
           disabled={!onPreviousItem}
           onClick={onPreviousItem}
-          type="button"
-        >
-          <Icon name="arrow" />
-          이전글
-        </Button>
-        <Button
-          className="btn_originalArticle newsroll_policy_detail_page_button"
-          classNameOnly
+        />
+        <DetailPaginationButton
+          direction="next"
           disabled={!onNextItem}
           onClick={onNextItem}
-          type="button"
-        >
-          다음글
-          <Icon name="arrow" />
-        </Button>
+        />
       </div>
     </div>
   );

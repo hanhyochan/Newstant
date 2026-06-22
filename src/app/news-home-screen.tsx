@@ -24,6 +24,8 @@ import {
 } from "@/features/auth/auth-flow";
 import {
   LoginView,
+  PasswordResetEmailView,
+  PasswordResetPasswordView,
   SignupAgeView,
   SignupAgreementView,
   SignupCategoryView,
@@ -48,6 +50,7 @@ import {
   PolicyView,
 } from "@/features/policy/PolicyView";
 import { SearchView } from "@/features/search/SearchView";
+import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import {
   newsApi,
@@ -70,6 +73,8 @@ type View =
   | "notifications"
   | "search"
   | "login"
+  | "passwordResetEmail"
+  | "passwordResetPassword"
   | "signupAgreement"
   | "signupEmail"
   | "signupNickname"
@@ -159,6 +164,10 @@ function ActiveView({
   onCloseSearch,
   onLogin,
   onLogout,
+  onCheckPasswordResetEmail,
+  onPasswordResetEmailNext,
+  onPasswordResetPasswordSubmit,
+  onPasswordResetStart,
   onSignupAgeNext,
   onSignupAgreementNext,
   onSignupCategoryNext,
@@ -197,6 +206,12 @@ function ActiveView({
     password: string;
   }) => Promise<void>;
   onLogout: () => void;
+  onCheckPasswordResetEmail: (email: string) => Promise<boolean>;
+  onPasswordResetEmailNext: (email: string) => void;
+  onPasswordResetPasswordSubmit: (input: {
+    nextPassword: string;
+  }) => Promise<void>;
+  onPasswordResetStart: () => void;
   onSignupAgeNext: (ageId: string) => void;
   onSignupAgreementNext: (agreements: Record<string, boolean>) => void;
   onSignupCategoryNext: (categoryIds: string[]) => Promise<void>;
@@ -218,7 +233,28 @@ function ActiveView({
         isSubmitting={isAuthSubmitting}
         loginError={authError}
         onLogin={onLogin}
+        onPasswordResetStart={onPasswordResetStart}
         onSignup={onSignupStart}
+      />
+    );
+  }
+
+  if (view === "passwordResetEmail") {
+    return (
+      <PasswordResetEmailView
+        onBack={onAuthBack}
+        onCheckEmail={onCheckPasswordResetEmail}
+        onNext={onPasswordResetEmailNext}
+      />
+    );
+  }
+
+  if (view === "passwordResetPassword") {
+    return (
+      <PasswordResetPasswordView
+        onBack={onAuthBack}
+        onSubmit={onPasswordResetPasswordSubmit}
+        submitError={authError}
       />
     );
   }
@@ -387,6 +423,9 @@ export function NewsHomeScreen() {
   const [authError, setAuthError] = useState("");
   const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
   const [signupDraft, setSignupDraft] = useState<SignupDraft>({});
+  const [passwordResetEmail, setPasswordResetEmail] = useState("");
+  const [isPasswordResetCompleteDialogOpen, setIsPasswordResetCompleteDialogOpen] =
+    useState(false);
   const [bodySearchSelection, setBodySearchSelection] =
     useState<BodySearchSelection | null>(null);
   const [blockedKeywordSettings, setBlockedKeywordSettings] = useState<
@@ -403,6 +442,8 @@ export function NewsHomeScreen() {
     activeView === "search" ||
     activeView === "notifications" ||
     activeView === "login" ||
+    activeView === "passwordResetEmail" ||
+    activeView === "passwordResetPassword" ||
     activeView === "signupAgreement" ||
     activeView === "signupEmail" ||
     activeView === "signupNickname" ||
@@ -670,6 +711,56 @@ export function NewsHomeScreen() {
     return !user;
   }
 
+  async function checkPasswordResetEmail(email: string) {
+    const user = await userApi.getUserByEmail(email);
+
+    return Boolean(user);
+  }
+
+  function startPasswordReset() {
+    setAuthError("");
+    setPasswordResetEmail("");
+    setActiveView("passwordResetEmail");
+  }
+
+  function moveToPasswordResetPassword(email: string) {
+    setAuthError("");
+    setPasswordResetEmail(email);
+    setActiveView("passwordResetPassword");
+  }
+
+  async function resetPassword(input: { nextPassword: string }) {
+    if (!passwordResetEmail) {
+      setAuthError("이메일 인증을 다시 진행해 주세요.");
+      setActiveView("passwordResetEmail");
+      return;
+    }
+
+    setAuthError("");
+    setIsAuthSubmitting(true);
+
+    try {
+      const user = await userApi.getUserByEmail(passwordResetEmail);
+
+      if (!user) {
+        setAuthError("가입된 이메일을 찾을 수 없습니다.");
+        setActiveView("passwordResetEmail");
+        return;
+      }
+
+      await userApi.updateUser(user.id, {
+        password: input.nextPassword,
+      });
+
+      setPasswordResetEmail("");
+      setIsPasswordResetCompleteDialogOpen(true);
+    } catch {
+      setAuthError("비밀번호를 변경하지 못했습니다.");
+    } finally {
+      setIsAuthSubmitting(false);
+    }
+  }
+
   async function loginWithEmail(input: {
     email: string;
     isAutoLogin: boolean;
@@ -709,6 +800,7 @@ export function NewsHomeScreen() {
     setIsSplashVisible(false);
     setAuthError("");
     setSignupDraft({});
+    setPasswordResetEmail("");
     setBodySearchSelection(null);
     setAllNewsEntryMotionClassName("");
     setIsAllNewsBreakingEntry(false);
@@ -720,6 +812,7 @@ export function NewsHomeScreen() {
     setAuthError("");
     setIsAuthenticated(false);
     setSignupDraft({});
+    setPasswordResetEmail("");
     setActiveView("signupAgreement");
   }
 
@@ -1035,6 +1128,8 @@ export function NewsHomeScreen() {
         effectiveView === "all" ? " newsroll_screen_all" : ""
       }${
         effectiveView === "login" ||
+        effectiveView === "passwordResetEmail" ||
+        effectiveView === "passwordResetPassword" ||
         effectiveView === "signupAgreement" ||
         effectiveView === "signupEmail" ||
         effectiveView === "signupNickname" ||
@@ -1065,6 +1160,7 @@ export function NewsHomeScreen() {
           isTextLarge={isTextLarge}
           onAddBlockedKeyword={addBlockedKeyword}
           onAuthBack={moveToPreviousAuthStep}
+          onCheckPasswordResetEmail={checkPasswordResetEmail}
           onCheckSignupEmail={checkSignupEmail}
           onCheckSignupNickname={checkSignupNickname}
           onDarkModeChange={setIsDarkMode}
@@ -1076,6 +1172,9 @@ export function NewsHomeScreen() {
           onOpenAllNews={openBreakingNewsView}
           onOpenNotifications={openNotifications}
           onOpenSearch={openSearch}
+          onPasswordResetEmailNext={moveToPasswordResetPassword}
+          onPasswordResetPasswordSubmit={resetPassword}
+          onPasswordResetStart={startPasswordReset}
           onSelectNotification={openNotificationTarget}
           onSelectSearchResult={openBodySearchResult}
           onSignupAgeNext={(ageId) =>
@@ -1105,10 +1204,22 @@ export function NewsHomeScreen() {
         />
       </div>
 
+      {isPasswordResetCompleteDialogOpen ? (
+        <ConfirmDialog
+          message="비밀번호가 재설정되었습니다."
+          onConfirm={() => {
+            setIsPasswordResetCompleteDialogOpen(false);
+            setActiveView("login");
+          }}
+        />
+      ) : null}
+
       {isAuthenticated &&
       effectiveView !== "search" &&
       effectiveView !== "notifications" &&
       effectiveView !== "login" &&
+      effectiveView !== "passwordResetEmail" &&
+      effectiveView !== "passwordResetPassword" &&
       effectiveView !== "signupAgreement" &&
       effectiveView !== "signupEmail" &&
       effectiveView !== "signupNickname" &&

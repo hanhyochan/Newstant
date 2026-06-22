@@ -6,9 +6,9 @@ import {
 } from "@/app/_newsroll/api";
 import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
-  Button,
   Icon,
-  NewsRollDropdownArrow,
+  InfoSubmitButton,
+  SelectButton,
   TextInput,
   Textarea,
 } from "@/design-system/components";
@@ -77,54 +77,28 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
     >
       <label className="wrapper_infoField">
         <span className="text_infoFieldLabel">문의 유형</span>
-        <div className="wrapper_infoSelectControl">
-          <button
-            aria-controls={isInquiryTypeOpen ? inquiryTypeMenuId : undefined}
-            aria-expanded={isInquiryTypeOpen}
-            aria-haspopup="listbox"
-            aria-label="문의 유형"
-            className="btn_commentDropdown select_infoField"
-            onClick={() => setIsInquiryTypeOpen((current) => !current)}
-            type="button"
-          >
-            {selectedInquiryType}
-            <NewsRollDropdownArrow />
-          </button>
-          {isInquiryTypeOpen ? (
-            <div
-              className="listbox_commentDropdown listbox_infoInquiryType"
-              id={inquiryTypeMenuId}
-              role="listbox"
-            >
-              {items.map((type) => (
-                <button
-                  aria-selected={selectedInquiryType === type.label}
-                  key={type.id}
-                  onClick={() => {
-                    setSelectedInquiryType(type.label);
-                    setIsInquiryTypeOpen(false);
-                  }}
-                  role="option"
-                  type="button"
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
+        <SelectButton
+          ariaLabel="문의 유형"
+          isOpen={isInquiryTypeOpen}
+          listboxId={inquiryTypeMenuId}
+          onChange={setSelectedInquiryType}
+          onOpenChange={setIsInquiryTypeOpen}
+          options={items.map((type) => ({
+            label: type.label,
+            value: type.label,
+          }))}
+          size="default"
+          value={selectedInquiryType}
+        />
       </label>
       <div className="wrapper_infoField">
         <span className="text_infoFieldLabel">제목</span>
         <TextInput
           aria-label="문의 제목"
-          inputSize="large"
           onChange={(event) => setInquiryTitle(event.target.value)}
           placeholder="문의 제목을 입력해주세요."
-          radius="rounded"
           type="text"
           value={inquiryTitle}
-          variant="outline"
           wrapperClassName="input_commentComposer"
         />
       </div>
@@ -135,9 +109,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           className="textarea_infoComposer"
           onChange={(event) => setInquiryContent(event.target.value)}
           placeholder="문의 내용을 자세히 작성해주세요."
-          radius="rounded"
           rows={7}
-          textareaSize="large"
           value={inquiryContent}
         />
       </div>
@@ -146,16 +118,13 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           문의 내용을 확인해주세요.
         </p>
       ) : null}
-      <Button
-        className="btn_infoSubmit"
+      <InfoSubmitButton
         disabled={inquiryStatus === "sending"}
-        radius="rounded"
-        size="large"
         type="submit"
       >
         <Icon name="submit" />
         {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}
-      </Button>
+      </InfoSubmitButton>
       {confirmMessage ? (
         <ConfirmDialog
           message={confirmMessage}

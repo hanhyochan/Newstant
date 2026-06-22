@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+﻿import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   Inquiry,
@@ -8,13 +8,16 @@ import type {
   UserContentActionType,
 } from "@/app/_newsroll/api";
 import {
-  Button,
+  DetailPaginationButton,
   Icon,
+  PrimaryButton,
+  PrimaryButtonGroup,
   NewsRollCheckBox,
   NewsRollDivider,
-  NewsRollSmallCheckField,
+  NewsRollCheckField,
   NewsRollSwitch,
   PillTabMenu,
+  TextButton,
   TextInput,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
@@ -231,26 +234,16 @@ function InquiryDetailContent({
         role="group"
         aria-label="문의 이전글 다음글"
       >
-        <Button
-          className="btn_originalArticle newsroll_policy_detail_page_button"
-          classNameOnly
+        <DetailPaginationButton
+          direction="previous"
           disabled={!onPreviousItem}
           onClick={onPreviousItem}
-          type="button"
-        >
-          <Icon name="arrow" />
-          이전글
-        </Button>
-        <Button
-          className="btn_originalArticle newsroll_policy_detail_page_button"
-          classNameOnly
+        />
+        <DetailPaginationButton
+          direction="next"
           disabled={!onNextItem}
           onClick={onNextItem}
-          type="button"
-        >
-          다음글
-          <Icon name="arrow" />
-        </Button>
+        />
       </div>
     </div>
   );
@@ -485,12 +478,13 @@ function ModerationHistory({
         />
       )}
       {isReport ? null : (
-        <NewsRollSmallCheckField
+        <NewsRollCheckField
           checked={isAllSelected}
           className="btn_myModerationSelectAll"
+          size="small"
           disabled={selectableActionIds.length === 0 || isReleasing}
           label="전체 선택"
-          onClick={toggleAllSelection}
+          onChange={toggleAllSelection}
         />
       )}
       {filteredActions.length === 0 ? (
@@ -548,18 +542,17 @@ function ModerationHistory({
           className="container_myModerationReleaseFixed"
           isLeaving={isReleaseBarLeaving}
         >
-          <Button
+          <PrimaryButtonGroup>
+        <PrimaryButton
             className="btn_myModerationRelease"
             disabled={isReleasing}
-            onClick={releaseSelectedActions}
-            radius="rounded"
-            size="large"
+            onClick={releaseSelectedActions}
             tone="danger"
-            type="button"
-            variant="filled"
+            type="button"
           >
             해제하기
-          </Button>
+          </PrimaryButton>
+      </PrimaryButtonGroup>
         </BottomFixedActionBar>
       ) : null}
     </div>
@@ -606,24 +599,18 @@ function AccountEditForm({
         <span className="text_infoFieldLabel">닉네임</span>
         <TextInput
           aria-label="닉네임"
-          inputSize="large"
           onChange={(event) => setNickname(event.target.value)}
-          radius="rounded"
           type="text"
           value={nickname}
-          variant="outline"
         />
       </label>
       <label className="wrapper_mySettingsField">
         <span className="text_infoFieldLabel">이메일</span>
         <TextInput
           aria-label="이메일"
-          inputSize="large"
           onChange={(event) => setEmail(event.target.value)}
-          radius="rounded"
           type="email"
           value={email}
-          variant="outline"
         />
       </label>
       {status ? (
@@ -636,21 +623,20 @@ function AccountEditForm({
         </p>
       ) : null}
       <div className="wrapper_mySettingsBottomActions">
-        <Button
-          disabled={status === "saving"}
-          radius="rounded"
-          size="large"
-          type="submit"
-          variant="filled"
+        <PrimaryButtonGroup>
+        <PrimaryButton
+          disabled={status === "saving"}
+          type="submit"
         >
           저장
-        </Button>
-        <button
-          className="btn_textAction btn_mySettingsWithdrawAction"
+        </PrimaryButton>
+      </PrimaryButtonGroup>
+        <TextButton
+          tone="danger"
           type="button"
         >
           회원탈퇴
-        </button>
+        </TextButton>
       </div>
     </form>
   );
@@ -678,12 +664,9 @@ function SettingsPasswordField({
         <TextInput
           aria-label={label}
           autoComplete={autoComplete}
-          inputSize="large"
           onChange={(event) => onChange(event.target.value)}
-          radius="rounded"
           type={isVisible ? "text" : "password"}
           value={value}
-          variant="outline"
           wrapperClassName="input_loginPassword"
         />
         <button
@@ -772,15 +755,14 @@ function PasswordResetForm({
               : "비밀번호를 확인해주세요."}
         </p>
       ) : null}
-      <Button
-        disabled={status === "saving"}
-        radius="rounded"
-        size="large"
-        type="submit"
-        variant="filled"
+      <PrimaryButtonGroup>
+        <PrimaryButton
+        disabled={status === "saving"}
+        type="submit"
       >
         변경
-      </Button>
+      </PrimaryButton>
+      </PrimaryButtonGroup>
     </form>
   );
 }
@@ -819,21 +801,20 @@ function MarketingConsentForm({
               : "저장하지 못했습니다."}
         </p>
       ) : null}
-      <Button
+      <PrimaryButtonGroup>
+        <PrimaryButton
         disabled={status === "saving"}
         onClick={() => {
           setStatus("saving");
           onSubmit({ marketingAgreed: isAgreed })
             .then(() => setStatus("saved"))
             .catch(() => setStatus("error"));
-        }}
-        radius="rounded"
-        size="large"
-        type="button"
-        variant="filled"
+        }}
+        type="button"
       >
         저장
-      </Button>
+      </PrimaryButton>
+      </PrimaryButtonGroup>
     </div>
   );
 }

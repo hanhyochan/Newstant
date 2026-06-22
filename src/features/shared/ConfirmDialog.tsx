@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-import { Button } from "@/design-system/components";
+import { PrimaryButton, PrimaryButtonGroup } from "@/design-system/components";
 
 type ConfirmDialogProps = {
   children?: ReactNode;
@@ -45,30 +45,23 @@ export function ConfirmDialog({
       >
         <h3 className="text_myDialogTitle text_confirmDialogMessage">{message}</h3>
         {children}
-        <div className="wrapper_commentEditActions">
+        <PrimaryButtonGroup columns={onCancel ? 2 : 1}>
           {onCancel ? (
-            <Button
-              className="btn_commentEditCancel"
+            <PrimaryButton
               onClick={onCancel}
-              radius="rounded"
-              size="large"
+              tone="neutral"
               type="button"
-              variant="filled"
             >
               {cancelLabel}
-            </Button>
+            </PrimaryButton>
           ) : null}
-          <Button
-            className="btn_commentEditSave"
+          <PrimaryButton
             onClick={onConfirm}
-            radius="rounded"
-            size="large"
             type="button"
-            variant="filled"
           >
             {confirmLabel}
-          </Button>
-        </div>
+          </PrimaryButton>
+        </PrimaryButtonGroup>
       </div>
     </div>,
     document.body,

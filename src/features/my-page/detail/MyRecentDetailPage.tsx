@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 import {
-  Button,
+  PrimaryButton,
+  PrimaryButtonGroup,
   NewsRollCheckBox,
-  NewsRollSmallCheckField,
+  NewsRollCheckField,
   PillTabMenu,
 } from "@/design-system/components";
 import {
@@ -101,12 +102,13 @@ export function MyRecentDetailPage({
     selectableViewIds.length > 0 &&
     selectableViewIds.every((viewId) => selectedViewIds.has(viewId));
   const selectAllControl = (
-    <NewsRollSmallCheckField
+    <NewsRollCheckField
       checked={isAllSelected}
       className="btn_myRecentSelectAll"
+      size="small"
       disabled={selectableViewIds.length === 0 || isDeleting}
       label="전체 선택"
-      onClick={toggleAllSelection}
+      onChange={toggleAllSelection}
     />
   );
 
@@ -272,18 +274,17 @@ export function MyRecentDetailPage({
           className="container_myRecentDeleteFixed"
           isLeaving={isDeleteBarLeaving}
         >
-          <Button
+          <PrimaryButtonGroup>
+        <PrimaryButton
             className="btn_myRecentDelete"
             disabled={isDeleting}
-            onClick={deleteSelectedItems}
-            radius="rounded"
-            size="large"
+            onClick={deleteSelectedItems}
             tone="danger"
-            type="button"
-            variant="filled"
+            type="button"
           >
             삭제하기
-          </Button>
+          </PrimaryButton>
+      </PrimaryButtonGroup>
         </BottomFixedActionBar>
       ) : null}
     </div>

@@ -11,7 +11,7 @@ import { welfareApi, type WelfarePolicy } from "@/app/_newsroll/api";
 import { getCurrentUserSnapshot } from "@/app/_newsroll/auth/current-user";
 import {
   ChipLabel,
-  NewsRollDropdownArrow,
+  SelectButton,
   PillTabMenu
 } from "@/design-system/components";
 import {
@@ -401,40 +401,16 @@ export function PolicyView({
               ref={policyListSectionRef}
               role="tabpanel"
             >
-              <button
-                aria-controls={isPolicySortOpen ? policySortMenuId : undefined}
-                aria-expanded={isPolicySortOpen}
-                aria-haspopup="listbox"
-                aria-label="정책 정렬"
-                className="btn_commentDropdown newsroll_policy_sort"
-                onClick={() => setIsPolicySortOpen((current) => !current)}
-                type="button"
-              >
-                {policySortLabels[sortOrder]}
-                <NewsRollDropdownArrow />
-              </button>
-              {isPolicySortOpen ? (
-                <div
-                  className="listbox_commentDropdown newsroll_policy_sortListbox"
-                  id={policySortMenuId}
-                  role="listbox"
-                >
-                  {policySortOptions.map((option) => (
-                    <button
-                      aria-selected={sortOrder === option.value}
-                      key={option.value}
-                      onClick={() => {
-                        setSortOrder(option.value);
-                        setIsPolicySortOpen(false);
-                      }}
-                      role="option"
-                      type="button"
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
+              <SelectButton
+                ariaLabel="정책 정렬"
+                isOpen={isPolicySortOpen}
+                listboxId={policySortMenuId}
+                onChange={setSortOrder}
+                onOpenChange={setIsPolicySortOpen}
+                options={policySortOptions}
+                size="small"
+                value={sortOrder}
+              />
               <div className="newsroll_policy_items">
                 {policyLoadFailed ? (
                   <DataUnavailableMessage target="국가정책" />

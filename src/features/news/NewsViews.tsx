@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Fragment,
@@ -32,18 +32,22 @@ import {
 import {
   ArticleActionButtons,
   BreakingNewsCardLink,
-  Button,
   ChipLabel,
   CommentComposerInput,
+  DockedAlarmButton,
+  Dropdown,
   Icon,
-  IconButton,
   NewsRollDivider,
-  NewsRollDropdownArrow,
-  NewsRollDropdownMenu,
+  OriginalArticleButton,
+  SelectButton,
   NewsViewToggle,
   PillTabMenu,
+  PrimaryButton,
+  PrimaryButtonGroup,
   ReactionButton,
+  TextButton,
   Textarea,
+  useDropdownDismiss,
   type IconName
 } from "@/design-system/components";
 import {
@@ -679,18 +683,11 @@ function HomeMainHeader({
               ) : (
                 <NewsViewToggle mode={mode} onModeChange={onModeChange} />
               )}
-              <Button
+              <DockedAlarmButton
                 aria-label="알림"
                 aria-pressed={false}
-                className="newsroll_homeDockedAlarm"
-                iconOnly
                 onClick={onOpenBreakingNews}
-                radius="full"
-                size="large"
-                variant="outline"
-              >
-                <Icon name="policy" />
-              </Button>
+              />
             </NewsRollDockedControls>
           ),
           count: formatHeroCount(newsCount),
@@ -1158,33 +1155,24 @@ function CommentInlineEditor({
         aria-label={ariaLabel}
         className="textarea_commentEdit"
         onChange={(event) => onChange(event.target.value)}
-        radius="rounded"
         rows={4}
-        textareaSize="large"
         value={value}
       />
-      <div className="wrapper_commentEditActions">
-        <Button
-          className="btn_commentEditSave"
+      <PrimaryButtonGroup columns={2}>
+        <PrimaryButton
           onClick={onSave}
-          radius="rounded"
-          size="large"
           type="button"
-          variant="filled"
         >
           저장
-        </Button>
-        <Button
-          className="btn_commentEditCancel"
+        </PrimaryButton>
+        <PrimaryButton
           onClick={onCancel}
-          radius="rounded"
-          size="large"
+          tone="neutral"
           type="button"
-          variant="filled"
         >
           취소
-        </Button>
-      </div>
+        </PrimaryButton>
+      </PrimaryButtonGroup>
     </div>
   );
 }
@@ -1506,41 +1494,20 @@ function CommentReactionPanel({
     return true;
   }
 
-  useEffect(() => {
-    function closeCommentDropdowns(event: globalThis.PointerEvent) {
-      const target = event.target;
-
-      if (!(target instanceof Element)) {
-        return;
-      }
-
-      if (target.closest(".wrapper_commentDropdown, .wrapper_commentAction")) {
-        return;
-      }
-
-      setIsCommentSortOpen(false);
-      setOpenCommentActionId(null);
-      setOpenReplyActionId(null);
-    }
-
-    function closeCommentDropdownsWithEscape(event: globalThis.KeyboardEvent) {
-      if (event.key !== "Escape") {
-        return;
-      }
-
-      setIsCommentSortOpen(false);
-      setOpenCommentActionId(null);
-      setOpenReplyActionId(null);
-    }
-
-    document.addEventListener("pointerdown", closeCommentDropdowns);
-    document.addEventListener("keydown", closeCommentDropdownsWithEscape);
-
-    return () => {
-      document.removeEventListener("pointerdown", closeCommentDropdowns);
-      document.removeEventListener("keydown", closeCommentDropdownsWithEscape);
-    };
+  const closeCommentDropdowns = useCallback(() => {
+    setIsCommentSortOpen(false);
+    setOpenCommentActionId(null);
+    setOpenReplyActionId(null);
   }, []);
+
+  useDropdownDismiss({
+    enabled:
+      isCommentSortOpen ||
+      openCommentActionId !== null ||
+      openReplyActionId !== null,
+    ignoreSelector: ".wrapper_dropdownSelect, .wrapper_commentAction",
+    onDismiss: closeCommentDropdowns,
+  });
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -2263,10 +2230,8 @@ function CommentReactionPanel({
       >
         <div className="wrapper_commentSummary">
           <span className="text_commentTotal">댓글 {allComments.length}</span>
-          <Button
+          <TextButton
             aria-pressed={myCommentsOnly}
-            className="btn_textAction"
-            classNameOnly
             onClick={() => {
               setMyCommentsOnly((current) => !current);
               setActiveChoice(commentTabs[0].id);
@@ -2274,7 +2239,7 @@ function CommentReactionPanel({
             type="button"
           >
             나의 댓글
-          </Button>
+          </TextButton>
         </div>
 
         <section
@@ -2293,9 +2258,8 @@ function CommentReactionPanel({
           </div>
 
           <div className="wrapper_commentGuideComments">
-            <NewsRollDropdownMenu
+            <SelectButton
               ariaLabel="댓글 정렬"
-              className="wrapper_commentSort"
               isOpen={isCommentSortOpen}
               listboxId={commentSortMenuId}
               onChange={setSortOrder}
@@ -2367,51 +2331,23 @@ function CommentReactionPanel({
                             <strong>{comment.author}</strong>
                             <NewsCreatedTime>{comment.date}</NewsCreatedTime>
                           </span>
-                          <span className="wrapper_commentAction">
-                            <IconButton
-                              aria-label="댓글 더보기"
-                              aria-controls={
-                                openCommentActionId === comment.id
-                                  ? actionMenuId
-                                  : undefined
-                              }
-                              aria-expanded={openCommentActionId === comment.id}
-                              aria-haspopup="menu"
-                              baseClassName="btn_commentAction"
-                              icon="detail"
-                              label="댓글 더보기"
-                              onClick={() => {
+                          <Dropdown
+                            buttonLabel="댓글 더보기"
+                            isOpen={openCommentActionId === comment.id}
+                            menuClassName="listbox_commentDropdown listbox_commentAction"
+                            menuId={actionMenuId}
+                            onOpenChange={(nextIsOpen) => {
                                 setIsCommentSortOpen(false);
                                 setOpenReplyActionId(null);
-                                setOpenCommentActionId((current) =>
-                                  current === comment.id ? null : comment.id,
+                                setOpenCommentActionId(
+                                  nextIsOpen ? comment.id : null,
                                 );
                               }}
-                            />
-                            {openCommentActionId === comment.id ? (
-                              <div
-                                className="listbox_commentDropdown listbox_commentAction"
-                                id={actionMenuId}
-                                role="menu"
-                              >
-                                {commentActions.map((option) => (
-                                  <button
-                                    key={option.value}
-                                    onClick={() =>
-                                      handleCommentAction(
-                                        comment.id,
-                                        option.value,
-                                      )
-                                    }
-                                    role="menuitem"
-                                    type="button"
-                                  >
-                                    {option.label}
-                                  </button>
-                                ))}
-                              </div>
-                            ) : null}
-                          </span>
+                            onSelect={(action) =>
+                              handleCommentAction(comment.id, action)
+                            }
+                            options={commentActions}
+                          />
                         </header>
                         <ChipLabel kind="commentChoice">
                           {comment.choice}
@@ -2428,16 +2364,15 @@ function CommentReactionPanel({
                           <p>{comment.body}</p>
                         )}
                         <footer>
-                          <button
+                          <TextButton
                             aria-controls={replyListId}
                             aria-expanded={isReplyListOpen}
-                            className="btn_textAction"
                             id={replyToggleId}
                             onClick={() => toggleReplyList(comment.id)}
                             type="button"
                           >
                             대댓글 {commentReplies.length}
-                          </button>
+                          </TextButton>
                           <span>
                             <ReactionButton
                               aria-label="댓글 좋아요"
@@ -2503,58 +2438,24 @@ function CommentReactionPanel({
                                           {reply.date}
                                         </NewsCreatedTime>
                                       </span>
-                                      <span className="wrapper_commentAction">
-                                        <IconButton
-                                          aria-label="대댓글 더보기"
-                                          aria-controls={
-                                            openReplyActionId === reply.id
-                                              ? replyActionMenuId
-                                              : undefined
-                                          }
-                                          aria-expanded={
-                                            openReplyActionId === reply.id
-                                          }
-                                          aria-haspopup="menu"
-                                          baseClassName="btn_commentAction"
-                                          disabled={!isReplyListOpen}
-                                          icon="detail"
-                                          label="대댓글 더보기"
-                                          onClick={() => {
+                                      <Dropdown
+                                        buttonLabel="대댓글 더보기"
+                                        disabled={!isReplyListOpen}
+                                        isOpen={openReplyActionId === reply.id}
+                                        menuClassName="listbox_commentDropdown listbox_commentAction"
+                                        menuId={replyActionMenuId}
+                                        onOpenChange={(nextIsOpen) => {
                                             setIsCommentSortOpen(false);
                                             setOpenCommentActionId(null);
-                                            setOpenReplyActionId((current) =>
-                                              current === reply.id
-                                                ? null
-                                                : reply.id,
+                                            setOpenReplyActionId(
+                                              nextIsOpen ? reply.id : null,
                                             );
                                           }}
-                                        />
-                                        {openReplyActionId === reply.id ? (
-                                          <div
-                                            className="listbox_commentDropdown listbox_commentAction"
-                                            id={replyActionMenuId}
-                                            role="menu"
-                                          >
-                                            {replyActions.map(
-                                              (option) => (
-                                                <button
-                                                  key={option.value}
-                                                  onClick={() =>
-                                                    handleReplyAction(
-                                                      reply,
-                                                      option.value,
-                                                    )
-                                                  }
-                                                  role="menuitem"
-                                                  type="button"
-                                                >
-                                                  {option.label}
-                                                </button>
-                                              ),
-                                            )}
-                                          </div>
-                                        ) : null}
-                                      </span>
+                                        onSelect={(action) =>
+                                          handleReplyAction(reply, action)
+                                        }
+                                        options={replyActions}
+                                      />
                                     </header>
                                     <ChipLabel kind="commentChoice">
                                       {reply.choice}
@@ -2645,71 +2546,37 @@ function CommentReactionPanel({
               <h3 className="text_myDialogTitle">신고 사유 선택</h3>
               <label className="wrapper_infoField">
                 <span className="text_infoFieldLabel">신고 경위</span>
-                <div className="wrapper_infoSelectControl">
-                  <button
-                  aria-label="신고 경위"
-                  aria-controls={
-                    isReportReasonOpen
-                      ? `${panelId}-report-reason-menu`
-                      : undefined
-                  }
-                  aria-expanded={isReportReasonOpen}
-                  aria-haspopup="listbox"
-                  className="btn_commentDropdown select_infoField"
-                  onClick={() => setIsReportReasonOpen((current) => !current)}
-                  type="button"
-                >
-                  {reportReason}
-                  <NewsRollDropdownArrow />
-                </button>
-                {isReportReasonOpen ? (
-                  <div
-                    className="listbox_commentDropdown listbox_infoInquiryType"
-                    id={`${panelId}-report-reason-menu`}
-                    role="listbox"
-                  >
-                  {commentReportReasons.map((reason) => (
-                    <button
-                      aria-selected={reportReason === reason}
-                      key={reason}
-                      onClick={() => {
-                        setReportReason(reason);
-                        setIsReportReasonOpen(false);
-                      }}
-                      role="option"
-                      type="button"
-                    >
-                      {reason}
-                    </button>
-                  ))}
-                  </div>
-                ) : null}
-                </div>
+                <SelectButton
+                  ariaLabel="신고 경위"
+                  isOpen={isReportReasonOpen}
+                  listboxId={`${panelId}-report-reason-menu`}
+                  onChange={setReportReason}
+                  onOpenChange={setIsReportReasonOpen}
+                  options={commentReportReasons.map((reason) => ({
+                    label: reason,
+                    value: reason,
+                  }))}
+                  size="default"
+                  value={reportReason}
+                />
               </label>
-              <div className="wrapper_commentEditActions wrapper_commentReportActions">
-                <Button
-                  className="btn_commentEditCancel"
+              <PrimaryButtonGroup columns={2}>
+                <PrimaryButton
                   disabled={isReportSubmitting}
                   onClick={() => setReportTarget(null)}
-                  radius="rounded"
-                  size="large"
+                  tone="neutral"
                   type="button"
-                  variant="filled"
                 >
                   취소
-                </Button>
-                <Button
-                  className="btn_commentEditSave"
+                </PrimaryButton>
+                <PrimaryButton
                   disabled={isReportSubmitting}
                   onClick={submitReport}
-                  radius="rounded"
-                  size="large"
                   type="button"
-                  variant="filled"
                 >
                   {isReportSubmitting ? "신고 중" : "신고하기"}
-                </Button>
-              </div>
+                </PrimaryButton>
+              </PrimaryButtonGroup>
             </div>
           </div>
         </ClientPortal>
@@ -3102,15 +2969,11 @@ export function HomeReelCard({
         </span>
       </div>
 
-      <Button
-        className="btn_originalArticle"
-        classNameOnly
+      <OriginalArticleButton
         href="https://example.com/original-news"
-        size="medium"
-        variant="filled"
       >
         기사 원문 보기
-      </Button>
+      </OriginalArticleButton>
 
       <ReactionControls
         counts={articleReactionCounts}
@@ -3126,18 +2989,17 @@ export function HomeReelCard({
         newsId={article.id}
       />
 
-      <Button
+      <PrimaryButtonGroup>
+        <PrimaryButton
         aria-controls={isCommentPanelOpen ? commentPanelId : undefined}
         aria-expanded={isCommentPanelOpen}
         className="btn_commentPanel"
-        classNameOnly
         onClick={handleCommentPanelToggle}
-        size="large"
-        variant="filled"
       >
         <Icon name="chat" />
         댓글 반응보기
-      </Button>
+        </PrimaryButton>
+      </PrimaryButtonGroup>
       {isCommentPanelOpen ? (
         <CommentReactionPanel
           guideKind={article.guideKind ?? "stacked"}

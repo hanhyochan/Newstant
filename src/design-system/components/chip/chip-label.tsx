@@ -9,14 +9,14 @@ export type ChipLabelProps = {
   kind: ChipLabelKind;
 };
 
-export function ChipLabel({ children, kind }: ChipLabelProps) {
-  const classNameByKind: Record<ChipLabelKind, string> = {
-    articleCategory: "chip_articleCategory",
-    commentChoice: "badge_commentChoice",
-    policy: "chip_policy",
-    policyAccent: "chip_policy chip_policyAccent",
-  };
+const chipLabelClassNameByKind: Record<ChipLabelKind, string> = {
+  articleCategory: "chip_articleCategory",
+  commentChoice: "badge_commentChoice",
+  policy: "chip_policy",
+  policyAccent: "chip_policy chip_policyAccent",
+};
 
+export function ChipLabel({ children, kind }: ChipLabelProps) {
   return (
     <span
       className={cn(
@@ -24,7 +24,7 @@ export function ChipLabel({ children, kind }: ChipLabelProps) {
         "chip_small",
         "chip_filled",
         "chip_full",
-        classNameByKind[kind],
+        chipLabelClassNameByKind[kind],
       )}
     >
       {children}

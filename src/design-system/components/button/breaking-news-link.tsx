@@ -1,12 +1,7 @@
 import type { MouseEventHandler } from "react";
 
 import { Icon } from "../icon/icon";
-
-export type BreakingNewsLinkProps = {
-  href: string;
-  onClick?: MouseEventHandler<HTMLAnchorElement>;
-  title: string;
-};
+import { cn } from "../shared/utils";
 
 export type BreakingNewsCardLinkProps = {
   className?: string;
@@ -33,14 +28,12 @@ export function BreakingNewsCardLink({
 }: BreakingNewsCardLinkProps) {
   const baseClassName =
     variant === "home" ? "btn_link_breakingNews" : "newsroll_all_breaking_card";
-  const cardClassName = [
+  const cardClassName = cn(
     baseClassName,
     "newsroll_breakingCardLink",
-    tone === "white" ? "newsroll_breakingCardLink_white" : "",
+    tone === "white" && "newsroll_breakingCardLink_white",
     extraClassName,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  );
   const titleClassName =
     variant === "home" ? "text_breakingNewsTitle" : "text_breakingCardTitle";
   const content = (
@@ -74,18 +67,6 @@ export function BreakingNewsCardLink({
     >
       {content}
     </button>
-  );
-}
-
-export function BreakingNewsLink({ href, onClick, title }: BreakingNewsLinkProps) {
-  return (
-    <BreakingNewsCardLink
-      href={href}
-      onClick={onClick}
-      showIcon
-      title={title}
-      variant="home"
-    />
   );
 }
 

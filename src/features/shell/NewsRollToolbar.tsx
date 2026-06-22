@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 
 import { notificationApi } from "@/app/_newsroll/api";
 import { hydrateCurrentUserSession } from "@/app/_newsroll/auth/current-user";
-import { Button, Icon, IconButton } from "@/design-system/components";
+import {
+  DockedAlarmButton as NewsRollDockedAlarmButton,
+  IconButton,
+  TextSizeButton,
+} from "@/design-system/components";
 
 const notificationsUpdatedEventName = "newsroll:notifications-updated";
 
@@ -64,17 +68,7 @@ export function NewsToolbar({
 
   return (
     <div className="newsroll_toolbar" aria-label="상단 도구">
-      <Button
-        aria-label="글자 크기"
-        aria-pressed={isTextLarge}
-        classNameOnly
-        className="newsroll_text_size_button"
-        onClick={onToggleTextSize}
-        size="medium"
-        variant="filled"
-      >
-        <Icon name="sizeIncrease" />
-      </Button>
+      <TextSizeButton aria-label="글자 크기" aria-pressed={isTextLarge} onClick={onToggleTextSize} />
       {showSearch ? (
         <IconButton
           baseClassName="newsroll_toolbar_icon"
@@ -104,17 +98,6 @@ export function DockedAlarmButton({
   onClick: () => void;
 }) {
   return (
-    <Button
-      aria-label="속보 알림"
-      aria-pressed={isPressed}
-      className="newsroll_homeDockedAlarm"
-      iconOnly
-      onClick={onClick}
-      radius="full"
-      size="large"
-      variant="outline"
-    >
-      <Icon name="policy" />
-    </Button>
+    <NewsRollDockedAlarmButton aria-label="속보 알림" aria-pressed={isPressed} onClick={onClick} />
   );
 }

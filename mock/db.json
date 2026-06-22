@@ -130,7 +130,7 @@
       "loginId": "햄스어",
       "nickname": "햄스어",
       "email": "hcartist569@gmail.com",
-      "password": "qqq222**",
+      "password": "qqqq1111**",
       "ageGroupId": "middle",
       "agreementIds": [
         "age",
@@ -140,7 +140,7 @@
       ],
       "marketingAgreed": true,
       "createdAt": "2026-06-20T03:16:00.369Z",
-      "updatedAt": "2026-06-20T03:16:00.369Z"
+      "updatedAt": "2026-06-22T02:03:49.799Z"
     }
   ],
   "userAgeGroups": [
@@ -103163,6 +103163,22 @@
       "isActive": true,
       "createdAt": "2026-06-18T05:45:37.696Z",
       "updatedAt": "2026-06-18T05:45:37.696Z"
+    },
+    {
+      "id": "blocked-keyword-e3c7d313-b777-4f87-be50-f7af3de605c2",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "keyword": "싀앙",
+      "isActive": false,
+      "createdAt": "2026-06-22T08:30:40.237Z",
+      "updatedAt": "2026-06-22T08:30:41.980Z"
+    },
+    {
+      "id": "blocked-keyword-98d67fac-869f-459b-8333-67a7ee8959fb",
+      "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
+      "keyword": "히융",
+      "isActive": true,
+      "createdAt": "2026-06-22T08:30:46.996Z",
+      "updatedAt": "2026-06-22T08:30:46.996Z"
     }
   ],
   "notificationSettings": [
@@ -103197,7 +103213,7 @@
       "newsViewTime": true,
       "policyUpdates": true,
       "darkMode": false,
-      "updatedAt": "2026-06-20T03:16:00.573Z"
+      "updatedAt": "2026-06-22T06:08:16.595Z"
     }
   ],
   "userPreferences": [

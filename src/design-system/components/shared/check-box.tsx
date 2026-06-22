@@ -1,75 +1,64 @@
-import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
+import { useId } from "react";
 
 import { cn } from "../shared/utils";
 
-export type NewsRollCheckBoxProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
+export type NewsRollCheckSize = "default" | "small";
+
+export type NewsRollCheckBoxProps = {
   checked?: boolean;
-  size?: "medium" | "small";
+  className?: string;
+  size?: NewsRollCheckSize;
 };
 
 export function NewsRollCheckBox({
   checked = false,
   className,
-  size = "medium",
-  ...props
+  size = "default",
 }: NewsRollCheckBoxProps) {
   return (
     <span
       aria-hidden="true"
-      className={cn(
-        "box_newsrollCheck",
-        `box_newsrollCheck_${size}`,
-        checked && "is_checked",
-        className,
-      )}
-      {...props}
-    >
-      {checked ? "✓" : ""}
-    </span>
+      className={cn("box_newsrollCheck", checked && "is_checked", className)}
+      data-size={size}
+    />
   );
 }
 
 export type NewsRollCheckFieldProps = Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  "children"
+  InputHTMLAttributes<HTMLInputElement>,
+  "children" | "size" | "type"
 > & {
   checked?: boolean;
   label: ReactNode;
-  size?: "medium" | "small";
+  size?: NewsRollCheckSize;
 };
 
 export function NewsRollCheckField({
   checked = false,
   className,
   label,
-  size = "medium",
+  size = "default",
+  id,
   ...props
 }: NewsRollCheckFieldProps) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+
   return (
-    <button
-      aria-pressed={checked}
-      className={cn(
-        "btn_newsrollCheckField",
-        `btn_newsrollCheckField_${size}`,
-        className,
-      )}
-      type="button"
-      {...props}
+    <label
+      className={cn("btn_newsrollCheckField", className)}
+      data-size={size}
     >
+      <input
+        {...props}
+        checked={checked}
+        className="input_newsrollCheck"
+        id={inputId}
+        type="checkbox"
+      />
       <NewsRollCheckBox checked={checked} size={size} />
       <span>{label}</span>
-    </button>
+    </label>
   );
-}
-
-export type NewsRollSmallCheckFieldProps = Omit<NewsRollCheckFieldProps, "size">;
-
-export function NewsRollSmallCheckField(props: NewsRollSmallCheckFieldProps) {
-  return <NewsRollCheckField {...props} size="small" />;
-}
-
-export type NewsRollMediumCheckFieldProps = Omit<NewsRollCheckFieldProps, "size">;
-
-export function NewsRollMediumCheckField(props: NewsRollMediumCheckFieldProps) {
-  return <NewsRollCheckField {...props} size="medium" />;
 }

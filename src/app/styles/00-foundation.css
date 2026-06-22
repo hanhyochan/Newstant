@@ -7,11 +7,11 @@
 
     :root {
         /* color: atomic / common */
-        --color-common-0: var(--color-cool-neutral-10);
+        --color-common-0: var(--color-cool-neutral-15);
         --color-common-100: #ffffff;
 
         /* color: atomic / neutral */
-        --color-neutral-0: var(--color-cool-neutral-10);
+        --color-neutral-0: var(--color-cool-neutral-15);
         --color-neutral-5: #0f0f0f;
         --color-neutral-10: #171717;
         --color-neutral-15: #1c1c1c;
@@ -289,8 +289,6 @@
         --color-label-disable: rgb(55 56 60 / 16%);
         --color-label-neutral: rgb(46 47 51 / 88%);
         --color-label-normal: #171719;
-        --color-label-strong: var(--color-cool-neutral-10);
-
         /* color: semantic / line */
         --color-line-normal-alternative: rgb(112 115 124 / 8%);
         --color-line-normal-neutral: rgb(112 115 124 / 16%);
@@ -548,7 +546,7 @@
             align-items: center;
             padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
             border-radius: var(--radius-20);
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             background: var(--color-violet-80);
             font-size: var(--font-size-16);
             font-weight: var(--font-weight-500);
@@ -564,7 +562,7 @@
             justify-content: center;
             gap: var(--spacing-gap-horizontal-8);
             border-radius: var(--radius-8);
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             background: var(--color-background-elevated-normal);
             font-size: var(--font-size-16);
             font-weight: var(--font-weight-600);
@@ -582,8 +580,8 @@
             height: var(--newsroll-chevron-size);
             flex: 0 0 var(--newsroll-chevron-size);
             box-sizing: border-box;
-            border-right: var(--border-1) solid currentColor;
-            border-bottom: var(--border-1) solid currentColor;
+            border: solid currentColor;
+            border-width: 0 var(--border-1) var(--border-1) 0;
             transform: rotate(45deg) translateY(-2px);
             transition: var(--newsroll-chevron-transition);
         }
@@ -595,7 +593,7 @@
             padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
                 var(--spacing-padding-vertical-24);
             border-radius: var(--radius-20);
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             background: var(--color-background-elevated-normal);
             box-shadow: 3px 3px 4px var(--color-alpha-shadow3);
         }
@@ -607,7 +605,7 @@
         }
 
         .newsroll_all_section_title {
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             font-size: var(--font-size-fixed-16);
             font-weight: var(--font-weight-600);
             line-height: var(--line-height-fixed-20);
@@ -657,7 +655,7 @@
             padding-inline: var(--spacing-padding-horizontal-12);
             border: 0;
             border-radius: var(--radius-full);
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             background: var(--color-neutral-95);
             font-size: var(--font-size-14);
             font-weight: var(--font-weight-500);
@@ -688,7 +686,7 @@
             max-width: 100%;
             display: -webkit-box;
             overflow: hidden;
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             font-size: var(--font-size-18);
             font-weight: var(--font-weight-600);
             line-height: 26px;
@@ -726,7 +724,7 @@
             padding: 0 var(--spacing-padding-horizontal-16) 0 var(--spacing-padding-horizontal-12);
             border: var(--border-1) solid var(--color-cool-neutral-96);
             border-radius: var(--radius-full);
-            color: var(--color-label-strong);
+            color: var(--color-cool-neutral-15);
             background: var(--color-background-elevated-normal);
             font-size: var(--font-size-14);
             font-weight: var(--font-weight-500);
@@ -921,7 +919,7 @@
     body {
         display: contents;
         min-height: 100vh;
-        color: var(--color-label-strong);
+        color: var(--color-cool-neutral-15);
         font-family: var(--font-sans);
         font-synthesis: none;
         line-height: var(--line-height-32);

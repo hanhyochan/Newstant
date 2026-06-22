@@ -22,13 +22,10 @@ export function CommentComposerInput({
     <>
       <TextInput
         aria-label={label}
-        inputSize="large"
         onChange={onChange}
         placeholder={placeholder}
-        radius="rounded"
         type="text"
         value={value}
-        variant="outline"
         wrapperClassName="input_commentComposer"
       />
       <button aria-label={submitLabel} className="btn_commentSubmit" type="submit">

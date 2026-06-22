@@ -2,10 +2,11 @@ import { Fragment } from "react";
 import { createPortal } from "react-dom";
 
 import {
-  Button,
   Icon,
   NewsRollDivider,
   PillTabMenu,
+  PrimaryButton,
+  PrimaryButtonGroup,
   TextInput,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
@@ -44,37 +45,27 @@ function BlockedKeywordDialog({
         <h3 className="text_myDialogTitle">차단 키워드 추가</h3>
         <TextInput
           aria-label="차단할 키워드"
-          inputSize="large"
           onChange={(event) => onInputChange(event.target.value)}
           placeholder="키워드를 입력해주세요."
-          radius="rounded"
           type="text"
           value={value}
-          variant="outline"
         />
-        <div className="wrapper_commentEditActions">
-          <Button
-            className="btn_commentEditCancel"
+        <PrimaryButtonGroup columns={2}>
+          <PrimaryButton
             onClick={onCancel}
-            radius="rounded"
-            size="large"
+            tone="neutral"
             type="button"
-            variant="filled"
           >
             취소
-          </Button>
-          <Button
-            className="btn_commentEditSave"
+          </PrimaryButton>
+          <PrimaryButton
             disabled={!value.trim()}
             onClick={onSave}
-            radius="rounded"
-            size="large"
             type="button"
-            variant="filled"
           >
             저장
-          </Button>
-        </div>
+          </PrimaryButton>
+        </PrimaryButtonGroup>
       </div>
     </div>,
     document.body,

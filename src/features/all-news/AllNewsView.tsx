@@ -7,7 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
   type PointerEvent,
   type TouchEvent
 } from "react";
@@ -17,7 +16,7 @@ import {
 } from "@/app/_newsroll/api";
 import {
   BreakingNewsCardLink,
-  Button,
+  DockedAlarmButton,
   Icon,
   PillTabMenu
 } from "@/design-system/components";
@@ -399,27 +398,6 @@ export function AllNewsView({
     setActiveRelayCategory(nextCategory);
   }
 
-  function handlePressTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const lastIndex = visibleAllNewsPresses.length - 1;
-    const nextIndexByKey: Record<string, number> = {
-      ArrowDown: activePressIndex === lastIndex ? 0 : activePressIndex + 1,
-      ArrowLeft: activePressIndex === 0 ? lastIndex : activePressIndex - 1,
-      ArrowRight: activePressIndex === lastIndex ? 0 : activePressIndex + 1,
-      ArrowUp: activePressIndex === 0 ? lastIndex : activePressIndex - 1,
-      End: lastIndex,
-      Home: 0,
-    };
-    const nextIndex = nextIndexByKey[event.key];
-
-    if (nextIndex === undefined) {
-      return;
-    }
-
-    event.preventDefault();
-    changeActivePress(visibleAllNewsPresses[nextIndex]);
-    document.getElementById(`all-news-press-tab-${nextIndex}`)?.focus();
-  }
-
   function openAllNewsDetail(article: HomeArticle) {
     allNewsDetailScrollRestore.captureScroll();
     setDetailArticle(article);
@@ -481,18 +459,11 @@ export function AllNewsView({
             ) : (
               <h1 className="text_panelHeaderTitle">전체 뉴스</h1>
             )}
-            <Button
+            <DockedAlarmButton
               aria-label="속보 알림"
               aria-pressed={false}
-              className="newsroll_homeDockedAlarm"
-              iconOnly
               onClick={showBreakingNewsList}
-              radius="full"
-              size="large"
-              variant="outline"
-            >
-              <Icon name="policy" />
-            </Button>
+            />
           </NewsRollDockedControls>
           <div className="newsroll_all_breaking_label">
             <Icon name="policy" />
@@ -590,37 +561,30 @@ export function AllNewsView({
             title="언론사별 헤드라인"
           >
               <div className="newsroll_all_tabSticky newsroll_all_press_tabMenu">
-                <div
+                <PillTabMenu
+                  ariaLabel="언론사 선택"
                   className="newsroll_all_press_tabScroller"
-                  role="tablist"
-                  aria-label="언론사 선택"
-                  onKeyDown={handlePressTabKeyDown}
-                >
-                  {visibleAllNewsPresses.map((press, index) => {
-                    const selected = activePress === press;
-
-                    return (
-                      <Button
-                        aria-controls="all-news-headline-panel"
-                        aria-selected={selected}
-                        className="tab tab_medium tab_filled tab_full_rounded newsroll_all_press_tabButton"
-                        classNameOnly
-                        id={`all-news-press-tab-${index}`}
-                        key={press}
-                        onClick={() => changeActivePress(press)}
-                        role="tab"
-                        tabIndex={selected ? 0 : -1}
-                        type="button"
-                      >
-                        <div
-                          className="newsroll_all_press_logo"
-                          aria-hidden="true"
-                        />
-                        <span>{press}</span>
-                      </Button>
-                    );
-                  })}
-                </div>
+                  getButtonClassName={() => "newsroll_all_press_tabButton"}
+                  getPanelId={() => "all-news-headline-panel"}
+                  getTabId={(press) =>
+                    `all-news-press-tab-${visibleAllNewsPresses.indexOf(press)}`
+                  }
+                  items={visibleAllNewsPresses.map((press) => ({
+                    id: press,
+                    label: press,
+                  }))}
+                  onChange={changeActivePress}
+                  renderItemContent={(item) => (
+                    <>
+                      <div
+                        className="newsroll_all_press_logo"
+                        aria-hidden="true"
+                      />
+                      <span>{item.label}</span>
+                    </>
+                  )}
+                  value={activePress}
+                />
               </div>
               <div className="wrapper_allTabPanelBody">
                 <SeparatedList

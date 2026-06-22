@@ -6,11 +6,11 @@ import {
 } from "react";
 
 import {
-  Button,
   ChipLabel,
   IconButton,
   PillTabMenu,
   ReactionButton,
+  TextButton,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 import {
@@ -100,16 +100,15 @@ function MyCommentPreviewThread({
       <ChipLabel kind="commentChoice">{comment.choice}</ChipLabel>
       <p>{comment.body}</p>
       <footer>
-        <button
+        <TextButton
           aria-controls={replyListId}
           aria-expanded={false}
-          className="btn_textAction"
           id={replyToggleId}
           onClick={openCommentFromControl}
           type="button"
         >
           대댓글 {commentReplies.length}
-        </button>
+        </TextButton>
         <span>
           <ReactionButton
             aria-label="댓글 좋아요"
@@ -141,16 +140,14 @@ function MyCommentPreviewThread({
         role="region"
       >
         <div className="wrapper_commentRepliesInner">
-          <Button
+          <TextButton
             aria-controls={`${instanceId}-composer`}
             aria-pressed={false}
-            className="btn_textAction"
-            classNameOnly
             onClick={openCommentFromControl}
             type="button"
           >
             대댓글 쓰기
-          </Button>
+          </TextButton>
           {commentReplies.map((reply, replyIndex) => (
             <Fragment key={reply.id}>
               <article
