@@ -9,7 +9,7 @@ export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "chi
   icon: IconName | null;
   iconSize?: IconSize;
   label: string;
-  variant?: "plain" | "shaped" | "bottomNav";
+  variant?: "plain" | "shaped" | "bottomNav" | "custom";
 };
 
 export function IconButton({
@@ -23,15 +23,21 @@ export function IconButton({
   variant = "plain",
   ...props
 }: IconButtonProps) {
+  const isCustom = variant === "custom";
+
   return (
     <button
       aria-label={label}
-      className={cn(
-        "btn_iconButton",
-        `btn_iconButton_${variant}`,
-        variant === "shaped" && `btn_iconButton_${tone}`,
-        className,
-      )}
+      className={
+        isCustom
+          ? className
+          : cn(
+              "btn_iconButton",
+              `btn_iconButton_${variant}`,
+              variant === "shaped" && `btn_iconButton_${tone}`,
+              className,
+            )
+      }
       type={type}
       {...props}
     >

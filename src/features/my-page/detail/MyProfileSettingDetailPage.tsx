@@ -22,8 +22,8 @@ import {
   NewsRollCheckBox,
   NewsRollDivider,
   NewsRollCheckField,
-  NewsRollSwitch,
   PillTabMenu,
+  SettingRowButton,
   TextButton,
   TextInput,
 } from "@/design-system/components";
@@ -1116,15 +1116,11 @@ function MarketingConsentForm({
 
   return (
     <div className="form_mySettingsDetail">
-      <button
-        aria-pressed={isAgreed}
-        className="btn_mySettingRow"
+      <SettingRowButton
+        checked={isAgreed}
+        label="마케팅/알림 수신 동의"
         onClick={() => setIsAgreed((current) => !current)}
-        type="button"
-      >
-        <span className="text_mySettingLabel">마케팅/알림 수신 동의</span>
-        <NewsRollSwitch checked={isAgreed} />
-      </button>
+      />
       {status ? (
         <p className={`text_mySettingsStatus${status === "error" ? " is_error" : ""}`}>
           {status === "saving"

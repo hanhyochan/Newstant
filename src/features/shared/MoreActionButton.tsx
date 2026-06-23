@@ -21,7 +21,7 @@ export function MoreActionButton({
     <ContentActionButton
       aria-label={ariaLabel}
       aria-expanded={showIcon ? expanded : undefined}
-      className="newsroll_all_more"
+      className={tone === "light" ? "newsroll_all_more" : undefined}
       onClick={onClick}
       tone={tone}
     >

@@ -119,14 +119,13 @@ function BlockedKeywordSettingsSection({
           onChange={onKeywordToggle}
           renderItemAddon={(item, state) =>
             state === "active" ? null : (
-                <button
-                  aria-label={`${item.label} \uC0AD\uC81C`}
+                <IconButton
                   className="btn_myBlockedKeywordDelete"
+                  icon={null}
+                  label={`${item.label} \uC0AD\uC81C`}
                   onClick={() => onKeywordDelete(item.id)}
-                  type="button"
-                >
-                  <span aria-hidden="true" />
-                </button>
+                  variant="custom"
+                />
               )
           }
           role="group"

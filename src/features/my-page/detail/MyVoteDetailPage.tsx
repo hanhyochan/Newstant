@@ -3,6 +3,7 @@ import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 import {
   AllNewsHeadlineItem,
   ArticleGuideOptionButton,
+  binaryGuideOptions,
   type AllNewsArticlePreview,
   type HomeArticle,
   type OpenArticleDetail,
@@ -86,13 +87,27 @@ export function MyVoteDetailPage({
                 />
                 <strong className="text_myVoteQuestion">{item.pollTitle}</strong>
                 <ArticleGuideOptionButton
-                  isSelected
+                  binaryTone={
+                    item.isBinary
+                      ? item.selectedOption === binaryGuideOptions[0]
+                        ? "yes"
+                        : "no"
+                      : undefined
+                  }
+                  iconSrc={
+                    item.isBinary
+                      ? item.selectedOption === binaryGuideOptions[0]
+                        ? "/icons/icon_yes.svg"
+                        : "/icons/icon_no.svg"
+                      : undefined
+                  }
                   label={item.selectedOption}
                   onClick={() =>
                     onOpenArticle(item.article, { scrollTarget: "poll" })
                   }
                   percent={item.percent}
                   showResult
+                  state="active"
                   variant={item.isBinary ? "binary" : "stacked"}
                 />
               </article>

@@ -8,17 +8,11 @@ import {
   useRef,
   useState,
   type PointerEvent,
-  type TouchEvent
+  type TouchEvent,
 } from "react";
 
-import {
-  newsApi
-} from "@/app/_newsroll/api";
-import {
-  NoticeCardLink,
-  Icon,
-  PillTabMenu
-} from "@/design-system/components";
+import { newsApi } from "@/app/_newsroll/api";
+import { NoticeCardLink, Icon, PillTabMenu } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
   NewsRollDetailBackButton,
@@ -32,9 +26,12 @@ import {
   newsrollPagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
   useDockedPanelScroll,
-  useEnterFromRightExitMotion
+  useEnterFromRightExitMotion,
 } from "@/design-system/templates";
-import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import {
+  DockedAlarmButton,
+  NewsToolbar,
+} from "@/features/shell/NewsRollToolbar";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 import { SeparatedList } from "@/features/shared/SeparatedList";
@@ -56,7 +53,7 @@ import {
   groupAllNewsByValue,
   homeArticle,
   type HomeArticle,
-  type SwipeAxis
+  type SwipeAxis,
 } from "@/features/news/NewsViews";
 
 export function AllNewsView({
@@ -106,7 +103,9 @@ export function AllNewsView({
   const [isLatestDragging, setIsLatestDragging] = useState(false);
   const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
   const [allNewsArticles, setAllNewsArticles] = useState<HomeArticle[]>([]);
-  const [showAllBreaking, setShowAllBreaking] = useState(initialShowAllBreaking);
+  const [showAllBreaking, setShowAllBreaking] = useState(
+    initialShowAllBreaking,
+  );
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
   const [allNewsSheetUndockSignal, setAllNewsSheetUndockSignal] = useState(0);
@@ -144,7 +143,10 @@ export function AllNewsView({
     ? allBreakingItems.slice(0, 5)
     : allBreakingItems.slice(0, 3);
   const relayItems = allNewsRelayByActiveCategory[activeRelayCategory] ?? [];
-  const activePressIndex = Math.max(0, visibleAllNewsPresses.indexOf(activePress));
+  const activePressIndex = Math.max(
+    0,
+    visibleAllNewsPresses.indexOf(activePress),
+  );
   const activeRelayIndex = Math.max(
     0,
     visibleAllNewsRelayCategories.indexOf(activeRelayCategory),
@@ -222,10 +224,7 @@ export function AllNewsView({
 
       const collapsedHeight =
         collapsedBreakingBodyHeightRef.current ?? currentHeight;
-      const expansionOffset = Math.max(
-        0,
-        currentHeight - collapsedHeight + 24,
-      );
+      const expansionOffset = Math.max(0, currentHeight - collapsedHeight + 24);
 
       setAllNewsBreakingOffset(expansionOffset);
     };
@@ -519,37 +518,41 @@ export function AllNewsView({
               </>
             }
           >
-              <div
-                aria-label="최신 뉴스 목록"
-                className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
-                onPointerCancel={stopLatestDrag}
-                onPointerDown={handleLatestPointerDown}
-                onPointerLeave={stopLatestDrag}
-                onPointerMove={handleLatestPointerMove}
-                onPointerUp={stopLatestDrag}
-                ref={latestScrollerRef}
-                role="group"
-              >
-                {allNewsLatestItems.length > 0 ? (
-                  allNewsLatestItems.map((item, index) => (
-                    <AllNewsLatestCard
-                      item={item}
-                      key={`${item.title}-${index}`}
-                      onClick={() => {
-                        if (latestDidDragRef.current) {
-                          return;
-                        }
+            <div
+              aria-label="최신 뉴스 목록"
+              className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
+              onPointerCancel={stopLatestDrag}
+              onPointerDown={handleLatestPointerDown}
+              onPointerLeave={stopLatestDrag}
+              onPointerMove={handleLatestPointerMove}
+              onPointerUp={stopLatestDrag}
+              ref={latestScrollerRef}
+              role="group"
+            >
+              {allNewsLatestItems.length > 0 ? (
+                allNewsLatestItems.map((item, index) => (
+                  <AllNewsLatestCard
+                    item={item}
+                    key={`${item.title}-${index}`}
+                    onClick={() => {
+                      if (latestDidDragRef.current) {
+                        return;
+                      }
 
-                        openAllNewsDetail(
-                          createAllNewsArticle(item, item.category ?? homeArticle.category, index),
-                        );
-                      }}
-                    />
-                  ))
-                ) : (
-                  <DataUnavailableMessage target="전체 뉴스" />
-                )}
-              </div>
+                      openAllNewsDetail(
+                        createAllNewsArticle(
+                          item,
+                          item.category ?? homeArticle.category,
+                          index,
+                        ),
+                      );
+                    }}
+                  />
+                ))
+              ) : (
+                <DataUnavailableMessage target="전체 뉴스" />
+              )}
+            </div>
           </AllNewsSectionPanel>
 
           <AllNewsSectionPanel
@@ -562,62 +565,63 @@ export function AllNewsView({
             }}
             title="언론사별 헤드라인"
           >
-              <div className="newsroll_all_tabSticky newsroll_all_press_tabMenu">
-                <PillTabMenu
-                  ariaLabel="언론사 선택"
-                  className="newsroll_all_press_tabScroller"
-                  getButtonClassName={() => "newsroll_all_press_tabButton"}
-                  getPanelId={() => "all-news-headline-panel"}
-                  getTabId={(press) =>
-                    `all-news-press-tab-${visibleAllNewsPresses.indexOf(press)}`
-                  }
-                  items={visibleAllNewsPresses.map((press) => ({
-                    id: press,
-                    label: press,
-                  }))}
-                  onChange={changeActivePress}
-                  renderItemContent={(item) => (
-                    <>
-                      <div
-                        className="newsroll_all_press_logo"
-                        aria-hidden="true"
-                      />
-                      <span>{item.label}</span>
-                    </>
-                  )}
-                  value={activePress}
-                />
-              </div>
-              <div className="wrapper_allTabPanelBody">
-                <SeparatedList
-                  dividerClassName="newsroll_all_itemDivider"
-                  getKey={(item, index) => `${item.title}-${index}`}
-                  items={headlineItems}
-                  renderItem={(item, index) => (
-                    <AllNewsHeadlineItem
-                      item={item}
-                      onClick={() =>
-                        openAllNewsDetail(
-                          createAllNewsArticle(item, activePress, index),
-                        )
-                      }
+            <div className="newsroll_all_tabSticky newsroll_all_press_tabMenu">
+              <PillTabMenu
+                ariaLabel="언론사 선택"
+                className="newsroll_all_press_tabScroller"
+                getButtonClassName={() => "newsroll_all_press_tabButton"}
+                getPanelId={() => "all-news-headline-panel"}
+                getTabId={(press) =>
+                  `all-news-press-tab-${visibleAllNewsPresses.indexOf(press)}`
+                }
+                items={visibleAllNewsPresses.map((press) => ({
+                  id: press,
+                  label: press,
+                }))}
+                onChange={changeActivePress}
+                renderItemContent={(item) => (
+                  <>
+                    <div
+                      className="newsroll_all_press_logo"
+                      aria-hidden="true"
                     />
-                  )}
-                />
-                {headlineItems.length === 0 ? (
-                  <DataUnavailableMessage target="언론사별 헤드라인" />
-                ) : canExpandHeadlines ? (
-                  <MoreActionButton
-                    ariaLabel={
-                      showAllHeadlines
-                        ? "언론사별 헤드라인 접기"
-                        : "언론사별 헤드라인 더보기"
+                    <span>{item.label}</span>
+                  </>
+                )}
+                value={activePress}
+              />
+            </div>
+            <div className="wrapper_allTabPanelBody">
+              <SeparatedList
+                dividerClassName="newsroll_all_itemDivider"
+                getKey={(item, index) => `${item.title}-${index}`}
+                items={headlineItems}
+                renderItem={(item, index) => (
+                  <AllNewsHeadlineItem
+                    item={item}
+                    onClick={() =>
+                      openAllNewsDetail(
+                        createAllNewsArticle(item, activePress, index),
+                      )
                     }
-                    expanded={showAllHeadlines}
-                    onClick={() => setShowAllHeadlines((current) => !current)}
                   />
-                ) : null}
-              </div>
+                )}
+              />
+              {headlineItems.length === 0 ? (
+                <DataUnavailableMessage target="언론사별 헤드라인" />
+              ) : canExpandHeadlines ? (
+                <MoreActionButton
+                  ariaLabel={
+                    showAllHeadlines
+                      ? "언론사별 헤드라인 접기"
+                      : "언론사별 헤드라인 더보기"
+                  }
+                  expanded={showAllHeadlines}
+                  onClick={() => setShowAllHeadlines((current) => !current)}
+                  tone="dark"
+                />
+              ) : null}
+            </div>
           </AllNewsSectionPanel>
 
           <AllNewsSectionPanel
@@ -630,47 +634,47 @@ export function AllNewsView({
             }}
             title="릴레이 뉴스"
           >
-              <div className="newsroll_all_tabSticky newsroll_all_category_tabSticky">
-                <PillTabMenu
-                  ariaLabel="릴레이 뉴스 카테고리"
-                  className="newsroll_all_category_tabs"
-                  getPanelId={(category) =>
-                    category === activeRelayCategory
-                      ? `all-news-relay-panel-${visibleAllNewsRelayCategories.indexOf(category)}`
-                      : undefined
-                  }
-                  getTabId={(category) =>
-                    `all-news-relay-tab-${visibleAllNewsRelayCategories.indexOf(category)}`
-                  }
-                  items={visibleAllNewsRelayCategories.map((category) => ({
-                    id: category,
-                    label: category,
-                  }))}
-                  onChange={changeActiveRelayCategory}
-                  value={activeRelayCategory}
-                />
-              </div>
-              <div className="wrapper_allTabPanelBody">
-                <SeparatedList
-                  dividerClassName="newsroll_all_itemDivider"
-                  getKey={(item, index) => `${item.title}-${index}`}
-                  items={relayItems}
-                  renderItem={(item, index) => (
-                    <AllNewsRelayItem
-                      featured={index === 0 || index === 5}
-                      item={item}
-                      onClick={() =>
-                        openAllNewsDetail(
-                          createAllNewsArticle(item, activeRelayCategory, index),
-                        )
-                      }
-                    />
-                  )}
-                />
-                {relayItems.length === 0 ? (
-                  <DataUnavailableMessage target="릴레이 뉴스" />
-                ) : null}
-              </div>
+            <div className="newsroll_all_tabSticky newsroll_all_category_tabSticky">
+              <PillTabMenu
+                ariaLabel="릴레이 뉴스 카테고리"
+                className="newsroll_all_category_tabs"
+                getPanelId={(category) =>
+                  category === activeRelayCategory
+                    ? `all-news-relay-panel-${visibleAllNewsRelayCategories.indexOf(category)}`
+                    : undefined
+                }
+                getTabId={(category) =>
+                  `all-news-relay-tab-${visibleAllNewsRelayCategories.indexOf(category)}`
+                }
+                items={visibleAllNewsRelayCategories.map((category) => ({
+                  id: category,
+                  label: category,
+                }))}
+                onChange={changeActiveRelayCategory}
+                value={activeRelayCategory}
+              />
+            </div>
+            <div className="wrapper_allTabPanelBody">
+              <SeparatedList
+                dividerClassName="newsroll_all_itemDivider"
+                getKey={(item, index) => `${item.title}-${index}`}
+                items={relayItems}
+                renderItem={(item, index) => (
+                  <AllNewsRelayItem
+                    featured={index === 0 || index === 5}
+                    item={item}
+                    onClick={() =>
+                      openAllNewsDetail(
+                        createAllNewsArticle(item, activeRelayCategory, index),
+                      )
+                    }
+                  />
+                )}
+              />
+              {relayItems.length === 0 ? (
+                <DataUnavailableMessage target="릴레이 뉴스" />
+              ) : null}
+            </div>
           </AllNewsSectionPanel>
         </section>
       )}

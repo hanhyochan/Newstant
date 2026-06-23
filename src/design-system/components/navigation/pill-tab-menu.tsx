@@ -1,6 +1,7 @@
 import { Fragment, useRef, type KeyboardEvent } from "react";
 import type { ReactNode } from "react";
 
+import { TabButton } from "../button/tab-button";
 import { cn } from "../shared/utils";
 
 export type PillTabItem<T extends string> = {
@@ -87,31 +88,25 @@ export function PillTabMenu<T extends string>({
         const isActive = itemState === "active";
         const isSelected = itemState === "selected";
         const button = (
-          <button
+          <TabButton
             aria-checked={role === "radiogroup" ? isActive : undefined}
             aria-controls={role === "tablist" ? getPanelId?.(item.id) : undefined}
             aria-label={getItemAriaLabel?.(item.id)}
             aria-pressed={role === "group" ? isActive || isSelected : undefined}
             aria-selected={role === "tablist" ? isActive : undefined}
-            className={cn(
-              "tab",
-              "tab_medium",
-              "tab_filled",
-              "tab_full_rounded",
-              getButtonClassName?.(item.id),
-            )}
-            data-state={itemState}
+            className={getButtonClassName?.(item.id)}
+            dataState={itemState}
             id={getTabId?.(item.id)}
             onClick={() => onChange(item.id)}
             ref={(node) => {
               buttonRefs.current[index] = node;
             }}
             role={role === "tablist" ? "tab" : role === "radiogroup" ? "radio" : undefined}
+            state={isActive || isSelected ? "active" : "default"}
             tabIndex={role === "group" ? 0 : isActive ? 0 : -1}
-            type="button"
           >
             {renderItemContent?.(item) ?? item.label}
-          </button>
+          </TabButton>
         );
         const addon = renderItemAddon?.(item, itemState);
 

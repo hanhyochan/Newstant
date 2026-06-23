@@ -12,6 +12,7 @@ import {
 
 import {
   FieldActionButton,
+  ChevronIconButton,
   Icon,
   IconButton,
   NewsRollDivider,
@@ -881,17 +882,14 @@ export function SignupAgreementView({
                   label={`(${item.required ? "필수" : "선택"}) ${item.title}`}
                   onChange={() => toggleAgreement(item.id)}
                 />
-                <button
+                <ChevronIconButton
                   className="btn_signupAgreementItem"
                   onClick={() => {
                     setAgreementSearchTarget(null);
                     setDetailAgreementId(item.id);
                   }}
-                  aria-label={`${item.title} 상세 보기`}
-                  type="button"
-                >
-                  <span className="icon_myChevron" aria-hidden="true" />
-                </button>
+                  label={`${item.title} 상세 보기`}
+                />
               </div>
             ))}
 

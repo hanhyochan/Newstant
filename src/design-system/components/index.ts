@@ -26,6 +26,19 @@ export type {
 } from "./button/primary-button";
 export { TextButton } from "./button/text-button";
 export type { TextButtonProps, TextButtonTone } from "./button/text-button";
+export { TabButton } from "./button/tab-button";
+export type { TabButtonProps, TabButtonState } from "./button/tab-button";
+export { ChevronIconButton } from "./button/chevron-icon-button";
+export type { ChevronIconButtonProps } from "./button/chevron-icon-button";
+export { SettingRowButton } from "./button/setting-row-button";
+export type { SettingRowButtonProps } from "./button/setting-row-button";
+export { ArticleGuideOptionButton } from "./button/article-guide-option-button";
+export type {
+  ArticleGuideOptionButtonBinaryTone,
+  ArticleGuideOptionButtonProps,
+  ArticleGuideOptionButtonState,
+  ArticleGuideOptionButtonVariant,
+} from "./button/article-guide-option-button";
 export { IconButton } from "./button/icon-button";
 export type { IconButtonProps } from "./button/icon-button";
 export { IconTextButton } from "./button/icon-text-button";

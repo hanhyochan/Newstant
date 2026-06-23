@@ -31,6 +31,7 @@ import {
 } from "@/app/_newsroll/auth/current-user";
 import {
   ActionMenu,
+  ArticleGuideOptionButton,
   NoticeCardLink,
   ChipLabel,
   CommentComposerInput,
@@ -896,58 +897,7 @@ function getVotePercentages(voteCounts: number[]) {
   return percentages;
 }
 
-type ArticleGuideOptionButtonProps = {
-  isSelected: boolean;
-  label: string;
-  onClick?: () => void;
-  percent?: number;
-  showResult?: boolean;
-  variant?: GuideKind;
-};
-
-export function ArticleGuideOptionButton({
-  isSelected,
-  label,
-  onClick,
-  percent = 0,
-  showResult = false,
-  variant = "stacked",
-}: ArticleGuideOptionButtonProps) {
-  const isBinary = variant === "binary";
-  const binaryTone =
-    isBinary && label === binaryGuideOptions[0]
-      ? "yes"
-      : isBinary
-        ? "no"
-        : undefined;
-  const fillStyle = showResult
-    ? ({ "--article-guide-result-size": `${percent}%` } as CSSProperties)
-    : undefined;
-
-  return (
-    <button
-      aria-pressed={isSelected}
-      className={`btn_articleGuideOption btn_articleGuideOption_${variant}`}
-      data-binary-tone={binaryTone}
-      data-result-visible={showResult ? "true" : undefined}
-      onClick={onClick}
-      style={fillStyle}
-      type="button"
-    >
-      {isBinary ? (
-        <img
-          alt=""
-          className="newsroll_icon_image img_articleGuideBinaryIcon"
-          src={label === binaryGuideOptions[0] ? "/icons/icon_yes.svg" : "/icons/icon_no.svg"}
-        />
-      ) : null}
-      <span className="text_articleGuideOption">{label}</span>
-      {showResult ? (
-        <strong className="text_articleGuidePercent">{percent}%</strong>
-      ) : null}
-    </button>
-  );
-}
+export { ArticleGuideOptionButton };
 
 function ArticleGuideSection({
   id,
@@ -1117,12 +1067,26 @@ function ArticleGuideSection({
 
           return (
             <ArticleGuideOptionButton
-              isSelected={selectedGuideOption === index}
+              binaryTone={
+                kind === "binary"
+                  ? option === binaryGuideOptions[0]
+                    ? "yes"
+                    : "no"
+                  : undefined
+              }
+              iconSrc={
+                kind === "binary"
+                  ? option === binaryGuideOptions[0]
+                    ? "/icons/icon_yes.svg"
+                    : "/icons/icon_no.svg"
+                  : undefined
+              }
               key={option}
               label={option}
               onClick={() => vote(index)}
               percent={percent}
               showResult={hasVoted}
+              state={selectedGuideOption === index ? "active" : "default"}
               variant={kind}
             />
           );
