@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   Fragment,
@@ -30,24 +30,23 @@ import {
   getCurrentUserSnapshot,
 } from "@/app/_newsroll/auth/current-user";
 import {
-  ArticleActionButtons,
-  BreakingNewsCardLink,
+  ActionMenu,
+  NoticeCardLink,
   ChipLabel,
   CommentComposerInput,
-  DockedAlarmButton,
-  Dropdown,
   Icon,
+  IconButton,
   NewsRollDivider,
-  OriginalArticleButton,
+  ContentActionButton,
   SelectButton,
   NewsViewToggle,
   PillTabMenu,
   PrimaryButton,
   PrimaryButtonGroup,
-  ReactionButton,
+  IconTextButton,
   TextButton,
   Textarea,
-  useDropdownDismiss,
+  useActionMenuDismiss,
   type IconName
 } from "@/design-system/components";
 import {
@@ -87,7 +86,7 @@ import {
 import { BottomFixedActionBar } from "@/features/shared/BottomFixedActionBar";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
-import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
 export type Tab = "home" | "all" | "policy" | "my" | "info";
 export type HomeViewMode = "reels" | "block";
@@ -640,7 +639,7 @@ function HomeMainHeader({
       <NewsRollSummaryHeroTop
         footer={
           <div className="wrapper_breakingNews">
-            <BreakingNewsCardLink
+            <NoticeCardLink
               href={breakingItem ? `#${breakingItem.id}` : "#all-breaking-news"}
               id={breakingItem ? `home-${breakingItem.id}` : undefined}
               onClick={(event) => {
@@ -655,7 +654,7 @@ function HomeMainHeader({
               showIcon
               title={breakingTitle}
               updatedAt={breakingItem?.updatedAt}
-              variant="home"
+              type="breaking"
             />
           </div>
         }
@@ -684,7 +683,7 @@ function HomeMainHeader({
                 <NewsViewToggle mode={mode} onModeChange={onModeChange} />
               )}
               <DockedAlarmButton
-                aria-label="알림"
+                aria-label="속보"
                 aria-pressed={false}
                 onClick={onOpenBreakingNews}
               />
@@ -851,7 +850,7 @@ function ReactionControls({
       role="group"
     >
       {reactionItems.map((item) => (
-        <ReactionButton
+        <IconTextButton
           aria-pressed={reaction === item.value}
           icon={item.icon}
           key={item.value}
@@ -859,7 +858,7 @@ function ReactionControls({
             onReactionChange(reaction === item.value ? null : item.value)
           }
           tone={item.value}
-          variant="article"
+          size="default"
         >
           <strong>
             {item.label}
@@ -867,7 +866,7 @@ function ReactionControls({
               ? ""
               : ` ${counts[item.value]}`}
           </strong>
-        </ReactionButton>
+        </IconTextButton>
       ))}
     </div>
   );
@@ -1494,19 +1493,19 @@ function CommentReactionPanel({
     return true;
   }
 
-  const closeCommentDropdowns = useCallback(() => {
+  const closeCommentActionMenus = useCallback(() => {
     setIsCommentSortOpen(false);
     setOpenCommentActionId(null);
     setOpenReplyActionId(null);
   }, []);
 
-  useDropdownDismiss({
+  useActionMenuDismiss({
     enabled:
       isCommentSortOpen ||
       openCommentActionId !== null ||
       openReplyActionId !== null,
     ignoreSelector: ".wrapper_dropdownSelect, .wrapper_commentAction",
-    onDismiss: closeCommentDropdowns,
+    onDismiss: closeCommentActionMenus,
   });
 
   useEffect(() => {
@@ -2331,10 +2330,10 @@ function CommentReactionPanel({
                             <strong>{comment.author}</strong>
                             <NewsCreatedTime>{comment.date}</NewsCreatedTime>
                           </span>
-                          <Dropdown
+                          <ActionMenu
                             buttonLabel="댓글 더보기"
                             isOpen={openCommentActionId === comment.id}
-                            menuClassName="listbox_commentDropdown listbox_commentAction"
+                            menuClassName="listbox_commentActionMenu listbox_commentAction"
                             menuId={actionMenuId}
                             onOpenChange={(nextIsOpen) => {
                                 setIsCommentSortOpen(false);
@@ -2374,7 +2373,7 @@ function CommentReactionPanel({
                             대댓글 {commentReplies.length}
                           </TextButton>
                           <span>
-                            <ReactionButton
+                            <IconTextButton
                               aria-label="댓글 좋아요"
                               aria-pressed={selectedReaction === "like"}
                               icon="thumbUp"
@@ -2382,11 +2381,11 @@ function CommentReactionPanel({
                                 toggleCommentReaction(comment.id, "like")
                               }
                               tone="like"
-                              variant="comment"
+                              size="small"
                             >
                               {getVisibleReactionCount(likeCount)}
-                            </ReactionButton>
-                            <ReactionButton
+                            </IconTextButton>
+                            <IconTextButton
                               aria-label="댓글 싫어요"
                               aria-pressed={selectedReaction === "dislike"}
                               icon="thumbDown"
@@ -2394,10 +2393,10 @@ function CommentReactionPanel({
                                 toggleCommentReaction(comment.id, "dislike")
                               }
                               tone="dislike"
-                              variant="comment"
+                              size="small"
                             >
                               {getVisibleReactionCount(dislikeCount)}
-                            </ReactionButton>
+                            </IconTextButton>
                           </span>
                         </footer>
                         <div
@@ -2438,11 +2437,11 @@ function CommentReactionPanel({
                                           {reply.date}
                                         </NewsCreatedTime>
                                       </span>
-                                      <Dropdown
+                                      <ActionMenu
                                         buttonLabel="대댓글 더보기"
                                         disabled={!isReplyListOpen}
                                         isOpen={openReplyActionId === reply.id}
-                                        menuClassName="listbox_commentDropdown listbox_commentAction"
+                                        menuClassName="listbox_commentActionMenu listbox_commentAction"
                                         menuId={replyActionMenuId}
                                         onOpenChange={(nextIsOpen) => {
                                             setIsCommentSortOpen(false);
@@ -2473,7 +2472,7 @@ function CommentReactionPanel({
                                     )}
                                     <footer>
                                       <span>
-                                        <ReactionButton
+                                        <IconTextButton
                                           aria-label="대댓글 좋아요"
                                           aria-pressed={
                                             selectedReplyReaction === "like"
@@ -2483,11 +2482,11 @@ function CommentReactionPanel({
                                             toggleCommentReaction(reply.id, "like")
                                           }
                                           tone="like"
-                                          variant="comment"
+                                          size="small"
                                         >
                                           {getVisibleReactionCount(replyLikeCount)}
-                                        </ReactionButton>
-                                        <ReactionButton
+                                        </IconTextButton>
+                                        <IconTextButton
                                           aria-label="대댓글 싫어요"
                                           aria-pressed={
                                             selectedReplyReaction === "dislike"
@@ -2500,10 +2499,10 @@ function CommentReactionPanel({
                                             )
                                           }
                                           tone="dislike"
-                                          variant="comment"
+                                          size="small"
                                         >
                                           {getVisibleReactionCount(replyDislikeCount)}
-                                        </ReactionButton>
+                                        </IconTextButton>
                                       </span>
                                     </footer>
                                   </article>
@@ -2931,15 +2930,25 @@ export function HomeReelCard({
             date={article.date}
             dateTime={article.dateTime}
           />
-          <ArticleActionButtons
-            isBookmarked={isBookmarked}
-            onBookmark={() => {
-              void toggleBookmark();
-            }}
-            onShare={() => {
-              void shareArticle();
-            }}
-          />
+          <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
+            <IconButton
+              className="btn_articleTool"
+              icon="share"
+              label="공유"
+              onClick={() => {
+                void shareArticle();
+              }}
+            />
+            <IconButton
+              aria-pressed={isBookmarked}
+              className="btn_articleTool"
+              icon="bookmark"
+              label="북마크"
+              onClick={() => {
+                void toggleBookmark();
+              }}
+            />
+          </div>
         </div>
       </div>
       <img alt={article.imageAlt} src={article.image} />
@@ -2969,11 +2978,11 @@ export function HomeReelCard({
         </span>
       </div>
 
-      <OriginalArticleButton
+      <ContentActionButton
         href="https://example.com/original-news"
       >
         기사 원문 보기
-      </OriginalArticleButton>
+      </ContentActionButton>
 
       <ReactionControls
         counts={articleReactionCounts}

@@ -7,7 +7,8 @@ import {
 import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
   Icon,
-  InfoSubmitButton,
+  PrimaryButton,
+  PrimaryButtonGroup,
   SelectButton,
   TextInput,
   Textarea,
@@ -118,13 +119,15 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           문의 내용을 확인해주세요.
         </p>
       ) : null}
-      <InfoSubmitButton
-        disabled={inquiryStatus === "sending"}
-        type="submit"
-      >
-        <Icon name="submit" />
+      <PrimaryButtonGroup>
+        <PrimaryButton
+          disabled={inquiryStatus === "sending"}
+          type="submit"
+        >
+          <Icon name="submit" />
         {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}
-      </InfoSubmitButton>
+        </PrimaryButton>
+      </PrimaryButtonGroup>
       {confirmMessage ? (
         <ConfirmDialog
           message={confirmMessage}

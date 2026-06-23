@@ -9,7 +9,7 @@ const meta: Meta<typeof IconButton> = {
     layout: "centered",
   },
   args: {
-    baseClassName: "newsroll_toolbar_icon",
+    className: "newsroll_toolbar_icon",
     icon: "search",
     label: "검색",
   },
@@ -22,8 +22,8 @@ type Story = StoryObj<typeof meta>;
 export const Toolbar: Story = {
   render: () => (
     <div className="ds_inline_stack">
-      <IconButton baseClassName="newsroll_toolbar_icon" icon="search" label="검색" />
-      <IconButton baseClassName="newsroll_toolbar_icon" icon="alarm" label="알림" />
+      <IconButton className="newsroll_toolbar_icon" icon="search" label="검색" />
+      <IconButton className="newsroll_toolbar_icon" icon="alarm" label="알림" />
     </div>
   ),
 };
@@ -31,12 +31,12 @@ export const Toolbar: Story = {
 export const ArticleTools: Story = {
   render: () => (
     <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
-      <IconButton baseClassName="btn_articleTool" icon="share" label="공유" />
-      <IconButton baseClassName="btn_articleTool" icon="bookmark" label="북마크" />
+      <IconButton className="btn_articleTool" icon="share" label="공유" />
+      <IconButton className="btn_articleTool" icon="bookmark" label="북마크" />
     </div>
   ),
 };
 
 export const CommentAction: Story = {
-  render: () => <IconButton baseClassName="btn_commentAction" icon="detail" label="댓글 더보기" />,
+  render: () => <IconButton className="btn_commentAction" icon="detail" label="댓글 더보기" />,
 };

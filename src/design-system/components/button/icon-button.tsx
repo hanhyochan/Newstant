@@ -1,25 +1,44 @@
 import type { ButtonHTMLAttributes } from "react";
 
-import { Icon, type IconName } from "../icon/icon";
+import { Icon, type IconName, type IconSize } from "../icon/icon";
 import { cn } from "../shared/utils";
 
 export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
-  baseClassName?: string;
-  icon: IconName;
+  hasUnreadIndicator?: boolean;
+  tone?: "primary" | "translucent";
+  icon: IconName | null;
+  iconSize?: IconSize;
   label: string;
+  variant?: "plain" | "shaped" | "bottomNav";
 };
 
 export function IconButton({
-  baseClassName = "newsroll_icon_button",
   className,
+  hasUnreadIndicator = false,
   icon,
+  iconSize,
   label,
+  tone = "primary",
   type = "button",
+  variant = "plain",
   ...props
 }: IconButtonProps) {
   return (
-    <button aria-label={label} className={cn(baseClassName, className)} type={type} {...props}>
-      <Icon name={icon} />
+    <button
+      aria-label={label}
+      className={cn(
+        "btn_iconButton",
+        `btn_iconButton_${variant}`,
+        variant === "shaped" && `btn_iconButton_${tone}`,
+        className,
+      )}
+      type={type}
+      {...props}
+    >
+      {hasUnreadIndicator ? (
+        <span className="badge_iconButtonUnread" aria-hidden="true" />
+      ) : null}
+      {icon ? <Icon name={icon} size={iconSize} /> : <span aria-hidden="true" />}
     </button>
   );
 }

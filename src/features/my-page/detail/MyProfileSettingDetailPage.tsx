@@ -8,8 +8,15 @@ import type {
   UserContentActionType,
 } from "@/app/_newsroll/api";
 import {
-  DetailPaginationButton,
-  Icon,
+  authEmailSchema,
+  signupNicknameSchema,
+  verificationCodeSchema,
+} from "@/app/_newsroll/auth-validation";
+import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation";
+import {
+  PaginationButton,
+  FieldActionButton,
+  IconButton,
   PrimaryButton,
   PrimaryButtonGroup,
   NewsRollCheckBox,
@@ -234,12 +241,12 @@ function InquiryDetailContent({
         role="group"
         aria-label="문의 이전글 다음글"
       >
-        <DetailPaginationButton
+        <PaginationButton
           direction="previous"
           disabled={!onPreviousItem}
           onClick={onPreviousItem}
         />
-        <DetailPaginationButton
+        <PaginationButton
           direction="next"
           disabled={!onNextItem}
           onClick={onNextItem}
@@ -562,18 +569,199 @@ function ModerationHistory({
 function AccountEditForm({
   onSubmit,
   user,
+  users,
 }: {
   onSubmit: (input: UpdateUserInput) => Promise<void>;
   user: User | null;
+  users: User[];
 }) {
+  const verificationTimerRef = useRef<number | null>(null);
   const [nickname, setNickname] = useState(user?.nickname ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
+  const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+  const [isNicknameChecking, setIsNicknameChecking] = useState(false);
+  const [nicknameCheckMessage, setNicknameCheckMessage] = useState("");
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [isEmailChecking, setIsEmailChecking] = useState(false);
+  const [emailCheckMessage, setEmailCheckMessage] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isVerificationConfirmed, setIsVerificationConfirmed] = useState(false);
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [remainingVerificationSeconds, setRemainingVerificationSeconds] = useState(0);
   const [status, setStatus] = useState<"error" | "saving" | "saved" | null>(null);
+  const nicknameValidation = useZodFieldValidation(signupNicknameSchema, nickname);
+  const emailValidation = useZodFieldValidation(authEmailSchema, email);
+  const verificationCodeValidation = useZodFieldValidation(
+    verificationCodeSchema,
+    verificationCode,
+  );
+  const normalizedOriginalEmail = (user?.email ?? "").trim().toLocaleLowerCase("en-US");
+  const normalizedEmail = email.trim().toLocaleLowerCase("en-US");
+  const normalizedOriginalNickname = (user?.nickname ?? "").trim().toLocaleLowerCase("ko-KR");
+  const normalizedNickname = nickname.trim().toLocaleLowerCase("ko-KR");
+  const isNicknameUnchanged = normalizedNickname === normalizedOriginalNickname;
+  const isEmailUnchanged = normalizedEmail === normalizedOriginalEmail;
+  const isNicknameReady =
+    isNicknameUnchanged || (nicknameValidation.isValid && isNicknameChecked);
+  const isEmailReady =
+    isEmailUnchanged ||
+    (emailValidation.isValid && isEmailChecked && isVerificationConfirmed);
+  const isProfileReady = isNicknameReady && isEmailReady;
+  const accountNicknameErrorId = "account-edit-nickname-error";
+  const accountNicknameCheckId = "account-edit-nickname-check";
+  const accountEmailErrorId = "account-edit-email-error";
+  const accountEmailCheckId = "account-edit-email-check";
+  const accountVerificationCodeErrorId = "account-edit-verification-code-error";
+  const formattedVerificationTime = `${Math.floor(
+    remainingVerificationSeconds / 60,
+  )}:${String(remainingVerificationSeconds % 60).padStart(2, "0")}`;
 
   useEffect(() => {
     setNickname(user?.nickname ?? "");
     setEmail(user?.email ?? "");
+    setIsNicknameChecked(false);
+    setNicknameCheckMessage("");
+    setIsEmailChecked(false);
+    setEmailCheckMessage("");
+    resetVerificationCode();
+    setStatus(null);
   }, [user]);
+
+  useEffect(() => {
+    if (!isVerificationSent || remainingVerificationSeconds <= 0) {
+      return undefined;
+    }
+
+    verificationTimerRef.current = window.setTimeout(() => {
+      setRemainingVerificationSeconds((current) => current - 1);
+    }, 1000);
+
+    return () => {
+      if (verificationTimerRef.current !== null) {
+        window.clearTimeout(verificationTimerRef.current);
+        verificationTimerRef.current = null;
+      }
+    };
+  }, [isVerificationSent, remainingVerificationSeconds]);
+
+  useEffect(
+    () => () => {
+      if (verificationTimerRef.current !== null) {
+        window.clearTimeout(verificationTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  function resetVerificationCode() {
+    if (verificationTimerRef.current !== null) {
+      window.clearTimeout(verificationTimerRef.current);
+      verificationTimerRef.current = null;
+    }
+
+    setVerificationCode("");
+    setIsVerificationSent(false);
+    setIsVerificationConfirmed(false);
+    setRemainingVerificationSeconds(0);
+  }
+
+  function updateNickname(value: string) {
+    setNickname(value);
+    setIsNicknameChecked(false);
+    setNicknameCheckMessage("");
+    setStatus(null);
+  }
+
+  function updateEmail(value: string) {
+    setEmail(value);
+    setIsEmailChecked(false);
+    setEmailCheckMessage("");
+    resetVerificationCode();
+    setStatus(null);
+  }
+
+  async function checkNicknameDuplicate() {
+    nicknameValidation.markTouched();
+
+    if (!nicknameValidation.isValid) {
+      setIsNicknameChecked(false);
+      setNicknameCheckMessage("");
+      return;
+    }
+
+    if (isNicknameUnchanged) {
+      setIsNicknameChecked(true);
+      setNicknameCheckMessage("현재 사용 중인 닉네임입니다.");
+      return;
+    }
+
+    setIsNicknameChecking(true);
+
+    const isDuplicated = users.some(
+      (item) =>
+        item.id !== user?.id &&
+        item.nickname.trim().toLocaleLowerCase("ko-KR") === normalizedNickname,
+    );
+
+    setIsNicknameChecking(false);
+    setIsNicknameChecked(!isDuplicated);
+    setNicknameCheckMessage(
+      isDuplicated ? "중복되는 닉네임입니다." : "사용 가능한 닉네임입니다.",
+    );
+  }
+
+  async function startVerificationCode() {
+    emailValidation.markTouched();
+
+    if (!emailValidation.isValid) {
+      setIsEmailChecked(false);
+      setEmailCheckMessage("");
+      resetVerificationCode();
+      return;
+    }
+
+    if (isEmailUnchanged) {
+      setIsEmailChecked(true);
+      setEmailCheckMessage("현재 사용 중인 이메일입니다.");
+      resetVerificationCode();
+      return;
+    }
+
+    setIsEmailChecking(true);
+
+    const isDuplicated = users.some(
+      (item) =>
+        item.id !== user?.id &&
+        item.email.trim().toLocaleLowerCase("en-US") === normalizedEmail,
+    );
+
+    setIsEmailChecking(false);
+    setIsEmailChecked(!isDuplicated);
+
+    if (isDuplicated) {
+      setEmailCheckMessage("이미 가입된 이메일이에요.");
+      resetVerificationCode();
+      return;
+    }
+
+    if (verificationTimerRef.current !== null) {
+      window.clearTimeout(verificationTimerRef.current);
+    }
+
+    setEmailCheckMessage("인증번호를 발송했습니다.");
+    setVerificationCode("");
+    setIsVerificationConfirmed(false);
+    setIsVerificationSent(true);
+    setRemainingVerificationSeconds(180);
+  }
+
+  function confirmVerificationCode() {
+    verificationCodeValidation.markTouched();
+
+    if (verificationCodeValidation.isValid) {
+      setIsVerificationConfirmed(true);
+    }
+  }
 
   return (
     <form
@@ -581,7 +769,10 @@ function AccountEditForm({
       onSubmit={(event) => {
         event.preventDefault();
 
-        if (!nickname.trim() || !email.trim()) {
+        nicknameValidation.markTouched();
+        emailValidation.markTouched();
+
+        if (!isProfileReady) {
           setStatus("error");
           return;
         }
@@ -595,37 +786,180 @@ function AccountEditForm({
           .catch(() => setStatus("error"));
       }}
     >
-      <label className="wrapper_mySettingsField">
+      <div className="wrapper_mySettingsField">
         <span className="text_infoFieldLabel">닉네임</span>
-        <TextInput
-          aria-label="닉네임"
-          onChange={(event) => setNickname(event.target.value)}
-          type="text"
-          value={nickname}
-        />
-      </label>
-      <label className="wrapper_mySettingsField">
+        <div className="wrapper_signupEmailField">
+          <TextInput
+            aria-describedby={[
+              nicknameValidation.errorMessage ? accountNicknameErrorId : "",
+              nicknameCheckMessage ? accountNicknameCheckId : "",
+            ]
+              .filter(Boolean)
+              .join(" ") || undefined}
+            aria-invalid={Boolean(
+              nicknameValidation.errorMessage ||
+                (nicknameCheckMessage && !isNicknameChecked),
+            )}
+            aria-label="닉네임"
+            autoComplete="nickname"
+            maxLength={12}
+            onBlur={nicknameValidation.markTouched}
+            onChange={(event) => updateNickname(event.target.value)}
+            placeholder="닉네임"
+            state={
+              nicknameValidation.errorMessage ||
+              (nicknameCheckMessage && !isNicknameChecked)
+                ? "error"
+                : "default"
+            }
+            type="text"
+            value={nickname}
+          />
+          <FieldActionButton
+            disabled={
+              !nicknameValidation.isValid ||
+              isNicknameChecking ||
+              (isNicknameChecked && !isNicknameUnchanged)
+            }
+            onClick={checkNicknameDuplicate}
+            tone="white"
+          >
+            중복확인
+          </FieldActionButton>
+        </div>
+        {nicknameValidation.errorMessage ? (
+          <p className="text_authValidationError" id={accountNicknameErrorId} role="alert">
+            {nicknameValidation.errorMessage}
+          </p>
+        ) : null}
+        {nicknameCheckMessage ? (
+          <p
+            className="text_authValidation"
+            data-state={isNicknameChecked ? "success" : "error"}
+            id={accountNicknameCheckId}
+          >
+            {nicknameCheckMessage}
+          </p>
+        ) : null}
+      </div>
+      <div className="wrapper_mySettingsField">
         <span className="text_infoFieldLabel">이메일</span>
-        <TextInput
-          aria-label="이메일"
-          onChange={(event) => setEmail(event.target.value)}
-          type="email"
-          value={email}
-        />
-      </label>
+        <div className="wrapper_signupEmailField">
+          <TextInput
+            aria-describedby={[
+              emailValidation.errorMessage ? accountEmailErrorId : "",
+              emailCheckMessage ? accountEmailCheckId : "",
+            ]
+              .filter(Boolean)
+              .join(" ") || undefined}
+            aria-invalid={Boolean(emailValidation.errorMessage)}
+            aria-label="이메일"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            className="input_authEmailControl"
+            onBlur={emailValidation.markTouched}
+            onChange={(event) => updateEmail(event.target.value)}
+            placeholder="이메일"
+            spellCheck={false}
+            state={emailValidation.errorMessage ? "error" : "default"}
+            type="email"
+            value={email}
+          />
+          <FieldActionButton
+            disabled={
+              !emailValidation.isValid ||
+              isEmailChecking ||
+              isVerificationSent ||
+              isVerificationConfirmed
+            }
+            onClick={startVerificationCode}
+            tone="white"
+          >
+            인증번호 발송
+          </FieldActionButton>
+        </div>
+        {emailValidation.errorMessage ? (
+          <p className="text_authValidationError" id={accountEmailErrorId} role="alert">
+            {emailValidation.errorMessage}
+          </p>
+        ) : null}
+        {emailCheckMessage ? (
+          <p
+            className="text_authValidation"
+            data-state={isEmailChecked ? "success" : "error"}
+            id={accountEmailCheckId}
+          >
+            {emailCheckMessage}
+          </p>
+        ) : null}
+      </div>
+      {isVerificationSent ? (
+        <div className="wrapper_mySettingsField">
+          <span className="text_infoFieldLabel">인증번호</span>
+          <div className="wrapper_signupVerificationCode">
+            <div className="wrapper_signupVerificationCodeInput">
+              <TextInput
+                aria-describedby={
+                  verificationCodeValidation.errorMessage
+                    ? accountVerificationCodeErrorId
+                    : undefined
+                }
+                aria-invalid={Boolean(verificationCodeValidation.errorMessage)}
+                aria-label="이메일 인증번호 6자리 입력"
+                inputMode="numeric"
+                maxLength={6}
+                onBlur={verificationCodeValidation.markTouched}
+                onChange={(event) => {
+                  setVerificationCode(event.currentTarget.value);
+                  setIsVerificationConfirmed(false);
+                }}
+                placeholder="인증번호 6자리"
+                state={verificationCodeValidation.errorMessage ? "error" : "default"}
+                type="text"
+                value={verificationCode}
+              />
+              <span className="text_signupVerificationTimer">
+                {formattedVerificationTime}
+              </span>
+            </div>
+            <FieldActionButton
+              disabled={isVerificationConfirmed}
+              onClick={confirmVerificationCode}
+              tone="white"
+            >
+              인증하기
+            </FieldActionButton>
+          </div>
+          {verificationCodeValidation.errorMessage ? (
+            <p
+              className="text_authValidationError"
+              id={accountVerificationCodeErrorId}
+              role="alert"
+            >
+              {verificationCodeValidation.errorMessage}
+            </p>
+          ) : null}
+          {isVerificationConfirmed ? (
+            <p className="text_authValidation" data-state="success">
+              인증이 완료되었습니다.
+            </p>
+          ) : null}
+        </div>
+      ) : null}
       {status ? (
         <p className={`text_mySettingsStatus${status === "error" ? " is_error" : ""}`}>
           {status === "saving"
             ? "저장 중입니다."
             : status === "saved"
               ? "저장되었습니다."
-              : "입력값을 확인해주세요."}
+              : "중복확인과 이메일 인증을 확인해주세요."}
         </p>
       ) : null}
       <div className="wrapper_mySettingsBottomActions">
         <PrimaryButtonGroup>
         <PrimaryButton
-          disabled={status === "saving"}
+          disabled={status === "saving" || !isProfileReady}
           type="submit"
         >
           저장
@@ -669,15 +1003,14 @@ function SettingsPasswordField({
           value={value}
           wrapperClassName="input_loginPassword"
         />
-        <button
-          aria-label={isVisible ? `${label} 숨기기` : `${label} 보기`}
+        <IconButton
           aria-pressed={isVisible}
           className="btn_loginPasswordToggle btn_mySettingsPasswordToggle"
+          icon="eye"
+          iconSize={12}
+          label={isVisible ? `${label} 숨기기` : `${label} 보기`}
           onClick={onToggleVisible}
-          type="button"
-        >
-          <Icon name="eye" />
-        </button>
+        />
       </div>
     </label>
   );
@@ -872,7 +1205,7 @@ export function MyProfileSettingDetailPage({
       ) : null}
       {shouldShowDivider ? <NewsRollDivider className="divider_mySection" /> : null}
       {itemId === "accountEdit" ? (
-        <AccountEditForm onSubmit={onUserSubmit} user={user} />
+        <AccountEditForm onSubmit={onUserSubmit} user={user} users={users} />
       ) : itemId === "passwordReset" ? (
         <PasswordResetForm onSubmit={onPasswordSubmit} />
       ) : itemId === "marketingConsent" ? (

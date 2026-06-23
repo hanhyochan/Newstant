@@ -15,8 +15,7 @@ import {
   newsApi
 } from "@/app/_newsroll/api";
 import {
-  BreakingNewsCardLink,
-  DockedAlarmButton,
+  NoticeCardLink,
   Icon,
   PillTabMenu
 } from "@/design-system/components";
@@ -35,7 +34,7 @@ import {
   useDockedPanelScroll,
   useEnterFromRightExitMotion
 } from "@/design-system/templates";
-import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 import { SeparatedList } from "@/features/shared/SeparatedList";
@@ -64,6 +63,7 @@ export function AllNewsView({
   entryMotionClassName = "",
   initialShowAllBreaking = false,
   isTextLarge,
+  onOpenBreakingNews,
   onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
@@ -71,6 +71,7 @@ export function AllNewsView({
   entryMotionClassName?: string;
   initialShowAllBreaking?: boolean;
   isTextLarge: boolean;
+  onOpenBreakingNews: () => void;
   onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onToggleTextSize: () => void;
@@ -460,7 +461,7 @@ export function AllNewsView({
               <h1 className="text_panelHeaderTitle">전체 뉴스</h1>
             )}
             <DockedAlarmButton
-              aria-label="속보 알림"
+              aria-label="속보"
               aria-pressed={false}
               onClick={showBreakingNewsList}
             />
@@ -473,13 +474,14 @@ export function AllNewsView({
             <div className="newsroll_all_breaking_stack" id="all-breaking-news">
               {breakingItems.length > 0 ? (
                 breakingItems.map((item) => (
-                  <BreakingNewsCardLink
+                  <NoticeCardLink
                     id={item.id}
                     key={item.id}
                     onClick={() => openAllNewsDetail(item.article)}
                     title={item.title}
                     updatedAt={item.updatedAt}
-                    variant="list"
+                    isListItem
+                    type="breaking"
                   />
                 ))
               ) : (

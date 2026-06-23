@@ -6,35 +6,37 @@ import type {
 
 import { cn } from "../shared/utils";
 
-type OriginalArticleButtonSharedProps = {
+type ContentActionButtonSharedProps = {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
   href?: string;
+  tone?: "dark" | "light";
 };
 
-type OriginalArticleNativeButtonProps = OriginalArticleButtonSharedProps &
+type ContentActionNativeButtonProps = ContentActionButtonSharedProps &
   ButtonHTMLAttributes<HTMLButtonElement> & {
     href?: undefined;
   };
 
-type OriginalArticleAnchorButtonProps = OriginalArticleButtonSharedProps &
+type ContentActionAnchorButtonProps = ContentActionButtonSharedProps &
   AnchorHTMLAttributes<HTMLAnchorElement> & {
     href: string;
   };
 
-export type OriginalArticleButtonProps =
-  | OriginalArticleNativeButtonProps
-  | OriginalArticleAnchorButtonProps;
+export type ContentActionButtonProps =
+  | ContentActionNativeButtonProps
+  | ContentActionAnchorButtonProps;
 
-export function OriginalArticleButton({
+export function ContentActionButton({
   children,
   className,
   disabled = false,
   href,
+  tone = "light",
   ...props
-}: OriginalArticleButtonProps) {
-  const classNames = cn("btn_originalArticle", className);
+}: ContentActionButtonProps) {
+  const classNames = cn("btn_originalArticle", `btn_originalArticle_${tone}`, className);
 
   if (href) {
     return (

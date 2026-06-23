@@ -1,32 +1,33 @@
 import type { ButtonHTMLAttributes } from "react";
 
 import { Icon } from "../icon/icon";
-import { OriginalArticleButton } from "./original-article-button";
+import { cn } from "../shared/utils";
 
-export type DetailPaginationButtonDirection = "previous" | "next";
+export type PaginationButtonDirection = "previous" | "next";
 
-export type DetailPaginationButtonProps = Omit<
+export type PaginationButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "children"
 > & {
-  direction: DetailPaginationButtonDirection;
+  direction: PaginationButtonDirection;
 };
 
-export function DetailPaginationButton({
+export function PaginationButton({
+  className,
   direction,
   ...props
-}: DetailPaginationButtonProps) {
+}: PaginationButtonProps) {
   const isPrevious = direction === "previous";
 
   return (
-    <OriginalArticleButton
-      className="newsroll_policy_detail_page_button"
+    <button
+      className={cn("btn_originalArticle", "newsroll_policy_detail_page_button", className)}
       type="button"
       {...props}
     >
       {isPrevious ? <Icon name="arrow" /> : null}
       {isPrevious ? "이전글" : "다음글"}
       {isPrevious ? null : <Icon name="arrow" />}
-    </OriginalArticleButton>
+    </button>
   );
 }

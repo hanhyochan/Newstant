@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 
+import { IconButton } from "../components/button/icon-button";
 import { cn } from "../components/shared/utils";
 
 type NewsRollDetailBackButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "aria-label" | "children"> & {
@@ -13,13 +14,14 @@ export function NewsRollDetailBackButton({
   ...props
 }: NewsRollDetailBackButtonProps) {
   return (
-    <button
-      aria-label={ariaLabel}
+    <IconButton
       className={cn("newsroll_homeDetailBack newsroll_all_detail_back", className)}
+      icon="arrow"
+      label={ariaLabel}
+      tone="translucent"
       type={type}
+      variant="shaped"
       {...props}
-    >
-      <span aria-hidden="true" />
-    </button>
+    />
   );
 }

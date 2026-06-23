@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useCallback,
@@ -37,7 +37,7 @@ import {
   IconButton,
   NewsBlockItem,
   NewsRollDivider,
-  ReactionButton,
+  IconTextButton,
   TextButton
 } from "@/design-system/components";
 import {
@@ -209,9 +209,9 @@ function getNewsViewTimesFromApi(settings: UserNewsViewTime | null) {
 }
 
 const mySummaryItems = [
-  { count: 56, icon: "bookmark", label: "북마크", tone: "like", value: "bookmark" },
-  { count: 54, icon: "vote", label: "투표", tone: "dislike", value: "vote" },
-  { count: 15, icon: "chat", label: "댓글", tone: "neutral", value: "comment" },
+  { count: 56, icon: "bookmark", label: "북마크", tone: "bookmark", value: "bookmark" },
+  { count: 54, icon: "vote", label: "투표", tone: "vote", value: "vote" },
+  { count: 15, icon: "chat", label: "댓글", tone: "comment", value: "comment" },
 ] as const;
 const myNotificationLabels = [
   "속보",
@@ -1245,7 +1245,7 @@ export function MyPageView({
             <div className="wrapper_articleActions" aria-label="프로필 도구" role="group">
               <IconButton
                 aria-pressed={isProfileSettingsOpen}
-                baseClassName="btn_articleTool"
+                className="btn_articleTool"
                 icon="setting"
                 label="설정"
                 onClick={openProfileSettings}
@@ -1259,18 +1259,18 @@ export function MyPageView({
             role="group"
           >
             {mySummaryItems.map((item) => (
-              <ReactionButton
+              <IconTextButton
                 aria-pressed={activeSummary === item.value}
                 icon={item.icon}
                 key={item.value}
                 onClick={() => openSummaryDetail(item.value)}
                 tone={item.tone}
-                variant="article"
+                size="default"
               >
                 <strong>
                   {item.label} {myActivityCounts[item.value]}
                 </strong>
-              </ReactionButton>
+              </IconTextButton>
             ))}
           </div>
 

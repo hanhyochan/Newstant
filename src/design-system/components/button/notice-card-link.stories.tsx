@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { BreakingNewsCardLink } from "./breaking-news-link";
+import { NoticeCardLink } from "./notice-card-link";
 
-const meta: Meta<typeof BreakingNewsCardLink> = {
-  title: "Design System/Components/Breaking News Link",
-  component: BreakingNewsCardLink,
+const meta: Meta<typeof NoticeCardLink> = {
+  title: "Design System/Components/Notice Card Link",
+  component: NoticeCardLink,
   parameters: {
     layout: "centered",
   },
@@ -12,7 +12,7 @@ const meta: Meta<typeof BreakingNewsCardLink> = {
     href: "#all-breaking-news",
     showIcon: true,
     title: "정청래, ‘필버 중단’ 국민의 힘에 “대구/경북 통합 찬반 당론 먼저 정하라”",
-    variant: "home",
+    type: "breaking",
   },
 };
 

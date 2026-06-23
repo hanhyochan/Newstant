@@ -12,16 +12,16 @@ import {
   type UseFloatingMenuDismissProps,
 } from "./floating-menu";
 
-export type UseDropdownDismissProps = UseFloatingMenuDismissProps;
+export type UseActionMenuDismissProps = UseFloatingMenuDismissProps;
 
-export const useDropdownDismiss = useFloatingMenuDismiss;
+export const useActionMenuDismiss = useFloatingMenuDismiss;
 
-export type DropdownOption<T extends string> = {
+export type ActionMenuOption<T extends string> = {
   label: ReactNode;
   value: T;
 };
 
-export type DropdownProps<T extends string> = Omit<
+export type ActionMenuProps<T extends string> = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "children" | "onSelect"
 > & {
@@ -32,10 +32,10 @@ export type DropdownProps<T extends string> = Omit<
   menuId: string;
   onOpenChange: (isOpen: boolean) => void;
   onSelect: (value: T) => void;
-  options: Array<DropdownOption<T>>;
+  options: Array<ActionMenuOption<T>>;
 };
 
-export function Dropdown<T extends string>({
+export function ActionMenu<T extends string>({
   align = "end",
   buttonLabel,
   disabled,
@@ -46,7 +46,7 @@ export function Dropdown<T extends string>({
   onSelect,
   options,
   ...props
-}: DropdownProps<T>) {
+}: ActionMenuProps<T>) {
   return (
     <span className="wrapper_commentAction">
       <IconButton
@@ -54,7 +54,7 @@ export function Dropdown<T extends string>({
         aria-controls={isOpen ? menuId : undefined}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        baseClassName="btn_commentAction"
+        className="btn_commentAction"
         disabled={disabled}
         icon="detail"
         label={buttonLabel}

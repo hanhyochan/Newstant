@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { createPortal } from "react-dom";
 
 import {
-  Icon,
+  IconButton,
   NewsRollDivider,
   PillTabMenu,
   PrimaryButton,
@@ -132,14 +132,13 @@ function BlockedKeywordSettingsSection({
           role="group"
           value={blockedKeywordSettings.find((setting) => setting.isActive)?.keyword ?? ""}
         />
-        <button
-          aria-label={"\uCC28\uB2E8 \uD0A4\uC6CC\uB4DC \uCD94\uAC00"}
+        <IconButton
           className="btn_myBlockedKeywordAdd"
+          icon="plus"
+          iconSize={12}
+          label={"\uCC28\uB2E8 \uD0A4\uC6CC\uB4DC \uCD94\uAC00"}
           onClick={onOpenDialog}
-          type="button"
-        >
-          <Icon name="plus" size={12} />
-        </button>
+        />
       </div>
       {isDialogOpen ? (
         <BlockedKeywordDialog

@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { IconButton } from "../components/button/icon-button";
+
 type NewsRollArticleDetailPanelProps = {
   ariaLabel: string;
   backLabel?: string;
@@ -23,9 +25,14 @@ export function NewsRollArticleDetailPanel({
     <section className="container_newsFeed container_newsFeed_detail" aria-label={ariaLabel}>
       <article aria-labelledby={labelledBy} className={articleClassName}>
         {backLabel && onBack ? (
-          <button aria-label={backLabel} className="newsroll_all_detail_back" onClick={onBack} type="button">
-            <span aria-hidden="true" />
-          </button>
+          <IconButton
+            className="newsroll_all_detail_back"
+            icon="arrow"
+            label={backLabel}
+            onClick={onBack}
+            tone="translucent"
+            variant="shaped"
+          />
         ) : null}
         {children}
       </article>

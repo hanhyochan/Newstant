@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Fragment,
@@ -13,11 +13,13 @@ import {
 import {
   FieldActionButton,
   Icon,
+  IconButton,
   NewsRollDivider,
   NewsRollCheckField,
   PillTabMenu,
   PrimaryButton,
   PrimaryButtonGroup,
+  SocialLoginButton,
   TextButton,
   TransparentTextInput,
 } from "@/design-system/components";
@@ -45,18 +47,9 @@ import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation"
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
 const socialLoginProviders = [
-  {
-    icon: "/icons/icon_google_login.svg",
-    label: "구글 로그인",
-  },
-  {
-    icon: "/icons/icon_naver_login.svg",
-    label: "네이버 로그인",
-  },
-  {
-    icon: "/icons/icon_kakao_login.svg",
-    label: "카카오 로그인",
-  },
+  "google",
+  "naver",
+  "kakao",
 ] as const;
 
 function AuthTextActionButton({
@@ -84,19 +77,7 @@ function SocialLoginButtons({
         <span className="text_socialLoginTitle">빠른 로그인</span>
         <div className="wrapper_socialLogin" aria-label="소셜 로그인">
           {socialLoginProviders.map((provider) => (
-            <button
-              aria-label={provider.label}
-              className="btn_socialLogin"
-              key={provider.label}
-              type="button"
-            >
-              <img
-                alt=""
-                aria-hidden="true"
-                className="img_socialLoginIcon"
-                src={provider.icon}
-              />
-            </button>
+            <SocialLoginButton key={provider} provider={provider} />
           ))}
         </div>
       </div>
@@ -244,15 +225,14 @@ export function LoginView({
                   value={password}
                   wrapperClassName="input_loginPassword"
                 />
-                <button
-                  aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+                <IconButton
                   aria-pressed={isPasswordVisible}
                   className="btn_loginPasswordToggle"
+                  icon="eye"
+                  iconSize={12}
+                  label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
                   onClick={() => setIsPasswordVisible((current) => !current)}
-                  type="button"
-                >
-                  <Icon name="eye" />
-                </button>
+                />
               </div>
               <AuthValidationError
                 id={loginPasswordErrorId}
@@ -262,8 +242,11 @@ export function LoginView({
             <PrimaryButtonGroup>
         <PrimaryButton
               className="btn_loginSubmit"
-              disabled={!isLoginReady || isSubmitting}
-              type="submit"
+              disabled={!isLoginReady || isSubmitting}
+
+
+              type="submit"
+
             >
               로그인
             </PrimaryButton>
@@ -606,7 +589,7 @@ function SignupAgreementDetailView({
   agreementId,
   isTextLarge,
   onBack,
-  onOpenNotifications,
+  onOpenBreakingNews,
   onOpenSearch,
   searchTarget,
   onToggleTextSize,
@@ -615,7 +598,7 @@ function SignupAgreementDetailView({
   agreementId: SignupAgreementKey;
   isTextLarge: boolean;
   onBack: () => void;
-  onOpenNotifications: () => void;
+  onOpenBreakingNews: () => void;
   onOpenSearch: () => void;
   searchTarget?: SignupAgreementSearchTarget | null;
   onToggleTextSize: () => void;
@@ -651,7 +634,7 @@ function SignupAgreementDetailView({
         <NewsRollHeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
-            onOpenNotifications={onOpenNotifications}
+            onOpenNotifications={onOpenBreakingNews}
             onOpenSearch={onOpenSearch}
             showNotifications={false}
             onToggleTextSize={onToggleTextSize}
@@ -747,14 +730,12 @@ function SignupAgreementSearchView({
   return (
     <section className="newsroll_search_page" aria-label="동의 문구 통합검색">
       <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
-        <button
-          aria-label="동의 본문으로 돌아가기"
+        <IconButton
           className="newsroll_toolbar_icon newsroll_search_close"
+          icon={null}
+          label="동의 본문으로 돌아가기"
           onClick={onBack}
-          type="button"
-        >
-          <span aria-hidden="true" />
-        </button>
+        />
       </div>
 
       <div className="wrapper_searchContent">
@@ -809,13 +790,13 @@ export function SignupAgreementView({
   isTextLarge,
   onBack,
   onNext,
-  onOpenNotifications,
+  onOpenBreakingNews,
   onToggleTextSize,
 }: {
   isTextLarge: boolean;
   onBack: () => void;
   onNext: (agreements: Record<SignupAgreementKey, boolean>) => void;
-  onOpenNotifications: () => void;
+  onOpenBreakingNews: () => void;
   onToggleTextSize: () => void;
 }) {
   const [agreements, setAgreements] = useState<Record<SignupAgreementKey, boolean>>({
@@ -875,7 +856,7 @@ export function SignupAgreementView({
           setDetailAgreementId(null);
           setAgreementSearchTarget(null);
         }}
-        onOpenNotifications={onOpenNotifications}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenSearch={() => setIsAgreementSearchOpen(true)}
         searchTarget={agreementSearchTarget}
         onToggleTextSize={onToggleTextSize}
@@ -931,7 +912,10 @@ export function SignupAgreementView({
         <PrimaryButton
             className="btn_signupAgreementNext"
             disabled={!isAllRequiredChecked}
-            onClick={() => onNext(agreements)}
+            onClick={() => onNext(agreements)}
+
+
+
           >
             다음
           </PrimaryButton>
@@ -1203,8 +1187,11 @@ export function SignupEmailView({
           <PrimaryButtonGroup>
         <PrimaryButton
             className="btn_signupStepNext"
-            disabled={!isEmailReady}
-            type="submit"
+            disabled={!isEmailReady}
+
+
+            type="submit"
+
           >
             다음
           </PrimaryButton>
@@ -1551,17 +1538,16 @@ export function PasswordResetPasswordView({
                   value={nextPassword}
                   wrapperClassName="input_loginPassword"
                 />
-                <button
-                  aria-label={
-                    isNextPasswordVisible ? "새 비밀번호 숨기기" : "새 비밀번호 보기"
-                  }
+                <IconButton
                   aria-pressed={isNextPasswordVisible}
                   className="btn_loginPasswordToggle"
+                  icon="eye"
+                  iconSize={12}
+                  label={
+                    isNextPasswordVisible ? "새 비밀번호 숨기기" : "새 비밀번호 보기"
+                  }
                   onClick={() => setIsNextPasswordVisible((current) => !current)}
-                  type="button"
-                >
-                  <Icon name="eye" />
-                </button>
+                />
               </div>
               <AuthValidationError
                 id={nextPasswordErrorId}
@@ -1591,21 +1577,20 @@ export function PasswordResetPasswordView({
                   value={nextPasswordConfirm}
                   wrapperClassName="input_loginPassword"
                 />
-                <button
-                  aria-label={
+                <IconButton
+                  aria-pressed={isNextPasswordConfirmVisible}
+                  className="btn_loginPasswordToggle"
+                  icon="eye"
+                  iconSize={12}
+                  label={
                     isNextPasswordConfirmVisible
                       ? "새 비밀번호 확인 숨기기"
                       : "새 비밀번호 확인 보기"
                   }
-                  aria-pressed={isNextPasswordConfirmVisible}
-                  className="btn_loginPasswordToggle"
                   onClick={() =>
                     setIsNextPasswordConfirmVisible((current) => !current)
                   }
-                  type="button"
-                >
-                  <Icon name="eye" />
-                </button>
+                />
               </div>
               <AuthValidationError
                 id={nextPasswordConfirmErrorId}
@@ -1759,8 +1744,11 @@ export function SignupNicknameView({
           <PrimaryButtonGroup>
         <PrimaryButton
             className="btn_signupStepNext"
-            disabled={!isNicknameReady}
-            type="submit"
+            disabled={!isNicknameReady}
+
+
+            type="submit"
+
           >
             다음
           </PrimaryButton>
@@ -1829,15 +1817,14 @@ export function SignupPasswordView({
                   value={password}
                   wrapperClassName="input_loginPassword"
                 />
-                <button
-                  aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+                <IconButton
                   aria-pressed={isPasswordVisible}
                   className="btn_loginPasswordToggle"
+                  icon="eye"
+                  iconSize={12}
+                  label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
                   onClick={() => setIsPasswordVisible((current) => !current)}
-                  type="button"
-                >
-                  <Icon name="eye" />
-                </button>
+                />
               </div>
               <AuthValidationError
                 id={signupPasswordErrorId}
@@ -1863,19 +1850,18 @@ export function SignupPasswordView({
                   value={passwordConfirm}
                   wrapperClassName="input_loginPassword"
                 />
-                <button
-                  aria-label={
+                <IconButton
+                  aria-pressed={isPasswordConfirmVisible}
+                  className="btn_loginPasswordToggle"
+                  icon="eye"
+                  iconSize={12}
+                  label={
                     isPasswordConfirmVisible
                       ? "비밀번호 확인 숨기기"
                       : "비밀번호 확인 보기"
                   }
-                  aria-pressed={isPasswordConfirmVisible}
-                  className="btn_loginPasswordToggle"
                   onClick={() => setIsPasswordConfirmVisible((current) => !current)}
-                  type="button"
-                >
-                  <Icon name="eye" />
-                </button>
+                />
               </div>
               <AuthValidationError
                 id={signupPasswordConfirmErrorId}
@@ -1887,8 +1873,11 @@ export function SignupPasswordView({
           <PrimaryButtonGroup>
         <PrimaryButton
             className="btn_signupStepNext"
-            disabled={!isPasswordReady}
-            type="submit"
+            disabled={!isPasswordReady}
+
+
+            type="submit"
+
           >
             다음
           </PrimaryButton>
@@ -1965,8 +1954,11 @@ export function SignupAgeView({
           <PrimaryButtonGroup>
         <PrimaryButton
             className="btn_signupStepNext"
-            disabled={!selectedAge}
-            type="submit"
+            disabled={!selectedAge}
+
+
+            type="submit"
+
           >
             다음
           </PrimaryButton>
@@ -2028,8 +2020,11 @@ export function SignupCategoryView({
           <PrimaryButtonGroup>
         <PrimaryButton
             className="btn_signupStepNext"
-            disabled={selectedCategories.length === 0 || isSubmitting}
-            type="submit"
+            disabled={selectedCategories.length === 0 || isSubmitting}
+
+
+            type="submit"
+
           >
             시작하기
           </PrimaryButton>

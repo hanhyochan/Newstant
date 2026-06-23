@@ -3,39 +3,41 @@ import type { MouseEventHandler } from "react";
 import { Icon } from "../icon/icon";
 import { cn } from "../shared/utils";
 
-export type BreakingNewsCardLinkProps = {
-  className?: string;
+export type NoticeCardLinkType =
+  | "breaking"
+  | "notificationRead"
+  | "notificationUnread";
+
+export type NoticeCardLinkProps = {
   href?: string;
   id?: string;
+  isListItem?: boolean;
   onClick?: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   showIcon?: boolean;
   title: string;
-  tone?: "purple" | "white";
+  type?: NoticeCardLinkType;
   updatedAt?: string;
-  variant?: "home" | "list";
 };
 
-export function BreakingNewsCardLink({
-  className: extraClassName,
+export function NoticeCardLink({
   href,
   id,
+  isListItem = false,
   onClick,
   showIcon = false,
   title,
-  tone = "purple",
+  type = "breaking",
   updatedAt,
-  variant = "list",
-}: BreakingNewsCardLinkProps) {
+}: NoticeCardLinkProps) {
   const baseClassName =
-    variant === "home" ? "btn_link_breakingNews" : "newsroll_all_breaking_card";
+    isListItem ? "newsroll_noticeListCardLink" : "btn_noticeCardLink";
   const cardClassName = cn(
     baseClassName,
-    "newsroll_breakingCardLink",
-    tone === "white" && "newsroll_breakingCardLink_white",
-    extraClassName,
+    "newsroll_noticeCardLink",
+    `newsroll_noticeCardLink_${type}`,
   );
   const titleClassName =
-    variant === "home" ? "text_breakingNewsTitle" : "text_breakingCardTitle";
+    isListItem ? "text_noticeListCardTitle" : "text_noticeCardTitle";
   const content = (
     <>
       {showIcon ? <Icon name="policy" /> : null}
@@ -68,8 +70,4 @@ export function BreakingNewsCardLink({
       {content}
     </button>
   );
-}
-
-export function WhiteBreakingNewsCardLink(props: Omit<BreakingNewsCardLinkProps, "tone">) {
-  return <BreakingNewsCardLink {...props} tone="white" variant="home" />;
 }

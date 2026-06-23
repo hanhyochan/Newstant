@@ -1,4 +1,4 @@
-import {
+﻿import {
   Fragment,
   type KeyboardEvent,
   type MouseEvent,
@@ -9,7 +9,7 @@ import {
   ChipLabel,
   IconButton,
   PillTabMenu,
-  ReactionButton,
+  IconTextButton,
   TextButton,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
@@ -110,26 +110,26 @@ function MyCommentPreviewThread({
           대댓글 {commentReplies.length}
         </TextButton>
         <span>
-          <ReactionButton
+          <IconTextButton
             aria-label="댓글 좋아요"
             aria-pressed={false}
             icon="thumbUp"
             onClick={openCommentFromControl}
             tone="like"
-            variant="comment"
+            size="small"
           >
             {getVisibleReactionCount(likeCount)}
-          </ReactionButton>
-          <ReactionButton
+          </IconTextButton>
+          <IconTextButton
             aria-label="댓글 싫어요"
             aria-pressed={false}
             icon="thumbDown"
             onClick={openCommentFromControl}
             tone="dislike"
-            variant="comment"
+            size="small"
           >
             {getVisibleReactionCount(dislikeCount)}
-          </ReactionButton>
+          </IconTextButton>
         </span>
       </footer>
       <div
@@ -163,7 +163,7 @@ function MyCommentPreviewThread({
                     <IconButton
                       aria-expanded={false}
                       aria-haspopup="menu"
-                      baseClassName="btn_commentAction"
+                      className="btn_commentAction"
                       disabled
                       icon="detail"
                       label="대댓글 더보기"
@@ -174,24 +174,24 @@ function MyCommentPreviewThread({
                 <p>{reply.body}</p>
                 <footer>
                   <span>
-                    <ReactionButton
+                    <IconTextButton
                       aria-label="대댓글 좋아요"
                       disabled
                       icon="thumbUp"
                       tone="like"
-                      variant="comment"
+                      size="small"
                     >
                       {getVisibleReactionCount(reply.likes)}
-                    </ReactionButton>
-                    <ReactionButton
+                    </IconTextButton>
+                    <IconTextButton
                       aria-label="대댓글 싫어요"
                       disabled
                       icon="thumbDown"
                       tone="dislike"
-                      variant="comment"
+                      size="small"
                     >
                       {getVisibleReactionCount(reply.dislikes)}
-                    </ReactionButton>
+                    </IconTextButton>
                   </span>
                 </footer>
               </article>

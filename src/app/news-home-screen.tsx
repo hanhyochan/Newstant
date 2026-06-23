@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useCallback,
@@ -175,7 +175,7 @@ function ActiveView({
   onSignupNicknameNext,
   onSignupPasswordNext,
   onSignupStart,
-  onOpenAllNews,
+  onOpenBreakingNews,
   onOpenNotifications,
   onOpenSearch,
   onSelectNotification,
@@ -219,7 +219,7 @@ function ActiveView({
   onSignupNicknameNext: (nickname: string) => void;
   onSignupPasswordNext: (password: string) => void;
   onSignupStart: () => void;
-  onOpenAllNews: () => void;
+  onOpenBreakingNews: () => void;
   onOpenNotifications: () => void;
   onOpenSearch: () => void;
   onSelectNotification: (notification: AppNotification) => void;
@@ -265,7 +265,7 @@ function ActiveView({
         isTextLarge={isTextLarge}
         onBack={onAuthBack}
         onNext={onSignupAgreementNext}
-        onOpenNotifications={onOpenNotifications}
+        onOpenBreakingNews={onOpenBreakingNews}
         onToggleTextSize={onToggleTextSize}
       />
     );
@@ -337,6 +337,7 @@ function ActiveView({
         entryMotionClassName={allNewsEntryMotionClassName}
         initialShowAllBreaking={isAllNewsBreakingEntry}
         isTextLarge={isTextLarge}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -349,7 +350,7 @@ function ActiveView({
       <PolicyView
         bodySearchSelection={bodySearchSelection}
         isTextLarge={isTextLarge}
-        onOpenBreakingNews={onOpenAllNews}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -368,7 +369,7 @@ function ActiveView({
         onDeleteBlockedKeyword={onDeleteBlockedKeyword}
         onToggleBlockedKeyword={onToggleBlockedKeyword}
         onLogout={onLogout}
-        onOpenBreakingNews={onOpenAllNews}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -380,7 +381,7 @@ function ActiveView({
     return (
       <InfoView
         isTextLarge={isTextLarge}
-        onOpenBreakingNews={onOpenAllNews}
+        onOpenBreakingNews={onOpenBreakingNews}
         onOpenNotifications={onOpenNotifications}
         onOpenSearch={onOpenSearch}
         onToggleTextSize={onToggleTextSize}
@@ -393,7 +394,7 @@ function ActiveView({
       bodySearchSelection={bodySearchSelection}
       blockedKeywords={blockedKeywords}
       isTextLarge={isTextLarge}
-      onOpenBreakingNews={onOpenAllNews}
+      onOpenBreakingNews={onOpenBreakingNews}
       onOpenNotifications={onOpenNotifications}
       onOpenSearch={onOpenSearch}
       onToggleTextSize={onToggleTextSize}
@@ -1169,7 +1170,7 @@ export function NewsHomeScreen() {
           onCloseSearch={() => setActiveView(searchBackView)}
           onLogin={loginWithEmail}
           onLogout={logout}
-          onOpenAllNews={openBreakingNewsView}
+          onOpenBreakingNews={openBreakingNewsView}
           onOpenNotifications={openNotifications}
           onOpenSearch={openSearch}
           onPasswordResetEmailNext={moveToPasswordResetPassword}
@@ -1230,11 +1231,11 @@ export function NewsHomeScreen() {
           {navItems.map((item) => (
             <IconButton
               aria-current={effectiveView === item.tab ? "page" : undefined}
-              baseClassName="newsroll_nav_item"
               icon={item.icon}
               key={item.label}
               label={item.label}
               onClick={() => openDefaultTab(item.tab)}
+              variant="bottomNav"
             />
           ))}
         </nav>

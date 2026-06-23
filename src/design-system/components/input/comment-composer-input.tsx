@@ -1,6 +1,6 @@
 import type { ChangeEventHandler } from "react";
 
-import { Icon } from "../icon/icon";
+import { IconButton } from "../button/icon-button";
 import { TextInput } from "./text-input";
 
 export type CommentComposerInputProps = {
@@ -28,9 +28,12 @@ export function CommentComposerInput({
         value={value}
         wrapperClassName="input_commentComposer"
       />
-      <button aria-label={submitLabel} className="btn_commentSubmit" type="submit">
-        <Icon name="submit" />
-      </button>
+      <IconButton
+        className="btn_commentSubmit"
+        icon="submit"
+        label={submitLabel}
+        type="submit"
+      />
     </>
   );
 }

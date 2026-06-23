@@ -362,22 +362,6 @@
         --color-newsroll-purple-99: #fefcff;
         --color-newsroll-purple-100: #ffffff;
 
-        --color-brand-0: var(--color-newsroll-purple-0);
-        --color-brand-10: var(--color-newsroll-purple-10);
-        --color-brand-20: var(--color-newsroll-purple-20);
-        --color-brand-30: var(--color-newsroll-purple-30);
-        --color-brand-40: var(--color-newsroll-purple-40);
-        --color-brand-50: var(--color-newsroll-purple-50);
-        --color-brand-60: var(--color-newsroll-purple-60);
-        --color-brand-70: var(--color-newsroll-purple-70);
-        --color-brand-80: var(--color-newsroll-purple-80);
-        --color-brand-90: var(--color-newsroll-purple-90);
-        --color-brand-95: var(--color-newsroll-purple-95);
-        --color-brand-99: var(--color-newsroll-purple-99);
-        --color-brand-100: var(--color-newsroll-purple-100);
-
-        --color-accent-background-brand: var(--color-brand-50);
-        --color-accent-foreground-brand: var(--color-brand-40);
     }
 
     :root {
@@ -528,7 +512,7 @@
             line-height: var(--line-height-24);
         }
 
-        .newsroll_all_breaking_label :is(.newsroll_icon_20, .newsroll_icon_18) {
+        .newsroll_all_breaking_label .newsroll_icon_20 {
             width: var(--spacing-padding-horizontal-24);
             height: var(--spacing-padding-vertical-24);
         }
@@ -541,7 +525,7 @@
             );
         }
 
-        .newsroll_all_breaking_card {
+        .newsroll_noticeListCardLink {
             display: flex;
             align-items: center;
             padding: var(--spacing-padding-vertical-12) var(--spacing-padding-horizontal-16);
@@ -567,12 +551,6 @@
             font-size: var(--font-size-16);
             font-weight: var(--font-weight-600);
             line-height: var(--line-height-24);
-        }
-
-        .newsroll_all_more_dark {
-            padding-top: var(--spacing-padding-vertical-24);
-            color: var(--color-common-100);
-            background: var(--color-background-transparent-alternative);
         }
 
         .newsroll_all_more_chevron {

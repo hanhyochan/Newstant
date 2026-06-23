@@ -5,10 +5,10 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { bookmarkApi } from "@/app/_newsroll/api";
 import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
-  ArticleActionButtons,
   ChipLabel,
-  DetailPaginationButton,
+  PaginationButton,
   Icon,
+  IconButton,
   NewsRollDivider,
   PrimaryButton,
   PrimaryButtonGroup,
@@ -162,16 +162,25 @@ export function PolicyDetailContent({
               </span>
             </div>
 
-            <ArticleActionButtons
-              ariaLabel="정책 도구"
-              isBookmarked={isBookmarked}
-              onBookmark={() => {
-                void togglePolicyBookmark();
-              }}
-              onShare={() => {
-                void sharePolicy();
-              }}
-            />
+            <div className="wrapper_articleActions" aria-label="정책 도구" role="group">
+              <IconButton
+                className="btn_articleTool"
+                icon="share"
+                label="공유"
+                onClick={() => {
+                  void sharePolicy();
+                }}
+              />
+              <IconButton
+                aria-pressed={isBookmarked}
+                className="btn_articleTool"
+                icon="bookmark"
+                label="북마크"
+                onClick={() => {
+                  void togglePolicyBookmark();
+                }}
+              />
+            </div>
           </div>
         </div>
 
@@ -219,12 +228,12 @@ export function PolicyDetailContent({
         role="group"
         aria-label="이전글 다음글"
       >
-        <DetailPaginationButton
+        <PaginationButton
           direction="previous"
           disabled={!onPreviousItem}
           onClick={onPreviousItem}
         />
-        <DetailPaginationButton
+        <PaginationButton
           direction="next"
           disabled={!onNextItem}
           onClick={onNextItem}

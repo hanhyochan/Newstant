@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   notificationApi,
   type AppNotification,
 } from "@/app/_newsroll/api";
-import { hydrateCurrentUserSession } from "@/app/_newsroll/auth/current-user";
-import { WhiteBreakingNewsCardLink } from "@/design-system/components";
+import {
+  getCurrentUserSnapshot,
+  hydrateCurrentUserSession,
+} from "@/app/_newsroll/auth/current-user";
+import { NoticeCardLink } from "@/design-system/components";
 import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
 
 type NotificationViewProps = {
@@ -15,51 +18,72 @@ type NotificationViewProps = {
   onSelectNotification: (notification: AppNotification) => void;
 };
 
-type NotificationListItem = AppNotification & {
-  wasRead: boolean;
-};
-
 const notificationsUpdatedEventName = "newsroll:notifications-updated";
+const notificationPollingIntervalMs = 5000;
+
+function sortNotificationsByLatest(notifications: AppNotification[]) {
+  return [...notifications].sort((first, second) => {
+    return (
+      new Date(second.createdAt).getTime() -
+      new Date(first.createdAt).getTime()
+    );
+  });
+}
 
 export function NotificationView({
   onClose,
   onSelectNotification,
 }: NotificationViewProps) {
-  const [notifications, setNotifications] = useState<NotificationListItem[]>([]);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const notificationsRef = useRef<AppNotification[]>([]);
+
+  const markVisibleNotificationsAsRead = useCallback(() => {
+    const visibleNotifications = notificationsRef.current;
+    const hasUnreadNotifications = visibleNotifications.some(
+      (notification) => !notification.isRead,
+    );
+
+    if (!hasUnreadNotifications) {
+      return;
+    }
+
+    void notificationApi
+      .markNotificationsAsRead(visibleNotifications)
+      .then(() => {
+        window.dispatchEvent(new Event(notificationsUpdatedEventName));
+      })
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
 
-    async function loadNotifications() {
-      setIsLoading(true);
-      setLoadError("");
+    async function loadNotifications({ silent = false } = {}) {
+      if (!silent) {
+        setIsLoading(true);
+        setLoadError("");
+      }
 
       try {
-        hydrateCurrentUserSession();
-        await notificationApi.syncNotifications();
-        const nextNotifications = await notificationApi.getNotifications();
-        const hasUnreadNotifications = nextNotifications.some(
-          (notification) => !notification.isRead,
-        );
+        const storedUser =
+          hydrateCurrentUserSession() ?? getCurrentUserSnapshot();
 
-        if (hasUnreadNotifications) {
-          await notificationApi.markNotificationsAsRead(nextNotifications);
+        if (!storedUser) {
+          setNotifications([]);
+          notificationsRef.current = [];
+          return;
         }
 
-        if (!ignore) {
-          const readAt = new Date().toISOString();
+        await notificationApi.syncNotifications(storedUser.id);
+        const nextNotifications = sortNotificationsByLatest(
+          await notificationApi.getNotifications(storedUser.id),
+        );
 
-          setNotifications(
-            nextNotifications.map((notification) => ({
-              ...notification,
-              isRead: true,
-              readAt: notification.readAt ?? readAt,
-              wasRead: notification.isRead,
-            })),
-          );
-          window.dispatchEvent(new Event(notificationsUpdatedEventName));
+        if (!ignore) {
+          notificationsRef.current = nextNotifications;
+          setNotifications(nextNotifications);
         }
       } catch {
         if (!ignore) {
@@ -74,13 +98,24 @@ export function NotificationView({
     }
 
     loadNotifications();
+    const pollingTimer = window.setInterval(
+      () => loadNotifications({ silent: true }),
+      notificationPollingIntervalMs,
+    );
 
     return () => {
       ignore = true;
+      window.clearInterval(pollingTimer);
+      markVisibleNotificationsAsRead();
     };
-  }, []);
+  }, [markVisibleNotificationsAsRead]);
 
-  function selectNotification(notification: NotificationListItem) {
+  function closeNotifications() {
+    markVisibleNotificationsAsRead();
+    onClose();
+  }
+
+  function selectNotification(notification: AppNotification) {
     onSelectNotification(notification);
   }
 
@@ -88,7 +123,7 @@ export function NotificationView({
     <NewsRollPurpleOverlayPage
       ariaLabel="알림"
       closeLabel="알림 닫기"
-      onClose={onClose}
+      onClose={closeNotifications}
     >
       {isLoading ? (
         <p className="text_searchStatus" role="status">
@@ -101,13 +136,13 @@ export function NotificationView({
       ) : notifications.length > 0 ? (
         <div className="list_searchResults list_notificationResults" aria-label="알림 목록">
           {notifications.map((notification) => (
-            <WhiteBreakingNewsCardLink
-              className={
-                notification.wasRead ? "newsroll_notificationCard_read" : undefined
-              }
+            <NoticeCardLink
               key={notification.id}
               onClick={() => selectNotification(notification)}
               title={`${notification.title} ${notification.body}`}
+              type={
+                notification.isRead ? "notificationRead" : "notificationUnread"
+              }
               updatedAt={notification.createdAt}
             />
           ))}

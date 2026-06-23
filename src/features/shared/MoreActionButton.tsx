@@ -1,3 +1,5 @@
+import { ContentActionButton } from "@/design-system/components";
+
 export function MoreActionButton({
   ariaLabel,
   collapsedLabel = "더보기",
@@ -16,12 +18,12 @@ export function MoreActionButton({
   tone?: "dark" | "light";
 }) {
   return (
-    <button
+    <ContentActionButton
       aria-label={ariaLabel}
       aria-expanded={showIcon ? expanded : undefined}
-      className={`btn_originalArticle newsroll_all_more newsroll_all_more_${tone}`}
+      className="newsroll_all_more"
       onClick={onClick}
-      type="button"
+      tone={tone}
     >
       <span>{expanded ? expandedLabel : collapsedLabel}</span>
       {showIcon ? (
@@ -32,6 +34,6 @@ export function MoreActionButton({
           src="/icons/icon_chevron_right.svg"
         />
       ) : null}
-    </button>
+    </ContentActionButton>
   );
 }
