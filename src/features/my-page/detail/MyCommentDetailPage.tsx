@@ -10,11 +10,11 @@ import {
   IconButton,
   PillTabMenu,
   IconTextButton,
+  NewsHeadlineRowButton as AllNewsHeadlineItem,
   TextButton,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 import {
-  AllNewsHeadlineItem,
   NewsCreatedTime,
   commentReplyTemplates,
   defaultNewsDateTime,

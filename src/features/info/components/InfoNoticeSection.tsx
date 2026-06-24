@@ -1,3 +1,4 @@
+import { ContentSummaryButton } from "@/design-system/components";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 
@@ -28,10 +29,9 @@ export function InfoNoticeSection({
           getKey={(notice, index) => `${notice.title}-${notice.date}-${index}`}
           items={items}
           renderItem={(notice, index) => (
-            <button
+            <ContentSummaryButton
               className="btn_infoNoticeItem"
               onClick={() => onNoticeSelect(notice, index)}
-              type="button"
             >
               <div className="wrapper_infoNoticeContent">
                 <span className="text_infoItemTitle">{notice.title}</span>
@@ -40,7 +40,7 @@ export function InfoNoticeSection({
                 </p>
                 <span className="text_infoMeta">{notice.date}</span>
               </div>
-            </button>
+            </ContentSummaryButton>
           )}
         />
       )}

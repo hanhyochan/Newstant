@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import {
-  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -12,7 +11,7 @@ import {
 
 import {
   FieldActionButton,
-  ChevronIconButton,
+  ChevronRowButton,
   Icon,
   IconButton,
   NewsRollDivider,
@@ -20,6 +19,10 @@ import {
   PillTabMenu,
   PrimaryButton,
   PrimaryButtonGroup,
+  getSearchHighlightTargetId,
+  scrollSearchHighlightTargetIntoView,
+  SearchHighlightText,
+  SearchResultButton,
   SocialLoginButton,
   TextButton,
   TransparentTextInput,
@@ -452,7 +455,7 @@ function normalizeAgreementSearchQuery(query: string) {
   return query.trim().toLocaleLowerCase("ko-KR");
 }
 
-function getAgreementTargetElementId(
+function getAgreementSearchRootId(
   agreementId: SignupAgreementKey,
   targetKey: string,
 ) {
@@ -527,64 +530,6 @@ function createSignupAgreementSearchResults(
   });
 }
 
-function splitAgreementSearchText(text: string, query: string) {
-  const normalizedQuery = query.trim().toLocaleLowerCase("ko-KR");
-
-  if (!normalizedQuery) {
-    return [{ isMatch: false, text }];
-  }
-
-  const normalizedText = text.toLocaleLowerCase("ko-KR");
-  const parts: Array<{ isMatch: boolean; text: string }> = [];
-  let cursor = 0;
-  let index = normalizedText.indexOf(normalizedQuery);
-
-  while (index !== -1) {
-    if (index > cursor) {
-      parts.push({ isMatch: false, text: text.slice(cursor, index) });
-    }
-
-    parts.push({
-      isMatch: true,
-      text: text.slice(index, index + normalizedQuery.length),
-    });
-    cursor = index + normalizedQuery.length;
-    index = normalizedText.indexOf(normalizedQuery, cursor);
-  }
-
-  if (cursor < text.length) {
-    parts.push({ isMatch: false, text: text.slice(cursor) });
-  }
-
-  return parts;
-}
-
-function AgreementSearchText({
-  children,
-  query,
-}: {
-  children: string;
-  query: string;
-}) {
-  if (!query.trim()) {
-    return <>{children}</>;
-  }
-
-  return (
-    <>
-      {splitAgreementSearchText(children, query).map((part, index) =>
-        part.isMatch ? (
-          <mark className="mark_authAgreementSearch" key={`${part.text}-${index}`}>
-            {part.text}
-          </mark>
-        ) : (
-          <Fragment key={`${part.text}-${index}`}>{part.text}</Fragment>
-        ),
-      )}
-    </>
-  );
-}
-
 function SignupAgreementDetailView({
   agreement,
   agreementId,
@@ -613,11 +558,11 @@ function SignupAgreementDetailView({
     }
 
     window.requestAnimationFrame(() => {
-      document
-        .getElementById(
-          getAgreementTargetElementId(agreementId, searchTarget.targetKey),
-        )
-        ?.scrollIntoView({ block: "center", behavior: "smooth" });
+      scrollSearchHighlightTargetIntoView(
+        getSearchHighlightTargetId(
+          getAgreementSearchRootId(agreementId, searchTarget.targetKey),
+        ),
+      );
     });
   }, [agreementId, searchTarget]);
 
@@ -654,51 +599,76 @@ function SignupAgreementDetailView({
     >
       <NewsRollPagePanel ariaLabel={`${agreement.title} 본문 영역`}>
         <div className="wrapper_authAgreementDetail">
-          <h1
-            className="text_loginTitle"
-            id={getAgreementTargetElementId(agreementId, "title")}
-          >
-            <AgreementSearchText query={highlightedQuery}>
+          <h1 className="text_loginTitle">
+            <SearchHighlightText
+              query={highlightedQuery}
+              targetId={
+                highlightedQuery
+                  ? getSearchHighlightTargetId(
+                      getAgreementSearchRootId(agreementId, "title"),
+                    )
+                  : undefined
+              }
+            >
               {agreement.title}
-            </AgreementSearchText>
+            </SearchHighlightText>
           </h1>
 
           <div className="wrapper_authAgreementArticle">
             {agreement.sections.map((section, sectionIndex) => (
               <section className="wrapper_authAgreementSection" key={section.heading}>
-                <h2
-                  id={getAgreementTargetElementId(
-                    agreementId,
-                    `section-${sectionIndex}-heading`,
-                  )}
-                >
-                  <AgreementSearchText query={highlightedQuery}>
+                <h2>
+                  <SearchHighlightText
+                    query={highlightedQuery}
+                    targetId={
+                      highlightedQuery
+                        ? getSearchHighlightTargetId(
+                            getAgreementSearchRootId(
+                              agreementId,
+                              `section-${sectionIndex}-heading`,
+                            ),
+                          )
+                        : undefined
+                    }
+                  >
                     {section.heading}
-                  </AgreementSearchText>
+                  </SearchHighlightText>
                 </h2>
                 {section.body.map((paragraph, paragraphIndex) => (
-                  <p
-                    id={getAgreementTargetElementId(
-                      agreementId,
-                      `section-${sectionIndex}-paragraph-${paragraphIndex}`,
-                    )}
-                    key={paragraph}
-                  >
-                    <AgreementSearchText query={highlightedQuery}>
+                  <p key={paragraph}>
+                    <SearchHighlightText
+                      query={highlightedQuery}
+                      targetId={
+                        highlightedQuery
+                          ? getSearchHighlightTargetId(
+                              getAgreementSearchRootId(
+                                agreementId,
+                                `section-${sectionIndex}-paragraph-${paragraphIndex}`,
+                              ),
+                            )
+                          : undefined
+                      }
+                    >
                       {paragraph}
-                    </AgreementSearchText>
+                    </SearchHighlightText>
                   </p>
                 ))}
               </section>
             ))}
-            <p
-              className="text_authAgreementSource"
-              id={getAgreementTargetElementId(agreementId, "source")}
-            >
+            <p className="text_authAgreementSource">
               참고 기준:{" "}
-              <AgreementSearchText query={highlightedQuery}>
+              <SearchHighlightText
+                query={highlightedQuery}
+                targetId={
+                  highlightedQuery
+                    ? getSearchHighlightTargetId(
+                        getAgreementSearchRootId(agreementId, "source"),
+                      )
+                    : undefined
+                }
+              >
                 {agreement.source}
-              </AgreementSearchText>
+              </SearchHighlightText>
             </p>
           </div>
         </div>
@@ -733,7 +703,7 @@ function SignupAgreementSearchView({
       <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
         <IconButton
           className="newsroll_toolbar_icon newsroll_search_close"
-          icon={null}
+          icon="close"
           label="동의 본문으로 돌아가기"
           onClick={onBack}
         />
@@ -762,20 +732,17 @@ function SignupAgreementSearchView({
           searchResults.length > 0 ? (
             <div className="list_searchResults" aria-label="동의 문구 검색 결과">
               {searchResults.map((result, index) => (
-                <button
-                  className="btn_searchResult"
+                <SearchResultButton
                   key={`${result.agreementId}-${result.targetKey}-${index}`}
                   onClick={() => onSelectResult(result)}
-                  type="button"
-                >
-                  <strong>{result.agreementTitle}</strong>
-                  <span>{result.label}</span>
-                  <p className="text_searchResultSnippet">
-                    <AgreementSearchText query={trimmedQuery}>
+                  meta={result.label}
+                  snippet={
+                    <SearchHighlightText query={trimmedQuery}>
                       {result.snippet}
-                    </AgreementSearchText>
-                  </p>
-                </button>
+                    </SearchHighlightText>
+                  }
+                  title={result.agreementTitle}
+                />
               ))}
             </div>
           ) : (
@@ -874,23 +841,22 @@ export function SignupAgreementView({
         <div className="wrapper_signupAgreementBody">
           <div className="wrapper_signupAgreementList">
             {signupAgreementItems.map((item) => (
-              <div className="wrapper_signupAgreementItem" key={item.id}>
-                <NewsRollCheckField
-                  checked={agreements[item.id]}
-                  className="btn_signupAgreementDetailCheckField"
-                  size="small"
-                  label={`(${item.required ? "필수" : "선택"}) ${item.title}`}
-                  onChange={() => toggleAgreement(item.id)}
-                />
-                <ChevronIconButton
-                  className="btn_signupAgreementItem"
-                  onClick={() => {
-                    setAgreementSearchTarget(null);
-                    setDetailAgreementId(item.id);
-                  }}
-                  label={`${item.title} 상세 보기`}
-                />
-              </div>
+              <ChevronRowButton
+                checked={agreements[item.id]}
+                chevronLabel={`${item.title} 상세 보기`}
+                inputProps={{ required: item.required }}
+                key={item.id}
+                name="signupAgreements"
+                onChange={() => toggleAgreement(item.id)}
+                onChevronClick={() => {
+                  setAgreementSearchTarget(null);
+                  setDetailAgreementId(item.id);
+                }}
+                rowType="checkbox"
+                value={item.id}
+              >
+                {`(${item.required ? "필수" : "선택"}) ${item.title}`}
+              </ChevronRowButton>
             ))}
 
             <NewsRollDivider className="divider_signupAgreementAll" />

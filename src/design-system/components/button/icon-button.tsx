@@ -5,11 +5,11 @@ import { cn } from "../shared/utils";
 
 export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   hasUnreadIndicator?: boolean;
-  tone?: "primary" | "translucent";
-  icon: IconName | null;
+  tone?: "danger" | "neutral" | "primary" | "translucent";
+  icon: IconName;
   iconSize?: IconSize;
   label: string;
-  variant?: "plain" | "shaped" | "bottomNav" | "custom";
+  variant?: "plain" | "shaped" | "bottomNav" | "circle";
 };
 
 export function IconButton({
@@ -23,28 +23,23 @@ export function IconButton({
   variant = "plain",
   ...props
 }: IconButtonProps) {
-  const isCustom = variant === "custom";
-
   return (
     <button
       aria-label={label}
-      className={
-        isCustom
-          ? className
-          : cn(
-              "btn_iconButton",
-              `btn_iconButton_${variant}`,
-              variant === "shaped" && `btn_iconButton_${tone}`,
-              className,
-            )
-      }
+      className={cn(
+        "btn_iconButton",
+        `btn_iconButton_${variant}`,
+        (variant === "circle" || variant === "shaped") &&
+          `btn_iconButton_${tone}`,
+        className,
+      )}
       type={type}
       {...props}
     >
       {hasUnreadIndicator ? (
         <span className="badge_iconButtonUnread" aria-hidden="true" />
       ) : null}
-      {icon ? <Icon name={icon} size={iconSize} /> : <span aria-hidden="true" />}
+      <Icon name={icon} size={iconSize} />
     </button>
   );
 }

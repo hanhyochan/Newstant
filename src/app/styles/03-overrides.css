@@ -172,11 +172,15 @@
     opacity: 0.55;
 }
 
-.newsroll_all_press_tabs button[aria-selected='true'] .newsroll_all_press_logo {
+.newsroll_all_pressHeadline_tabScroller
+    button[aria-selected='true']
+    .newsroll_all_pressHeadline_logo {
     background: var(--color-common-100);
 }
 
-.newsroll_all_press_tabs button:not([aria-selected='true']) .newsroll_all_press_logo {
+.newsroll_all_pressHeadline_tabScroller
+    button:not([aria-selected='true'])
+    .newsroll_all_pressHeadline_logo {
     background: var(--color-cool-neutral-96);
 }
 
@@ -542,36 +546,6 @@
     line-height: var(--line-height-20);
 }
 
-.newsroll_all_panel {
-    gap: calc(var(--spacing-gap-vertical-24) + var(--spacing-gap-vertical-4));
-    padding: var(--spacing-padding-vertical-32) var(--spacing-padding-horizontal-16)
-        calc(var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4));
-    border-radius: var(--radius-20);
-    box-shadow: var(--newsroll-shadow-card);
-}
-
-.newsroll_all_section_title {
-    font-size: var(--font-size-fixed-16);
-    font-weight: var(--font-weight-600);
-    line-height: var(--line-height-fixed-20);
-}
-
-.newsroll_all_chip,
-.newsroll_all_category_tabs button {
-    min-height: var(--spacing-padding-vertical-32);
-    padding-inline: var(--spacing-padding-horizontal-12);
-    border: 0;
-    border-radius: var(--radius-full);
-    background: var(--color-cool-neutral-96);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
-}
-
-.newsroll_all_latest_image {
-    border-radius: 10px;
-}
-
 .newsroll_all_latest_body strong,
 .newsroll_all_headline_body strong,
 .newsroll_all_relay_item strong {
@@ -594,15 +568,6 @@
     color: var(--color-cool-neutral-50);
     font-size: var(--font-size-13);
     line-height: 13px;
-}
-
-.newsroll_all_press_tabs button {
-    min-height: var(--size-52);
-    border-color: var(--color-cool-neutral-96);
-    border-radius: var(--radius-full);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
 }
 
 .newsroll_info_sheet {
@@ -1409,10 +1374,8 @@
     transform: rotate(270deg);
 }
 
-.newsroll_all_press_tabs button[aria-selected='true'],
 .newsroll_all_category_tabs button[aria-selected='true'],
 .newsroll_policy_age_tabs button[aria-selected='true'],
-.newsroll_all_press_tabs button[data-state='active'],
 .newsroll_all_category_tabs button[data-state='active'],
 .newsroll_policy_age_tabs button[data-state='active'] {
     color: var(--color-common-100);
@@ -1421,7 +1384,6 @@
     font-weight: var(--font-weight-700);
 }
 
-.newsroll_all_press_tabs button:not([aria-selected='true']),
 .newsroll_all_category_tabs button:not([aria-selected='true']),
 .newsroll_policy_age_tabs button:not([aria-selected='true']) {
     color: var(--color-cool-neutral-15);
@@ -1430,20 +1392,12 @@
     font-weight: var(--font-weight-400);
 }
 
-.newsroll_all_press_tabs button[data-state='selected'],
 .newsroll_all_category_tabs button[data-state='selected'],
 .newsroll_policy_age_tabs button[data-state='selected'] {
     color: var(--color-common-100);
     border-color: var(--color-common-0);
     background: var(--color-common-0);
     font-weight: var(--font-weight-700);
-}
-
-.newsroll_all_press_tabs button {
-    height: var(--size-52);
-    min-height: var(--size-52);
-    gap: var(--spacing-gap-horizontal-12);
-    padding: 0 var(--spacing-padding-horizontal-16) 0 var(--spacing-padding-horizontal-12);
 }
 
 .newsroll_all_more {
@@ -1692,7 +1646,7 @@
 .container_myCategorySection,
 .container_mySettingsSection,
 .container_myTimeSection,
-.container_infoFaqItem,
+.container_contentAccordion,
 .wrapper_myRecentScroller,
 .wrapper_mySettingsList,
 .wrapper_myBookmarkList,
@@ -1702,11 +1656,10 @@
 .wrapper_myTimeRows,
 .wrapper_infoInquiry,
 .wrapper_infoField,
-.tab_myCategoryMenu,
 .btn_mySettingRow,
 .btn_myTimeRow,
 .btn_infoNoticeItem,
-.btn_infoFaqSummary {
+.btn_contentAccordionTrigger {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
@@ -1860,7 +1813,7 @@
     overflow-y: visible;
 }
 
-.newsroll_all_press_tabScroller {
+.newsroll_all_pressHeadline_tabScroller {
     width: 100%;
     display: flex;
     align-items: center;
@@ -1881,35 +1834,12 @@
     min-height: calc(var(--spacing-padding-vertical-32) + var(--spacing-padding-vertical-24));
 }
 
-.container_myBookmarkPage > .tab_myCategoryMenu,
-.container_myVotePage > .tab_myCategoryMenu,
-.container_myCommentPage > .tab_myCategoryMenu,
-.wrapper_myTabbedDetailContent > .wrapper_myRecentCategoryControls,
-.wrapper_myTabbedDetailContent > .tab_myCategoryMenu {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    padding-bottom: var(--spacing-padding-vertical-24);
-    background: var(--color-background-elevated-normal);
-}
-
-.wrapper_myTabbedDetailContent {
-    width: 100%;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.newsroll_all_press_tabScroller::-webkit-scrollbar,
+.newsroll_all_pressHeadline_tabScroller::-webkit-scrollbar,
 .newsroll_all_category_tabSticky .newsroll_all_category_tabs::-webkit-scrollbar {
     display: none;
 }
 
-.newsroll_all_press_tabScroller .newsroll_all_press_tabButton {
+.newsroll_all_pressHeadline_tabScroller .newsroll_all_pressHeadline_tabButton {
     min-width: auto;
     height: var(--size-52);
     min-height: var(--size-52);
@@ -1927,19 +1857,21 @@
     cursor: pointer;
 }
 
-.newsroll_all_press_tabScroller .newsroll_all_press_tabButton[aria-selected='true'] {
+.newsroll_all_pressHeadline_tabScroller
+    .newsroll_all_pressHeadline_tabButton[aria-selected='true'] {
     border: 0;
     color: var(--color-common-100);
     background: var(--color-common-0);
 }
 
-.newsroll_all_press_tabScroller .newsroll_all_press_tabButton:not([aria-selected='true']) {
+.newsroll_all_pressHeadline_tabScroller
+    .newsroll_all_pressHeadline_tabButton:not([aria-selected='true']) {
     border-color: var(--color-cool-neutral-96);
     color: var(--color-cool-neutral-15);
     background: var(--color-background-elevated-normal);
 }
 
-.newsroll_all_press_tabScroller .newsroll_all_press_logo {
+.newsroll_all_pressHeadline_tabScroller .newsroll_all_pressHeadline_logo {
     width: 24px;
     height: 24px;
     flex: 0 0 24px;
@@ -1947,9 +1879,9 @@
     background: var(--color-cool-neutral-96);
 }
 
-.newsroll_all_press_tabScroller
-    .newsroll_all_press_tabButton[aria-selected='true']
-    .newsroll_all_press_logo {
+.newsroll_all_pressHeadline_tabScroller
+    .newsroll_all_pressHeadline_tabButton[aria-selected='true']
+    .newsroll_all_pressHeadline_logo {
     background: var(--color-common-100);
 }
 
@@ -2019,16 +1951,14 @@
     line-height: var(--line-height-fixed-20);
 }
 
-.btn_infoFaqSummary .text_infoItemTitle,
-.text_infoFaqBody {
+.btn_contentAccordionTrigger .text_contentAccordionTitle,
+.text_contentAccordionBody {
     font-size: var(--font-size-16);
     line-height: var(--line-height-24);
 }
 
 .newsroll_all_category_tabs button,
-.tab_myCategoryMenu button,
-.tab_myBlockedKeywordMenu .tab,
-.newsroll_all_press_tabScroller .newsroll_all_press_tabButton {
+.newsroll_all_pressHeadline_tabScroller .newsroll_all_pressHeadline_tabButton {
     min-width: 0;
     min-height: 40px;
     padding-inline: var(--spacing-padding-horizontal-16);
@@ -2039,9 +1969,8 @@
 }
 
 .newsroll_all_category_tabs button:not([aria-selected='true']),
-.tab_myCategoryMenu button[data-state='default'],
-.tab_myBlockedKeywordMenu .tab[data-state='default'],
-.newsroll_all_press_tabScroller .newsroll_all_press_tabButton:not([aria-selected='true']) {
+.newsroll_all_pressHeadline_tabScroller
+    .newsroll_all_pressHeadline_tabButton:not([aria-selected='true']) {
     border: var(--border-1) solid var(--newsroll-divider-color);
     background: transparent;
 }
@@ -2088,8 +2017,8 @@
     .wrapper_commentReplies,
     .wrapper_commentReplies.is_open,
     .wrapper_commentRepliesInner,
-    .wrapper_infoFaqBodyMotion,
-    .wrapper_infoFaqBodyInner {
+    .wrapper_contentAccordionBodyMotion,
+    .wrapper_contentAccordionBodyInner {
         transition: none;
         transform: none;
     }
@@ -2404,8 +2333,7 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 .newsroll_dark [role='tab']:not(.btn_newsViewOption),
 .newsroll_dark .tab_myCategoryMenu button,
 .newsroll_dark .newsroll_all_category_tabs button,
-.newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton,
-.newsroll_dark .newsroll_all_press_tabs button {
+.newsroll_dark .newsroll_all_pressHeadline_tabScroller .newsroll_all_pressHeadline_tabButton {
     color: var(--color-common-100);
     background: transparent;
     border-color: var(--newsroll-divider-color);
@@ -2417,8 +2345,9 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 .newsroll_dark .tab_myCategoryMenu button[data-state='active'],
 .newsroll_dark .tab_myCategoryMenu button[data-state='selected'],
 .newsroll_dark .newsroll_all_category_tabs button[aria-selected='true'],
-.newsroll_dark .newsroll_all_press_tabScroller .newsroll_all_press_tabButton[aria-selected='true'],
-.newsroll_dark .newsroll_all_press_tabs button[aria-selected='true'] {
+.newsroll_dark
+    .newsroll_all_pressHeadline_tabScroller
+    .newsroll_all_pressHeadline_tabButton[aria-selected='true'] {
     color: var(--color-common-100);
     background: var(--color-cool-neutral-30);
     border-color: var(--color-cool-neutral-30);
@@ -2437,9 +2366,8 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 }
 
 .newsroll_dark .newsroll_all_tabSticky,
-.newsroll_dark .newsroll_all_press_tabMenu,
-.newsroll_dark .newsroll_all_press_tabScroller,
-.newsroll_dark .newsroll_all_press_tabs,
+.newsroll_dark .newsroll_all_pressHeadline_tabMenu,
+.newsroll_dark .newsroll_all_pressHeadline_tabScroller,
 .newsroll_dark .newsroll_all_category_tabSticky,
 .newsroll_dark .newsroll_all_category_tabs {
     background: var(--color-common-0);

@@ -63,6 +63,7 @@ import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { MySettingRow } from "@/features/my-page/components/MySettingRow";
 import {
   MyBookmarkDetailPage,
+  type MyBookmarkTypeTab,
   type MyBookmarkNewsSummaryItem,
   type MyBookmarkPolicySummaryItem,
   type MyBookmarkSummaryItem,
@@ -436,8 +437,10 @@ export function MyPageView({
   const [activeVoteCategory, setActiveVoteCategory] = useState(
     () => myVoteCategoryTabs[0] ?? "",
   );
-  const [activeBookmarkCategory, setActiveBookmarkCategory] = useState<string>(
-    () => myBookmarkTabs[0],
+  const [activeBookmarkType, setActiveBookmarkType] =
+    useState<MyBookmarkTypeTab>("news");
+  const [activeBookmarkNewsCategory, setActiveBookmarkNewsCategory] = useState(
+    () => mySummaryAllTabLabel,
   );
   const [activeCommentCategory, setActiveCommentCategory] = useState<MyCommentKind>(
     () => "all",
@@ -501,10 +504,13 @@ export function MyPageView({
     () => myCommentTabs,
     [],
   );
-  const dynamicBookmarkCategoryTabs = useMemo(
+  const dynamicBookmarkNewsCategoryTabs = useMemo(
     () =>
-      myBookmarkTabs.filter((category) =>
-        myDynamicBookmarkItems.some((item) => item.category === category),
+      getMySummaryCategoryTabs(
+        myDynamicBookmarkItems.filter(
+          (item): item is MyBookmarkNewsSummaryItem =>
+            item.bookmarkType === "news",
+        ),
       ),
     [myDynamicBookmarkItems],
   );
@@ -516,9 +522,11 @@ export function MyPageView({
     () => getMySummaryCategoryTabs(myDynamicVoteItems),
     [myDynamicVoteItems],
   );
-  const shouldShowBookmarkCategoryTabs = useMemo(
-    () => shouldShowMyCategoryTabs(myDynamicBookmarkItems),
-    [myDynamicBookmarkItems],
+  const shouldShowBookmarkNewsCategoryTabs = useMemo(
+    () =>
+      myDynamicBookmarkItems.some((item) => item.bookmarkType === "news") &&
+      dynamicBookmarkNewsCategoryTabs.length > 1,
+    [dynamicBookmarkNewsCategoryTabs.length, myDynamicBookmarkItems],
   );
   const shouldShowRecentCategoryTabs = useMemo(
     () => shouldShowMyCategoryTabs(myDynamicRecentItems),
@@ -553,10 +561,18 @@ export function MyPageView({
   const isMyDetailOpen = activeDetailView !== null;
   const myDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isMyDetailOpen,
+    resetKey: activeProfileSettingItemId
+      ? `${activeDetailView}:${activeProfileSettingItemId}`
+      : activeDetailView,
     scrollerRef: myPanelContentRef,
   });
   const myArticleDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isMyNestedDetailOpen,
+    resetKey:
+      myArticleDetail?.article.id ??
+      myArticleDetail?.article.title ??
+      myPolicyDetail?.id ??
+      myPolicyDetail?.title,
     scrollerRef: myPanelContentRef,
   });
   const closeMyArticleDetailImmediately = useCallback(() => {
@@ -653,7 +669,7 @@ export function MyPageView({
         nextBookmarkItems.map((item) => ({
           ...item,
           bookmarkType: "news",
-          category: myBookmarkTabs[0],
+          category: item.category,
           newsCategory: item.category,
         }));
       const nextPolicyBookmarkItems: MyBookmarkPolicySummaryItem[] =
@@ -691,7 +707,8 @@ export function MyPageView({
         setMyBookmarkCount(nextAllBookmarkItems.length);
         setMyVoteCount(nextVoteItems.length);
         setActiveCommentCategory("all");
-        setActiveBookmarkCategory(myBookmarkTabs[0]);
+        setActiveBookmarkType("news");
+        setActiveBookmarkNewsCategory(mySummaryAllTabLabel);
         setActiveRecentCategory(getMySummaryCategoryTabs(nextRecentItems)[0] ?? "");
         if (nextVoteItems.length > 0) {
           setActiveVoteCategory(getMySummaryCategoryTabs(nextVoteItems)[0] ?? "");
@@ -707,6 +724,8 @@ export function MyPageView({
         setMyDynamicVoteItems([]);
         setMyBookmarkCount(0);
         setMyVoteCount(0);
+        setActiveBookmarkType("news");
+        setActiveBookmarkNewsCategory(mySummaryAllTabLabel);
         setActiveRecentCategory(mySummaryAllTabLabel);
       }
     });
@@ -1161,14 +1180,16 @@ export function MyPageView({
             />
           ) : isBookmarkOpen ? (
             <MyBookmarkDetailPage
-              activeCategory={activeBookmarkCategory}
+              activeNewsCategory={activeBookmarkNewsCategory}
+              activeType={activeBookmarkType}
               items={myDynamicBookmarkItems}
               isLeaving={myDetailExitMotion.isLeaving}
-              onCategoryChange={setActiveBookmarkCategory}
+              newsCategoryTabs={dynamicBookmarkNewsCategoryTabs}
+              onNewsCategoryChange={setActiveBookmarkNewsCategory}
               onOpenArticle={openMyArticleDetail}
               onOpenPolicy={openMyPolicyDetail}
-              showTabs={shouldShowBookmarkCategoryTabs}
-              tabs={dynamicBookmarkCategoryTabs}
+              onTypeChange={setActiveBookmarkType}
+              showNewsCategoryTabs={shouldShowBookmarkNewsCategoryTabs}
             />
           ) : isVoteOpen ? (
             <MyVoteDetailPage

@@ -1,16 +1,16 @@
 import type { HTMLAttributes } from "react";
 
-import { cn } from "./utils";
+import { cn } from "../shared/utils";
 
-export type NewsRollSwitchProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
+export type ToggleSwitchProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   checked?: boolean;
 };
 
-export function NewsRollSwitch({
+export function ToggleSwitch({
   checked = false,
   className,
   ...props
-}: NewsRollSwitchProps) {
+}: ToggleSwitchProps) {
   return (
     <span
       aria-hidden="true"
@@ -19,3 +19,5 @@ export function NewsRollSwitch({
     />
   );
 }
+
+export { ToggleSwitch as NewsRollSwitch };

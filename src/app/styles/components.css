@@ -155,12 +155,36 @@
   border-radius: var(--radius-full);
 }
 
+.btn_iconButton_circle {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  flex: 0 0 32px;
+  border: var(--border-1) solid var(--newsroll-divider-color);
+  border-radius: var(--radius-full);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}
+
 .btn_iconButton_primary {
   width: 48px;
   height: 48px;
   border: var(--border-1) solid var(--color-newsroll-purple-50);
   color: var(--color-common-0);
   background: var(--color-newsroll-purple-50);
+}
+
+.btn_iconButton_neutral {
+  border-color: var(--newsroll-divider-color);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}
+
+.btn_iconButton_danger {
+  border-color: var(--color-red-50);
+  color: var(--color-red-50);
+  background: var(--color-background-elevated-normal);
 }
 
 .btn_iconButton_translucent {
@@ -188,6 +212,78 @@
 
 .btn_iconButton.has_unread_notification {
   gap: 2px;
+}
+
+/* Button: ChevronRowButton */
+.btn_chevronRow {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  box-sizing: border-box;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+}
+
+.btn_chevronRow_default {
+  cursor: pointer;
+}
+
+.btn_chevronRow_checkbox {
+  cursor: default;
+}
+
+.btn_chevronRowContent,
+.btn_chevronRowCheckField {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.btn_chevronRowCheckField {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  cursor: pointer;
+}
+
+.btn_chevronRowCheckField:has(.input_newsrollCheck:focus-visible) {
+  outline: var(--border-2) solid var(--color-newsroll-purple-50);
+  outline-offset: 2px;
+}
+
+.btn_chevronRowCheckField > span:not(.box_newsrollCheck) {
+  min-width: 0;
+  color: inherit;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}
+
+.btn_chevronRowArrow {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.btn_chevronRowArrow:disabled,
+.btn_chevronRowCheckField:has(.input_newsrollCheck:disabled) {
+  cursor: default;
+  opacity: 0.5;
 }
 
 /* Icon: shared mask sizes */
@@ -227,6 +323,40 @@
 .wrapper_articleReaction > button[aria-pressed="true"] .newsroll_icon_20,
 .wrapper_articleActions .btn_articleTool[aria-pressed="true"] .newsroll_icon_20 {
   --newsroll-icon-url: var(--newsroll-icon-fill-url);
+}
+
+/* Button: ToggleButton */
+.btn_newViewToggleOption {
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+.switch_newsToggle {
+  width: 44px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  padding: 2px;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-95);
+}
+
+.switch_newsToggle::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-common-100);
+  box-shadow: 0 1px 2px var(--color-alpha-shadow4);
+}
+
+.switch_newsToggle.is_on {
+  justify-content: flex-end;
+  background: var(--color-status-positive);
 }
 
 /* Button: FieldActionButton */
@@ -836,6 +966,7 @@
 
 /* Component focus states */
 .btn:focus-visible,
+.btn_iconButton:focus-visible,
 .btn_articleTool:focus-visible,
 .btn_articleGuideOption:focus-visible,
 .btn_fieldActionButton:focus-visible,

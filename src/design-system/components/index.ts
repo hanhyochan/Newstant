@@ -1,6 +1,8 @@
 export {
   NoticeCardLink,
 } from "./button/notice-card-link";
+export { ContentAccordion } from "./accordion/content-accordion";
+export type { ContentAccordionProps } from "./accordion/content-accordion";
 export type {
   NoticeCardLinkProps,
   NoticeCardLinkType,
@@ -17,6 +19,27 @@ export type {
 } from "./button/field-action-button";
 export { ContentActionButton } from "./button/content-action-button";
 export type { ContentActionButtonProps } from "./button/content-action-button";
+export { NewsBlockCardButton } from "./button/content-layout/news/news-block-card-button";
+export type { NewsBlockCardButtonProps } from "./button/content-layout/news/news-block-card-button";
+export { NewsFeatureCardButton } from "./button/content-layout/news/news-feature-card-button";
+export type {
+  NewsFeatureCardButtonItem,
+  NewsFeatureCardButtonProps,
+} from "./button/content-layout/news/news-feature-card-button";
+export { NewsHeadlineRowButton } from "./button/content-layout/news/news-headline-row-button";
+export type {
+  NewsHeadlineRowButtonItem,
+  NewsHeadlineRowButtonProps,
+} from "./button/content-layout/news/news-headline-row-button";
+export { NewsListCardButton } from "./button/content-layout/news/news-list-card-button";
+export type {
+  NewsListCardButtonItem,
+  NewsListCardButtonProps,
+} from "./button/content-layout/news/news-list-card-button";
+export { SearchResultButton } from "./button/content-layout/search-result-button";
+export type { SearchResultButtonProps } from "./button/content-layout/search-result-button";
+export { ContentSummaryButton } from "./button/content-layout/content-summary-button";
+export type { ContentSummaryButtonProps } from "./button/content-layout/content-summary-button";
 export { PrimaryButton, PrimaryButtonGroup } from "./button/primary-button";
 export type {
   PrimaryButtonGroupColumns,
@@ -28,17 +51,20 @@ export { TextButton } from "./button/text-button";
 export type { TextButtonProps, TextButtonTone } from "./button/text-button";
 export { TabButton } from "./button/tab-button";
 export type { TabButtonProps, TabButtonState } from "./button/tab-button";
-export { ChevronIconButton } from "./button/chevron-icon-button";
-export type { ChevronIconButtonProps } from "./button/chevron-icon-button";
+export { ChevronRowButton } from "./button/chevron-row-button";
+export type {
+  ChevronRowButtonProps,
+  ChevronRowButtonType,
+} from "./button/chevron-row-button";
 export { SettingRowButton } from "./button/setting-row-button";
 export type { SettingRowButtonProps } from "./button/setting-row-button";
-export { ArticleGuideOptionButton } from "./button/article-guide-option-button";
+export { ArticleVoteOptionButton } from "./button/article-vote-option-button";
 export type {
-  ArticleGuideOptionButtonBinaryTone,
-  ArticleGuideOptionButtonProps,
-  ArticleGuideOptionButtonState,
-  ArticleGuideOptionButtonVariant,
-} from "./button/article-guide-option-button";
+  ArticleVoteOptionButtonBinaryTone,
+  ArticleVoteOptionButtonProps,
+  ArticleVoteOptionButtonState,
+  ArticleVoteOptionButtonVariant,
+} from "./button/article-vote-option-button";
 export { IconButton } from "./button/icon-button";
 export type { IconButtonProps } from "./button/icon-button";
 export { IconTextButton } from "./button/icon-text-button";
@@ -59,6 +85,16 @@ export type { ChipLabelProps } from "./chip/chip-label";
 export { Icon } from "./icon/icon";
 export type { IconName, IconSize } from "./icon/icon";
 export {
+  getSearchHighlightTargetId,
+  scrollSearchHighlightTargetIntoView,
+  SearchHighlightText,
+  splitSearchHighlightText,
+} from "./search-highlight";
+export type {
+  SearchHighlightPart,
+  SearchHighlightTextProps,
+} from "./search-highlight";
+export {
   ActionMenu,
   useActionMenuDismiss,
 } from "./button/select-button/action-menu";
@@ -69,10 +105,18 @@ export type {
 } from "./button/select-button/action-menu";
 export { NewsRollDivider } from "./shared/divider";
 export type { NewsRollDividerProps } from "./shared/divider";
-export { NewsBlockItem } from "./shared/news-block-item";
-export type { NewsBlockItemProps } from "./shared/news-block-item";
-export { NewsRollSwitch } from "./shared/switch";
-export type { NewsRollSwitchProps } from "./shared/switch";
+export { NewsBlockCardButton as NewsBlockItem } from "./button/content-layout/news/news-block-card-button";
+export type { NewsBlockCardButtonProps as NewsBlockItemProps } from "./button/content-layout/news/news-block-card-button";
+export {
+  NewsRollSwitch,
+  ToggleSwitch,
+} from "./button/onoffToggle-button";
+export type { ToggleSwitchProps } from "./button/onoffToggle-button";
+export { ToggleButtonGroup } from "./button/newViewToggle-button";
+export type {
+  ToggleButtonGroupItem,
+  ToggleButtonGroupProps,
+} from "./button/newViewToggle-button";
 export {
   NewsRollCheckBox,
   NewsRollCheckField,

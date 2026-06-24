@@ -12,6 +12,9 @@ import {
   NewsRollDivider,
   PrimaryButton,
   PrimaryButtonGroup,
+  getSearchHighlightTargetId,
+  scrollSearchHighlightTargetIntoView,
+  SearchHighlightText,
 } from "@/design-system/components";
 import { useShareContent } from "@/design-system/templates";
 
@@ -66,6 +69,8 @@ export function PolicyDetailContent({
   item,
   onNextItem,
   onPreviousItem,
+  searchQuery,
+  searchTargetKey,
 }: {
   hideDetailList?: boolean;
   hideDetailToggle?: boolean;
@@ -73,10 +78,13 @@ export function PolicyDetailContent({
   item: PolicyDetailContentItem;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
+  searchQuery?: string;
+  searchTargetKey?: string;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<string | null>(null);
   const policyDate = getPolicyDateDisplay(item);
+  const policySearchRootId = `policy-detail-${item.id ?? item.title}`;
   const sharePolicy = useShareContent({
     text: item.summary,
     title: item.title,
@@ -85,6 +93,16 @@ export function PolicyDetailContent({
   useLayoutEffect(() => {
     resetNewsRollViewport();
   }, []);
+
+  useEffect(() => {
+    if (!searchTargetKey || !searchQuery?.trim()) {
+      return;
+    }
+
+    scrollSearchHighlightTargetIntoView(
+      getSearchHighlightTargetId(policySearchRootId, searchTargetKey),
+    );
+  }, [policySearchRootId, searchQuery, searchTargetKey]);
 
   useEffect(() => {
     let ignore = false;
@@ -151,7 +169,18 @@ export function PolicyDetailContent({
       <div className="newsroll_policy_detail_header">
         <div className="newsroll_policy_detail_titleMeta">
           <div className="newsroll_policy_detail_body">
-            <h1>{item.title}</h1>
+            <h1>
+              <SearchHighlightText
+                query={searchTargetKey === "title" ? searchQuery : ""}
+                targetId={
+                  searchTargetKey === "title"
+                    ? getSearchHighlightTargetId(policySearchRootId, "title")
+                    : undefined
+                }
+              >
+                {item.title}
+              </SearchHighlightText>
+            </h1>
           </div>
 
           <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
@@ -190,7 +219,16 @@ export function PolicyDetailContent({
               kind={index === item.tags.length - 1 ? "policyAccent" : "policy"}
               key={`${item.title}-${tag}`}
             >
-              {tag}
+              <SearchHighlightText
+                query={searchTargetKey === "tags" ? searchQuery : ""}
+                targetId={
+                  searchTargetKey === "tags"
+                    ? getSearchHighlightTargetId(policySearchRootId, "tags")
+                    : undefined
+                }
+              >
+                {tag}
+              </SearchHighlightText>
             </ChipLabel>
           ))}
         </div>
@@ -198,14 +236,61 @@ export function PolicyDetailContent({
 
       <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
 
-      <p className="newsroll_policy_detail_summary">{item.summary}</p>
+      <p className="newsroll_policy_detail_summary">
+        <SearchHighlightText
+          query={searchTargetKey === "summary" ? searchQuery : ""}
+          targetId={
+            searchTargetKey === "summary"
+              ? getSearchHighlightTargetId(policySearchRootId, "summary")
+              : undefined
+          }
+        >
+          {item.summary}
+        </SearchHighlightText>
+      </p>
 
       {hideDetailList ? null : (
         <dl className="newsroll_policy_detail_list">
-          {item.details.map((detail) => (
+          {item.details.map((detail, index) => (
             <div key={`${item.title}-${detail.label}`}>
-              <dt>{detail.label}</dt>
-              <dd>{detail.value}</dd>
+              <dt>
+                <SearchHighlightText
+                  query={
+                    searchTargetKey === `detail-${index}-label`
+                      ? searchQuery
+                      : ""
+                  }
+                  targetId={
+                    searchTargetKey === `detail-${index}-label`
+                      ? getSearchHighlightTargetId(
+                          policySearchRootId,
+                          `detail-${index}-label`,
+                        )
+                      : undefined
+                  }
+                >
+                  {detail.label}
+                </SearchHighlightText>
+              </dt>
+              <dd>
+                <SearchHighlightText
+                  query={
+                    searchTargetKey === `detail-${index}-value`
+                      ? searchQuery
+                      : ""
+                  }
+                  targetId={
+                    searchTargetKey === `detail-${index}-value`
+                      ? getSearchHighlightTargetId(
+                          policySearchRootId,
+                          `detail-${index}-value`,
+                        )
+                      : undefined
+                  }
+                >
+                  {detail.value}
+                </SearchHighlightText>
+              </dd>
             </div>
           ))}
         </dl>

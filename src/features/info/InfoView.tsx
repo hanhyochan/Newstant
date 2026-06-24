@@ -141,6 +141,10 @@ export function InfoView({
       : null;
   const infoDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isNoticeDetailOpen,
+    resetKey:
+      noticeDetailIndex !== null
+        ? `notice:${noticeDetailIndex}`
+        : noticeDetailItem?.title,
     scrollerRef: infoPanelContentRef,
   });
   const closeNoticeDetailImmediately = useCallback(() => {

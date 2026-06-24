@@ -1,8 +1,8 @@
 import type { MouseEventHandler } from "react";
 
-import { ChipLabel } from "../chip/chip-label";
+import { ChipLabel } from "@/design-system/components/chip/chip-label";
 
-export type NewsBlockItemProps = {
+export type NewsBlockCardButtonProps = {
   ariaPressed?: boolean;
   categoryLabel?: string;
   dateLabel: string;
@@ -14,7 +14,7 @@ export type NewsBlockItemProps = {
   title: string;
 };
 
-export function NewsBlockItem({
+export function NewsBlockCardButton({
   ariaPressed,
   categoryLabel,
   dateLabel,
@@ -24,7 +24,7 @@ export function NewsBlockItem({
   onClick,
   showDate = true,
   title,
-}: NewsBlockItemProps) {
+}: NewsBlockCardButtonProps) {
   return (
     <button
       aria-pressed={ariaPressed}

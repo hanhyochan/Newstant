@@ -1,8 +1,10 @@
-import { PillTabMenu } from "@/design-system/components";
+import {
+  PillTabMenu,
+  NewsHeadlineRowButton as AllNewsHeadlineItem,
+} from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 import {
-  AllNewsHeadlineItem,
-  ArticleGuideOptionButton,
+  ArticleVoteOptionButton,
   binaryGuideOptions,
   type AllNewsArticlePreview,
   type HomeArticle,
@@ -86,7 +88,7 @@ export function MyVoteDetailPage({
                   }
                 />
                 <strong className="text_myVoteQuestion">{item.pollTitle}</strong>
-                <ArticleGuideOptionButton
+                <ArticleVoteOptionButton
                   binaryTone={
                     item.isBinary
                       ? item.selectedOption === binaryGuideOptions[0]

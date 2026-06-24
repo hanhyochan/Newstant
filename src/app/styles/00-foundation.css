@@ -594,7 +594,6 @@
         }
 
         .newsroll_all_latest_scroller,
-        .newsroll_all_press_tabs,
         .newsroll_all_category_tabs {
             display: flex;
             overflow-x: auto;
@@ -602,7 +601,6 @@
         }
 
         .newsroll_all_latest_scroller::-webkit-scrollbar,
-        .newsroll_all_press_tabs::-webkit-scrollbar,
         .newsroll_all_category_tabs::-webkit-scrollbar {
             display: none;
         }
@@ -685,31 +683,7 @@
             line-height: var(--line-height-24);
         }
 
-        .newsroll_all_press_tabs {
-            gap: var(--spacing-gap-horizontal-8);
-            align-items: center;
-        }
-
-        .newsroll_all_press_tabs button {
-            min-width: 128px;
-            height: var(--size-52);
-            min-height: var(--size-52);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-gap-horizontal-12);
-            flex: 0 0 auto;
-            padding: 0 var(--spacing-padding-horizontal-16) 0 var(--spacing-padding-horizontal-12);
-            border: var(--border-1) solid var(--color-cool-neutral-96);
-            border-radius: var(--radius-full);
-            color: var(--color-cool-neutral-15);
-            background: var(--color-background-elevated-normal);
-            font-size: var(--font-size-14);
-            font-weight: var(--font-weight-500);
-            line-height: var(--line-height-20);
-        }
-
-        .newsroll_all_press_logo {
+        .newsroll_all_pressHeadline_logo {
             width: 36px;
             height: 36px;
             flex: 0 0 36px;

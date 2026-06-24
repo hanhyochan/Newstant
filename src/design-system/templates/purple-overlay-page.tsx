@@ -24,7 +24,7 @@ export function NewsRollPurpleOverlayPage({
       <div className="newsroll_toolbar newsroll_search_top" aria-label="상단 도구">
         <IconButton
           className="newsroll_toolbar_icon newsroll_search_close"
-          icon={null}
+          icon="close"
           label={closeLabel}
           onClick={onClose}
         />

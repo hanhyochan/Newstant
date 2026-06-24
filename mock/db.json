@@ -12707,7 +12707,7 @@
       "id": "recent-b43c3d2b-ca13-4a7d-bde7-c6388b9b41ac",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-001",
-      "viewedAt": "2026-06-19T06:21:39.484Z"
+      "viewedAt": "2026-06-24T08:17:03.390Z"
     },
     {
       "id": "recent-993518cd-c298-4d5d-b559-d0e97c800d6b",
@@ -12756,12 +12756,6 @@
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-022",
       "viewedAt": "2026-06-19T06:21:39.118Z"
-    },
-    {
-      "id": "recent-80af3727-7d57-4067-b65e-62c4cf0a1cc0",
-      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
-      "newsId": "news-015",
-      "viewedAt": "2026-06-23T04:15:47.234Z"
     },
     {
       "id": "recent-bc2fb47f-cccb-400b-b928-23004fe5de97",
@@ -12857,7 +12851,7 @@
       "id": "recent-cc9ffa4b-585b-4027-8240-ac4199217fb8",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-035",
-      "viewedAt": "2026-06-19T06:21:39.193Z"
+      "viewedAt": "2026-06-24T05:12:45.974Z"
     },
     {
       "id": "recent-543d2ef4-8f75-4996-ab42-7039b8ca5301",
@@ -14148,6 +14142,12 @@
       "userId": "user-29773038-96e9-44ff-90a7-7cf1f0481bff",
       "newsId": "news-030",
       "viewedAt": "2026-06-20T15:28:25.047Z"
+    },
+    {
+      "id": "recent-77259e28-f2d5-4a4b-a31d-3044a1a9c4cd",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "newsId": "news-015",
+      "viewedAt": "2026-06-24T08:17:13.659Z"
     }
   ],
   "polls": [
@@ -83533,6 +83533,14 @@
       "isActive": true,
       "createdAt": "2026-06-22T08:30:46.996Z",
       "updatedAt": "2026-06-22T08:30:46.996Z"
+    },
+    {
+      "id": "blocked-keyword-8d87efec-82ad-4323-9883-69b5d4a2fd14",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "keyword": "ㅇㄹㅇ",
+      "isActive": false,
+      "createdAt": "2026-06-24T02:36:58.393Z",
+      "updatedAt": "2026-06-24T02:37:00.176Z"
     }
   ],
   "notificationSettings": [
@@ -83553,7 +83561,7 @@
       "breakingNews": true,
       "commentReplies": true,
       "darkMode": false,
-      "updatedAt": "2026-06-18T01:06:21.998Z",
+      "updatedAt": "2026-06-24T01:35:34.796Z",
       "inquiryReplies": true,
       "newsViewTime": true,
       "policyUpdates": true

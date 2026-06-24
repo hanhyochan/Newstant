@@ -120,11 +120,12 @@ function BlockedKeywordSettingsSection({
           renderItemAddon={(item, state) =>
             state === "active" ? null : (
                 <IconButton
-                  className="btn_myBlockedKeywordDelete"
-                  icon={null}
+                  icon="close"
+                  iconSize={12}
                   label={`${item.label} \uC0AD\uC81C`}
                   onClick={() => onKeywordDelete(item.id)}
-                  variant="custom"
+                  tone="danger"
+                  variant="circle"
                 />
               )
           }
@@ -132,11 +133,12 @@ function BlockedKeywordSettingsSection({
           value={blockedKeywordSettings.find((setting) => setting.isActive)?.keyword ?? ""}
         />
         <IconButton
-          className="btn_myBlockedKeywordAdd"
           icon="plus"
           iconSize={12}
           label={"\uCC28\uB2E8 \uD0A4\uC6CC\uB4DC \uCD94\uAC00"}
           onClick={onOpenDialog}
+          tone="neutral"
+          variant="circle"
         />
       </div>
       {isDialogOpen ? (

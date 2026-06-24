@@ -8,7 +8,11 @@ import {
   type NewsListItem,
   type WelfarePolicy,
 } from "@/app/_newsroll/api";
-import { Icon } from "@/design-system/components";
+import {
+  Icon,
+  SearchHighlightText,
+  SearchResultButton,
+} from "@/design-system/components";
 import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
 
 type SearchArticle = {
@@ -33,6 +37,8 @@ type BodySearchResult<Article extends SearchArticle, Policy extends SearchPolicy
       id: string;
       kind: "news";
       meta: string;
+      searchQuery: string;
+      searchTargetKey: string;
       snippet?: string;
       title: string;
     }
@@ -41,6 +47,8 @@ type BodySearchResult<Article extends SearchArticle, Policy extends SearchPolicy
       kind: "policy";
       meta: string;
       policy: Policy;
+      searchQuery: string;
+      searchTargetKey: string;
       snippet?: string;
       title: string;
     };
@@ -49,8 +57,18 @@ export type SearchSelectionInput<
   Article extends SearchArticle,
   Policy extends SearchPolicy,
 > =
-  | { article: Article; kind: "news" }
-  | { kind: "policy"; policy: Policy };
+  | {
+      article: Article;
+      kind: "news";
+      searchQuery?: string;
+      searchTargetKey?: string;
+    }
+  | {
+      kind: "policy";
+      policy: Policy;
+      searchQuery?: string;
+      searchTargetKey?: string;
+    };
 
 type SearchViewProps<Article extends SearchArticle, Policy extends SearchPolicy> = {
   getNewsArticle: (item: NewsListItem, index: number) => Article;
@@ -102,6 +120,15 @@ function getPolicySearchText(policy: SearchPolicy) {
     .toLocaleLowerCase("ko-KR");
 }
 
+function getFirstMatchedSearchField(
+  fields: Array<{ targetKey: string; text?: string }>,
+  normalizedQuery: string,
+) {
+  return fields.find((field) =>
+    (field.text ?? "").toLocaleLowerCase("ko-KR").includes(normalizedQuery),
+  );
+}
+
 function getBodySearchResults<
   Article extends SearchArticle,
   Policy extends SearchPolicy,
@@ -118,35 +145,73 @@ function getBodySearchResults<
     return [];
   }
 
-  const newsResults: BodySearchResult<Article, Policy>[] =
-    articles
-      .filter((article) => getArticleFilterText(article).includes(normalizedQuery))
-      .map((article, index) => ({
+  const searchQuery = normalizedQuery;
+  const newsResults = articles.reduce<BodySearchResult<Article, Policy>[]>(
+    (results, article, index) => {
+      const matchedField = getFirstMatchedSearchField(
+        [
+          { targetKey: "title", text: article.title },
+          { targetKey: "category", text: article.category },
+          { targetKey: "body", text: article.body },
+        ],
+        normalizedQuery,
+      );
+
+      if (!matchedField) {
+        return results;
+      }
+
+      results.push({
         article,
         id: article.id ?? `news-search-${index}`,
         kind: "news",
         meta: [article.category, article.pressName, article.date]
           .filter(Boolean)
-          .join(" 쨌 "),
-        snippet: getBodySearchSnippet(article.body ?? article.title, normalizedQuery),
+          .join(" · "),
+        searchQuery,
+        searchTargetKey: matchedField.targetKey,
+        snippet: getBodySearchSnippet(matchedField.text ?? article.title, normalizedQuery),
         title: article.title,
-      }));
-  const policyResults: BodySearchResult<Article, Policy>[] = policies
-    .filter((policy) => getPolicySearchText(policy).includes(normalizedQuery))
-    .map((policy, index) => ({
-      id: `policy-search-${policy.title}-${index}`,
-      kind: "policy",
-      meta: ["援???뺤콉", ...policy.tags].filter(Boolean).join(" 쨌 "),
-      policy,
-      snippet: getBodySearchSnippet(
+      });
+
+      return results;
+    },
+    [],
+  );
+  const policyResults = policies.reduce<BodySearchResult<Article, Policy>[]>(
+    (results, policy, index) => {
+      const matchedField = getFirstMatchedSearchField(
         [
-          policy.summary,
-          ...policy.details.flatMap((detail) => [detail.label, detail.value]),
-        ].join(" "),
+          { targetKey: "title", text: policy.title },
+          { targetKey: "summary", text: policy.summary },
+          { targetKey: "tags", text: policy.tags.join(" ") },
+          ...policy.details.flatMap((detail, detailIndex) => [
+            { targetKey: `detail-${detailIndex}-label`, text: detail.label },
+            { targetKey: `detail-${detailIndex}-value`, text: detail.value },
+          ]),
+        ],
         normalizedQuery,
-      ),
-      title: policy.title,
-    }));
+      );
+
+      if (!matchedField) {
+        return results;
+      }
+
+      results.push({
+        id: `policy-search-${policy.title}-${index}`,
+        kind: "policy",
+        meta: ["국가정책", ...policy.tags].filter(Boolean).join(" · "),
+        policy,
+        searchQuery,
+        searchTargetKey: matchedField.targetKey,
+        snippet: getBodySearchSnippet(matchedField.text ?? policy.title, normalizedQuery),
+        title: policy.title,
+      });
+
+      return results;
+    },
+    [],
+  );
 
   return [...newsResults, ...policyResults];
 }
@@ -229,11 +294,11 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
           onSubmit={(event) => event.preventDefault()}
         >
           <label className="input_searchField">
-            <span className="sr_only">?듯빀寃?됱뼱 ?낅젰</span>
+            <span className="sr_only">통합검색어 입력</span>
             <input
               name="global-search"
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="寃???ㅼ썙?쒕? ?낅젰?댁＜?몄슂"
+              placeholder="검색 키워드를 입력해주세요"
               ref={searchInputRef}
               type="search"
               value={query}
@@ -245,37 +310,48 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
         {normalizedQuery ? (
           isSearchLoading ? (
             <p className="text_searchStatus" role="status">
-              ?댁뒪瑜?遺덈윭?ㅻ뒗 以묒엯?덈떎.
+              뉴스를 불러오는 중입니다.
             </p>
           ) : searchError ? (
             <p className="text_searchStatus" role="alert">
               {searchError}
             </p>
           ) : searchResults.length > 0 ? (
-            <div className="list_searchResults" aria-label="?듯빀寃??寃곌낵">
+            <div className="list_searchResults" aria-label="통합검색 결과">
               {searchResults.map((result) => (
-                <button
-                  className="btn_searchResult"
+                <SearchResultButton
                   key={`${result.kind}-${result.id}`}
                   onClick={() =>
                     onSelectResult(
                       result.kind === "news"
-                        ? { article: result.article, kind: "news" }
-                        : { kind: "policy", policy: result.policy },
+                        ? {
+                            article: result.article,
+                            kind: "news",
+                            searchQuery: result.searchQuery,
+                            searchTargetKey: result.searchTargetKey,
+                          }
+                        : {
+                            kind: "policy",
+                            policy: result.policy,
+                            searchQuery: result.searchQuery,
+                            searchTargetKey: result.searchTargetKey,
+                          },
                     )
                   }
-                  type="button"
-                >
-                  <strong>{result.title}</strong>
-                  <span>{result.meta}</span>
-                  {result.snippet ? (
-                    <p className="text_searchResultSnippet">{result.snippet}</p>
-                  ) : null}
-                </button>
+                  meta={result.meta}
+                  snippet={
+                    result.snippet ? (
+                      <SearchHighlightText query={query}>
+                        {result.snippet}
+                      </SearchHighlightText>
+                    ) : undefined
+                  }
+                  title={result.title}
+                />
               ))}
             </div>
           ) : (
-            <p className="text_searchStatus">寃??寃곌낵媛 ?놁뒿?덈떎.</p>
+            <p className="text_searchStatus">검색 결과가 없습니다.</p>
           )
         ) : null}
     </NewsRollPurpleOverlayPage>

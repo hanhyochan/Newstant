@@ -5,14 +5,18 @@ import { useCallback, useLayoutEffect, useRef, type RefObject } from "react";
 type UseDetailScrollRestoreOptions = {
   isDetailOpen: boolean;
   nestedScrollSelector?: string;
+  resetKey?: unknown;
   scrollerRef: RefObject<HTMLElement | null>;
 };
 
 export function useDetailScrollRestore({
   isDetailOpen,
   nestedScrollSelector,
+  resetKey,
   scrollerRef,
 }: UseDetailScrollRestoreOptions) {
+  const resetKeyRef = useRef(resetKey);
+  const wasDetailOpenRef = useRef(isDetailOpen);
   const shouldRestoreRef = useRef(false);
   const scrollTopRef = useRef(0);
   const nestedScrollTopsRef = useRef<number[]>([]);
@@ -38,6 +42,27 @@ export function useDetailScrollRestore({
   }, []);
 
   useLayoutEffect(() => {
+    const wasDetailOpen = wasDetailOpenRef.current;
+    const previousResetKey = resetKeyRef.current;
+    wasDetailOpenRef.current = isDetailOpen;
+    resetKeyRef.current = resetKey;
+
+    if (isDetailOpen && (!wasDetailOpen || previousResetKey !== resetKey)) {
+      const scroller = scrollerRef.current;
+
+      if (scroller) {
+        scroller.scrollTop = 0;
+
+        if (nestedScrollSelector) {
+          scroller
+            .querySelectorAll<HTMLElement>(nestedScrollSelector)
+            .forEach((nestedScroller) => {
+              nestedScroller.scrollTop = 0;
+            });
+        }
+      }
+    }
+
     if (isDetailOpen || !shouldRestoreRef.current) {
       return;
     }
@@ -59,7 +84,7 @@ export function useDetailScrollRestore({
     }
 
     shouldRestoreRef.current = false;
-  }, [isDetailOpen, nestedScrollSelector, scrollerRef]);
+  }, [isDetailOpen, nestedScrollSelector, resetKey, scrollerRef]);
 
   return {
     captureScroll,

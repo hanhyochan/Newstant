@@ -7,9 +7,9 @@ import {
   NewsRollCheckBox,
   NewsRollCheckField,
   PillTabMenu,
+  NewsListCardButton as AllNewsRelayItem,
 } from "@/design-system/components";
 import {
-  AllNewsRelayItem,
   homeArticle,
   homeArticles,
   type HomeArticle,
@@ -207,7 +207,7 @@ export function MyRecentDetailPage({
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
       <div className="wrapper_myTabbedDetailContent">
         {showTabs ? (
-          <div className="wrapper_myRecentCategoryControls">
+          <>
             <PillTabMenu
               ariaLabel="최근 본 뉴스 카테고리"
               className="tab_myCategoryMenu"
@@ -218,10 +218,14 @@ export function MyRecentDetailPage({
               onChange={onCategoryChange}
               value={activeCategory}
             />
+            <div className="wrapper_myRecentSelectAllControls">
+              {selectAllControl}
+            </div>
+          </>
+        ) : (
+          <div className="wrapper_myRecentSelectAllControls">
             {selectAllControl}
           </div>
-        ) : (
-          selectAllControl
         )}
         {visibleRecentItems.length === 0 ? (
           <DataUnavailableMessage target="최근 본 뉴스" />

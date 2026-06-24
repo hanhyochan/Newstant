@@ -31,7 +31,7 @@ import {
 } from "@/app/_newsroll/auth/current-user";
 import {
   ActionMenu,
-  ArticleGuideOptionButton,
+  ArticleVoteOptionButton,
   NoticeCardLink,
   ChipLabel,
   CommentComposerInput,
@@ -45,6 +45,8 @@ import {
   PrimaryButton,
   PrimaryButtonGroup,
   IconTextButton,
+  getSearchHighlightTargetId,
+  SearchHighlightText,
   TextButton,
   Textarea,
   useActionMenuDismiss,
@@ -106,10 +108,11 @@ type CommentScrollTarget = {
   delayMs?: number;
   id: string;
 };
+type BodySearchTargetKey = "body" | "category" | "source" | "title";
 export type ArticleDetailOpenOptions = {
   commentId?: CommentId;
   replyToCommentId?: CommentId;
-  scrollTarget?: "poll";
+  scrollTarget?: "bodySearch" | "poll";
 };
 
 export type OpenArticleDetail = (
@@ -117,11 +120,33 @@ export type OpenArticleDetail = (
   options?: ArticleDetailOpenOptions,
 ) => void;
 export type BodySearchSelection =
-  | { article: HomeArticle; id: number; kind: "news" }
-  | { id: number; kind: "policy"; policy: PolicyItem };
+  | {
+      article: HomeArticle;
+      id: number;
+      kind: "news";
+      searchQuery?: string;
+      searchTargetKey?: string;
+    }
+  | {
+      id: number;
+      kind: "policy";
+      policy: PolicyItem;
+      searchQuery?: string;
+      searchTargetKey?: string;
+    };
 export type BodySearchSelectionInput =
-  | { article: HomeArticle; kind: "news" }
-  | { kind: "policy"; policy: PolicyItem };
+  | {
+      article: HomeArticle;
+      kind: "news";
+      searchQuery?: string;
+      searchTargetKey?: string;
+    }
+  | {
+      kind: "policy";
+      policy: PolicyItem;
+      searchQuery?: string;
+      searchTargetKey?: string;
+    };
 
 const commentPanelOpenHintOffset = 112;
 
@@ -897,7 +922,7 @@ function getVotePercentages(voteCounts: number[]) {
   return percentages;
 }
 
-export { ArticleGuideOptionButton };
+export { ArticleVoteOptionButton };
 
 function ArticleGuideSection({
   id,
@@ -1066,7 +1091,7 @@ function ArticleGuideSection({
           const percent = percentages[index];
 
           return (
-            <ArticleGuideOptionButton
+            <ArticleVoteOptionButton
               binaryTone={
                 kind === "binary"
                   ? option === binaryGuideOptions[0]
@@ -2603,6 +2628,8 @@ export function HomeReelCard({
   index,
   initialCommentId,
   initialReplyTargetId,
+  initialSearchQuery,
+  initialSearchTargetKey,
   initialScrollTarget,
   recordRecentOnView = true,
 }: {
@@ -2612,6 +2639,8 @@ export function HomeReelCard({
   index: number | string;
   initialCommentId?: CommentId;
   initialReplyTargetId?: CommentId;
+  initialSearchQuery?: string;
+  initialSearchTargetKey?: string;
   initialScrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
   recordRecentOnView?: boolean;
 }) {
@@ -2632,6 +2661,7 @@ export function HomeReelCard({
   const articleContentId = `home-article-content-${index}`;
   const articleGuideId = `home-article-guide-${index}`;
   const articleTitleId = `home-article-title-${index}`;
+  const articleSearchTargetId = getSearchHighlightTargetId(articleContentId);
   const ArticleTitle = headingLevel;
   const shareArticle = useShareContent({
     text: article.body ?? article.title,
@@ -2871,9 +2901,15 @@ export function HomeReelCard({
   useDeferredDetailScroll({
     bottomGap: 80,
     delayMs: commentScrollDelayMs,
-    enabled: initialScrollTarget === "poll",
+    enabled:
+      initialScrollTarget === "poll" || initialScrollTarget === "bodySearch",
     resetKey: article.id ?? article.title,
-    targetId: initialScrollTarget === "poll" ? articleGuideId : null,
+    targetId:
+      initialScrollTarget === "poll"
+        ? articleGuideId
+        : initialScrollTarget === "bodySearch"
+          ? articleSearchTargetId
+          : null,
   });
 
   const articleContent = (
@@ -2885,10 +2921,35 @@ export function HomeReelCard({
       tabIndex={0}
     >
       <div className="wrapper_articleSummary">
-        <div className="wrapper_articleKicker">
-          <ChipLabel kind="articleCategory">{article.category}</ChipLabel>
+        <div
+          className="wrapper_articleKicker"
+          id={`${articleContentId}-search-category`}
+        >
+          <ChipLabel kind="articleCategory">
+            <SearchHighlightText
+              query={
+                initialSearchTargetKey === "category" ? initialSearchQuery : ""
+              }
+              targetId={
+                initialSearchTargetKey === "category"
+                  ? articleSearchTargetId
+                  : undefined
+              }
+            >
+              {article.category}
+            </SearchHighlightText>
+          </ChipLabel>
         </div>
-        <ArticleTitle id={articleTitleId}>{article.title}</ArticleTitle>
+        <ArticleTitle id={articleTitleId}>
+          <SearchHighlightText
+            query={initialSearchTargetKey === "title" ? initialSearchQuery : ""}
+            targetId={
+              initialSearchTargetKey === "title" ? articleSearchTargetId : undefined
+            }
+          >
+            {article.title}
+          </SearchHighlightText>
+        </ArticleTitle>
         <div className="wrapper_articleMetaActions">
           <HomeArticleMeta
             date={article.date}
@@ -2916,9 +2977,24 @@ export function HomeReelCard({
         </div>
       </div>
       <img alt={article.imageAlt} src={article.image} />
-      <p className="text_articleBody">{article.body ?? articleBody}</p>
+      <p
+        className="text_articleBody"
+        id={`${articleContentId}-search-body`}
+      >
+        <SearchHighlightText
+          query={initialSearchTargetKey === "body" ? initialSearchQuery : ""}
+          targetId={
+            initialSearchTargetKey === "body" ? articleSearchTargetId : undefined
+          }
+        >
+          {article.body ?? articleBody}
+        </SearchHighlightText>
+      </p>
 
-      <div className="wrapper_articleSource">
+      <div
+        className="wrapper_articleSource"
+        id={`${articleContentId}-search-source`}
+      >
         <div className="wrapper_articleSourcePublisher">
           <img
             className="img_articlePublisherLogo"
@@ -3005,6 +3081,8 @@ export function ArticleDetailContent({
   backLabel,
   initialCommentId,
   initialReplyTargetId,
+  initialSearchQuery,
+  initialSearchTargetKey,
   initialScrollTarget,
   isLeaving = false,
   onBack,
@@ -3013,6 +3091,8 @@ export function ArticleDetailContent({
   backLabel?: string;
   initialCommentId?: CommentId;
   initialReplyTargetId?: CommentId;
+  initialSearchQuery?: string;
+  initialSearchTargetKey?: string;
   initialScrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
   isLeaving?: boolean;
   onBack?: () => void;
@@ -3031,6 +3111,8 @@ export function ArticleDetailContent({
         headingLevel="h1"
         initialCommentId={initialCommentId}
         initialReplyTargetId={initialReplyTargetId}
+        initialSearchQuery={initialSearchQuery}
+        initialSearchTargetKey={initialSearchTargetKey}
         initialScrollTarget={initialScrollTarget}
         index="detail"
       />
@@ -3058,14 +3140,6 @@ export function NewsRollStateCard({
   );
 }
 
-
-export function AllNewsMeta() {
-  return (
-    <p className="newsroll_all_meta">
-      <NewsCreatedTime />
-    </p>
-  );
-}
 
 type AllNewsPanelContentProps = HTMLAttributes<HTMLDivElement>;
 
@@ -3173,78 +3247,3 @@ export function groupAllNewsByValue(
   );
 }
 
-export function AllNewsLatestCard({
-  item,
-  onClick,
-}: {
-  item: AllNewsArticlePreview;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      aria-label={`${item.category} 기사: ${item.title}`}
-      className="newsroll_all_latest_card"
-      onClick={onClick}
-      type="button"
-    >
-      <span className="chip chip_small chip_filled chip_full newsroll_all_chip">
-        {item.category}
-      </span>
-      <img alt="" className="newsroll_all_latest_image" src={item.image} />
-      <span className="newsroll_all_latest_body">
-        <strong>{item.title}</strong>
-        <AllNewsMeta />
-      </span>
-    </button>
-  );
-}
-
-export function AllNewsHeadlineItem({
-  item,
-  onClick,
-}: {
-  item: AllNewsArticlePreview;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      aria-label={`헤드라인 기사: ${item.title}`}
-      className="newsroll_all_headline_item"
-      onClick={onClick}
-      type="button"
-    >
-      <span className="newsroll_all_headline_body">
-        <strong>{item.title}</strong>
-        <AllNewsMeta />
-      </span>
-      <img alt="" className="newsroll_all_headline_image" src={item.image} />
-    </button>
-  );
-}
-
-export function AllNewsRelayItem({
-  item,
-  featured = false,
-  onClick,
-}: {
-  featured?: boolean;
-  item: AllNewsArticlePreview;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      aria-label={`릴레이 뉴스 기사: ${item.title}`}
-      className="newsroll_all_relay_item"
-      onClick={onClick}
-      type="button"
-    >
-      <strong
-        className={featured ? "newsroll_all_relay_title_large" : undefined}
-      >
-        {item.title}
-      </strong>
-      <AllNewsMeta />
-      <img alt="" src={item.image} />
-    </button>
-  );
-}

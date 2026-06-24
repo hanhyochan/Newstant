@@ -11,6 +11,7 @@ import { welfareApi, type WelfarePolicy } from "@/app/_newsroll/api";
 import { getCurrentUserSnapshot } from "@/app/_newsroll/auth/current-user";
 import {
   ChipLabel,
+  ContentSummaryButton,
   SelectButton,
   PillTabMenu
 } from "@/design-system/components";
@@ -51,7 +52,13 @@ type PolicyItem = {
 
 type BodySearchSelection =
   | { article: unknown; id: number; kind: "news" }
-  | { id: number; kind: "policy"; policy: PolicyItem };
+  | {
+      id: number;
+      kind: "policy";
+      policy: PolicyItem;
+      searchQuery?: string;
+      searchTargetKey?: string;
+    };
 
 function formatHeroCount(count: number) {
   return new Intl.NumberFormat("ko-KR").format(count);
@@ -136,11 +143,10 @@ function PolicyListItem({
   const policyDate = getPolicyDateDisplay(item);
 
   return (
-    <button
-      aria-pressed={isSelected}
-      className={`newsroll_policy_list_item${isSelected ? " is_selected" : ""}`}
+    <ContentSummaryButton
+      className="newsroll_policy_list_item"
       onClick={onSelect}
-      type="button"
+      selected={isSelected}
     >
       <div className="wrapper_policyItemContent">
         <div className="newsroll_policy_list_body">
@@ -164,7 +170,7 @@ function PolicyListItem({
           ))}
         </div>
       </div>
-    </button>
+    </ContentSummaryButton>
   );
 }
 
@@ -187,6 +193,16 @@ export function PolicyView({
   const [activeAge, setActiveAge] = useState(policyAgeTabs[0]);
   const [detailItem, setDetailItem] = useState<PolicyItem | null>(
     bodySearchSelection?.kind === "policy" ? bodySearchSelection.policy : null,
+  );
+  const [policySearchQuery, setPolicySearchQuery] = useState(
+    bodySearchSelection?.kind === "policy"
+      ? bodySearchSelection.searchQuery
+      : undefined,
+  );
+  const [policySearchTargetKey, setPolicySearchTargetKey] = useState(
+    bodySearchSelection?.kind === "policy"
+      ? bodySearchSelection.searchTargetKey
+      : undefined,
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>("popular");
   const [isPolicySortOpen, setIsPolicySortOpen] = useState(false);
@@ -212,6 +228,7 @@ export function PolicyView({
   const isPolicyDetailOpen = detailItem !== null;
   const policyDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isPolicyDetailOpen,
+    resetKey: detailItem?.id ?? detailItem?.title,
     scrollerRef: policyPanelContentRef,
   });
   const closePolicyDetailImmediately = useCallback(() => {
@@ -260,6 +277,8 @@ export function PolicyView({
       policyDetailScrollRestore.captureScroll();
     }
 
+    setPolicySearchQuery(undefined);
+    setPolicySearchTargetKey(undefined);
     setSelectedPolicyIndex(index);
     setDetailItem(item);
   }
@@ -270,6 +289,8 @@ export function PolicyView({
     }
 
     setSelectedPolicyIndex(0);
+    setPolicySearchQuery(bodySearchSelection.searchQuery);
+    setPolicySearchTargetKey(bodySearchSelection.searchTargetKey);
     setDetailItem(bodySearchSelection.policy);
   }, [bodySearchSelection]);
 
@@ -377,6 +398,8 @@ export function PolicyView({
                 ? () => openPolicyDetail(previousPolicyItem, detailItemIndex - 1)
                 : undefined
             }
+            searchQuery={policySearchQuery}
+            searchTargetKey={policySearchTargetKey}
           />
         ) : (
           <div className="newsroll_policy_listContent">

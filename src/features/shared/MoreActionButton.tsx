@@ -31,7 +31,7 @@ export function MoreActionButton({
           alt=""
           aria-hidden="true"
           className="newsroll_icon_image newsroll_all_more_icon"
-          src="/icons/icon_chevron_right.svg"
+          src="/icons/icon_chevron.svg"
         />
       ) : null}
     </ContentActionButton>

@@ -1,5 +1,5 @@
+import { ToggleButtonGroup } from "../button/newViewToggle-button";
 import { Icon } from "../icon/icon";
-import { PillTabMenu } from "./pill-tab-menu";
 
 export type NewsViewMode = "reels" | "block";
 
@@ -20,7 +20,7 @@ export function NewsViewToggle({ mode, onModeChange }: NewsViewToggleProps) {
   };
 
   return (
-    <PillTabMenu
+    <ToggleButtonGroup
       ariaLabel="뉴스 보기 방식"
       className="wrapper_newsViewToggle"
       getButtonClassName={() => "btn_newsViewOption"}

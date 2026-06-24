@@ -120,6 +120,11 @@ export function HomeView({
     [articles, blockedKeywords],
   );
   const hasArticles = visibleArticles.length > 0;
+  const isBodySearchDetail =
+    bodySearchSelection?.kind === "news" &&
+    selectedDetailArticle != null &&
+    (bodySearchSelection.article.id ?? bodySearchSelection.article.title) ===
+      (selectedDetailArticle.id ?? selectedDetailArticle.title);
   const latestBreakingItem = getLatestBreakingNewsItem(visibleArticles);
   const breakingTitle =
     latestBreakingItem?.title ??
@@ -148,6 +153,21 @@ export function HomeView({
         selectedDetailArticle ? (
           <ArticleDetailContent
             article={selectedDetailArticle}
+            initialSearchQuery={
+              isBodySearchDetail
+                ? bodySearchSelection.searchQuery
+                : undefined
+            }
+            initialSearchTargetKey={
+              isBodySearchDetail
+                ? bodySearchSelection.searchTargetKey
+                : undefined
+            }
+            initialScrollTarget={
+              isBodySearchDetail && bodySearchSelection.searchTargetKey
+                ? "bodySearch"
+                : undefined
+            }
             isLeaving={homeDetailExitMotion.isLeaving}
           />
         ) : null

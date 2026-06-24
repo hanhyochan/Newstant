@@ -15,6 +15,7 @@ import {
 import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation";
 import {
   PaginationButton,
+  ContentSummaryButton,
   FieldActionButton,
   IconButton,
   PrimaryButton,
@@ -300,10 +301,9 @@ function InquiryHistory({
     <div className="newsroll_policy_items">
       {inquiries.map((inquiry, index) => (
         <Fragment key={inquiry.id}>
-          <button
+          <ContentSummaryButton
             className="newsroll_policy_list_item"
             onClick={() => onSelectInquiry(inquiry.id)}
-            type="button"
           >
             <div className="wrapper_policyItemContent wrapper_myInquiryItemContent">
               <h2>{inquiry.title}</h2>
@@ -311,7 +311,7 @@ function InquiryHistory({
                 <span>{formatDate(inquiry.createdAt)}</span>
               </div>
             </div>
-          </button>
+          </ContentSummaryButton>
           {index < inquiries.length - 1 ? (
             <NewsRollDivider className="newsroll_policy_itemDivider" />
           ) : null}

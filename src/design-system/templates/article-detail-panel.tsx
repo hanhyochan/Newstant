@@ -27,7 +27,7 @@ export function NewsRollArticleDetailPanel({
         {backLabel && onBack ? (
           <IconButton
             className="newsroll_all_detail_back"
-            icon="arrow"
+            icon="chevron"
             label={backLabel}
             onClick={onBack}
             tone="translucent"

@@ -2,22 +2,22 @@ import type { ButtonHTMLAttributes, CSSProperties } from "react";
 
 import { cn } from "../shared/utils";
 
-export type ArticleGuideOptionButtonState = "active" | "default";
-export type ArticleGuideOptionButtonVariant = "binary" | "stacked";
-export type ArticleGuideOptionButtonBinaryTone = "no" | "yes";
+export type ArticleVoteOptionButtonState = "active" | "default";
+export type ArticleVoteOptionButtonVariant = "binary" | "stacked";
+export type ArticleVoteOptionButtonBinaryTone = "no" | "yes";
 
-export interface ArticleGuideOptionButtonProps
+export interface ArticleVoteOptionButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  binaryTone?: ArticleGuideOptionButtonBinaryTone;
+  binaryTone?: ArticleVoteOptionButtonBinaryTone;
   iconSrc?: string;
   label: string;
   percent?: number;
   showResult?: boolean;
-  state?: ArticleGuideOptionButtonState;
-  variant?: ArticleGuideOptionButtonVariant;
+  state?: ArticleVoteOptionButtonState;
+  variant?: ArticleVoteOptionButtonVariant;
 }
 
-export function ArticleGuideOptionButton({
+export function ArticleVoteOptionButton({
   binaryTone,
   className,
   iconSrc,
@@ -29,7 +29,7 @@ export function ArticleGuideOptionButton({
   type = "button",
   variant = "stacked",
   ...props
-}: ArticleGuideOptionButtonProps) {
+}: ArticleVoteOptionButtonProps) {
   const isActive = state === "active";
   const fillStyle = showResult
     ? ({ "--article-guide-result-size": `${percent}%` } as CSSProperties)

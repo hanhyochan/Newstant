@@ -12,7 +12,14 @@ import {
 } from "react";
 
 import { newsApi } from "@/app/_newsroll/api";
-import { NoticeCardLink, Icon, PillTabMenu } from "@/design-system/components";
+import {
+  NoticeCardLink,
+  Icon,
+  PillTabMenu,
+  NewsFeatureCardButton as AllNewsLatestCard,
+  NewsHeadlineRowButton as AllNewsHeadlineItem,
+  NewsListCardButton as AllNewsRelayItem,
+} from "@/design-system/components";
 import {
   NewsRollCommonLayout,
   NewsRollDetailBackButton,
@@ -37,9 +44,6 @@ import { MoreActionButton } from "@/features/shared/MoreActionButton";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 
 import {
-  AllNewsHeadlineItem,
-  AllNewsLatestCard,
-  AllNewsRelayItem,
   AllNewsSectionPanel,
   ArticleDetailContent,
   allNewsDockedScrollSelectors,
@@ -161,6 +165,7 @@ export function AllNewsView({
   const allNewsDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen,
     nestedScrollSelector: allNewsDockedScrollSelectors.contentScroller,
+    resetKey: detailArticle?.id ?? detailArticle?.title,
     scrollerRef: feedRef,
   });
   const closeAllNewsDetailImmediately = useCallback(() => {
@@ -565,11 +570,11 @@ export function AllNewsView({
             }}
             title="언론사별 헤드라인"
           >
-            <div className="newsroll_all_tabSticky newsroll_all_press_tabMenu">
+            <div className="newsroll_all_tabSticky newsroll_all_pressHeadline_tabMenu">
               <PillTabMenu
                 ariaLabel="언론사 선택"
-                className="newsroll_all_press_tabScroller"
-                getButtonClassName={() => "newsroll_all_press_tabButton"}
+                className="newsroll_all_pressHeadline_tabScroller"
+                getButtonClassName={() => "newsroll_all_pressHeadline_tabButton"}
                 getPanelId={() => "all-news-headline-panel"}
                 getTabId={(press) =>
                   `all-news-press-tab-${visibleAllNewsPresses.indexOf(press)}`
@@ -582,7 +587,7 @@ export function AllNewsView({
                 renderItemContent={(item) => (
                   <>
                     <div
-                      className="newsroll_all_press_logo"
+                      className="newsroll_all_pressHeadline_logo"
                       aria-hidden="true"
                     />
                     <span>{item.label}</span>
@@ -618,7 +623,7 @@ export function AllNewsView({
                   }
                   expanded={showAllHeadlines}
                   onClick={() => setShowAllHeadlines((current) => !current)}
-                  tone="dark"
+                  tone="light"
                 />
               ) : null}
             </div>
