@@ -18,7 +18,8 @@ export function FieldActionButton({
 }: FieldActionButtonProps) {
   return (
     <button
-      className={cn("btn_fieldActionButton", `btn_fieldActionButton_${tone}`, className)}
+      className={cn("btn_fieldActionButton", className)}
+      data-tone={tone}
       type={type}
       {...props}
     >

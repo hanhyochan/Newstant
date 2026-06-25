@@ -100,7 +100,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           placeholder="문의 제목을 입력해주세요."
           type="text"
           value={inquiryTitle}
-          wrapperClassName="input_commentComposer"
+          variant="comment"
         />
       </div>
       <div className="wrapper_infoField">
@@ -122,9 +122,9 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
       <PrimaryButtonGroup>
         <PrimaryButton
           disabled={inquiryStatus === "sending"}
+          leftIcon={<Icon name="submit" />}
           type="submit"
         >
-          <Icon name="submit" />
         {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}
         </PrimaryButton>
       </PrimaryButtonGroup>

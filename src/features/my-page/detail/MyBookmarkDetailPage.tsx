@@ -191,15 +191,8 @@ export function MyBookmarkDetailPage({
                     onClick={() => onOpenPolicy(item.policy)}
                   >
                     <div className="newsroll_policy_list_tags">
-                      {item.tags.map((tag, tagIndex) => (
-                        <ChipLabel
-                          kind={
-                            tagIndex === item.tags.length - 1
-                              ? "policyAccent"
-                              : "policy"
-                          }
-                          key={`${item.title}-${tag}`}
-                        >
+                      {item.tags.map((tag) => (
+                        <ChipLabel key={`${item.title}-${tag}`}>
                           {tag}
                         </ChipLabel>
                       ))}

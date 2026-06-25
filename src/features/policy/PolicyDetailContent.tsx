@@ -214,11 +214,8 @@ export function PolicyDetailContent({
         </div>
 
         <div className="newsroll_policy_detail_tags">
-          {item.tags.map((tag, index) => (
-            <ChipLabel
-              kind={index === item.tags.length - 1 ? "policyAccent" : "policy"}
-              key={`${item.title}-${tag}`}
-            >
+          {item.tags.map((tag) => (
+            <ChipLabel key={`${item.title}-${tag}`}>
               <SearchHighlightText
                 query={searchTargetKey === "tags" ? searchQuery : ""}
                 targetId={
@@ -299,9 +296,9 @@ export function PolicyDetailContent({
       {hideDetailToggle ? null : (
         <PrimaryButtonGroup>
         <PrimaryButton
-          className="newsroll_policy_detail_toggle"
+          className="newsroll_policy_detail_toggle"
+          leftIcon={<Icon name="plus" />}
         >
-          <Icon name="plus" />
           상세보기
         </PrimaryButton>
       </PrimaryButtonGroup>

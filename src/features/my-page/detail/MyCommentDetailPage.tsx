@@ -101,7 +101,7 @@ function MyCommentPreviewThread({
       onKeyDown={openCommentFromKeyboard}
       tabIndex={0}
     >
-      <ChipLabel kind="commentChoice">{comment.choice}</ChipLabel>
+      <ChipLabel>{comment.choice}</ChipLabel>
       <p>{comment.body}</p>
       <footer>
         <TextButton
@@ -167,7 +167,7 @@ function MyCommentPreviewThread({
                       />
                     </span>
                   </header>
-                  <ChipLabel kind="commentChoice">{reply.choice}</ChipLabel>
+                  <ChipLabel>{reply.choice}</ChipLabel>
                   <p>{reply.body}</p>
                   <footer>
                     <span>

@@ -1,4 +1,4 @@
-import { ToggleButtonGroup } from "../button/newViewToggle-button";
+import { NewViewToggleButton } from "../button/newViewToggle-button";
 import { Icon } from "../icon/icon";
 
 export type NewsViewMode = "reels" | "block";
@@ -20,7 +20,7 @@ export function NewsViewToggle({ mode, onModeChange }: NewsViewToggleProps) {
   };
 
   return (
-    <ToggleButtonGroup
+    <NewViewToggleButton
       ariaLabel="뉴스 보기 방식"
       className="wrapper_newsViewToggle"
       getButtonClassName={() => "btn_newsViewOption"}

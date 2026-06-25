@@ -28,11 +28,10 @@ export function IconButton({
       aria-label={label}
       className={cn(
         "btn_iconButton",
-        `btn_iconButton_${variant}`,
-        (variant === "circle" || variant === "shaped") &&
-          `btn_iconButton_${tone}`,
         className,
       )}
+      data-tone={tone}
+      data-variant={variant}
       type={type}
       {...props}
     >

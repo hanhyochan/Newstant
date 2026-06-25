@@ -3,7 +3,7 @@ import { useId } from "react";
 
 import { cn } from "../shared/utils";
 
-export type NewsRollCheckSize = "default" | "small";
+export type NewsRollCheckSize = "md" | "lg";
 
 export type NewsRollCheckBoxProps = {
   checked?: boolean;
@@ -14,7 +14,7 @@ export type NewsRollCheckBoxProps = {
 export function NewsRollCheckBox({
   checked = false,
   className,
-  size = "default",
+  size = "md",
 }: NewsRollCheckBoxProps) {
   return (
     <span
@@ -25,10 +25,12 @@ export function NewsRollCheckBox({
   );
 }
 
-export type NewsRollCheckFieldProps = Omit<
+type BaseCheckInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "children" | "size" | "type"
-> & {
+>;
+
+export type NewsRollCheckFieldProps = BaseCheckInputProps & {
   checked?: boolean;
   label: ReactNode;
   size?: NewsRollCheckSize;
@@ -38,7 +40,7 @@ export function NewsRollCheckField({
   checked = false,
   className,
   label,
-  size = "default",
+  size = "md",
   id,
   ...props
 }: NewsRollCheckFieldProps) {
@@ -59,6 +61,41 @@ export function NewsRollCheckField({
       />
       <NewsRollCheckBox checked={checked} size={size} />
       <span>{label}</span>
+    </label>
+  );
+}
+
+export type NewsRollCheckIconFieldProps = BaseCheckInputProps & {
+  ariaLabel: string;
+  checked?: boolean;
+  size?: NewsRollCheckSize;
+};
+
+export function NewsRollCheckIconField({
+  ariaLabel,
+  checked = false,
+  className,
+  size = "md",
+  id,
+  ...props
+}: NewsRollCheckIconFieldProps) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+
+  return (
+    <label
+      className={cn("btn_newsrollCheckIconField", className)}
+      data-size={size}
+    >
+      <input
+        {...props}
+        aria-label={ariaLabel}
+        checked={checked}
+        className="input_newsrollCheck"
+        id={inputId}
+        type="checkbox"
+      />
+      <NewsRollCheckBox checked={checked} size={size} />
     </label>
   );
 }

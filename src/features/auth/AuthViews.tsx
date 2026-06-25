@@ -227,7 +227,7 @@ export function LoginView({
                   state={passwordValidation.errorMessage ? "error" : "default"}
                   type={isPasswordVisible ? "text" : "password"}
                   value={password}
-                  wrapperClassName="input_loginPassword"
+                  hasEndAction
                 />
                 <IconButton
                   aria-pressed={isPasswordVisible}
@@ -260,7 +260,7 @@ export function LoginView({
               <NewsRollCheckField
                 checked={isAutoLogin}
                 className="btn_loginAuto"
-                size="small"
+                size="md"
                 label="자동 로그인"
                 onChange={() => setIsAutoLogin((current) => !current)}
               />
@@ -865,7 +865,7 @@ export function SignupAgreementView({
               <NewsRollCheckField
                 checked={isAllChecked}
                 className="btn_signupAgreementAll"
-                size="default"
+                size="lg"
                 label="전체 동의"
                 onChange={toggleAllAgreements}
               />
@@ -1500,7 +1500,7 @@ export function PasswordResetPasswordView({
                   state={nextPasswordValidation.errorMessage ? "error" : "default"}
                   type={isNextPasswordVisible ? "text" : "password"}
                   value={nextPassword}
-                  wrapperClassName="input_loginPassword"
+                  hasEndAction
                 />
                 <IconButton
                   aria-pressed={isNextPasswordVisible}
@@ -1539,7 +1539,7 @@ export function PasswordResetPasswordView({
                   }
                   type={isNextPasswordConfirmVisible ? "text" : "password"}
                   value={nextPasswordConfirm}
-                  wrapperClassName="input_loginPassword"
+                  hasEndAction
                 />
                 <IconButton
                   aria-pressed={isNextPasswordConfirmVisible}
@@ -1779,7 +1779,7 @@ export function SignupPasswordView({
                   state={passwordValidation.errorMessage ? "error" : "default"}
                   type={isPasswordVisible ? "text" : "password"}
                   value={password}
-                  wrapperClassName="input_loginPassword"
+                  hasEndAction
                 />
                 <IconButton
                   aria-pressed={isPasswordVisible}
@@ -1812,7 +1812,7 @@ export function SignupPasswordView({
                   state={passwordConfirmValidation.errorMessage ? "error" : "default"}
                   type={isPasswordConfirmVisible ? "text" : "password"}
                   value={passwordConfirm}
-                  wrapperClassName="input_loginPassword"
+                  hasEndAction
                 />
                 <IconButton
                   aria-pressed={isPasswordConfirmVisible}

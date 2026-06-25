@@ -3,19 +3,24 @@ import { useId, type InputHTMLAttributes } from "react";
 import { cn } from "../shared/utils";
 
 type TextInputState = "default" | "complete" | "error" | "view";
+export type TextInputVariant = "comment" | "dark" | "light";
 
 export type TextInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
+  hasEndAction?: boolean;
   state?: TextInputState;
+  variant?: TextInputVariant;
   wrapperClassName?: string;
 };
 
 export function TextInput({
   className,
   disabled,
+  hasEndAction = false,
   id,
   name,
   readOnly,
   state = "default",
+  variant = "light",
   wrapperClassName,
   ...props
 }: TextInputProps) {
@@ -27,15 +32,11 @@ export function TextInput({
     <label
       className={cn(
         "text_input",
-        "text_input_large",
-        "text_input_outline",
-        "text_input_rounded",
-        state === "complete" && "text_input_complete",
-        state === "error" && "text_input_error",
-        disabled && "text_input_disabled",
-        isView && "text_input_view",
+        variant !== "light" && `text_input_${variant}`,
         wrapperClassName,
       )}
+      data-end-action={hasEndAction ? "true" : undefined}
+      data-state={isView ? "view" : state}
     >
       <input
         className={className}

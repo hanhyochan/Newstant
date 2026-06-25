@@ -27,10 +27,7 @@ export const TabButton = forwardRef<HTMLButtonElement, TabButtonProps>(
       <button
         {...props}
         className={cn(
-          "tab",
-          "tab_medium",
-          "tab_filled",
-          "tab_full_rounded",
+          "btn_tab",
           className,
         )}
         data-state={dataState ?? state}

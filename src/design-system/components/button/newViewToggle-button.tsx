@@ -6,25 +6,25 @@ import {
 
 import { cn } from "../shared/utils";
 
-export type ToggleButtonGroupItem<T extends string> = {
+export type NewViewToggleButtonItem<T extends string> = {
   id: T;
   label: string;
 };
 
-export type ToggleButtonGroupProps<T extends string> = {
+export type NewViewToggleButtonProps<T extends string> = {
   ariaLabel: string;
   className?: string;
   getButtonClassName?: (id: T) => string | undefined;
   getItemAriaLabel?: (id: T) => string | undefined;
   getPanelId?: (id: T) => string | undefined;
   getTabId?: (id: T) => string;
-  items: ToggleButtonGroupItem<T>[];
+  items: NewViewToggleButtonItem<T>[];
   onChange: (id: T) => void;
-  renderItemContent?: (item: ToggleButtonGroupItem<T>) => ReactNode;
+  renderItemContent?: (item: NewViewToggleButtonItem<T>) => ReactNode;
   value: T;
 };
 
-export function ToggleButtonGroup<T extends string>({
+export function NewViewToggleButton<T extends string>({
   ariaLabel,
   className,
   getButtonClassName,
@@ -35,7 +35,7 @@ export function ToggleButtonGroup<T extends string>({
   onChange,
   renderItemContent,
   value,
-}: ToggleButtonGroupProps<T>) {
+}: NewViewToggleButtonProps<T>) {
   const activeIndex = Math.max(
     0,
     items.findIndex((item) => item.id === value),

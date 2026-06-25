@@ -7,8 +7,8 @@ import {
 import {
   PrimaryButton,
   PrimaryButtonGroup,
-  NewsRollCheckBox,
   NewsRollCheckField,
+  NewsRollCheckIconField,
   PillTabMenu,
   NewsListCardButton as AllNewsRelayItem,
 } from "@/design-system/components";
@@ -117,7 +117,7 @@ export function MyRecentDetailPage({
     <NewsRollCheckField
       checked={isAllSelected}
       className="btn_myRecentSelectAll"
-      size="small"
+      size="lg"
       disabled={selectableViewIds.length === 0 || isDeleting}
       label="전체 선택"
       onChange={toggleAllSelection}
@@ -242,7 +242,9 @@ export function MyRecentDetailPage({
             {selectAllControl}
           </div>
         )}
-        <div className={recentTabSwipeMotionClassName || undefined}>
+        <div
+          className={`wrapper_allTabPanelBody ${recentTabSwipeMotionClassName}`.trim()}
+        >
           {visibleRecentItems.length === 0 ? (
             <DataUnavailableMessage target="최근 본 뉴스" />
           ) : (
@@ -259,19 +261,13 @@ export function MyRecentDetailPage({
                     data-selection-mode={isSelectionMode ? "true" : "false"}
                   >
                     {isSelectionMode ? (
-                      <button
-                        aria-label={`${item.title} 선택`}
-                        aria-pressed={isSelected}
+                      <NewsRollCheckIconField
+                        ariaLabel={`${item.title} 선택`}
+                        checked={isSelected}
                         className="btn_myRecentItemCheck"
-                        onClick={() => toggleItemSelection(item.viewId)}
-                        type="button"
-                      >
-                        <NewsRollCheckBox
-                          checked={isSelected}
-                          className="box_myRecentItemCheck"
-                          size="small"
-                        />
-                      </button>
+                        onChange={() => toggleItemSelection(item.viewId)}
+                        size="md"
+                      />
                     ) : null}
                     <AllNewsRelayItem
                       featured={index === 0 || index === 5}

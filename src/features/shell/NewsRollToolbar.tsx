@@ -108,11 +108,7 @@ export function NewsToolbar({
       ) : null}
       {showNotifications ? (
         <IconButton
-          className={
-            hasUnreadNotifications
-              ? "newsroll_toolbar_icon has_unread_notification"
-              : "newsroll_toolbar_icon"
-          }
+          className="newsroll_toolbar_icon"
           hasUnreadIndicator={hasUnreadNotifications}
           icon="alarm"
           label="알림"

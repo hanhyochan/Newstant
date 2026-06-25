@@ -2,7 +2,7 @@ import { Fragment } from "react";
 
 import {
   NewsRollDivider,
-  NewsRollSwitch,
+  OnoffToggleButton,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 
@@ -42,16 +42,16 @@ export function MyNewsViewTimePage({
                 const isSelected = selectedTimes.has(time);
 
                 return (
-                  <button
-                    aria-pressed={isSelected}
-                    className="btn_myTimeRow"
-                    key={time}
-                    onClick={() => onToggleTime(time)}
-                    type="button"
-                  >
+                  <label className="btn_myTimeRow" key={time}>
+                    <input
+                      checked={isSelected}
+                      className="input_newsrollCheck"
+                      onChange={() => onToggleTime(time)}
+                      type="checkbox"
+                    />
                     <span className="text_myTimeValue">{time}</span>
-                    <NewsRollSwitch checked={isSelected} />
-                  </button>
+                    <OnoffToggleButton checked={isSelected} />
+                  </label>
                 );
               })}
             </div>

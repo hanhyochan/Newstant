@@ -20,9 +20,9 @@ import {
   IconButton,
   PrimaryButton,
   PrimaryButtonGroup,
-  NewsRollCheckBox,
   NewsRollDivider,
   NewsRollCheckField,
+  NewsRollCheckIconField,
   PillTabMenu,
   SettingRowButton,
   TextButton,
@@ -503,7 +503,7 @@ function ModerationHistory({
         <NewsRollCheckField
           checked={isAllSelected}
           className="btn_myModerationSelectAll"
-          size="small"
+          size="lg"
           disabled={selectableActionIds.length === 0 || isReleasing}
           label="전체 선택"
           onChange={toggleAllSelection}
@@ -530,19 +530,13 @@ function ModerationHistory({
                     data-selection-mode={isSelectionMode ? "true" : "false"}
                   >
                     {!isReport && isSelectionMode ? (
-                      <button
-                        aria-label={`${targetLabel} 선택`}
-                        aria-pressed={isSelected}
+                      <NewsRollCheckIconField
+                        ariaLabel={`${targetLabel} 선택`}
+                        checked={isSelected}
                         className="btn_myModerationItemCheck"
-                        onClick={() => toggleActionSelection(action.id)}
-                        type="button"
-                      >
-                        <NewsRollCheckBox
-                          checked={isSelected}
-                          className="box_myModerationItemCheck"
-                          size="small"
-                        />
-                      </button>
+                        onChange={() => toggleActionSelection(action.id)}
+                        size="md"
+                      />
                     ) : null}
                     <div className="wrapper_mySettingsHistoryText">
                       <span className="text_mySettingsHistoryMeta">
@@ -1018,7 +1012,7 @@ function SettingsPasswordField({
           onChange={(event) => onChange(event.target.value)}
           type={isVisible ? "text" : "password"}
           value={value}
-          wrapperClassName="input_loginPassword"
+          hasEndAction
         />
         <IconButton
           aria-pressed={isVisible}

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "../../shared/utils";
 
@@ -6,12 +6,14 @@ export type PrimaryButtonTone = "default" | "neutral" | "danger";
 
 export interface PrimaryButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
+  leftIcon?: ReactNode;
   tone?: PrimaryButtonTone;
 }
 
 export function PrimaryButton({
   children,
   className,
+  leftIcon,
   tone = "default",
   type = "button",
   ...props
@@ -20,16 +22,13 @@ export function PrimaryButton({
     <button
       {...props}
       className={cn(
-        "btn",
-        "btn_large",
-        "btn_filled",
-        "btn_rounded",
-        tone === "neutral" && "btn_primaryNeutral",
-        tone === "danger" && "btn_danger",
+        "btn_primary",
+        tone !== "default" && `btn_primary_${tone}`,
         className,
       )}
       type={type}
     >
+      {leftIcon}
       {children}
     </button>
   );

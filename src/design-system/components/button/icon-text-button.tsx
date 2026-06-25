@@ -30,10 +30,10 @@ export function IconTextButton({
     <button
       className={cn(
         "btn_iconTextButton",
-        `btn_iconTextButton_${size}`,
-        `btn_iconTextButton_${tone}`,
         className,
       )}
+      data-size={size}
+      data-tone={tone}
       type={type}
       {...props}
     >

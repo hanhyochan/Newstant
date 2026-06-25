@@ -35,7 +35,7 @@ import {
 import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import {
   IconButton,
-  NewsBlockItem,
+  NewsBlockCardButton,
   NewsRollDivider,
   IconTextButton,
   TextButton
@@ -1399,7 +1399,7 @@ export function MyPageView({
               <>
                 <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
                   {myDynamicRecentItems.slice(0, myRecentPreviewLimit).map((item, index) => (
-                    <NewsBlockItem
+                    <NewsBlockCardButton
                       ariaPressed={false}
                       dateLabel={item.time}
                       dateTime={item.dateTime}

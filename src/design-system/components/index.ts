@@ -106,27 +106,24 @@ export type {
 } from "./button/select-button/action-menu";
 export { NewsRollDivider } from "./shared/divider";
 export type { NewsRollDividerProps } from "./shared/divider";
-export { NewsBlockCardButton as NewsBlockItem } from "./button/content-layout/news/news-block-card-button";
-export type { NewsBlockCardButtonProps as NewsBlockItemProps } from "./button/content-layout/news/news-block-card-button";
-export {
-  NewsRollSwitch,
-  ToggleSwitch,
-} from "./button/onoffToggle-button";
-export type { ToggleSwitchProps } from "./button/onoffToggle-button";
-export { ToggleButtonGroup } from "./button/newViewToggle-button";
+export { OnoffToggleButton } from "./button/onoffToggle-button";
+export type { OnoffToggleButtonProps } from "./button/onoffToggle-button";
+export { NewViewToggleButton } from "./button/newViewToggle-button";
 export type {
-  ToggleButtonGroupItem,
-  ToggleButtonGroupProps,
+  NewViewToggleButtonItem,
+  NewViewToggleButtonProps,
 } from "./button/newViewToggle-button";
 export {
   NewsRollCheckBox,
   NewsRollCheckField,
-} from "./shared/check-box";
+  NewsRollCheckIconField,
+} from "./input/check-field";
 export type {
   NewsRollCheckBoxProps,
   NewsRollCheckFieldProps,
+  NewsRollCheckIconFieldProps,
   NewsRollCheckSize,
-} from "./shared/check-box";
+} from "./input/check-field";
 export { CommentComposerInput } from "./input/comment-composer-input";
 export type { CommentComposerInputProps } from "./input/comment-composer-input";
 export { Textarea } from "./input/textarea";

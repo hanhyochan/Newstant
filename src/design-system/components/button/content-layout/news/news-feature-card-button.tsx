@@ -1,5 +1,7 @@
 import type { MouseEventHandler } from "react";
 
+import { ChipLabel } from "@/design-system/components/chip/chip-label";
+
 import { NewsCardMeta } from "./news-meta";
 
 export type NewsFeatureCardButtonItem = {
@@ -24,9 +26,7 @@ export function NewsFeatureCardButton({
       onClick={onClick}
       type="button"
     >
-      <span className="chip chip_small chip_filled chip_full newsroll_all_chip">
-        {item.category}
-      </span>
+      <ChipLabel>{item.category}</ChipLabel>
       <img alt="" className="newsroll_all_latest_image" src={item.image} />
       <span className="newsroll_all_latest_body">
         <strong>{item.title}</strong>

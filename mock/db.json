@@ -81191,6 +81191,22 @@
         "evening"
       ],
       "updatedAt": "2026-12-31T09:00:00+09:00"
+    },
+    {
+      "id": "view-time-25fb2339-0387-4b36-ad27-9b6da23d145f",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "times": [
+        "21:00"
+      ],
+      "updatedAt": "2026-06-25T05:29:38.951Z"
+    },
+    {
+      "id": "view-time-bcbe7181-14c2-4627-84ba-c8a6256c1e26",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "times": [
+        "21:00"
+      ],
+      "updatedAt": "2026-06-25T05:29:38.952Z"
     }
   ],
   "notices": [
@@ -81705,8 +81721,8 @@
       "targetType": "news",
       "targetId": "news-003",
       "createdAt": "2026-12-31T08:30:00+09:00",
-      "isRead": false,
-      "readAt": null
+      "isRead": true,
+      "readAt": "2026-06-25T08:46:31.766Z"
     }
   ]
 }

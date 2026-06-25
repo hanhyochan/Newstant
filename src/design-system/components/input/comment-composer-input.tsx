@@ -26,7 +26,7 @@ export function CommentComposerInput({
         placeholder={placeholder}
         type="text"
         value={value}
-        wrapperClassName="input_commentComposer"
+        variant="comment"
       />
       <IconButton
         className="btn_commentSubmit"

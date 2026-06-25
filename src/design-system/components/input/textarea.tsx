@@ -25,14 +25,9 @@ export function Textarea({
     <textarea
       className={cn(
         "textarea",
-        "textarea_large",
-        "textarea_outline",
-        "textarea_rounded",
-        state === "error" && "textarea_error",
-        disabled && "textarea_disabled",
-        isView && "textarea_view",
         className,
       )}
+      data-state={isView ? "view" : state}
       disabled={disabled}
       id={fieldId}
       name={name}

@@ -10,10 +10,6 @@ const meta: Meta<typeof ChipLabel> = {
   },
   args: {
     children: "정치",
-    kind: "articleCategory",
-  },
-  argTypes: {
-    kind: { control: "select", options: ["articleCategory", "commentChoice"] },
   },
 };
 
@@ -21,11 +17,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const ArticleCategory: Story = {};
+export const Default: Story = {};
 
-export const CommentChoice: Story = {
+export const LongLabel: Story = {
   args: {
-    children: "정책 지원을 먼저 확대해야 한다.",
-    kind: "commentChoice",
+    children: "상황을 더 지켜본 뒤 판단해야 한다.",
   },
 };

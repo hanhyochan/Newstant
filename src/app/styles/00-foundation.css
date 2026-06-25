@@ -620,7 +620,6 @@
             text-align: left;
         }
 
-        .newsroll_all_chip,
         .newsroll_all_category_tabs button {
             width: fit-content;
             min-width: var(--spacing-padding-horizontal-60);
@@ -636,10 +635,6 @@
             font-size: var(--font-size-14);
             font-weight: var(--font-weight-500);
             line-height: var(--line-height-20);
-        }
-
-        .newsroll_all_chip {
-            justify-self: start;
         }
 
         .newsroll_all_latest_image {

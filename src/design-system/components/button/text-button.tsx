@@ -19,11 +19,8 @@ export function TextButton({
   return (
     <button
       {...props}
-      className={cn(
-        "btn_textAction",
-        tone === "danger" && "btn_textActionDanger",
-        className,
-      )}
+      className={cn("btn_textAction", className)}
+      data-tone={tone}
       type={type}
     >
       {children}

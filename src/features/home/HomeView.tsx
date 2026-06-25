@@ -18,7 +18,7 @@ import type {
   UserPreference
 } from "@/app/_newsroll/api/types";
 import {
-  NewsBlockItem
+  NewsBlockCardButton
 } from "@/design-system/components";
 import {
   useEnterFromRightExitMotion
@@ -322,7 +322,7 @@ export function HomeView({
               </NewsRollStateCard>
             ) : hasArticles ? (
               visibleArticles.map((article) => (
-                <NewsBlockItem
+                <NewsBlockCardButton
                   categoryLabel={article.category}
                   dateLabel={article.date}
                   dateTime={article.dateTime ?? defaultNewsDateTime}

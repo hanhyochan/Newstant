@@ -2358,7 +2358,7 @@ function CommentReactionPanel({
                             options={commentActions}
                           />
                         </header>
-                        <ChipLabel kind="commentChoice">
+                        <ChipLabel>
                           {comment.choice}
                         </ChipLabel>
                         {isEditingComment ? (
@@ -2473,7 +2473,7 @@ function CommentReactionPanel({
                                         options={replyActions}
                                       />
                                     </header>
-                                    <ChipLabel kind="commentChoice">
+                                    <ChipLabel>
                                       {reply.choice}
                                     </ChipLabel>
                                     {isEditingReply ? (
@@ -3002,7 +3002,7 @@ export function HomeReelCard({
         <div
           className="wrapper_articleKicker"
         >
-          <ChipLabel kind="articleCategory">
+          <ChipLabel>
             <SearchHighlightText
               query={
                 initialSearchTargetKey === "category" ? initialSearchQuery : ""
@@ -3128,9 +3128,9 @@ export function HomeReelCard({
         aria-controls={isCommentPanelOpen ? commentPanelId : undefined}
         aria-expanded={isCommentPanelOpen}
         className="btn_commentPanel"
+        leftIcon={<Icon name="chat" />}
         onClick={handleCommentPanelToggle}
       >
-        <Icon name="chat" />
         댓글 반응보기
         </PrimaryButton>
       </PrimaryButtonGroup>

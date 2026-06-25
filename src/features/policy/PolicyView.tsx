@@ -161,11 +161,8 @@ function PolicyListItem({
           </div>
         </div>
         <div className="newsroll_policy_list_tags">
-          {item.tags.map((tag, index) => (
-            <ChipLabel
-              kind={index === 2 ? "policyAccent" : "policy"}
-              key={`${item.title}-${tag}`}
-            >
+          {item.tags.map((tag) => (
+            <ChipLabel key={`${item.title}-${tag}`}>
               {tag}
             </ChipLabel>
           ))}

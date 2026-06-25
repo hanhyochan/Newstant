@@ -7,7 +7,7 @@ import type {
 } from "react";
 import { useId } from "react";
 
-import { NewsRollCheckBox, type NewsRollCheckSize } from "../shared/check-box";
+import { NewsRollCheckBox, type NewsRollCheckSize } from "../input/check-field";
 import { cn } from "../shared/utils";
 
 export type ChevronRowButtonType = "default" | "checkbox";
@@ -51,7 +51,7 @@ export function ChevronRowButton(props: ChevronRowButtonProps) {
   if (props.rowType === "checkbox") {
     const {
       checked = false,
-      checkboxSize = "small",
+      checkboxSize = "md",
       chevronLabel,
       children,
       className,
@@ -68,11 +68,8 @@ export function ChevronRowButton(props: ChevronRowButtonProps) {
 
     return (
       <div
-        className={cn(
-          "btn_chevronRow",
-          "btn_chevronRow_checkbox",
-          className,
-        )}
+        className={cn("btn_chevronRow", className)}
+        data-row-type="checkbox"
         {...rowProps}
       >
         <label className="btn_chevronRowCheckField" data-size={checkboxSize}>
@@ -113,7 +110,8 @@ export function ChevronRowButton(props: ChevronRowButtonProps) {
 
   return (
     <button
-      className={cn("btn_chevronRow", "btn_chevronRow_default", className)}
+      className={cn("btn_chevronRow", className)}
+      data-row-type="default"
       type={type}
       {...buttonProps}
     >

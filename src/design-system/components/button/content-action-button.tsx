@@ -36,13 +36,14 @@ export function ContentActionButton({
   tone = "light",
   ...props
 }: ContentActionButtonProps) {
-  const classNames = cn("btn_originalArticle", `btn_originalArticle_${tone}`, className);
+  const classNames = cn("btn_originalArticle", className);
 
   if (href) {
     return (
       <a
         aria-disabled={disabled ? "true" : undefined}
         className={classNames}
+        data-tone={tone}
         href={disabled ? undefined : href}
         tabIndex={disabled ? -1 : props.tabIndex}
         {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
@@ -55,6 +56,7 @@ export function ContentActionButton({
   return (
     <button
       className={classNames}
+      data-tone={tone}
       disabled={disabled}
       type="button"
       {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}

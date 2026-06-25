@@ -1,4 +1,4 @@
-.container_homeToolbar {
+﻿.container_homeToolbar {
     min-height: auto;
 }
 
@@ -28,7 +28,7 @@
     min-height: 48px;
 }
 
-.newsroll_all_breakingHeader .btn_originalArticle_dark {
+.newsroll_all_breakingHeader .btn_originalArticle[data-tone='dark'] {
     padding-top: 0;
 }
 
@@ -239,26 +239,6 @@
     font-size: var(--font-size-20);
     font-weight: var(--font-weight-400);
     line-height: var(--line-height-32);
-}
-
-.chip_articleCategory {
-    width: 60px;
-    height: 32px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 16px;
-    border: 0;
-    border-radius: var(--radius-full);
-    color: var(--color-cool-neutral-15);
-    background: var(--color-cool-neutral-96);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
-    white-space: nowrap;
 }
 
 .wrapper_articleSummary {
@@ -486,13 +466,6 @@
 
 .btn_newsBlockItem .newsroll_blockKicker {
     gap: var(--spacing-gap-horizontal-16);
-}
-
-.btn_newsBlockItem .chip_articleCategory {
-    color: var(--color-cool-neutral-15);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
 }
 
 .btn_newsBlockItem .newsroll_blockMeta {
@@ -1022,7 +995,7 @@
     align-items: center;
 }
 
-.input_commentComposer {
+.text_input_comment {
     flex: 1;
     width: 100%;
     min-width: 0;
@@ -1039,7 +1012,7 @@
     line-height: var(--line-height-24);
 }
 
-.input_commentComposer input {
+.text_input_comment input {
     width: 100%;
     min-width: 0;
     border: 0;
@@ -1051,7 +1024,7 @@
     line-height: 24px;
 }
 
-.input_commentComposer input::placeholder {
+.text_input_comment input::placeholder {
     color: var(--color-cool-neutral-50);
 }
 
@@ -1201,26 +1174,6 @@
     font-size: var(--font-size-15);
     font-weight: var(--font-weight-500);
     line-height: var(--line-height-20);
-}
-
-.badge_commentChoice {
-    justify-self: start;
-    width: fit-content;
-    max-width: 100%;
-    min-height: 32px;
-    box-sizing: border-box;
-    display: inline-flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-padding-vertical-4) var(--spacing-padding-horizontal-16);
-    border-radius: var(--radius-full);
-    color: var(--color-cool-neutral-15);
-    background: var(--color-cool-neutral-96);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
-    white-space: normal;
 }
 
 .wrapper_commentItem > p {
@@ -1914,11 +1867,11 @@
     font-size: var(--font-size-16);
 }
 
-.btn_iconButton.has_unread_notification {
+.btn_iconButton:has(.badge_iconButtonUnread) {
     gap: 2px;
 }
 
-.newsroll_toolbar_icon.has_unread_notification {
+.newsroll_toolbar_icon:has(.badge_iconButtonUnread) {
     width: auto;
     min-width: calc(5px + 2px + var(--spacing-padding-horizontal-24));
 }
@@ -1980,34 +1933,6 @@
     .newsroll_all_pressHeadline_tabButton:not([aria-selected='true']) {
     border: var(--border-1) solid var(--newsroll-divider-color);
     background: transparent;
-}
-
-.chip_articleCategory,
-.chip_policy,
-.badge_commentChoice,
-.newsroll_all_chip,
-.newsroll_policy_detail_tags .chip_policy {
-    min-height: 32px;
-    padding: 0 var(--spacing-padding-horizontal-12);
-    border-radius: var(--radius-full);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
-    cursor: default;
-}
-
-.chip_articleCategory,
-.newsroll_all_chip {
-    width: fit-content;
-    min-width: 0;
-    height: auto;
-    display: inline-flex;
-    flex-direction: row;
-    gap: var(--spacing-gap-horizontal-8);
-}
-
-.badge_commentChoice {
-    white-space: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2117,39 +2042,39 @@
     border-top-color: var(--color-cool-neutral-30);
 }
 
-.newsroll_dark .btn_originalArticle_light {
+.newsroll_dark .btn_originalArticle[data-tone='light'] {
     color: var(--color-cool-neutral-100);
     background: var(--color-cool-neutral-15);
     border-color: var(--color-cool-neutral-30);
 }
 
 .newsroll_dark .container_commentComposerFixed,
-.newsroll_dark :is(.text_input, .textarea, .input_commentComposer),
+.newsroll_dark :is(.text_input, .textarea, .text_input_comment),
 .newsroll_dark .wrapper_infoInquiry .textarea_infoComposer,
 body:has(.newsroll_dark) .container_commentComposerFixed,
-body:has(.newsroll_dark) :is(.text_input, .textarea, .input_commentComposer),
+body:has(.newsroll_dark) :is(.text_input, .textarea, .text_input_comment),
 body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer {
     color: var(--color-cool-neutral-100);
     background: var(--color-cool-neutral-15);
     border-color: var(--color-newsroll-purple-50);
 }
 
-.newsroll_dark .input_commentComposer input,
+.newsroll_dark .text_input_comment input,
 .newsroll_dark .text_input input,
 .newsroll_dark .textarea,
 .newsroll_dark .wrapper_infoInquiry .textarea_infoComposer,
-body:has(.newsroll_dark) .input_commentComposer input,
+body:has(.newsroll_dark) .text_input_comment input,
 body:has(.newsroll_dark) .text_input input,
 body:has(.newsroll_dark) .textarea,
 body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer {
     color: var(--color-cool-neutral-100);
 }
 
-.newsroll_dark .input_commentComposer input::placeholder,
+.newsroll_dark .text_input_comment input::placeholder,
 .newsroll_dark .text_input input::placeholder,
 .newsroll_dark .textarea::placeholder,
 .newsroll_dark .wrapper_infoInquiry .textarea_infoComposer::placeholder,
-body:has(.newsroll_dark) .input_commentComposer input::placeholder,
+body:has(.newsroll_dark) .text_input_comment input::placeholder,
 body:has(.newsroll_dark) .text_input input::placeholder,
 body:has(.newsroll_dark) .textarea::placeholder,
 body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholder {
@@ -2182,23 +2107,23 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     color: var(--color-cool-neutral-100);
 }
 
-.newsroll_dark .btn_textAction.btn_textActionDanger,
-.newsroll_dark .btn_textAction.btn_textActionDanger:active,
-.newsroll_dark .btn_textAction.btn_textActionDanger[aria-pressed='true'] {
+.newsroll_dark .btn_textAction[data-tone='danger'],
+.newsroll_dark .btn_textAction[data-tone='danger']:active,
+.newsroll_dark .btn_textAction[data-tone='danger'][aria-pressed='true'] {
     color: var(--color-red-50);
 }
 
-.newsroll_dark .btn_articleGuideOption_binary .text_articleGuideOption,
-.newsroll_dark .btn_articleGuideOption_stacked .text_articleGuideOption {
+.newsroll_dark .btn_articleGuideOption[data-variant='binary'] .text_articleGuideOption,
+.newsroll_dark .btn_articleGuideOption[data-variant='stacked'] .text_articleGuideOption {
     color: var(--color-common-100);
 }
 
-.newsroll_dark .btn_articleGuideOption_stacked[aria-pressed='true'] .text_articleGuideOption,
-.newsroll_dark .btn_articleGuideOption_stacked[aria-pressed='true'] .text_articleGuidePercent {
+.newsroll_dark .btn_articleGuideOption[data-variant='stacked'][aria-pressed='true'] .text_articleGuideOption,
+.newsroll_dark .btn_articleGuideOption[data-variant='stacked'][aria-pressed='true'] .text_articleGuidePercent {
     color: var(--color-cool-neutral-15);
 }
 
-.newsroll_dark .btn_articleGuideOption_binary[aria-pressed='true'] .text_articleGuideOption {
+.newsroll_dark .btn_articleGuideOption[data-variant='binary'][aria-pressed='true'] .text_articleGuideOption {
     color: var(--color-cool-neutral-15);
 }
 
@@ -2209,121 +2134,121 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     color: var(--color-common-100);
 }
 
-.newsroll_dark .btn_iconTextButton_default strong {
+.newsroll_dark .btn_iconTextButton[data-size='default'] strong {
     color: var(--color-common-100);
 }
 
-.newsroll_dark .btn_iconTextButton_default.btn_iconTextButton_like .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='default'][data-tone='like'] .newsroll_icon_20 {
     color: var(--color-red-50);
 }
 
-.newsroll_dark .btn_iconTextButton_default.btn_iconTextButton_dislike .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='default'][data-tone='dislike'] .newsroll_icon_20 {
     color: var(--color-blue-50);
 }
 
-.newsroll_dark .btn_iconTextButton_default.btn_iconTextButton_neutral .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='default'][data-tone='neutral'] .newsroll_icon_20 {
     color: var(--color-cool-neutral-50);
 }
 
-.newsroll_dark .btn_iconTextButton_default.btn_iconTextButton_bookmark .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='default'][data-tone='bookmark'] .newsroll_icon_20 {
     color: var(--color-blue-50);
 }
 
-.newsroll_dark .btn_iconTextButton_default.btn_iconTextButton_vote .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='default'][data-tone='vote'] .newsroll_icon_20 {
     color: var(--color-red-orange-50);
 }
 
-.newsroll_dark .btn_iconTextButton_default.btn_iconTextButton_comment .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='default'][data-tone='comment'] .newsroll_icon_20 {
     color: var(--color-newsroll-purple-50);
 }
 
-.newsroll_dark .btn_iconTextButton_small.btn_iconTextButton_like,
-.newsroll_dark .btn_iconTextButton_small.btn_iconTextButton_like .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='small'][data-tone='like'],
+.newsroll_dark .btn_iconTextButton[data-size='small'][data-tone='like'] .newsroll_icon_20 {
     color: var(--color-red-50);
 }
 
-.newsroll_dark .btn_iconTextButton_small.btn_iconTextButton_dislike,
-.newsroll_dark .btn_iconTextButton_small.btn_iconTextButton_dislike .newsroll_icon_20 {
+.newsroll_dark .btn_iconTextButton[data-size='small'][data-tone='dislike'],
+.newsroll_dark .btn_iconTextButton[data-size='small'][data-tone='dislike'] .newsroll_icon_20 {
     color: var(--color-blue-50);
 }
 
-.newsroll_dark .btn_filled,
-.newsroll_dark .btn_filled :where(span, strong),
-.newsroll_dark .btn_filled .newsroll_icon_20 {
+.newsroll_dark .btn_primary,
+.newsroll_dark .btn_primary :where(span, strong),
+.newsroll_dark .btn_primary .newsroll_icon_20 {
     color: var(--color-common-0);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_like
+    .btn_iconTextButton[data-size='default'][data-tone='like']
     > .newsroll_icon_20 {
     color: var(--color-red-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_like[aria-pressed='true']
+    .btn_iconTextButton[data-size='default'][data-tone='like'][aria-pressed='true']
     > .newsroll_icon_20 {
     color: var(--color-red-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_dislike
+    .btn_iconTextButton[data-size='default'][data-tone='dislike']
     > .newsroll_icon_20 {
     color: var(--color-blue-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_dislike[aria-pressed='true']
+    .btn_iconTextButton[data-size='default'][data-tone='dislike'][aria-pressed='true']
     > .newsroll_icon_20 {
     color: var(--color-blue-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_neutral
+    .btn_iconTextButton[data-size='default'][data-tone='neutral']
     > .newsroll_icon_20 {
     color: var(--color-cool-neutral-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_neutral[aria-pressed='true']
+    .btn_iconTextButton[data-size='default'][data-tone='neutral'][aria-pressed='true']
     > .newsroll_icon_20 {
     color: var(--color-cool-neutral-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_bookmark
+    .btn_iconTextButton[data-size='default'][data-tone='bookmark']
     > .newsroll_icon_20,
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_bookmark[aria-pressed='true']
+    .btn_iconTextButton[data-size='default'][data-tone='bookmark'][aria-pressed='true']
     > .newsroll_icon_20 {
     color: var(--color-blue-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_vote
+    .btn_iconTextButton[data-size='default'][data-tone='vote']
     > .newsroll_icon_20,
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_vote[aria-pressed='true']
+    .btn_iconTextButton[data-size='default'][data-tone='vote'][aria-pressed='true']
     > .newsroll_icon_20 {
     color: var(--color-red-orange-50);
 }
 
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_comment
+    .btn_iconTextButton[data-size='default'][data-tone='comment']
     > .newsroll_icon_20,
 .newsroll_dark
     .wrapper_articleReaction
-    .btn_iconTextButton_default.btn_iconTextButton_comment[aria-pressed='true']
+    .btn_iconTextButton[data-size='default'][data-tone='comment'][aria-pressed='true']
     > .newsroll_icon_20 {
     color: var(--color-newsroll-purple-50);
 }
@@ -2338,7 +2263,7 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     color: var(--color-common-100);
 }
 
-.newsroll_dark .tab:not(.btn_newsViewOption),
+.newsroll_dark .btn_tab:not(.btn_newsViewOption),
 .newsroll_dark [role='tab']:not(.btn_newsViewOption),
 .newsroll_dark .tab_myCategoryMenu button,
 .newsroll_dark .newsroll_all_category_tabs button,
@@ -2348,9 +2273,9 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     border-color: var(--newsroll-divider-color);
 }
 
-.newsroll_dark .tab[aria-selected='true']:not(.btn_newsViewOption),
+.newsroll_dark .btn_tab[aria-selected='true']:not(.btn_newsViewOption),
 .newsroll_dark [role='tab'][aria-selected='true']:not(.btn_newsViewOption),
-.newsroll_dark .tab[data-state='active']:not(.btn_newsViewOption),
+.newsroll_dark .btn_tab[data-state='active']:not(.btn_newsViewOption),
 .newsroll_dark .tab_myCategoryMenu button[data-state='active'],
 .newsroll_dark .tab_myCategoryMenu button[data-state='selected'],
 .newsroll_dark .newsroll_all_category_tabs button[aria-selected='true'],
@@ -2362,13 +2287,7 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
     border-color: var(--color-cool-neutral-30);
 }
 
-.newsroll_dark .chip,
-.newsroll_dark .chip_filled,
-.newsroll_dark .chip_articleCategory,
-.newsroll_dark .chip_policy,
-.newsroll_dark .badge_commentChoice,
-.newsroll_dark .newsroll_all_chip,
-.newsroll_dark .newsroll_policy_detail_tags .chip_policy {
+.newsroll_dark .chip {
     color: var(--color-common-100);
     background: var(--color-cool-neutral-40);
     border-color: var(--color-cool-neutral-40);
@@ -2414,18 +2333,18 @@ body:has(.newsroll_dark) .wrapper_infoInquiry .textarea_infoComposer::placeholde
 .newsroll_screen textarea,
 .newsroll_screen select,
 .text_input input,
-.input_transparent input,
+.text_input_dark input,
 .input_searchField input,
-.input_commentComposer input,
+.text_input_comment input,
 .textarea,
 .textarea_commentEdit,
 .wrapper_infoInquiry .textarea_infoComposer,
-.container_authLayout .input_transparent input,
-.container_authLayout .input_transparent input.input_authEmailControl,
-.container_authLayout .input_transparent input.input_authEmailControl:focus,
-.container_authLayout .input_transparent input.input_authEmailControl:active,
-.container_authLayout .input_transparent input.input_authEmailControl:valid,
-.container_authLayout .input_transparent input.input_authEmailControl:invalid {
+.container_authLayout .text_input_dark input,
+.container_authLayout .text_input_dark input.input_authEmailControl,
+.container_authLayout .text_input_dark input.input_authEmailControl:focus,
+.container_authLayout .text_input_dark input.input_authEmailControl:active,
+.container_authLayout .text_input_dark input.input_authEmailControl:valid,
+.container_authLayout .text_input_dark input.input_authEmailControl:invalid {
     font-size: 16px;
     line-height: 24px;
 }

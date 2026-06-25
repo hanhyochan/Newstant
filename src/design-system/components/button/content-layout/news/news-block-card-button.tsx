@@ -34,7 +34,7 @@ export function NewsBlockCardButton({
     >
       {categoryLabel ? (
         <span className="newsroll_blockKicker">
-          <ChipLabel kind="articleCategory">{categoryLabel}</ChipLabel>
+          <ChipLabel>{categoryLabel}</ChipLabel>
         </span>
       ) : null}
       <img alt={imageAlt} src={imageSrc} />

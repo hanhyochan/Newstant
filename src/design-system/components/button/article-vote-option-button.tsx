@@ -38,13 +38,10 @@ export function ArticleVoteOptionButton({
   return (
     <button
       aria-pressed={isActive}
-      className={cn(
-        "btn_articleGuideOption",
-        `btn_articleGuideOption_${variant}`,
-        className,
-      )}
+      className={cn("btn_articleGuideOption", className)}
       data-binary-tone={binaryTone}
       data-result-visible={showResult ? "true" : undefined}
+      data-variant={variant}
       style={{ ...fillStyle, ...style }}
       type={type}
       {...props}

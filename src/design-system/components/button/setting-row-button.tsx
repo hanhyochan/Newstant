@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { ChevronRowButton } from "./chevron-row-button";
-import { ToggleSwitch } from "./onoffToggle-button";
+import { OnoffToggleButton } from "./onoffToggle-button";
 import { cn } from "../shared/utils";
 
 export interface SettingRowButtonProps
@@ -22,7 +22,8 @@ export function SettingRowButton({
   if (showChevron && typeof checked !== "boolean") {
     return (
       <ChevronRowButton
-        className={cn("btn_mySettingRow", "btn_mySettingRowLink", className)}
+        className={cn("btn_mySettingRow", className)}
+        data-variant="link"
         type={type}
         {...props}
       >
@@ -36,14 +37,14 @@ export function SettingRowButton({
       aria-pressed={checked}
       className={cn(
         "btn_mySettingRow",
-        showChevron && "btn_mySettingRowLink",
         className,
       )}
+      data-variant={showChevron ? "link" : "default"}
       type={type}
       {...props}
     >
       <span className="text_mySettingLabel">{label}</span>
-      {typeof checked === "boolean" ? <ToggleSwitch checked={checked} /> : null}
+      {typeof checked === "boolean" ? <OnoffToggleButton checked={checked} /> : null}
       {showChevron ? <span className="icon_myChevron" aria-hidden="true" /> : null}
     </button>
   );
