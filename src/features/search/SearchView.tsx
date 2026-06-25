@@ -9,6 +9,7 @@ import {
   type WelfarePolicy,
 } from "@/app/_newsroll/api";
 import {
+  getSearchTextParagraphs,
   Icon,
   SearchHighlightText,
   SearchResultButton,
@@ -129,6 +130,17 @@ function getFirstMatchedSearchField(
   );
 }
 
+function getArticleSearchFields(article: SearchArticle) {
+  return [
+    { targetKey: "title", text: article.title },
+    { targetKey: "category", text: article.category },
+    ...getSearchTextParagraphs(article.body).map((paragraph, index) => ({
+      targetKey: `body-${index}`,
+      text: paragraph,
+    })),
+  ];
+}
+
 function getBodySearchResults<
   Article extends SearchArticle,
   Policy extends SearchPolicy,
@@ -149,11 +161,7 @@ function getBodySearchResults<
   const newsResults = articles.reduce<BodySearchResult<Article, Policy>[]>(
     (results, article, index) => {
       const matchedField = getFirstMatchedSearchField(
-        [
-          { targetKey: "title", text: article.title },
-          { targetKey: "category", text: article.category },
-          { targetKey: "body", text: article.body },
-        ],
+        getArticleSearchFields(article),
         normalizedQuery,
       );
 

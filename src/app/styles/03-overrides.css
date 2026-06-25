@@ -806,7 +806,14 @@
     object-fit: cover;
 }
 
+.wrapper_articleBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-vertical-8);
+}
+
 .container_articleCard .text_articleBody {
+    margin: 0;
     white-space: pre-line;
     color: var(--color-cool-neutral-20);
     font-size: var(--font-size-15);

@@ -13,6 +13,25 @@ type UseDeferredDetailScrollOptions = {
   watch?: readonly unknown[];
 };
 
+function getScrollableAncestor(target: HTMLElement) {
+  let current: HTMLElement | null = target.parentElement;
+
+  while (current) {
+    const overflowY = window.getComputedStyle(current).overflowY;
+    const canScroll =
+      current.scrollHeight > current.clientHeight &&
+      (overflowY === "auto" || overflowY === "scroll");
+
+    if (canScroll) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
 function scrollTargetIntoScroller({
   bottomGap,
   scrollerSelector,
@@ -21,16 +40,29 @@ function scrollTargetIntoScroller({
   targetId: string;
 }) {
   const target = document.getElementById(targetId);
-  const scroller = target?.closest(scrollerSelector);
 
-  if (!(target instanceof HTMLElement) || !(scroller instanceof HTMLElement)) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  const selectorScroller = target.closest(scrollerSelector);
+  const scroller =
+    selectorScroller instanceof HTMLElement && selectorScroller.scrollHeight > selectorScroller.clientHeight
+      ? selectorScroller
+      : getScrollableAncestor(target);
+
+  if (!(scroller instanceof HTMLElement)) {
     return false;
   }
 
   const scrollerRect = scroller.getBoundingClientRect();
   const targetRect = target.getBoundingClientRect();
   const targetScrollTop =
-    scroller.scrollTop + targetRect.bottom - scrollerRect.bottom + bottomGap;
+    scroller.scrollTop +
+    targetRect.top -
+    scrollerRect.top -
+    (scroller.clientHeight - targetRect.height) / 2 +
+    bottomGap / 2;
   const nextScrollTop = Math.min(
     Math.max(0, scroller.scrollHeight - scroller.clientHeight),
     Math.max(0, targetScrollTop),
@@ -39,13 +71,13 @@ function scrollTargetIntoScroller({
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
-  scroller.scrollTop = nextScrollTop;
-
   if (!prefersReducedMotion && typeof scroller.scrollTo === "function") {
     scroller.scrollTo({
       behavior: "smooth",
       top: nextScrollTop,
     });
+  } else {
+    scroller.scrollTop = nextScrollTop;
   }
 
   return true;
@@ -77,7 +109,13 @@ export function useDeferredDetailScroll({
       return;
     }
 
-    const timeout = window.setTimeout(() => {
+    let retryTimeout = 0;
+    let isCancelled = false;
+    const tryScroll = (attempt = 0) => {
+      if (isCancelled) {
+        return;
+      }
+
       onBeforeScroll?.();
 
       window.requestAnimationFrame(() => {
@@ -89,11 +127,28 @@ export function useDeferredDetailScroll({
 
         if (didScroll) {
           scrolledKeyRef.current = targetKey;
+          return;
         }
+
+        if (attempt >= 12) {
+          return;
+        }
+
+        retryTimeout = window.setTimeout(() => {
+          tryScroll(attempt + 1);
+        }, 80);
       });
+    };
+
+    const timeout = window.setTimeout(() => {
+      tryScroll();
     }, delayMs);
 
-    return () => window.clearTimeout(timeout);
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(timeout);
+      window.clearTimeout(retryTimeout);
+    };
   }, [
     bottomGap,
     delayMs,

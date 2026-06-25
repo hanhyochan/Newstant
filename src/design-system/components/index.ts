@@ -86,6 +86,7 @@ export { Icon } from "./icon/icon";
 export type { IconName, IconSize } from "./icon/icon";
 export {
   getSearchHighlightTargetId,
+  getSearchTextParagraphs,
   scrollSearchHighlightTargetIntoView,
   SearchHighlightText,
   splitSearchHighlightText,

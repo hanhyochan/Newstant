@@ -134,6 +134,7 @@ export function HomeView({
     <HomeShell
       breakingItem={latestBreakingItem}
       breakingTitle={breakingTitle}
+      forceDockedDetail={isBodySearchDetail}
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}

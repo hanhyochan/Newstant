@@ -44,12 +44,115 @@ export function getSearchHighlightTargetId(rootId: string, targetKey?: string) {
   return `${rootId}-search-${targetKey ?? "match"}`;
 }
 
-export function scrollSearchHighlightTargetIntoView(targetId: string) {
-  window.requestAnimationFrame(() => {
-    document
-      .getElementById(targetId)
-      ?.scrollIntoView({ block: "center", behavior: "smooth" });
+export function getSearchTextParagraphs(text = "") {
+  const paragraphs = text
+    .split(/\r?\n+/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  return paragraphs.length > 0 ? paragraphs : [text];
+}
+
+function getScrollableSearchAncestor(target: HTMLElement) {
+  let current: HTMLElement | null = target.parentElement;
+
+  while (current) {
+    const overflowY = window.getComputedStyle(current).overflowY;
+    const canScroll =
+      current.scrollHeight > current.clientHeight &&
+      (overflowY === "auto" || overflowY === "scroll");
+
+    if (canScroll) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
+function isSearchTargetVisible(
+  target: HTMLElement,
+  scroller: HTMLElement | null,
+) {
+  const targetRect = target.getBoundingClientRect();
+
+  if (!scroller) {
+    return targetRect.top >= 0 && targetRect.bottom <= window.innerHeight;
+  }
+
+  const scrollerRect = scroller.getBoundingClientRect();
+
+  return (
+    targetRect.top >= scrollerRect.top &&
+    targetRect.bottom <= scrollerRect.bottom
+  );
+}
+
+function scrollSearchTargetNow(targetId: string) {
+  const target = document.getElementById(targetId);
+
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  const scroller = getScrollableSearchAncestor(target);
+
+  if (isSearchTargetVisible(target, scroller)) {
+    return true;
+  }
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (!scroller) {
+    target.scrollIntoView({
+      block: "center",
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
+    return false;
+  }
+
+  const scrollerRect = scroller.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const nextScrollTop = Math.min(
+    Math.max(0, scroller.scrollHeight - scroller.clientHeight),
+    Math.max(
+      0,
+      scroller.scrollTop +
+        targetRect.top -
+        scrollerRect.top -
+        (scroller.clientHeight - targetRect.height) / 2,
+    ),
+  );
+
+  scroller.scrollTo({
+    top: nextScrollTop,
+    behavior: prefersReducedMotion ? "auto" : "smooth",
   });
+
+  return false;
+}
+
+export function scrollSearchHighlightTargetIntoView(targetId: string) {
+  let attempt = 0;
+
+  const tryScroll = () => {
+    window.requestAnimationFrame(() => {
+      const isVisible = scrollSearchTargetNow(targetId);
+
+      if (isVisible || attempt >= 12) {
+        return;
+      }
+
+      attempt += 1;
+      window.setTimeout(tryScroll, 80);
+    });
+  };
+
+  tryScroll();
 }
 
 export type SearchHighlightTextProps = {

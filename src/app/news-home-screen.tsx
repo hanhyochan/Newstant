@@ -64,6 +64,7 @@ import {
 import {
   clearCurrentUserSession,
   currentUserId,
+  getStoredCurrentUserSession,
   hydrateCurrentUserSession,
   setCurrentUserSession,
 } from "./_newsroll/auth/current-user";
@@ -403,8 +404,12 @@ function ActiveView({
 }
 
 export function NewsHomeScreen() {
-  const [activeView, setActiveView] = useState<View>("login");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeView, setActiveView] = useState<View>(() =>
+    getStoredCurrentUserSession() ? "home" : "login",
+  );
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    Boolean(getStoredCurrentUserSession()),
+  );
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const [searchBackView, setSearchBackView] = useState<Tab>("home");
   const viewNavigationTimerRef = useRef<number | null>(null);

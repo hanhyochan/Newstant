@@ -46,6 +46,8 @@ import {
   PrimaryButtonGroup,
   IconTextButton,
   getSearchHighlightTargetId,
+  getSearchTextParagraphs,
+  scrollSearchHighlightTargetIntoView,
   SearchHighlightText,
   TextButton,
   Textarea,
@@ -178,6 +180,7 @@ type HomeHeaderControls = {
   breakingItem?: BreakingNewsItem | null;
   breakingTitle?: string;
   dockedControlsMotionClassName?: string;
+  forceDockedDetail?: boolean;
   isDetailOpen?: boolean;
   isTextLarge: boolean;
   mode: HomeViewMode;
@@ -731,6 +734,7 @@ export function HomeShell({
   breakingItem,
   breakingTitle,
   children,
+  forceDockedDetail = false,
   isDetailOpen = false,
   isTextLarge,
   mode,
@@ -823,6 +827,8 @@ export function HomeShell({
       dockedClassName="is_homeSheetDocked"
       dockedGap={homeSheetDockedGap}
       initialGap={homeSheetInitialGap}
+      initiallyDocked={forceDockedDetail}
+      lockSheetPosition={forceDockedDetail}
       minInitialTop={pagePanelInitialTop}
       movingSheet
       onTouchMoveCapture={dockedPanelScroll.handleTouchMove}
@@ -2661,7 +2667,25 @@ export function HomeReelCard({
   const articleContentId = `home-article-content-${index}`;
   const articleGuideId = `home-article-guide-${index}`;
   const articleTitleId = `home-article-title-${index}`;
-  const articleSearchTargetId = getSearchHighlightTargetId(articleContentId);
+  const articleBodyParagraphs = getSearchTextParagraphs(article.body ?? articleBody);
+  const articleBodySearchIndex = initialSearchTargetKey?.startsWith("body-")
+    ? Number(initialSearchTargetKey.replace("body-", ""))
+    : initialSearchTargetKey === "body" && initialSearchQuery?.trim()
+      ? articleBodyParagraphs.findIndex((paragraph) =>
+          paragraph
+            .toLocaleLowerCase("ko-KR")
+            .includes(initialSearchQuery.trim().toLocaleLowerCase("ko-KR")),
+        )
+      : -1;
+  const articleSearchTargetKey =
+    initialSearchTargetKey?.startsWith("body") && articleBodySearchIndex >= 0
+      ? `body-${articleBodySearchIndex}`
+      : initialSearchTargetKey;
+  const articleSearchTargetId = getSearchHighlightTargetId(
+    articleContentId,
+    articleSearchTargetKey,
+  );
+  const isArticleBodySearchTarget = initialSearchTargetKey?.startsWith("body");
   const ArticleTitle = headingLevel;
   const shareArticle = useShareContent({
     text: article.body ?? article.title,
@@ -2901,16 +2925,27 @@ export function HomeReelCard({
   useDeferredDetailScroll({
     bottomGap: 80,
     delayMs: commentScrollDelayMs,
-    enabled:
-      initialScrollTarget === "poll" || initialScrollTarget === "bodySearch",
+    enabled: initialScrollTarget === "poll",
     resetKey: article.id ?? article.title,
-    targetId:
-      initialScrollTarget === "poll"
-        ? articleGuideId
-        : initialScrollTarget === "bodySearch"
-          ? articleSearchTargetId
-          : null,
+    targetId: initialScrollTarget === "poll" ? articleGuideId : null,
   });
+
+  useEffect(() => {
+    if (
+      initialScrollTarget !== "bodySearch" ||
+      !initialSearchTargetKey ||
+      !initialSearchQuery?.trim()
+    ) {
+      return;
+    }
+
+    scrollSearchHighlightTargetIntoView(articleSearchTargetId);
+  }, [
+    articleSearchTargetId,
+    initialScrollTarget,
+    initialSearchQuery,
+    initialSearchTargetKey,
+  ]);
 
   const articleContent = (
     <div
@@ -2923,7 +2958,6 @@ export function HomeReelCard({
       <div className="wrapper_articleSummary">
         <div
           className="wrapper_articleKicker"
-          id={`${articleContentId}-search-category`}
         >
           <ChipLabel kind="articleCategory">
             <SearchHighlightText
@@ -2932,7 +2966,7 @@ export function HomeReelCard({
               }
               targetId={
                 initialSearchTargetKey === "category"
-                  ? articleSearchTargetId
+                  ? getSearchHighlightTargetId(articleContentId, "category")
                   : undefined
               }
             >
@@ -2944,7 +2978,9 @@ export function HomeReelCard({
           <SearchHighlightText
             query={initialSearchTargetKey === "title" ? initialSearchQuery : ""}
             targetId={
-              initialSearchTargetKey === "title" ? articleSearchTargetId : undefined
+              initialSearchTargetKey === "title"
+                ? getSearchHighlightTargetId(articleContentId, "title")
+                : undefined
             }
           >
             {article.title}
@@ -2977,19 +3013,25 @@ export function HomeReelCard({
         </div>
       </div>
       <img alt={article.imageAlt} src={article.image} />
-      <p
-        className="text_articleBody"
-        id={`${articleContentId}-search-body`}
-      >
-        <SearchHighlightText
-          query={initialSearchTargetKey === "body" ? initialSearchQuery : ""}
-          targetId={
-            initialSearchTargetKey === "body" ? articleSearchTargetId : undefined
-          }
-        >
-          {article.body ?? articleBody}
-        </SearchHighlightText>
-      </p>
+      <section className="wrapper_articleBody" aria-label="기사 본문">
+        {articleBodyParagraphs.map((paragraph, paragraphIndex) => {
+          const paragraphTargetKey = `body-${paragraphIndex}`;
+          return (
+            <p className="text_articleBody" key={`${article.id ?? article.title}-body-${paragraphIndex}`}>
+              <SearchHighlightText
+                query={isArticleBodySearchTarget ? initialSearchQuery : ""}
+                targetId={
+                  articleSearchTargetKey === paragraphTargetKey
+                    ? getSearchHighlightTargetId(articleContentId, paragraphTargetKey)
+                    : undefined
+                }
+              >
+                {paragraph}
+              </SearchHighlightText>
+            </p>
+          );
+        })}
+      </section>
 
       <div
         className="wrapper_articleSource"

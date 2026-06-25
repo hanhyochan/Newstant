@@ -54,6 +54,10 @@ let currentUser = fallbackCurrentUser;
 
 export let currentUserId = currentUser.id;
 
+export function getStoredCurrentUserSession() {
+  return readStoredCurrentUser();
+}
+
 export function getCurrentUserSnapshot() {
   return currentUser;
 }
