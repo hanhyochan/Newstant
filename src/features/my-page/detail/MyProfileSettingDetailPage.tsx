@@ -28,7 +28,10 @@ import {
   TextButton,
   TextInput,
 } from "@/design-system/components";
-import { getEnterFromRightMotionClassName } from "@/design-system/templates";
+import {
+  getEnterFromRightMotionClassName,
+  useSwipeTabNavigation,
+} from "@/design-system/templates";
 import {
   BottomFixedActionBar,
   bottomFixedActionBarExitDurationMs,
@@ -363,6 +366,15 @@ function ModerationHistory({
     !isReport &&
     selectableActionIds.length > 0 &&
     selectableActionIds.every((actionId) => selectedActionIds.has(actionId));
+  const {
+    swipeMotionClassName: moderationTabSwipeMotionClassName,
+    ...moderationTabSwipeHandlers
+  } = useSwipeTabNavigation({
+    disabled: isReport,
+    items: moderationTabs,
+    onChange: setActiveTab,
+    value: activeTab,
+  });
 
   useEffect(() => {
     if (closeSelectionTimeoutRef.current) {
@@ -473,7 +485,10 @@ function ModerationHistory({
   }
 
   return (
-    <div className="wrapper_mySettingsDetailBody">
+    <div
+      className="wrapper_mySettingsDetailBody"
+      {...moderationTabSwipeHandlers}
+    >
       {isReport ? null : (
         <PillTabMenu
           ariaLabel="차단 숨김 내역"
@@ -498,7 +513,9 @@ function ModerationHistory({
         <DataUnavailableMessage target={isReport ? "신고 내역" : "차단/숨김 내역"} />
       ) : (
         <>
-          <div className="wrapper_mySettingsList">
+          <div
+            className={`wrapper_mySettingsList ${moderationTabSwipeMotionClassName}`.trim()}
+          >
             {filteredActions.map((action, index) => {
               const isSelected = selectedActionIds.has(action.id);
               const targetLabel = action.targetUserId

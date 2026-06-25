@@ -335,6 +335,7 @@ function ActiveView({
   if (view === "all") {
     return (
       <AllNewsView
+        blockedKeywords={blockedKeywords}
         entryMotionClassName={allNewsEntryMotionClassName}
         initialShowAllBreaking={isAllNewsBreakingEntry}
         isTextLarge={isTextLarge}

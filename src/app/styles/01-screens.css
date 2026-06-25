@@ -2938,7 +2938,6 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-bottom: var(--spacing-padding-vertical-24);
 }
 
 .btn_myRecentSelectAll .box_newsrollCheck,

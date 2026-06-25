@@ -11,7 +11,9 @@ import {
   type TouchEvent,
 } from "react";
 
-import { newsApi } from "@/app/_newsroll/api";
+import { newsApi, userApi } from "@/app/_newsroll/api";
+import { currentUserId } from "@/app/_newsroll/auth/current-user";
+import type { UserPreference } from "@/app/_newsroll/api/types";
 import {
   NoticeCardLink,
   Icon,
@@ -34,6 +36,7 @@ import {
   useDetailScrollRestore,
   useDockedPanelScroll,
   useEnterFromRightExitMotion,
+  useSwipeTabNavigation,
 } from "@/design-system/templates";
 import {
   DockedAlarmButton,
@@ -51,6 +54,7 @@ import {
   allNewsRelayCategories,
   allNewsSwipeAxisThresholdPx,
   createAllNewsArticle,
+  filterArticlesByBlockedKeywords,
   getAllNewsPreviewFromArticle,
   getBreakingNewsItems,
   getHomeArticleFromNews,
@@ -60,7 +64,48 @@ import {
   type SwipeAxis,
 } from "@/features/news/NewsViews";
 
+function hasSelectedValues(values: string[]) {
+  return values.length > 0;
+}
+
+function filterArticlesByInterestedPress(
+  articles: HomeArticle[],
+  userPreference: UserPreference | null,
+) {
+  if (!userPreference || !hasSelectedValues(userPreference.pressIds)) {
+    return articles;
+  }
+
+  return articles.filter(
+    (article) =>
+      article.pressId != null && userPreference.pressIds.includes(article.pressId),
+  );
+}
+
+function getPreferredPressNames(
+  articles: HomeArticle[],
+  userPreference: UserPreference | null,
+) {
+  if (!userPreference || !hasSelectedValues(userPreference.pressIds)) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      articles
+        .filter(
+          (article) =>
+            article.pressId != null &&
+            userPreference.pressIds.includes(article.pressId),
+        )
+        .map((article) => article.pressName)
+        .filter((pressName): pressName is string => Boolean(pressName)),
+    ),
+  );
+}
+
 export function AllNewsView({
+  blockedKeywords,
   entryMotionClassName = "",
   initialShowAllBreaking = false,
   isTextLarge,
@@ -69,6 +114,7 @@ export function AllNewsView({
   onOpenSearch,
   onToggleTextSize,
 }: {
+  blockedKeywords: string[];
   entryMotionClassName?: string;
   initialShowAllBreaking?: boolean;
   isTextLarge: boolean;
@@ -110,26 +156,45 @@ export function AllNewsView({
   const [showAllBreaking, setShowAllBreaking] = useState(
     initialShowAllBreaking,
   );
+  const [userPreference, setUserPreference] = useState<UserPreference | null>(
+    null,
+  );
   const [showAllHeadlines, setShowAllHeadlines] = useState(false);
   const [allNewsBreakingOffset, setAllNewsBreakingOffset] = useState(0);
   const [allNewsSheetUndockSignal, setAllNewsSheetUndockSignal] = useState(0);
+  const keywordFilteredArticles = useMemo(
+    () => filterArticlesByBlockedKeywords(allNewsArticles, blockedKeywords),
+    [allNewsArticles, blockedKeywords],
+  );
+  const headlineSourceArticles = useMemo(
+    () => filterArticlesByInterestedPress(keywordFilteredArticles, userPreference),
+    [keywordFilteredArticles, userPreference],
+  );
+  const preferredPressNames = useMemo(
+    () => getPreferredPressNames(allNewsArticles, userPreference),
+    [allNewsArticles, userPreference],
+  );
   const allNewsLatestItems = useMemo(
-    () => allNewsArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
-    [allNewsArticles],
+    () => keywordFilteredArticles.slice(0, 10).map(getAllNewsPreviewFromArticle),
+    [keywordFilteredArticles],
   );
   const allNewsHeadlinesByActivePress = useMemo(
-    () => groupAllNewsByValue(allNewsArticles, (article) => article.pressName),
-    [allNewsArticles],
+    () => groupAllNewsByValue(headlineSourceArticles, (article) => article.pressName),
+    [headlineSourceArticles],
   );
   const currentAllNewsPresses = useMemo(
     () => Object.keys(allNewsHeadlinesByActivePress),
     [allNewsHeadlinesByActivePress],
   );
   const visibleAllNewsPresses =
-    currentAllNewsPresses.length > 0 ? currentAllNewsPresses : allNewsPresses;
+    currentAllNewsPresses.length > 0
+      ? currentAllNewsPresses
+      : preferredPressNames.length > 0
+        ? preferredPressNames
+        : allNewsPresses;
   const allNewsRelayByActiveCategory = useMemo(
-    () => groupAllNewsByValue(allNewsArticles, (article) => article.category),
-    [allNewsArticles],
+    () => groupAllNewsByValue(keywordFilteredArticles, (article) => article.category),
+    [keywordFilteredArticles],
   );
   const currentAllNewsRelayCategories = useMemo(
     () => Object.keys(allNewsRelayByActiveCategory),
@@ -140,8 +205,8 @@ export function AllNewsView({
       ? currentAllNewsRelayCategories
       : allNewsRelayCategories;
   const allBreakingItems = useMemo(
-    () => getBreakingNewsItems(allNewsArticles),
-    [allNewsArticles],
+    () => getBreakingNewsItems(keywordFilteredArticles),
+    [keywordFilteredArticles],
   );
   const breakingItems = showAllBreaking
     ? allBreakingItems.slice(0, 5)
@@ -160,6 +225,22 @@ export function AllNewsView({
   const headlineItems = showAllHeadlines
     ? activeHeadlineItems
     : activeHeadlineItems.slice(0, 4);
+  const {
+    swipeMotionClassName: pressSwipeMotionClassName,
+    ...pressSwipeHandlers
+  } = useSwipeTabNavigation({
+    items: visibleAllNewsPresses.map((press) => ({ id: press })),
+    onChange: changeActivePress,
+    value: activePress,
+  });
+  const {
+    swipeMotionClassName: relaySwipeMotionClassName,
+    ...relaySwipeHandlers
+  } = useSwipeTabNavigation({
+    items: visibleAllNewsRelayCategories.map((category) => ({ id: category })),
+    onChange: changeActiveRelayCategory,
+    value: activeRelayCategory,
+  });
   const allNewsMinInitialTop = pagePanelInitialTop + allNewsBreakingOffset;
   const isDetailOpen = detailArticle !== null;
   const allNewsDetailScrollRestore = useDetailScrollRestore({
@@ -181,16 +262,21 @@ export function AllNewsView({
     let ignore = false;
 
     async function loadAllNews() {
-      const nextNews = await newsApi.getNewsList();
+      const [nextNews, nextUserPreferences] = await Promise.all([
+        newsApi.getNewsList(),
+        userApi.getUserPreferences(currentUserId),
+      ]);
 
       if (!ignore) {
         setAllNewsArticles(nextNews.map(getHomeArticleFromNews));
+        setUserPreference(nextUserPreferences[0] ?? null);
       }
     }
 
     loadAllNews().catch(() => {
       if (!ignore) {
         setAllNewsArticles([]);
+        setUserPreference(null);
       }
     });
 
@@ -596,7 +682,10 @@ export function AllNewsView({
                 value={activePress}
               />
             </div>
-            <div className="wrapper_allTabPanelBody">
+            <div
+              className={`wrapper_allTabPanelBody ${pressSwipeMotionClassName}`.trim()}
+              {...pressSwipeHandlers}
+            >
               <SeparatedList
                 dividerClassName="newsroll_all_itemDivider"
                 getKey={(item, index) => `${item.title}-${index}`}
@@ -659,7 +748,10 @@ export function AllNewsView({
                 value={activeRelayCategory}
               />
             </div>
-            <div className="wrapper_allTabPanelBody">
+            <div
+              className={`wrapper_allTabPanelBody ${relaySwipeMotionClassName}`.trim()}
+              {...relaySwipeHandlers}
+            >
               <SeparatedList
                 dividerClassName="newsroll_all_itemDivider"
                 getKey={(item, index) => `${item.title}-${index}`}

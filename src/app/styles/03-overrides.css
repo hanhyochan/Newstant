@@ -2012,7 +2012,9 @@
 
 @media (prefers-reduced-motion: reduce) {
     .newsroll_motion_enterUp,
-    .newsroll_motion_enterFromRight {
+    .newsroll_motion_enterFromRight,
+    .newsroll_motion_tabSwipeFromLeft,
+    .newsroll_motion_tabSwipeFromRight {
         animation: none;
     }
 

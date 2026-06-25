@@ -26,7 +26,8 @@ import {
   newsrollPagePanelInitialGap as pagePanelInitialGap,
   newsrollPagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
-  useEnterFromRightExitMotion
+  useEnterFromRightExitMotion,
+  useSwipeTabNavigation,
 } from "@/design-system/templates";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
@@ -216,6 +217,18 @@ export function PolicyView({
   const visiblePolicyItems =
     sortOrder === "latest" ? [...policyItems].reverse() : policyItems;
   const activeAgeIndex = Math.max(0, policyAgeTabs.indexOf(activeAge));
+  const {
+    swipeMotionClassName: policyAgeSwipeMotionClassName,
+    ...policyAgeSwipeHandlers
+  } = useSwipeTabNavigation({
+    items: policyAgeTabs.map((label) => ({ id: label })),
+    onChange: (nextAge) => {
+      setActiveAge(nextAge);
+      setIsPolicySortOpen(false);
+      setSelectedPolicyIndex(0);
+    },
+    value: activeAge,
+  });
   const detailItemIndex = detailItem
     ? visiblePolicyItems.findIndex((item) => item.id === detailItem.id)
     : -1;
@@ -419,10 +432,11 @@ export function PolicyView({
 
             <div
               aria-labelledby={`policy-age-tab-${activeAgeIndex}`}
-              className="newsroll_policy_listSection"
+              className={`newsroll_policy_listSection ${policyAgeSwipeMotionClassName}`.trim()}
               id="policy-list-panel"
               ref={policyListSectionRef}
               role="tabpanel"
+              {...policyAgeSwipeHandlers}
             >
               <SelectButton
                 ariaLabel="정책 정렬"

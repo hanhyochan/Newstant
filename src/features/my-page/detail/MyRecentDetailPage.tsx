@@ -1,6 +1,9 @@
 ﻿import { useEffect, useMemo, useRef, useState } from "react";
 
-import { getEnterFromRightMotionClassName } from "@/design-system/templates";
+import {
+  getEnterFromRightMotionClassName,
+  useSwipeTabNavigation,
+} from "@/design-system/templates";
 import {
   PrimaryButton,
   PrimaryButtonGroup,
@@ -93,6 +96,15 @@ export function MyRecentDetailPage({
     () => (showTabs ? getVisibleItems(items, activeCategory) : items),
     [activeCategory, items, showTabs],
   );
+  const {
+    swipeMotionClassName: recentTabSwipeMotionClassName,
+    ...recentTabSwipeHandlers
+  } = useSwipeTabNavigation({
+    disabled: !showTabs,
+    items: tabs.map((category) => ({ id: category })),
+    onChange: onCategoryChange,
+    value: activeCategory,
+  });
   const selectedCount = selectedViewIds.size;
   const selectableViewIds = useMemo(
     () => visibleRecentItems.map((item) => item.viewId),
@@ -205,7 +217,10 @@ export function MyRecentDetailPage({
       className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
-      <div className="wrapper_myTabbedDetailContent">
+      <div
+        className="wrapper_myTabbedDetailContent"
+        {...recentTabSwipeHandlers}
+      >
         {showTabs ? (
           <>
             <PillTabMenu
@@ -227,10 +242,10 @@ export function MyRecentDetailPage({
             {selectAllControl}
           </div>
         )}
-        {visibleRecentItems.length === 0 ? (
-          <DataUnavailableMessage target="최근 본 뉴스" />
-        ) : (
-          <>
+        <div className={recentTabSwipeMotionClassName || undefined}>
+          {visibleRecentItems.length === 0 ? (
+            <DataUnavailableMessage target="최근 본 뉴스" />
+          ) : (
             <SeparatedList
               dividerClassName="newsroll_all_itemDivider"
               getKey={(item, index) => `${item.viewId}-${item.title}-${index}`}
@@ -269,8 +284,8 @@ export function MyRecentDetailPage({
                 );
               }}
             />
-          </>
-        )}
+          )}
+        </div>
       </div>
       {selectedCount > 0 ? (
         <BottomFixedActionBar

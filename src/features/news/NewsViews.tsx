@@ -155,12 +155,15 @@ const commentPanelOpenHintOffset = 112;
 export type HomeArticle = {
   body?: string;
   category: string;
+  categoryId?: string;
   date: string;
   dateTime?: string;
   image: string;
   imageAlt: string;
   guideKind?: GuideKind;
   id?: string;
+  ageGroupIds?: string[];
+  pressId?: string;
   pressName?: string;
   reporterName?: string;
   title: string;
@@ -198,6 +201,7 @@ type PolicyDetailItem = {
   value: string;
 };
 export type PolicyItem = {
+  ageGroupIds?: string[];
   details: PolicyDetailItem[];
   id: string;
   registeredAt: string;
@@ -251,14 +255,17 @@ function getHomeArticleGuideKind(index: number): GuideKind {
 
 export function getHomeArticleFromNews(item: NewsListItem, index: number): HomeArticle {
   return {
+    ageGroupIds: item.ageGroupIds,
     body: item.body,
     category: item.category?.label ?? item.categoryId,
+    categoryId: item.categoryId,
     date: formatNewsDate(item.publishedAt),
     dateTime: item.publishedAt,
     guideKind: getHomeArticleGuideKind(index),
     id: item.id,
     image: item.imageUrl,
     imageAlt: item.title,
+    pressId: item.pressId,
     pressName: item.press?.name,
     reporterName: item.reporterName,
     title: item.title,
@@ -742,11 +749,15 @@ export function HomeShell({
   onCloseDetail,
   onOpenBreakingArticle,
   onModeChange,
+  onPanelChange,
   onOpenBreakingNews,
   onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
-}: HomeHeaderControls & { children: ReactNode }) {
+}: HomeHeaderControls & {
+  children: ReactNode;
+  onPanelChange?: () => void;
+}) {
   const screenRef = useRef<HTMLElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
@@ -758,6 +769,7 @@ export function HomeShell({
     boundaryDelayMs: nextArticleRevealDelayMs,
     contentScrollerSelector: homeDockedScrollSelectors.contentScroller,
     dockedClassName: "is_homeSheetDocked",
+    onActivePanelChange: onPanelChange,
     panelSelector: homeDockedScrollSelectors.panel,
     rootRef: screenRef,
     scrollerRef,
@@ -1829,7 +1841,7 @@ function CommentReactionPanel({
     await reloadComments();
   }
 
-  function toggleReplyList(commentId: CommentId) {
+  function toggleReplyList(commentId: CommentId, hasReplies: boolean) {
     const isClosing = expandedReplyId === commentId;
 
     setExpandedReplyId(isClosing ? null : commentId);
@@ -1844,7 +1856,9 @@ function CommentReactionPanel({
       setPendingScrollTarget({
         bottomGap: 0,
         delayMs: nextArticleRevealDelayMs,
-        id: `${panelId}-reply-list-${commentId}`,
+        id: hasReplies
+          ? `${panelId}-reply-list-${commentId}`
+          : `${panelId}-comment-${commentId}`,
       });
     }
   }
@@ -2307,6 +2321,7 @@ function CommentReactionPanel({
                         !hiddenReplyIdSet.has(reply.id) &&
                         !blockedUserIdSet.has(reply.userId),
                     );
+                  const hasCommentReplies = commentReplies.length > 0;
 
                   return (
                     <Fragment key={comment.id}>
@@ -2359,10 +2374,16 @@ function CommentReactionPanel({
                         )}
                         <footer>
                           <TextButton
-                            aria-controls={replyListId}
-                            aria-expanded={isReplyListOpen}
+                            aria-controls={
+                              hasCommentReplies ? replyListId : undefined
+                            }
+                            aria-expanded={
+                              hasCommentReplies ? isReplyListOpen : undefined
+                            }
                             id={replyToggleId}
-                            onClick={() => toggleReplyList(comment.id)}
+                            onClick={() =>
+                              toggleReplyList(comment.id, hasCommentReplies)
+                            }
                             type="button"
                           >
                             대댓글 {commentReplies.length}
@@ -2394,15 +2415,16 @@ function CommentReactionPanel({
                             </IconTextButton>
                           </span>
                         </footer>
-                        <div
-                          aria-hidden={!isReplyListOpen}
-                          aria-labelledby={replyToggleId}
-                          className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
-                          id={replyListId}
-                          role="region"
-                        >
-                          <div className="wrapper_commentRepliesInner">
-                            {commentReplies.map((reply, replyIndex) => {
+                        {hasCommentReplies ? (
+                          <div
+                            aria-hidden={!isReplyListOpen}
+                            aria-labelledby={replyToggleId}
+                            className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
+                            id={replyListId}
+                            role="region"
+                          >
+                            <div className="wrapper_commentRepliesInner">
+                              {commentReplies.map((reply, replyIndex) => {
                               const replyActionMenuId = `${panelId}-reply-action-${reply.id}`;
                               const replyActions = reply.isMine
                                 ? myCommentActionOptions
@@ -2509,9 +2531,10 @@ function CommentReactionPanel({
                                   ) : null}
                                 </Fragment>
                               );
-                            })}
+                              })}
+                            </div>
                           </div>
-                        </div>
+                        ) : null}
                       </article>
                     </Fragment>
                   );
@@ -2629,6 +2652,7 @@ export function ClientPortal({ children }: { children: ReactNode }) {
 
 export function HomeReelCard({
   article,
+  commentPanelOpen,
   framed = true,
   headingLevel = "h2",
   index,
@@ -2637,9 +2661,11 @@ export function HomeReelCard({
   initialSearchQuery,
   initialSearchTargetKey,
   initialScrollTarget,
+  onCommentPanelOpenChange,
   recordRecentOnView = true,
 }: {
   article: HomeArticle;
+  commentPanelOpen?: boolean;
   framed?: boolean;
   headingLevel?: "h1" | "h2";
   index: number | string;
@@ -2648,11 +2674,12 @@ export function HomeReelCard({
   initialSearchQuery?: string;
   initialSearchTargetKey?: string;
   initialScrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
+  onCommentPanelOpenChange?: (open: boolean) => void;
   recordRecentOnView?: boolean;
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<string | null>(null);
-  const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(
+  const [internalCommentPanelOpen, setInternalCommentPanelOpen] = useState(
     initialCommentId != null || initialReplyTargetId != null,
   );
   const [reaction, setReaction] = useState<Reaction>(null);
@@ -2691,6 +2718,22 @@ export function HomeReelCard({
     text: article.body ?? article.title,
     title: article.title,
   });
+  const isCommentPanelOpen =
+    commentPanelOpen ?? internalCommentPanelOpen;
+  const setCommentPanelOpen = useCallback(
+    (nextOpen: boolean | ((currentOpen: boolean) => boolean)) => {
+      const resolvedOpen =
+        typeof nextOpen === "function"
+          ? nextOpen(isCommentPanelOpen)
+          : nextOpen;
+
+      if (commentPanelOpen === undefined) {
+        setInternalCommentPanelOpen(resolvedOpen);
+      }
+      onCommentPanelOpenChange?.(resolvedOpen);
+    },
+    [commentPanelOpen, isCommentPanelOpen, onCommentPanelOpenChange],
+  );
 
   function scrollCommentPanelOpenHint() {
     window.setTimeout(() => {
@@ -2728,7 +2771,7 @@ export function HomeReelCard({
       scrollCommentPanelOpenHint();
     }
 
-    setIsCommentPanelOpen((current) => !current);
+    setCommentPanelOpen((current) => !current);
   }
 
   useEffect(() => {
@@ -2920,8 +2963,8 @@ export function HomeReelCard({
       return;
     }
 
-    setIsCommentPanelOpen(true);
-  }, [initialCommentId, initialReplyTargetId]);
+    setCommentPanelOpen(true);
+  }, [initialCommentId, initialReplyTargetId, setCommentPanelOpen]);
   useDeferredDetailScroll({
     bottomGap: 80,
     delayMs: commentScrollDelayMs,

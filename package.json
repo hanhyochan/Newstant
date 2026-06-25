@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "set NEXT_DIST_DIR=.next-dev&& next dev",
     "mock:api": "node mock/server.cjs",
-    "build": "next build",
-    "start": "next start",
+    "build": "set NEXT_DIST_DIR=.next-build&& next build",
+    "start": "set NEXT_DIST_DIR=.next-build&& next start",
     "lint": "next lint",
     "storybook": "set \"__NEXT_PRIVATE_RENDER_WORKER=1\" && storybook dev -p 6006",
     "build-storybook": "set \"__NEXT_PRIVATE_RENDER_WORKER=1\" && storybook build"

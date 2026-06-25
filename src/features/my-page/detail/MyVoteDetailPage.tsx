@@ -2,7 +2,10 @@ import {
   PillTabMenu,
   NewsHeadlineRowButton as AllNewsHeadlineItem,
 } from "@/design-system/components";
-import { getEnterFromRightMotionClassName } from "@/design-system/templates";
+import {
+  getEnterFromRightMotionClassName,
+  useSwipeTabNavigation,
+} from "@/design-system/templates";
 import {
   ArticleVoteOptionButton,
   binaryGuideOptions,
@@ -52,13 +55,25 @@ export function MyVoteDetailPage({
   tabs: string[];
 }) {
   const visibleVoteItems = getVisibleItems(items, activeCategory);
+  const {
+    swipeMotionClassName: voteTabSwipeMotionClassName,
+    ...voteTabSwipeHandlers
+  } = useSwipeTabNavigation({
+    disabled: !showTabs,
+    items: tabs.map((category) => ({ id: category })),
+    onChange: onCategoryChange,
+    value: activeCategory,
+  });
 
   return (
     <div
       className={`container_myVotePage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">투표</h2>
-      <div className="wrapper_myTabbedDetailContent">
+      <div
+        className="wrapper_myTabbedDetailContent"
+        {...voteTabSwipeHandlers}
+      >
       {showTabs ? (
         <PillTabMenu
           ariaLabel="내가 참여한 투표 카테고리"
@@ -71,7 +86,7 @@ export function MyVoteDetailPage({
           value={activeCategory}
         />
       ) : null}
-      <div className="wrapper_myVoteList">
+      <div className={`wrapper_myVoteList ${voteTabSwipeMotionClassName}`.trim()}>
         {visibleVoteItems.length === 0 ? (
           <DataUnavailableMessage target="투표" />
         ) : (

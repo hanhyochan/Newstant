@@ -1857,10 +1857,11 @@ type SignupCategoryId =
   | "politics"
   | "economy"
   | "society"
-  | "policy"
   | "culture"
-  | "tech"
-  | "sports";
+  | "world"
+  | "local"
+  | "sports"
+  | "science";
 
 const signupAgeItems: Array<{ id: SignupAgeId; label: string }> = [
   { id: "teens", label: "10대" },
@@ -1875,11 +1876,13 @@ const signupCategoryItems: Array<{ id: SignupCategoryId; label: string }> = [
   { id: "politics", label: "정치" },
   { id: "economy", label: "경제" },
   { id: "society", label: "사회" },
-  { id: "policy", label: "국가정책" },
   { id: "culture", label: "문화" },
-  { id: "tech", label: "IT" },
+  { id: "world", label: "국제" },
+  { id: "local", label: "지역" },
   { id: "sports", label: "스포츠" },
+  { id: "science", label: "IT과학" },
 ];
+const defaultSignupCategoryIds = signupCategoryItems.map((item) => item.id);
 
 export function SignupAgeView({
   onBack,
@@ -1944,7 +1947,9 @@ export function SignupCategoryView({
   submitError?: string;
   onNext: (categoryIds: SignupCategoryId[]) => Promise<void> | void;
 }) {
-  const [selectedCategories, setSelectedCategories] = useState<SignupCategoryId[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<SignupCategoryId[]>(
+    defaultSignupCategoryIds,
+  );
   const tabValue = selectedCategories[0] ?? signupCategoryItems[0].id;
 
   function toggleCategory(categoryId: SignupCategoryId) {

@@ -17,6 +17,7 @@ import {
   newsrollPagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
   useEnterFromRightExitMotion,
+  useSwipeTabNavigation,
 } from "@/design-system/templates";
 import {
   infoApi,
@@ -158,6 +159,14 @@ export function InfoView({
   });
   const activeInfoTabLabel =
     infoTabs.find((tab) => tab.id === activeInfoTab)?.label ?? "공지사항";
+  const {
+    swipeMotionClassName: infoTabSwipeMotionClassName,
+    ...infoTabSwipeHandlers
+  } = useSwipeTabNavigation({
+    items: infoTabs,
+    onChange: handleInfoTabChange,
+    value: activeInfoTab,
+  });
 
   useEffect(() => {
     let ignore = false;
@@ -273,7 +282,7 @@ export function InfoView({
             }
           />
         ) : (
-          <div className="container_infoContent">
+          <div className="container_infoContent" {...infoTabSwipeHandlers}>
             <PillTabMenu
               ariaLabel="인포메이션 메뉴"
               className="tab_myCategoryMenu"
@@ -287,7 +296,7 @@ export function InfoView({
             />
             <div
               aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
-              className="container_infoPanel"
+              className={`container_infoPanel ${infoTabSwipeMotionClassName}`.trim()}
               id={`newsroll_info_panel_${activeInfoTab}`}
               role="tabpanel"
             >

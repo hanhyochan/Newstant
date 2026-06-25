@@ -110,7 +110,6 @@ import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 
 const myRecentPreviewLimit = 10;
-const myCategoryTabMinimumItemCount = 12;
 
 const myCategoryGroups = [
   {
@@ -131,23 +130,86 @@ const myCategoryGroups = [
 ];
 
 const myAgeGroupPreferenceIds = ["minor", "youth", "middle", "senior"] as const;
+const myPolicyAgeLabelById = {
+  middle: "중장년",
+  minor: "미성년",
+  senior: "노년",
+  youth: "청년",
+} as const;
+const myNewsCategoryPreferenceIds = [
+  "politics",
+  "economy",
+  "society",
+  "culture",
+  "world",
+  "local",
+  "sports",
+  "science",
+] as const;
+const myPressPreferenceIds = ["joongang", "kukmin", "hani"] as const;
 
 function getMyCategoryOptionId(groupIndex: number, itemIndex: number) {
   return `${groupIndex}-${itemIndex}`;
 }
 
-function getAgeGroupOptionId(ageGroupId?: string) {
-  const itemIndex = myAgeGroupPreferenceIds.findIndex((id) => id === ageGroupId);
+function getPreferenceOptionId(
+  groupIndex: number,
+  preferenceIds: readonly string[],
+  preferenceId?: string,
+) {
+  const itemIndex = preferenceIds.findIndex((id) => id === preferenceId);
 
-  return itemIndex >= 0 ? getMyCategoryOptionId(1, itemIndex) : "";
+  return itemIndex >= 0 ? getMyCategoryOptionId(groupIndex, itemIndex) : "";
+}
+
+function getPreferenceIdFromOption(
+  groupIndex: number,
+  preferenceIds: readonly string[],
+  optionId?: string,
+) {
+  const itemIndex = preferenceIds.findIndex(
+    (_, index) => getMyCategoryOptionId(groupIndex, index) === optionId,
+  );
+
+  return itemIndex >= 0 ? preferenceIds[itemIndex] : "";
+}
+
+function getAgeGroupOptionId(ageGroupId?: string) {
+  return getPreferenceOptionId(1, myAgeGroupPreferenceIds, ageGroupId);
 }
 
 function getAgeGroupPreferenceId(optionId?: string) {
-  const itemIndex = myAgeGroupPreferenceIds.findIndex(
-    (_, index) => getMyCategoryOptionId(1, index) === optionId,
-  );
+  return getPreferenceIdFromOption(1, myAgeGroupPreferenceIds, optionId);
+}
 
-  return itemIndex >= 0 ? myAgeGroupPreferenceIds[itemIndex] : "";
+function getNewsCategoryOptionIds(categoryIds: string[]) {
+  return categoryIds
+    .map((categoryId) =>
+      getPreferenceOptionId(0, myNewsCategoryPreferenceIds, categoryId),
+    )
+    .filter((optionId): optionId is string => Boolean(optionId));
+}
+
+function getNewsCategoryPreferenceIds(optionIds: string[]) {
+  return optionIds
+    .map((optionId) =>
+      getPreferenceIdFromOption(0, myNewsCategoryPreferenceIds, optionId),
+    )
+    .filter((categoryId): categoryId is string => Boolean(categoryId));
+}
+
+function getPressOptionIds(pressIds: string[]) {
+  return pressIds
+    .map((pressId) => getPreferenceOptionId(2, myPressPreferenceIds, pressId))
+    .filter((optionId): optionId is string => Boolean(optionId));
+}
+
+function getPressPreferenceIds(optionIds: string[]) {
+  return optionIds
+    .map((optionId) =>
+      getPreferenceIdFromOption(2, myPressPreferenceIds, optionId),
+    )
+    .filter((pressId): pressId is string => Boolean(pressId));
 }
 
 function getMyCategoryTabItems(groupIndex: number) {
@@ -178,15 +240,10 @@ function getCategorySettingsFromPreference(preference: UserPreference | null) {
     return initialSettings;
   }
 
-  const getValidOptionIds = (groupIndex: number, optionIds: string[]) => {
-    const validIds = new Set(getMyCategoryTabItems(groupIndex).map((item) => item.id));
-    return optionIds.filter((optionId) => validIds.has(optionId));
-  };
-
-  const categoryIds = getValidOptionIds(0, preference.categoryIds);
+  const categoryIds = getNewsCategoryOptionIds(preference.categoryIds);
   const ageGroupOptionId = getAgeGroupOptionId(preference.ageGroupId);
   const ageGroupIds = ageGroupOptionId ? [ageGroupOptionId] : [];
-  const pressIds = getValidOptionIds(2, preference.pressIds);
+  const pressIds = getPressOptionIds(preference.pressIds);
 
   return [
     new Set(categoryIds.length > 0 ? categoryIds : initialSettings[0]),
@@ -231,10 +288,8 @@ type MyPageDetailView =
   | null;
 
 const mySummaryAllTabLabel = "전체";
-const myVoteCategoryTabs = [mySummaryAllTabLabel];
 const myBookmarkTabs = ["뉴스", "국가정책"] as const;
 const myCommentTabs = [
-  { id: "all", label: "전체" },
   { id: "comment", label: "댓글" },
   { id: "reply", label: "대댓글" },
 ] as const;
@@ -250,11 +305,15 @@ function getMySummaryCategoryTabs(items: { category: string }[]) {
   ];
 }
 
+function getMyPolicyAgeTabs(items: { policyAgeLabels: string[] }[]) {
+  return [
+    mySummaryAllTabLabel,
+    ...getUniqueValues(items.flatMap((item) => item.policyAgeLabels)),
+  ];
+}
+
 function shouldShowMyCategoryTabs(items: { category: string }[]) {
-  return (
-    items.length >= myCategoryTabMinimumItemCount &&
-    getUniqueValues(items.map((item) => item.category)).length > 1
-  );
+  return getUniqueValues(items.map((item) => item.category)).length > 1;
 }
 
 function hasMultipleMyCommentKinds(items: { commentKind: Exclude<MyCommentKind, "all"> }[]) {
@@ -276,6 +335,7 @@ function formatPolicyBookmarkDate(value: string) {
 }
 
 function getPolicyBookmarkItem(policy: {
+  ageGroupIds?: string[];
   applicationEndDate: string;
   applicationMethod: string;
   applicationStartDate: string;
@@ -296,6 +356,7 @@ function getPolicyBookmarkItem(policy: {
   updatedAt: string;
 }): PolicyItem {
   return {
+    ageGroupIds: policy.ageGroupIds,
     details: [
       { label: "지원 대상 연령", value: policy.targetAge },
       { label: "지원 내용", value: policy.supportContent },
@@ -435,13 +496,15 @@ export function MyPageView({
     () => mySummaryAllTabLabel,
   );
   const [activeVoteCategory, setActiveVoteCategory] = useState(
-    () => myVoteCategoryTabs[0] ?? "",
+    () => mySummaryAllTabLabel,
   );
   const [activeBookmarkType, setActiveBookmarkType] =
     useState<MyBookmarkTypeTab>("news");
   const [activeBookmarkNewsCategory, setActiveBookmarkNewsCategory] = useState(
     () => mySummaryAllTabLabel,
   );
+  const [activeBookmarkPolicyAgeLabel, setActiveBookmarkPolicyAgeLabel] =
+    useState(() => mySummaryAllTabLabel);
   const [activeCommentCategory, setActiveCommentCategory] = useState<MyCommentKind>(
     () => "all",
   );
@@ -514,6 +577,16 @@ export function MyPageView({
       ),
     [myDynamicBookmarkItems],
   );
+  const dynamicBookmarkPolicyAgeTabs = useMemo(
+    () =>
+      getMyPolicyAgeTabs(
+        myDynamicBookmarkItems.filter(
+          (item): item is MyBookmarkPolicySummaryItem =>
+            item.bookmarkType === "policy",
+        ),
+      ),
+    [myDynamicBookmarkItems],
+  );
   const dynamicRecentCategoryTabs = useMemo(
     () => getMySummaryCategoryTabs(myDynamicRecentItems),
     [myDynamicRecentItems],
@@ -527,6 +600,12 @@ export function MyPageView({
       myDynamicBookmarkItems.some((item) => item.bookmarkType === "news") &&
       dynamicBookmarkNewsCategoryTabs.length > 1,
     [dynamicBookmarkNewsCategoryTabs.length, myDynamicBookmarkItems],
+  );
+  const shouldShowBookmarkPolicyAgeTabs = useMemo(
+    () =>
+      myDynamicBookmarkItems.some((item) => item.bookmarkType === "policy") &&
+      dynamicBookmarkPolicyAgeTabs.length > 1,
+    [dynamicBookmarkPolicyAgeTabs.length, myDynamicBookmarkItems],
   );
   const shouldShowRecentCategoryTabs = useMemo(
     () => shouldShowMyCategoryTabs(myDynamicRecentItems),
@@ -558,7 +637,7 @@ export function MyPageView({
   );
   const activeSummary: MySummaryView | null =
     isBookmarkOpen || isVoteOpen || isCommentOpen ? activeDetailView : null;
-  const isMyDetailOpen = activeDetailView !== null;
+  const isMyDetailOpen = activeDetailView !== null || isMyNestedDetailOpen;
   const myDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isMyDetailOpen,
     resetKey: activeProfileSettingItemId
@@ -688,6 +767,15 @@ export function MyPageView({
               bookmarkType: "policy" as const,
               category: myBookmarkTabs[1],
               policy: policyItem,
+              policyAgeLabels:
+                policy.ageGroupIds?.reduce<string[]>((labels, ageGroupId) => {
+                  const label =
+                    myPolicyAgeLabelById[
+                      ageGroupId as keyof typeof myPolicyAgeLabelById
+                    ];
+
+                  return label ? [...labels, label] : labels;
+                }, []) ?? [],
               summary: policyItem.summary,
               tags: policyItem.tags,
               title: policyItem.title,
@@ -709,6 +797,7 @@ export function MyPageView({
         setActiveCommentCategory("all");
         setActiveBookmarkType("news");
         setActiveBookmarkNewsCategory(mySummaryAllTabLabel);
+        setActiveBookmarkPolicyAgeLabel(mySummaryAllTabLabel);
         setActiveRecentCategory(getMySummaryCategoryTabs(nextRecentItems)[0] ?? "");
         if (nextVoteItems.length > 0) {
           setActiveVoteCategory(getMySummaryCategoryTabs(nextVoteItems)[0] ?? "");
@@ -726,6 +815,7 @@ export function MyPageView({
         setMyVoteCount(0);
         setActiveBookmarkType("news");
         setActiveBookmarkNewsCategory(mySummaryAllTabLabel);
+        setActiveBookmarkPolicyAgeLabel(mySummaryAllTabLabel);
         setActiveRecentCategory(mySummaryAllTabLabel);
       }
     });
@@ -793,9 +883,11 @@ export function MyPageView({
 
     userApi
       .updateUserPreferences(preferenceId, {
-        categoryIds: Array.from(nextSettings[0] ?? []),
+        categoryIds: getNewsCategoryPreferenceIds(
+          Array.from(nextSettings[0] ?? []),
+        ),
         ageGroupId: getAgeGroupPreferenceId(Array.from(nextSettings[1] ?? [])[0]),
-        pressIds: Array.from(nextSettings[2] ?? []),
+        pressIds: getPressPreferenceIds(Array.from(nextSettings[2] ?? [])),
       })
       .catch(() => undefined);
   };
@@ -1181,6 +1273,7 @@ export function MyPageView({
           ) : isBookmarkOpen ? (
             <MyBookmarkDetailPage
               activeNewsCategory={activeBookmarkNewsCategory}
+              activePolicyAgeLabel={activeBookmarkPolicyAgeLabel}
               activeType={activeBookmarkType}
               items={myDynamicBookmarkItems}
               isLeaving={myDetailExitMotion.isLeaving}
@@ -1188,8 +1281,11 @@ export function MyPageView({
               onNewsCategoryChange={setActiveBookmarkNewsCategory}
               onOpenArticle={openMyArticleDetail}
               onOpenPolicy={openMyPolicyDetail}
+              onPolicyAgeChange={setActiveBookmarkPolicyAgeLabel}
               onTypeChange={setActiveBookmarkType}
+              policyAgeTabs={dynamicBookmarkPolicyAgeTabs}
               showNewsCategoryTabs={shouldShowBookmarkNewsCategoryTabs}
+              showPolicyAgeTabs={shouldShowBookmarkPolicyAgeTabs}
             />
           ) : isVoteOpen ? (
             <MyVoteDetailPage

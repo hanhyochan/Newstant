@@ -4,7 +4,10 @@ import {
   PillTabMenu,
   NewsListCardButton as AllNewsRelayItem,
 } from "@/design-system/components";
-import { getEnterFromRightMotionClassName } from "@/design-system/templates";
+import {
+  getEnterFromRightMotionClassName,
+  useSwipeTabNavigation,
+} from "@/design-system/templates";
 import {
   createAllNewsArticle,
   type AllNewsArticlePreview,
@@ -24,6 +27,7 @@ export type MyBookmarkPolicySummaryItem = {
   bookmarkType: "policy";
   category: string;
   policy: PolicyItem;
+  policyAgeLabels: string[];
   summary: string;
   tags: string[];
   title: string;
@@ -53,8 +57,18 @@ function getVisibleNewsItems(
     : items.filter((item) => item.newsCategory === activeCategory);
 }
 
+function getVisiblePolicyItems(
+  items: MyBookmarkPolicySummaryItem[],
+  activeAgeLabel: string,
+) {
+  return isAllCategory(activeAgeLabel)
+    ? items
+    : items.filter((item) => item.policyAgeLabels.includes(activeAgeLabel));
+}
+
 export function MyBookmarkDetailPage({
   activeNewsCategory,
+  activePolicyAgeLabel,
   activeType,
   items,
   isLeaving = false,
@@ -62,10 +76,14 @@ export function MyBookmarkDetailPage({
   onNewsCategoryChange,
   onOpenArticle,
   onOpenPolicy,
+  onPolicyAgeChange,
   onTypeChange,
+  policyAgeTabs,
   showNewsCategoryTabs,
+  showPolicyAgeTabs,
 }: {
   activeNewsCategory: string;
+  activePolicyAgeLabel: string;
   activeType: MyBookmarkTypeTab;
   items: MyBookmarkSummaryItem[];
   isLeaving?: boolean;
@@ -73,8 +91,11 @@ export function MyBookmarkDetailPage({
   onNewsCategoryChange: (category: string) => void;
   onOpenArticle: OpenArticleDetail;
   onOpenPolicy: (policy: PolicyItem) => void;
+  onPolicyAgeChange: (ageLabel: string) => void;
   onTypeChange: (type: MyBookmarkTypeTab) => void;
+  policyAgeTabs: string[];
   showNewsCategoryTabs: boolean;
+  showPolicyAgeTabs: boolean;
 }) {
   const newsItems = items.filter(
     (item): item is MyBookmarkNewsSummaryItem => item.bookmarkType === "news",
@@ -88,14 +109,27 @@ export function MyBookmarkDetailPage({
       ? showNewsCategoryTabs
         ? getVisibleNewsItems(newsItems, activeNewsCategory)
         : newsItems
-      : policyItems;
+      : showPolicyAgeTabs
+        ? getVisiblePolicyItems(policyItems, activePolicyAgeLabel)
+        : policyItems;
+  const {
+    swipeMotionClassName: bookmarkTypeSwipeMotionClassName,
+    ...bookmarkTypeSwipeHandlers
+  } = useSwipeTabNavigation({
+    items: bookmarkTypeTabs,
+    onChange: onTypeChange,
+    value: activeType,
+  });
 
   return (
     <div
       className={`container_myBookmarkPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">북마크</h2>
-      <div className="wrapper_myTabbedDetailContent">
+      <div
+        className="wrapper_myTabbedDetailContent"
+        {...bookmarkTypeSwipeHandlers}
+      >
         <div className="wrapper_myBookmarkTabStack">
           <PillTabMenu
             ariaLabel="북마크 유형"
@@ -116,8 +150,22 @@ export function MyBookmarkDetailPage({
               value={activeNewsCategory}
             />
           ) : null}
+          {activeType === "policy" && showPolicyAgeTabs ? (
+            <PillTabMenu
+              ariaLabel="북마크 국가정책 연령층"
+              className="tab_myCategoryMenu"
+              items={policyAgeTabs.map((ageLabel) => ({
+                id: ageLabel,
+                label: ageLabel,
+              }))}
+              onChange={onPolicyAgeChange}
+              value={activePolicyAgeLabel}
+            />
+          ) : null}
         </div>
-        <div className="wrapper_myBookmarkList">
+        <div
+          className={`wrapper_myBookmarkList ${bookmarkTypeSwipeMotionClassName}`.trim()}
+        >
           {visibleBookmarkItems.length === 0 ? (
             <DataUnavailableMessage target="북마크" />
           ) : (

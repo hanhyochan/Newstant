@@ -20,6 +20,32 @@
         animation-name: newsroll_exitToRight;
     }
 
+    .newsroll_motion_tabSwipeFromRight,
+    .newsroll_motion_tabSwipeFromLeft {
+        animation-duration: var(--newsroll-docked-pop-motion-duration, 260ms);
+        animation-fill-mode: both;
+        animation-timing-function: var(--newsroll-docked-pop-motion-easing, ease);
+        will-change: opacity, transform;
+    }
+
+    .newsroll_motion_tabSwipeFromRight {
+        --newsroll-tab-swipe-offset: 24px;
+    }
+
+    .newsroll_motion_tabSwipeFromLeft {
+        --newsroll-tab-swipe-offset: -24px;
+    }
+
+    .newsroll_motion_tabSwipeFromRight.is_motionCycleA,
+    .newsroll_motion_tabSwipeFromLeft.is_motionCycleA {
+        animation-name: newsroll_tabSwipeEnterA;
+    }
+
+    .newsroll_motion_tabSwipeFromRight.is_motionCycleB,
+    .newsroll_motion_tabSwipeFromLeft.is_motionCycleB {
+        animation-name: newsroll_tabSwipeEnterB;
+    }
+
     @keyframes newsroll_enterUp {
         from {
             opacity: 0;
@@ -68,3 +94,26 @@
         }
     }
 
+    @keyframes newsroll_tabSwipeEnterA {
+        from {
+            opacity: 0;
+            transform: translateX(var(--newsroll-tab-swipe-offset, 24px));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes newsroll_tabSwipeEnterB {
+        from {
+            opacity: 0;
+            transform: translateX(var(--newsroll-tab-swipe-offset, 24px));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }

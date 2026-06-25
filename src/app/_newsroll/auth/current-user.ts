@@ -1,6 +1,8 @@
 import { mockCurrentUserId } from "../mock-current-user";
 
 const currentUserStorageKey = "newsroll.currentUser";
+const hamsterResetLogoutKey = "newsroll.hamsterResetLogout.20260625.initialStateReset";
+const hamsterResetUserId = "user-5da62014-46f6-453f-8e3c-47bb64bdc700";
 
 export type CurrentUser = {
   id: string;
@@ -44,7 +46,19 @@ function readStoredCurrentUser() {
   }
 
   try {
-    return JSON.parse(stored) as CurrentUser;
+    const currentUser = JSON.parse(stored) as CurrentUser;
+
+    if (
+      currentUser.id === hamsterResetUserId &&
+      !window.localStorage.getItem(hamsterResetLogoutKey)
+    ) {
+      window.localStorage.removeItem(currentUserStorageKey);
+      window.sessionStorage.removeItem(currentUserStorageKey);
+      window.localStorage.setItem(hamsterResetLogoutKey, "true");
+      return null;
+    }
+
+    return currentUser;
   } catch {
     return null;
   }

@@ -38,5 +38,6 @@ export {
   useDockedSheet,
   useInlineTextEdit,
   useShareContent,
+  useSwipeTabNavigation,
 } from "./hooks";
 

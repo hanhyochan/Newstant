@@ -13,7 +13,10 @@ import {
   NewsHeadlineRowButton as AllNewsHeadlineItem,
   TextButton,
 } from "@/design-system/components";
-import { getEnterFromRightMotionClassName } from "@/design-system/templates";
+import {
+  getEnterFromRightMotionClassName,
+  useSwipeTabNavigation,
+} from "@/design-system/templates";
 import {
   NewsCreatedTime,
   commentReplyTemplates,
@@ -73,6 +76,7 @@ function MyCommentPreviewThread({
   );
   const likeCount = comment.likes;
   const dislikeCount = comment.dislikes;
+  const hasCommentReplies = commentReplies.length > 0;
 
   function openCommentFromControl(event: MouseEvent<HTMLElement>) {
     event.stopPropagation();
@@ -101,8 +105,8 @@ function MyCommentPreviewThread({
       <p>{comment.body}</p>
       <footer>
         <TextButton
-          aria-controls={replyListId}
-          aria-expanded={false}
+          aria-controls={hasCommentReplies ? replyListId : undefined}
+          aria-expanded={hasCommentReplies ? false : undefined}
           id={replyToggleId}
           onClick={openCommentFromControl}
           type="button"
@@ -132,76 +136,70 @@ function MyCommentPreviewThread({
           </IconTextButton>
         </span>
       </footer>
-      <div
-        aria-hidden="true"
-        aria-labelledby={replyToggleId}
-        className="wrapper_commentReplies"
-        id={replyListId}
-        role="region"
-      >
-        <div className="wrapper_commentRepliesInner">
-          <TextButton
-            aria-controls={`${instanceId}-composer`}
-            aria-pressed={false}
-            onClick={openCommentFromControl}
-            type="button"
-          >
-            대댓글 쓰기
-          </TextButton>
-          {commentReplies.map((reply, replyIndex) => (
-            <Fragment key={reply.id}>
-              <article
-                className="wrapper_commentReplyItem"
-                id={`${instanceId}-reply-${reply.id}`}
-              >
-                <header>
-                  <span className="wrapper_commentMeta">
-                    <strong>{reply.author}</strong>
-                    <NewsCreatedTime>{reply.date}</NewsCreatedTime>
-                  </span>
-                  <span className="wrapper_commentAction">
-                    <IconButton
-                      aria-expanded={false}
-                      aria-haspopup="menu"
-                      className="btn_commentAction"
-                      disabled
-                      icon="detail"
-                      label="대댓글 더보기"
-                    />
-                  </span>
-                </header>
-                <ChipLabel kind="commentChoice">{reply.choice}</ChipLabel>
-                <p>{reply.body}</p>
-                <footer>
-                  <span>
-                    <IconTextButton
-                      aria-label="대댓글 좋아요"
-                      disabled
-                      icon="thumbUp"
-                      tone="like"
-                      size="small"
-                    >
-                      {getVisibleReactionCount(reply.likes)}
-                    </IconTextButton>
-                    <IconTextButton
-                      aria-label="대댓글 싫어요"
-                      disabled
-                      icon="thumbDown"
-                      tone="dislike"
-                      size="small"
-                    >
-                      {getVisibleReactionCount(reply.dislikes)}
-                    </IconTextButton>
-                  </span>
-                </footer>
-              </article>
-              {replyIndex < commentReplies.length - 1 ? (
-                <span aria-hidden="true" className="divider_commentItem" />
-              ) : null}
-            </Fragment>
-          ))}
+      {hasCommentReplies ? (
+        <div
+          aria-hidden="true"
+          aria-labelledby={replyToggleId}
+          className="wrapper_commentReplies"
+          id={replyListId}
+          role="region"
+        >
+          <div className="wrapper_commentRepliesInner">
+            {commentReplies.map((reply, replyIndex) => (
+              <Fragment key={reply.id}>
+                <article
+                  className="wrapper_commentReplyItem"
+                  id={`${instanceId}-reply-${reply.id}`}
+                >
+                  <header>
+                    <span className="wrapper_commentMeta">
+                      <strong>{reply.author}</strong>
+                      <NewsCreatedTime>{reply.date}</NewsCreatedTime>
+                    </span>
+                    <span className="wrapper_commentAction">
+                      <IconButton
+                        aria-expanded={false}
+                        aria-haspopup="menu"
+                        className="btn_commentAction"
+                        disabled
+                        icon="detail"
+                        label="대댓글 더보기"
+                      />
+                    </span>
+                  </header>
+                  <ChipLabel kind="commentChoice">{reply.choice}</ChipLabel>
+                  <p>{reply.body}</p>
+                  <footer>
+                    <span>
+                      <IconTextButton
+                        aria-label="대댓글 좋아요"
+                        disabled
+                        icon="thumbUp"
+                        tone="like"
+                        size="small"
+                      >
+                        {getVisibleReactionCount(reply.likes)}
+                      </IconTextButton>
+                      <IconTextButton
+                        aria-label="대댓글 싫어요"
+                        disabled
+                        icon="thumbDown"
+                        tone="dislike"
+                        size="small"
+                      >
+                        {getVisibleReactionCount(reply.dislikes)}
+                      </IconTextButton>
+                    </span>
+                  </footer>
+                </article>
+                {replyIndex < commentReplies.length - 1 ? (
+                  <span aria-hidden="true" className="divider_commentItem" />
+                ) : null}
+              </Fragment>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </article>
   );
 }
@@ -223,20 +221,35 @@ export function MyCommentDetailPage({
   showTabs: boolean;
   tabs: readonly { id: MyCommentKind; label: string }[];
 }) {
-  const activeCommentKind = tabs.some((tab) => tab.id === activeCategory)
-    ? (activeCategory as MyCommentKind)
+  const firstTabId = tabs[0]?.id ?? "comment";
+  const activeCommentKind = showTabs
+    ? tabs.some((tab) => tab.id === activeCategory)
+      ? (activeCategory as MyCommentKind)
+      : firstTabId
     : "all";
   const visibleCommentItems =
     activeCommentKind === "all"
       ? items
       : items.filter((item) => item.commentKind === activeCommentKind);
+  const {
+    swipeMotionClassName: commentTabSwipeMotionClassName,
+    ...commentTabSwipeHandlers
+  } = useSwipeTabNavigation({
+    disabled: !showTabs,
+    items: tabs,
+    onChange: onCategoryChange,
+    value: activeCommentKind,
+  });
 
   return (
     <div
       className={`container_myCommentPage ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
       <h2 className="text_mySectionTitle">댓글</h2>
-      <div className="wrapper_myTabbedDetailContent">
+      <div
+        className="wrapper_myTabbedDetailContent"
+        {...commentTabSwipeHandlers}
+      >
       {showTabs ? (
         <PillTabMenu
           ariaLabel="내 댓글 카테고리"
@@ -248,7 +261,7 @@ export function MyCommentDetailPage({
           value={activeCommentKind}
         />
       ) : null}
-      <div className="wrapper_myCommentList">
+      <div className={`wrapper_myCommentList ${commentTabSwipeMotionClassName}`.trim()}>
         {visibleCommentItems.length === 0 ? (
           <DataUnavailableMessage target="댓글" />
         ) : (

@@ -17,6 +17,7 @@ type UseDockedPanelScrollOptions = {
   dockedClassName: string;
   immediatePanelSelector?: string;
   navigationLockSelector?: string;
+  onActivePanelChange?: (panel: HTMLElement) => void;
   panelSelector: string;
   rootRef: RefObject<HTMLElement | null>;
   scrollerRef: RefObject<HTMLElement | null>;
@@ -28,6 +29,7 @@ export function useDockedPanelScroll({
   dockedClassName,
   immediatePanelSelector,
   navigationLockSelector,
+  onActivePanelChange,
   panelSelector,
   rootRef,
   scrollerRef,
@@ -185,6 +187,7 @@ export function useDockedPanelScroll({
     }
 
     setPanelContentPosition(panel, contentPosition);
+    onActivePanelChange?.(panel);
 
     if (typeof scroller.scrollTo === "function") {
       scroller.scrollTo({
