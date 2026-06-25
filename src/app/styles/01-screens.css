@@ -310,14 +310,14 @@
   bottom: 0;
   transform: translateX(-50%);
   z-index: 1000;
-  width: min(100%, 360px);
+  width: 100vw;
   height: var(--spacing-padding-vertical-60);
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
-  gap: var(--spacing-gap-horizontal-16);
-  padding-inline: var(--spacing-padding-horizontal-16);
-  border-top: var(--border-1) solid var(--color-line-solid-normal);
+  gap: 0;
+  padding-inline: 0;
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
   background: var(--color-background-elevated-normal);
   pointer-events: auto;
 }
@@ -892,14 +892,14 @@
   bottom: 0;
   transform: translateX(-50%);
   z-index: 1000;
-  width: min(100vw, 768px);
+  width: 100vw;
   height: var(--spacing-padding-vertical-60);
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
-  gap: var(--spacing-gap-horizontal-16);
-  padding-inline: var(--spacing-padding-horizontal-16);
-  border-top: var(--border-1) solid var(--color-line-solid-normal);
+  gap: 0;
+  padding-inline: 0;
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
   background: var(--color-background-elevated-normal);
   pointer-events: auto;
 }
@@ -1068,7 +1068,7 @@
   }
 
   .newsroll_bottom_nav {
-    padding-inline: var(--spacing-padding-horizontal-16);
+    padding-inline: 0;
   }
 }
 
@@ -1176,14 +1176,14 @@
   bottom: 0;
   transform: translateX(-50%);
   z-index: 1000;
-  width: min(100vw, 768px);
+  width: 100vw;
   height: var(--spacing-padding-vertical-60);
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
-  gap: var(--spacing-gap-horizontal-16);
+  gap: 0;
   padding-inline: 0;
-  border-top: var(--border-1) solid var(--color-line-solid-normal);
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
   background: var(--color-background-elevated-normal);
   pointer-events: auto;
 }
@@ -1938,7 +1938,7 @@
 .newsroll_screen_all .newsroll_bottom_nav {
   left: 50%;
   transform: translateX(-50%);
-  width: min(100vw, 360px);
+  width: 100vw;
   z-index: 1000;
   pointer-events: auto;
 }
@@ -2337,12 +2337,12 @@
 
 .newsroll_screen_all .newsroll_bottom_nav {
   left: 50%;
-  width: min(100vw, 768px);
+  width: 100vw;
   transform: translateX(-50%);
 }
 
 .newsroll_bottom_nav {
-  padding-inline: var(--spacing-padding-horizontal-16);
+  padding-inline: 0;
 }
 
 .newsroll_search_page {

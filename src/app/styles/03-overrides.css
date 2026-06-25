@@ -1538,10 +1538,6 @@
     align-items: flex-start;
 }
 
-.newsroll_screen_all .newsroll_bottom_nav {
-    width: min(100vw, var(--newsroll-max-width));
-}
-
 .newsroll_policy_screen,
 .container_myScreen,
 .newsroll_info_screen,
