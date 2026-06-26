@@ -1,4 +1,4 @@
-import { SettingRowButton } from "@/design-system/components";
+﻿import { SettingRowButton } from "@/design-system/components";
 
 export type MySettingRowProps = {
   checked?: boolean;

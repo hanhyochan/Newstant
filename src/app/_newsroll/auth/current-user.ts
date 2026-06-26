@@ -1,4 +1,4 @@
-import { mockCurrentUserId } from "../mock-current-user";
+﻿import { mockCurrentUserId } from "../mock-current-user";
 
 const currentUserStorageKey = "newsroll.currentUser";
 const hamsterResetLogoutKey = "newsroll.hamsterResetLogout.20260625.initialStateReset";

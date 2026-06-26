@@ -49,7 +49,7 @@ export function ArticleVoteOptionButton({
       {variant === "binary" && iconSrc ? (
         <img
           alt=""
-          className="newsroll_icon_image img_articleGuideBinaryIcon"
+          className="icon_image img_articleGuideBinaryIcon"
           src={iconSrc}
         />
       ) : null}

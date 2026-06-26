@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, type RefObject, type TouchEvent, type WheelEvent } from "react";
 

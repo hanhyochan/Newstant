@@ -1,6 +1,6 @@
-import { Fragment } from "react";
+﻿import { Fragment } from "react";
 
-import { NewsRollDivider } from "@/design-system/components";
+import { Divider } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 import { MySettingRow } from "@/features/my-page/components/MySettingRow";
 
@@ -26,7 +26,7 @@ export function MyProfileSettingsPage({
       {sections.map((section, sectionIndex) => (
         <Fragment key={section.title}>
           {sectionIndex > 0 ? (
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
           ) : null}
           <section
             aria-label={`${section.title} 설정`}

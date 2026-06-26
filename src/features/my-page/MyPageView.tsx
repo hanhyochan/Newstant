@@ -36,7 +36,7 @@ import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import {
   IconButton,
   NewsBlockCardButton,
-  NewsRollDivider,
+  Divider,
   IconTextButton,
   TextButton
 } from "@/design-system/components";
@@ -1422,7 +1422,7 @@ export function MyPageView({
           </section>
 
           <section className="container_mySettingsSection">
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
             <h2 className="text_mySectionTitle">뉴스 설정</h2>
             <div className="wrapper_mySettingsList">
               <MySettingRow
@@ -1437,7 +1437,7 @@ export function MyPageView({
             className="container_mySettingsSection"
             data-my-section="notification-settings"
           >
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
             <h2 className="text_mySectionTitle">알림 설정</h2>
             <div className="wrapper_mySettingsList">
               {myNotificationLabels.map((label) => (
@@ -1457,7 +1457,7 @@ export function MyPageView({
           </section>
 
           <section className="container_mySettingsSection">
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
             <h2 className="text_mySectionTitle">디스플레이 설정</h2>
             <div className="wrapper_mySettingsList">
               <MySettingRow
@@ -1474,7 +1474,7 @@ export function MyPageView({
           </section>
 
           <section className="container_mySettingsSection">
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
             <TextButton
               className="btn_myLogout"
               type="button"

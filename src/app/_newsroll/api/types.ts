@@ -1,4 +1,4 @@
-export type NewsCategory = {
+﻿export type NewsCategory = {
   id: string;
   label: string;
 };

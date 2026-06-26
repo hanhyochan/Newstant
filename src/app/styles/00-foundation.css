@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --font-sans:
         var(--font-pretendard, 'Pretendard Variable'), 'Apple SD Gothic Neo', 'Malgun Gothic',
         sans-serif;
@@ -512,7 +512,7 @@
             line-height: var(--line-height-24);
         }
 
-        .newsroll_all_breaking_label .newsroll_icon_20 {
+        .newsroll_all_breaking_label .icon[data-size="20"] {
             width: var(--spacing-padding-horizontal-24);
             height: var(--spacing-padding-vertical-24);
         }

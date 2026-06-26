@@ -1,4 +1,4 @@
-import { currentUserId } from "../auth/current-user";
+﻿import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
 import { apiClient } from "./http-client";
 import type { AddBookmarkInput, Bookmark } from "./types";

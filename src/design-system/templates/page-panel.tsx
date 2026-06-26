@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from "react";
+﻿import type { ReactNode, Ref } from "react";
 
 type NewsRollPagePanelProps = {
   ariaLabel: string;

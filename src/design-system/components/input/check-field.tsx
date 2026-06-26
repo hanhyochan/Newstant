@@ -1,101 +1,106 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { useId } from "react";
 
-import { cn } from "../shared/utils";
-
-export type NewsRollCheckSize = "md" | "lg";
-
-export type NewsRollCheckBoxProps = {
-  checked?: boolean;
-  className?: string;
-  size?: NewsRollCheckSize;
-};
-
-export function NewsRollCheckBox({
-  checked = false,
-  className,
-  size = "md",
-}: NewsRollCheckBoxProps) {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn("box_newsrollCheck", checked && "is_checked", className)}
-      data-size={size}
-    />
-  );
-}
+export type CheckSize = "md" | "lg";
+export type CheckVariant = "withText" | "withoutText";
+export type CheckRole =
+  | "default"
+  | "autoLogin"
+  | "agreementAll"
+  | "selectAll"
+  | "selectionItem"
+  | "chevronRow";
 
 type BaseCheckInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  "children" | "size" | "type"
+  "children" | "className" | "size" | "type"
 >;
 
-export type NewsRollCheckFieldProps = BaseCheckInputProps & {
+type CheckInputWithTextProps = BaseCheckInputProps & {
   checked?: boolean;
   label: ReactNode;
-  size?: NewsRollCheckSize;
+  role?: CheckRole;
+  size?: CheckSize;
+  variant?: "withText";
 };
 
-export function NewsRollCheckField({
-  checked = false,
-  className,
-  label,
-  size = "md",
-  id,
-  ...props
-}: NewsRollCheckFieldProps) {
+type CheckInputWithoutTextProps = BaseCheckInputProps & {
+  ariaLabel: string;
+  checked?: boolean;
+  label?: never;
+  role?: CheckRole;
+  size?: CheckSize;
+  variant: "withoutText";
+};
+
+export type CheckInputProps =
+  | CheckInputWithTextProps
+  | CheckInputWithoutTextProps;
+
+export function CheckInput(props: CheckInputProps) {
+  const checked = props.checked ?? false;
+  const role = props.role ?? "default";
+  const size = props.size ?? "md";
+  const variant = props.variant ?? "withText";
+  const inputProps =
+    props.variant === "withoutText"
+      ? getWithoutTextInputProps(props)
+      : getWithTextInputProps(props);
+  const ariaLabel =
+    props.variant === "withoutText" ? props.ariaLabel : undefined;
+  const label = props.variant === "withoutText" ? undefined : props.label;
   const generatedId = useId();
-  const inputId = id ?? generatedId;
+  const inputId = props.id ?? generatedId;
 
   return (
     <label
-      className={cn("btn_newsrollCheckField", className)}
+      className="field_check"
+      data-role={role}
       data-size={size}
+      data-variant={variant}
     >
       <input
-        {...props}
+        {...inputProps}
+        aria-label={ariaLabel}
         checked={checked}
-        className="input_newsrollCheck"
+        className="input_check"
         id={inputId}
         type="checkbox"
       />
-      <NewsRollCheckBox checked={checked} size={size} />
-      <span>{label}</span>
+      <span
+        aria-hidden="true"
+        className={checked ? "box_check is_checked" : "box_check"}
+        data-size={size}
+      />
+      {variant === "withText" ? <span>{label}</span> : null}
     </label>
   );
 }
 
-export type NewsRollCheckIconFieldProps = BaseCheckInputProps & {
-  ariaLabel: string;
-  checked?: boolean;
-  size?: NewsRollCheckSize;
-};
+function getWithTextInputProps(props: CheckInputWithTextProps) {
+  const {
+    checked: _checked,
+    id: _id,
+    label: _label,
+    role: _role,
+    size: _size,
+    variant: _variant,
+    ...inputProps
+  } = props;
 
-export function NewsRollCheckIconField({
-  ariaLabel,
-  checked = false,
-  className,
-  size = "md",
-  id,
-  ...props
-}: NewsRollCheckIconFieldProps) {
-  const generatedId = useId();
-  const inputId = id ?? generatedId;
+  return inputProps;
+}
 
-  return (
-    <label
-      className={cn("btn_newsrollCheckIconField", className)}
-      data-size={size}
-    >
-      <input
-        {...props}
-        aria-label={ariaLabel}
-        checked={checked}
-        className="input_newsrollCheck"
-        id={inputId}
-        type="checkbox"
-      />
-      <NewsRollCheckBox checked={checked} size={size} />
-    </label>
-  );
+function getWithoutTextInputProps(props: CheckInputWithoutTextProps) {
+  const {
+    ariaLabel: _ariaLabel,
+    checked: _checked,
+    id: _id,
+    role: _role,
+    size: _size,
+    variant: _variant,
+    ...inputProps
+  } = props;
+
+  return inputProps;
 }

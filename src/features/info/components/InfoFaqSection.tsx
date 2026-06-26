@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 import { type Faq } from "@/app/_newsroll/api";
 import { ContentAccordion } from "@/design-system/components";

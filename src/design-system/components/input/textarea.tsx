@@ -1,20 +1,23 @@
 import { useId, type TextareaHTMLAttributes } from "react";
 
-import { cn } from "../shared/utils";
-
 type TextareaState = "default" | "error" | "view";
+export type TextareaVariant = "default" | "commentEdit" | "inquiry";
 
-export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+export type TextareaProps = Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "className"
+> & {
   state?: TextareaState;
+  variant?: TextareaVariant;
 };
 
 export function Textarea({
-  className,
   disabled,
   id,
   name,
   readOnly,
   state = "default",
+  variant = "default",
   ...props
 }: TextareaProps) {
   const generatedId = useId();
@@ -23,11 +26,9 @@ export function Textarea({
 
   return (
     <textarea
-      className={cn(
-        "textarea",
-        className,
-      )}
+      className="textarea"
       data-state={isView ? "view" : state}
+      data-variant={variant}
       disabled={disabled}
       id={fieldId}
       name={name}

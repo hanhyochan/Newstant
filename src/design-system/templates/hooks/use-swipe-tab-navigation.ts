@@ -1,4 +1,4 @@
-import { useRef, useState, type TouchEventHandler } from "react";
+﻿import { useRef, useState, type TouchEventHandler } from "react";
 
 export type SwipeTabItem<T extends string> = {
   id: T;

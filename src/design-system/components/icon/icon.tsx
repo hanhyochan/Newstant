@@ -31,9 +31,22 @@ export type IconName =
 
 export type IconSize = 12 | 20;
 
-export function Icon({ name, size }: { name: IconName; size?: IconSize }) {
+export function Icon({
+  className,
+  name,
+  size,
+}: {
+  className?: string;
+  name: IconName;
+  size?: IconSize;
+}) {
   const iconSize = size ?? 20;
-  const sizeClassName = `newsroll_icon_${iconSize}`;
 
-  return <span aria-hidden="true" className={`${sizeClassName} newsroll_icon_${name}`} />;
+  return (
+    <span
+      aria-hidden="true"
+      className={["icon", `icon_${name}`, className].filter(Boolean).join(" ")}
+      data-size={iconSize}
+    />
+  );
 }

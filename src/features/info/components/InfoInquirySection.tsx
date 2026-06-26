@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 import {
   inquiryApi,
@@ -100,18 +100,17 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           placeholder="문의 제목을 입력해주세요."
           type="text"
           value={inquiryTitle}
-          variant="comment"
         />
       </div>
       <div className="wrapper_infoField">
         <span className="text_infoFieldLabel">내용</span>
         <Textarea
           aria-label="문의 내용"
-          className="textarea_infoComposer"
           onChange={(event) => setInquiryContent(event.target.value)}
           placeholder="문의 내용을 자세히 작성해주세요."
           rows={7}
           value={inquiryContent}
+          variant="inquiry"
         />
       </div>
       {inquiryStatus === "error" ? (

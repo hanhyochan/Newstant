@@ -84,7 +84,9 @@ export function PillTabMenu<T extends string>({
       onKeyDown={keyboardNavigation ? handleKeyDown : undefined}
     >
       {items.map((item, index) => {
-        const itemState = getItemState?.(item.id) ?? (value === item.id ? "active" : "default");
+        const itemState =
+          getItemState?.(item.id) ??
+          (value === item.id ? "active" : "default");
         const isActive = itemState === "active";
         const isSelected = itemState === "selected";
         const button = (
@@ -95,14 +97,13 @@ export function PillTabMenu<T extends string>({
             aria-pressed={role === "group" ? isActive || isSelected : undefined}
             aria-selected={role === "tablist" ? isActive : undefined}
             className={getButtonClassName?.(item.id)}
-            dataState={itemState}
             id={getTabId?.(item.id)}
             onClick={() => onChange(item.id)}
             ref={(node) => {
               buttonRefs.current[index] = node;
             }}
             role={role === "tablist" ? "tab" : role === "radiogroup" ? "radio" : undefined}
-            state={isActive || isSelected ? "active" : "default"}
+            state={itemState}
             tabIndex={role === "group" ? 0 : isActive ? 0 : -1}
           >
             {renderItemContent?.(item) ?? item.label}

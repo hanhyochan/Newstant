@@ -12,10 +12,10 @@ import {
 import {
   FieldActionButton,
   ChevronRowButton,
+  CheckInput,
   Icon,
   IconButton,
-  NewsRollDivider,
-  NewsRollCheckField,
+  Divider,
   PillTabMenu,
   PrimaryButton,
   PrimaryButtonGroup,
@@ -25,7 +25,7 @@ import {
   SearchResultButton,
   SocialLoginButton,
   TextButton,
-  TransparentTextInput,
+  TextInput,
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
@@ -191,14 +191,13 @@ export function LoginView({
         >
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
-              <TransparentTextInput
+              <TextInput mode="dark"
                 aria-describedby={emailValidation.errorMessage ? loginEmailErrorId : undefined}
                 aria-invalid={Boolean(emailValidation.errorMessage)}
                 aria-label="이메일 입력"
                 autoComplete="email"
                 autoCapitalize="none"
                 autoCorrect="off"
-                className="input_authEmailControl"
                 onBlur={emailValidation.markTouched}
                 onChange={(event) => setEmail(event.currentTarget.value)}
                 placeholder="이메일"
@@ -214,7 +213,7 @@ export function LoginView({
             </div>
             <div className="wrapper_authField">
               <div className="wrapper_loginPasswordField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={
                     passwordValidation.errorMessage ? loginPasswordErrorId : undefined
                   }
@@ -257,9 +256,9 @@ export function LoginView({
       </PrimaryButtonGroup>
             <AuthValidationError id="login-submit-error" message={loginError} />
             <div className="wrapper_loginActions">
-              <NewsRollCheckField
+              <CheckInput
                 checked={isAutoLogin}
-                className="btn_loginAuto"
+                role="autoLogin"
                 size="md"
                 label="자동 로그인"
                 onChange={() => setIsAutoLogin((current) => !current)}
@@ -714,18 +713,17 @@ function SignupAgreementSearchView({
           className="form_searchComposer newsroll_motion_enterUp"
           onSubmit={(event) => event.preventDefault()}
         >
-          <label className="input_searchField">
-            <span className="sr_only">동의 문구 검색</span>
-            <input
-              name="agreement-search"
-              onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="검색 키워드를 입력해주세요"
-              ref={inputRef}
-              type="search"
-              value={query}
-            />
-            <Icon name="search" />
-          </label>
+          <TextInput
+            aria-label="동의 문구 검색"
+            mode="dark"
+            name="agreement-search"
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            placeholder="검색 키워드를 입력해주세요"
+            ref={inputRef}
+            rightSlot={<Icon name="search" />}
+            type="search"
+            value={query}
+          />
         </form>
 
         {trimmedQuery ? (
@@ -859,12 +857,12 @@ export function SignupAgreementView({
               </ChevronRowButton>
             ))}
 
-            <NewsRollDivider className="divider_signupAgreementAll" />
+            <Divider className="divider_signupAgreementAll" />
 
             <div className="wrapper_signupAgreementAll">
-              <NewsRollCheckField
+              <CheckInput
                 checked={isAllChecked}
-                className="btn_signupAgreementAll"
+                role="agreementAll"
                 size="lg"
                 label="전체 동의"
                 onChange={toggleAllAgreements}
@@ -1051,7 +1049,7 @@ export function SignupEmailView({
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
               <div className="wrapper_signupEmailField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={[
                     emailValidation.errorMessage ? signupEmailErrorId : "",
                     emailCheckMessage ? signupEmailCheckId : "",
@@ -1063,7 +1061,6 @@ export function SignupEmailView({
                   autoComplete="email"
                   autoCapitalize="none"
                   autoCorrect="off"
-                  className="input_authEmailControl"
                   onBlur={emailValidation.markTouched}
                   onChange={(event) => updateEmail(event.currentTarget.value)}
                   placeholder="이메일"
@@ -1102,7 +1099,7 @@ export function SignupEmailView({
               <div className="wrapper_authField">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
-                    <TransparentTextInput
+                    <TextInput mode="dark"
                       aria-describedby={
                         verificationCodeValidation.errorMessage
                           ? signupVerificationCodeErrorId
@@ -1322,7 +1319,7 @@ export function PasswordResetEmailView({
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
               <div className="wrapper_signupEmailField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={[
                     emailValidation.errorMessage ? passwordResetEmailErrorId : "",
                     emailCheckMessage ? passwordResetEmailCheckId : "",
@@ -1334,7 +1331,6 @@ export function PasswordResetEmailView({
                   autoComplete="email"
                   autoCapitalize="none"
                   autoCorrect="off"
-                  className="input_authEmailControl"
                   onBlur={emailValidation.markTouched}
                   onChange={(event) => updateEmail(event.currentTarget.value)}
                   placeholder="이메일"
@@ -1373,7 +1369,7 @@ export function PasswordResetEmailView({
               <div className="wrapper_authField">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
-                    <TransparentTextInput
+                    <TextInput mode="dark"
                       aria-describedby={
                         verificationCodeValidation.errorMessage
                           ? passwordResetVerificationCodeErrorId
@@ -1487,7 +1483,7 @@ export function PasswordResetPasswordView({
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
               <div className="wrapper_loginPasswordField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={
                     nextPasswordValidation.errorMessage ? nextPasswordErrorId : undefined
                   }
@@ -1520,7 +1516,7 @@ export function PasswordResetPasswordView({
             </div>
             <div className="wrapper_authField">
               <div className="wrapper_loginPasswordField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={
                     nextPasswordConfirmValidation.errorMessage
                       ? nextPasswordConfirmErrorId
@@ -1654,7 +1650,7 @@ export function SignupNicknameView({
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
               <div className="wrapper_signupEmailField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={[
                     nicknameValidation.errorMessage ? signupNicknameErrorId : "",
                     nicknameCheckMessage ? signupNicknameCheckId : "",
@@ -1766,7 +1762,7 @@ export function SignupPasswordView({
           <div className="wrapper_loginInputs">
             <div className="wrapper_authField">
               <div className="wrapper_loginPasswordField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={
                     passwordValidation.errorMessage ? signupPasswordErrorId : undefined
                   }
@@ -1797,7 +1793,7 @@ export function SignupPasswordView({
             </div>
             <div className="wrapper_authField">
               <div className="wrapper_loginPasswordField">
-                <TransparentTextInput
+                <TextInput mode="dark"
                   aria-describedby={
                     passwordConfirmValidation.errorMessage
                       ? signupPasswordConfirmErrorId

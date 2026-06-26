@@ -1,51 +1,59 @@
-import { useId, type InputHTMLAttributes } from "react";
-
-import { cn } from "../shared/utils";
+import {
+  forwardRef,
+  useId,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react";
 
 type TextInputState = "default" | "complete" | "error" | "view";
-export type TextInputVariant = "comment" | "dark" | "light";
+export type TextInputMode = "dark" | "light";
 
-export type TextInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
+export type TextInputProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "className" | "size"
+> & {
   hasEndAction?: boolean;
+  mode?: TextInputMode;
+  rightSlot?: ReactNode;
   state?: TextInputState;
-  variant?: TextInputVariant;
-  wrapperClassName?: string;
 };
 
-export function TextInput({
-  className,
-  disabled,
-  hasEndAction = false,
-  id,
-  name,
-  readOnly,
-  state = "default",
-  variant = "light",
-  wrapperClassName,
-  ...props
-}: TextInputProps) {
-  const generatedId = useId();
-  const isView = state === "view" || readOnly;
-  const fieldId = id ?? generatedId;
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+  function TextInput(
+    {
+      disabled,
+      hasEndAction = false,
+      id,
+      mode = "light",
+      name,
+      readOnly,
+      rightSlot,
+      state = "default",
+      ...props
+    },
+    ref,
+  ) {
+    const generatedId = useId();
+    const isView = state === "view" || readOnly;
+    const fieldId = id ?? generatedId;
 
-  return (
-    <label
-      className={cn(
-        "text_input",
-        variant !== "light" && `text_input_${variant}`,
-        wrapperClassName,
-      )}
-      data-end-action={hasEndAction ? "true" : undefined}
-      data-state={isView ? "view" : state}
-    >
-      <input
-        className={className}
-        disabled={disabled}
-        id={fieldId}
-        name={name}
-        readOnly={isView}
-        {...props}
-      />
-    </label>
-  );
-}
+    return (
+      <label
+        className="text_input"
+        data-end-action={hasEndAction || rightSlot ? "true" : undefined}
+        data-mode={mode}
+        data-state={isView ? "view" : state}
+      >
+        <input
+          disabled={disabled}
+          id={fieldId}
+          name={name}
+          readOnly={isView}
+          ref={ref}
+          {...props}
+        />
+        {rightSlot}
+      </label>
+    );
+  },
+);

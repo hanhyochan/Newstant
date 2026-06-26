@@ -104,8 +104,8 @@ export type {
   ActionMenuProps,
   UseActionMenuDismissProps,
 } from "./button/select-button/action-menu";
-export { NewsRollDivider } from "./shared/divider";
-export type { NewsRollDividerProps } from "./shared/divider";
+export { Divider } from "./shared/divider";
+export type { DividerProps } from "./shared/divider";
 export { OnoffToggleButton } from "./button/onoffToggle-button";
 export type { OnoffToggleButtonProps } from "./button/onoffToggle-button";
 export { NewViewToggleButton } from "./button/newViewToggle-button";
@@ -113,25 +113,17 @@ export type {
   NewViewToggleButtonItem,
   NewViewToggleButtonProps,
 } from "./button/newViewToggle-button";
-export {
-  NewsRollCheckBox,
-  NewsRollCheckField,
-  NewsRollCheckIconField,
-} from "./input/check-field";
+export { CheckInput } from "./input/check-field";
 export type {
-  NewsRollCheckBoxProps,
-  NewsRollCheckFieldProps,
-  NewsRollCheckIconFieldProps,
-  NewsRollCheckSize,
+  CheckInputProps,
+  CheckRole,
+  CheckSize,
+  CheckVariant,
 } from "./input/check-field";
-export { CommentComposerInput } from "./input/comment-composer-input";
-export type { CommentComposerInputProps } from "./input/comment-composer-input";
 export { Textarea } from "./input/textarea";
-export type { TextareaProps } from "./input/textarea";
+export type { TextareaProps, TextareaVariant } from "./input/textarea";
 export { TextInput } from "./input/text-input";
-export type { TextInputProps } from "./input/text-input";
-export { TransparentTextInput } from "./input/transparent-text-input";
-export type { TransparentTextInputProps } from "./input/transparent-text-input";
+export type { TextInputMode, TextInputProps } from "./input/text-input";
 export { NewsViewToggle } from "./navigation/news-view-toggle";
 export type { NewsViewMode, NewsViewToggleProps } from "./navigation/news-view-toggle";
 export { SelectButton } from "./button/select-button/select-button";

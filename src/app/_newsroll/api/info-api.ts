@@ -1,4 +1,4 @@
-import { apiClient } from "./http-client";
+﻿import { apiClient } from "./http-client";
 import type { Faq, InquiryType, Notice } from "./types";
 
 export const infoApi = {

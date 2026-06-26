@@ -7,7 +7,7 @@ import type {
 } from "react";
 import { useId } from "react";
 
-import { NewsRollCheckBox, type NewsRollCheckSize } from "../input/check-field";
+import { CheckInput, type CheckSize } from "../input/check-field";
 import { cn } from "../shared/utils";
 
 export type ChevronRowButtonType = "default" | "checkbox";
@@ -26,7 +26,7 @@ type ChevronRowCheckboxProps = Omit<
 > & {
   checked?: boolean;
   children: ReactNode;
-  checkboxSize?: NewsRollCheckSize;
+  checkboxSize?: CheckSize;
   chevronLabel: string;
   disabled?: boolean;
   inputId?: string;
@@ -72,21 +72,18 @@ export function ChevronRowButton(props: ChevronRowButtonProps) {
         data-row-type="checkbox"
         {...rowProps}
       >
-        <label className="btn_chevronRowCheckField" data-size={checkboxSize}>
-          <input
-            {...inputProps}
-            checked={checked}
-            className="input_newsrollCheck"
-            disabled={disabled}
-            id={resolvedInputId}
-            name={name}
-            onChange={onChange}
-            type="checkbox"
-            value={value}
-          />
-          <NewsRollCheckBox checked={checked} size={checkboxSize} />
-          <span>{children}</span>
-        </label>
+        <CheckInput
+          {...inputProps}
+          checked={checked}
+          disabled={disabled}
+          id={resolvedInputId}
+          label={children}
+          name={name}
+          onChange={onChange}
+          role="chevronRow"
+          size={checkboxSize}
+          value={value}
+        />
         <button
           aria-label={chevronLabel}
           className="btn_chevronRowArrow"

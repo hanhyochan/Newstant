@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Fragment,
@@ -34,10 +34,9 @@ import {
   ArticleVoteOptionButton,
   NoticeCardLink,
   ChipLabel,
-  CommentComposerInput,
   Icon,
   IconButton,
-  NewsRollDivider,
+  Divider,
   ContentActionButton,
   SelectButton,
   NewsViewToggle,
@@ -50,6 +49,7 @@ import {
   scrollSearchHighlightTargetIntoView,
   SearchHighlightText,
   TextButton,
+  TextInput,
   Textarea,
   useActionMenuDismiss,
   type IconName
@@ -1159,10 +1159,10 @@ function CommentInlineEditor({
     <div className="wrapper_commentEdit">
       <Textarea
         aria-label={ariaLabel}
-        className="textarea_commentEdit"
         onChange={(event) => onChange(event.target.value)}
         rows={4}
         value={value}
+        variant="commentEdit"
       />
       <PrimaryButtonGroup columns={2}>
         <PrimaryButton
@@ -2326,10 +2326,7 @@ function CommentReactionPanel({
                   return (
                     <Fragment key={comment.id}>
                       {index > 0 ? (
-                        <span
-                          aria-hidden="true"
-                          className="divider_commentItem"
-                        />
+                        <Divider className="divider_commentItem" />
                       ) : null}
                       <article
                         className="wrapper_commentItem"
@@ -2375,7 +2372,9 @@ function CommentReactionPanel({
                         <footer>
                           <TextButton
                             aria-controls={
-                              hasCommentReplies ? replyListId : undefined
+                              hasCommentReplies && isReplyListOpen
+                                ? replyListId
+                                : undefined
                             }
                             aria-expanded={
                               hasCommentReplies ? isReplyListOpen : undefined
@@ -2415,11 +2414,11 @@ function CommentReactionPanel({
                             </IconTextButton>
                           </span>
                         </footer>
-                        {hasCommentReplies ? (
+                        {hasCommentReplies && isReplyListOpen ? (
                           <div
-                            aria-hidden={!isReplyListOpen}
+                            aria-hidden={false}
                             aria-labelledby={replyToggleId}
-                            className={`wrapper_commentReplies${isReplyListOpen ? " is_open" : ""}`}
+                            className="wrapper_commentReplies is_open"
                             id={replyListId}
                             role="region"
                           >
@@ -2524,10 +2523,7 @@ function CommentReactionPanel({
                                     </footer>
                                   </article>
                                   {replyIndex < commentReplies.length - 1 ? (
-                                    <span
-                                      aria-hidden="true"
-                                      className="divider_commentItem"
-                                    />
+                                    <Divider className="divider_commentItem" />
                                   ) : null}
                                 </Fragment>
                               );
@@ -2616,17 +2612,24 @@ function CommentReactionPanel({
               submitComposer();
             }}
           >
-            <CommentComposerInput
-              label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
+            <TextInput
+              aria-label={composerMode === "reply" ? "대댓글 입력" : "댓글 입력"}
+              hasEndAction
               onChange={(event) => setComposerDraft(event.target.value)}
               placeholder={
                 composerMode === "reply"
                   ? "대댓글을 입력해 주세요."
                   : "홍길동님은 어떻게 생각하시나요?"
               }
-              submitLabel={
-                composerMode === "reply" ? "대댓글 등록" : "댓글 등록"
+              rightSlot={
+                <IconButton
+                  className="btn_commentSubmit"
+                  icon="submit"
+                  label={composerMode === "reply" ? "대댓글 등록" : "댓글 등록"}
+                  type="submit"
+                />
               }
+              type="text"
               value={composerDraft}
             />
           </form>
@@ -3093,7 +3096,7 @@ export function HomeReelCard({
               (numericIndex % 2 === 0 ? "국민일보" : "중앙일보")}
           </span>
         </div>
-        <NewsRollDivider
+        <Divider
           aria-hidden="true"
           className="divider_articleSource"
           orientation="vertical"

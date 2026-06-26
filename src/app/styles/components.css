@@ -1,4 +1,4 @@
-﻿/* Button: PrimaryButton */
+/* Button: PrimaryButton */
 .btn_primary {
   width: 100%;
   min-height: 48px;
@@ -145,9 +145,8 @@
   gap: 2px;
 }
 
-/* Input: CheckField */
-.btn_newsrollCheckField,
-.btn_newsrollCheckIconField {
+/* Input: CheckInput */
+.field_check {
   position: relative;
   min-width: 0;
   display: inline-flex;
@@ -161,11 +160,11 @@
   cursor: pointer;
 }
 
-.btn_newsrollCheckIconField {
+.field_check[data-variant='withoutText'] {
   justify-content: center;
 }
 
-.input_newsrollCheck {
+.input_check {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -176,34 +175,32 @@
   pointer-events: none;
 }
 
-.btn_newsrollCheckField:has(.input_newsrollCheck:focus-visible),
-.btn_newsrollCheckIconField:has(.input_newsrollCheck:focus-visible) {
+.field_check:has(.input_check:focus-visible) {
   outline: var(--border-2) solid currentColor;
   outline-offset: var(--spacing-gap-vertical-4);
 }
 
-.btn_newsrollCheckField:has(.input_newsrollCheck:disabled),
-.btn_newsrollCheckIconField:has(.input_newsrollCheck:disabled) {
+.field_check:has(.input_check:disabled) {
   cursor: default;
 }
 
-.btn_newsrollCheckField > span:not(.box_newsrollCheck) {
+.field_check > span:not(.box_check) {
   min-width: 0;
 }
 
-.btn_newsrollCheckField[data-size='md'] > span:not(.box_newsrollCheck) {
+.field_check[data-size='md'] > span:not(.box_check) {
   font-size: var(--font-size-15);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-20);
 }
 
-.btn_newsrollCheckField[data-size='lg'] > span:not(.box_newsrollCheck) {
+.field_check[data-size='lg'] > span:not(.box_check) {
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-600);
   line-height: var(--line-height-24);
 }
 
-.box_newsrollCheck {
+.box_check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -217,7 +214,7 @@
   line-height: var(--line-height-16);
 }
 
-.box_newsrollCheck[data-size='md'] {
+.box_check[data-size='md'] {
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
@@ -225,18 +222,18 @@
   line-height: var(--line-height-16);
 }
 
-.box_newsrollCheck[data-size='lg'] {
+.box_check[data-size='lg'] {
   width: 20px;
   height: 20px;
   flex: 0 0 20px;
   font-size: var(--font-size-12);
 }
 
-.box_newsrollCheck.is_checked {
+.box_check.is_checked {
   background: var(--color-common-100);
 }
 
-.box_newsrollCheck.is_checked::after {
+.box_check.is_checked::after {
   content: "";
   width: 4px;
   height: 8px;
@@ -271,24 +268,24 @@
 }
 
 .btn_chevronRowContent,
-.btn_chevronRowCheckField {
+.field_check[data-role='chevronRow'] {
   min-width: 0;
   flex: 1 1 auto;
 }
 
-.btn_chevronRowCheckField {
+.field_check[data-role='chevronRow'] {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-gap-horizontal-8);
   cursor: pointer;
 }
 
-.btn_chevronRowCheckField:has(.input_newsrollCheck:focus-visible) {
+.field_check[data-role='chevronRow']:has(.input_check:focus-visible) {
   outline: var(--border-2) solid var(--color-newsroll-purple-50);
   outline-offset: 2px;
 }
 
-.btn_chevronRowCheckField > span:not(.box_newsrollCheck) {
+.field_check[data-role='chevronRow'] > span:not(.box_check) {
   min-width: 0;
   color: inherit;
   font-size: var(--font-size-15);
@@ -312,36 +309,36 @@
 }
 
 .btn_chevronRowArrow:disabled,
-.btn_chevronRowCheckField:has(.input_newsrollCheck:disabled) {
+.field_check[data-role='chevronRow']:has(.input_check:disabled) {
   cursor: default;
   opacity: 0.5;
 }
 
 /* Icon: shared mask sizes */
-.newsroll_icon_20,
-.newsroll_icon_12 {
+.icon[data-size="20"],
+.icon[data-size="12"] {
   display: inline-block;
   flex: 0 0 auto;
   background: currentColor;
-  -webkit-mask: var(--newsroll-icon-url, var(--newsroll-icon-outline-url))
+  -webkit-mask: var(--icon-url, var(--icon-outline-url))
     center / contain no-repeat;
-  mask: var(--newsroll-icon-url, var(--newsroll-icon-outline-url)) center /
+  mask: var(--icon-url, var(--icon-outline-url)) center /
     contain no-repeat;
 }
 
-.newsroll_icon_20 {
+.icon[data-size="20"] {
   width: 20px;
   height: 20px;
   flex-basis: 20px;
 }
 
-.newsroll_icon_12 {
+.icon[data-size="12"] {
   width: 12px;
   height: 12px;
   flex-basis: 12px;
 }
 
-.newsroll_icon_image {
+.icon_image {
   width: 22px;
   height: 22px;
   display: block;
@@ -349,11 +346,11 @@
   object-fit: contain;
 }
 
-.btn_iconButton[data-variant="bottomNav"][aria-current="page"] .newsroll_icon_20,
-.btn_newsViewOption[aria-selected="true"] .newsroll_icon_20,
-.wrapper_articleReaction > button[aria-pressed="true"] .newsroll_icon_20,
-.wrapper_articleActions .btn_articleTool[aria-pressed="true"] .newsroll_icon_20 {
-  --newsroll-icon-url: var(--newsroll-icon-fill-url);
+.btn_iconButton[data-variant="bottomNav"][aria-current="page"] .icon[data-size="20"],
+.btn_newsViewOption[aria-selected="true"] .icon[data-size="20"],
+.wrapper_articleReaction > button[aria-pressed="true"] .icon[data-size="20"],
+.wrapper_articleActions .btn_articleTool[aria-pressed="true"] .icon[data-size="20"] {
+  --icon-url: var(--icon-fill-url);
 }
 
 /* Button: ToggleButton */
@@ -511,47 +508,47 @@
 }
 
 .btn_iconTextButton[data-tone="like"],
-.btn_iconTextButton[data-tone="like"] .newsroll_icon_20,
+.btn_iconTextButton[data-tone="like"] .icon[data-size="20"],
 .btn_iconTextButton[data-tone="like"] strong {
   color: var(--color-red-50);
 }
 
 .btn_iconTextButton[data-tone="dislike"],
-.btn_iconTextButton[data-tone="dislike"] .newsroll_icon_20,
+.btn_iconTextButton[data-tone="dislike"] .icon[data-size="20"],
 .btn_iconTextButton[data-tone="dislike"] strong {
   color: var(--color-blue-50);
 }
 
 .btn_iconTextButton[data-tone="neutral"],
-.btn_iconTextButton[data-tone="neutral"] .newsroll_icon_20,
+.btn_iconTextButton[data-tone="neutral"] .icon[data-size="20"],
 .btn_iconTextButton[data-tone="neutral"] strong {
   color: var(--color-cool-neutral-50);
 }
 
-.btn_iconTextButton[data-tone="bookmark"] .newsroll_icon_20 {
+.btn_iconTextButton[data-tone="bookmark"] .icon[data-size="20"] {
   color: var(--color-blue-50);
 }
 
-.btn_iconTextButton[data-tone="vote"] .newsroll_icon_20 {
+.btn_iconTextButton[data-tone="vote"] .icon[data-size="20"] {
   color: var(--color-red-orange-50);
 }
 
-.btn_iconTextButton[data-tone="comment"] .newsroll_icon_20 {
+.btn_iconTextButton[data-tone="comment"] .icon[data-size="20"] {
   color: var(--color-newsroll-purple-50);
 }
 
 .wrapper_articleCardContent .btn_iconTextButton[data-tone="like"],
-.wrapper_articleCardContent .btn_iconTextButton[data-tone="like"] .newsroll_icon_20 {
+.wrapper_articleCardContent .btn_iconTextButton[data-tone="like"] .icon[data-size="20"] {
   color: var(--color-red-50);
 }
 
 .wrapper_articleCardContent .btn_iconTextButton[data-tone="dislike"],
-.wrapper_articleCardContent .btn_iconTextButton[data-tone="dislike"] .newsroll_icon_20 {
+.wrapper_articleCardContent .btn_iconTextButton[data-tone="dislike"] .icon[data-size="20"] {
   color: var(--color-blue-50);
 }
 
 .wrapper_articleCardContent .btn_iconTextButton[data-tone="neutral"],
-.wrapper_articleCardContent .btn_iconTextButton[data-tone="neutral"] .newsroll_icon_20 {
+.wrapper_articleCardContent .btn_iconTextButton[data-tone="neutral"] .icon[data-size="20"] {
   color: var(--color-cool-neutral-50);
 }
 
@@ -559,7 +556,7 @@
   color: var(--color-red-50);
 }
 
-.btn_iconTextButton[data-size="small"][data-tone="like"] .newsroll_icon_20 {
+.btn_iconTextButton[data-size="small"][data-tone="like"] .icon[data-size="20"] {
   color: var(--color-red-50);
 }
 
@@ -567,13 +564,13 @@
   color: var(--color-blue-50);
 }
 
-.btn_iconTextButton[data-size="small"][data-tone="dislike"] .newsroll_icon_20 {
+.btn_iconTextButton[data-size="small"][data-tone="dislike"] .icon[data-size="20"] {
   color: var(--color-blue-50);
 }
 
-.btn_iconTextButton[data-size="small"][data-tone="like"][aria-pressed="true"] .newsroll_icon_20,
-.btn_iconTextButton[data-size="small"][data-tone="dislike"][aria-pressed="true"] .newsroll_icon_20 {
-  --newsroll-icon-url: var(--newsroll-icon-fill-url);
+.btn_iconTextButton[data-size="small"][data-tone="like"][aria-pressed="true"] .icon[data-size="20"],
+.btn_iconTextButton[data-size="small"][data-tone="dislike"][aria-pressed="true"] .icon[data-size="20"] {
+  --icon-url: var(--icon-fill-url);
 }
 
 /* Button: ContentActionButton */
@@ -601,6 +598,38 @@
   color: var(--color-common-100);
   background: transparent;
   border-color: var(--color-common-100);
+}
+
+/* Button: PaginationButton */
+.btn_pagination {
+  width: auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: 0;
+  border: 0;
+  color: var(--color-cool-neutral-15);
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+  white-space: nowrap;
+}
+
+.btn_pagination:disabled {
+  color: var(--color-label-assistive);
+  cursor: default;
+}
+
+.btn_pagination .icon_arrow {
+  transform-origin: center;
+}
+
+.btn_pagination[data-direction="previous"] .icon_arrow {
+  transform: rotate(180deg);
 }
 
 /* Button: SelectButton and ActionMenu */
@@ -740,7 +769,7 @@
   transition: none;
 }
 
-.btn_noticeCardLink > .newsroll_icon_policy {
+.btn_noticeCardLink > .icon_policy {
   width: 20px;
   height: 20px;
   flex: 0 0 auto;
@@ -1005,7 +1034,7 @@
 .btn_commentSubmit:focus-visible,
 .btn_originalArticle:focus-visible,
 .btn_textAction:focus-visible,
-.text_input_comment:focus-within,
+.form_commentComposer .text_input:focus-within,
 .newsroll_text_size_button:focus-visible,
 .newsroll_toolbar_icon:focus-visible,
 .btn_tab:focus-visible,

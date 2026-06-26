@@ -1,4 +1,4 @@
-﻿import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   Inquiry,
@@ -20,9 +20,8 @@ import {
   IconButton,
   PrimaryButton,
   PrimaryButtonGroup,
-  NewsRollDivider,
-  NewsRollCheckField,
-  NewsRollCheckIconField,
+  Divider,
+  CheckInput,
   PillTabMenu,
   SettingRowButton,
   TextButton,
@@ -230,7 +229,7 @@ function InquiryDetailContent({
         </div>
       </div>
 
-      <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
+      <Divider className="newsroll_policy_detail_actions_divider" />
 
       <p className="newsroll_policy_detail_summary">{inquiry.content}</p>
       {inquiryReplyEmail ? (
@@ -316,7 +315,7 @@ function InquiryHistory({
             </div>
           </ContentSummaryButton>
           {index < inquiries.length - 1 ? (
-            <NewsRollDivider className="newsroll_policy_itemDivider" />
+            <Divider className="newsroll_policy_itemDivider" />
           ) : null}
         </Fragment>
       ))}
@@ -500,9 +499,9 @@ function ModerationHistory({
         />
       )}
       {isReport ? null : (
-        <NewsRollCheckField
+        <CheckInput
           checked={isAllSelected}
-          className="btn_myModerationSelectAll"
+          role="selectAll"
           size="lg"
           disabled={selectableActionIds.length === 0 || isReleasing}
           label="전체 선택"
@@ -524,16 +523,17 @@ function ModerationHistory({
 
               return (
                 <article className="wrapper_mySettingsHistoryItem" key={action.id}>
-                  {index > 0 ? <NewsRollDivider className="divider_mySection" /> : null}
+                  {index > 0 ? <Divider className="divider_mySection" /> : null}
                   <div
                     className="wrapper_myModerationSelectableItem"
                     data-selection-mode={isSelectionMode ? "true" : "false"}
                   >
                     {!isReport && isSelectionMode ? (
-                      <NewsRollCheckIconField
+                      <CheckInput
+                        variant="withoutText"
                         ariaLabel={`${targetLabel} 선택`}
                         checked={isSelected}
-                        className="btn_myModerationItemCheck"
+                        role="selectionItem"
                         onChange={() => toggleActionSelection(action.id)}
                         size="md"
                       />
@@ -564,9 +564,12 @@ function ModerationHistory({
         <PrimaryButton
             className="btn_myModerationRelease"
             disabled={isReleasing}
-            onClick={releaseSelectedActions}
+            onClick={releaseSelectedActions}
+
+
             tone="danger"
-            type="button"
+            type="button"
+
           >
             해제하기
           </PrimaryButton>
@@ -868,7 +871,6 @@ function AccountEditForm({
             autoComplete="email"
             autoCapitalize="none"
             autoCorrect="off"
-            className="input_authEmailControl"
             onBlur={emailValidation.markTouched}
             onChange={(event) => updateEmail(event.target.value)}
             placeholder="이메일"
@@ -971,7 +973,8 @@ function AccountEditForm({
         <PrimaryButtonGroup>
         <PrimaryButton
           disabled={status === "saving" || !isProfileReady}
-          type="submit"
+          type="submit"
+
         >
           저장
         </PrimaryButton>
@@ -1101,8 +1104,11 @@ function PasswordResetForm({
       ) : null}
       <PrimaryButtonGroup>
         <PrimaryButton
-        disabled={status === "saving"}
-        type="submit"
+        disabled={status === "saving"}
+
+
+        type="submit"
+
       >
         변경
       </PrimaryButton>
@@ -1149,8 +1155,11 @@ function MarketingConsentForm({
           onSubmit({ marketingAgreed: isAgreed })
             .then(() => setStatus("saved"))
             .catch(() => setStatus("error"));
-        }}
-        type="button"
+        }}
+
+
+        type="button"
+
       >
         저장
       </PrimaryButton>
@@ -1210,7 +1219,7 @@ export function MyProfileSettingDetailPage({
           )}
         </section>
       ) : null}
-      {shouldShowDivider ? <NewsRollDivider className="divider_mySection" /> : null}
+      {shouldShowDivider ? <Divider className="divider_mySection" /> : null}
       {itemId === "accountEdit" ? (
         <AccountEditForm onSubmit={onUserSubmit} user={user} users={users} />
       ) : itemId === "passwordReset" ? (

@@ -1,4 +1,4 @@
-export const fixedDockedPanelProps = {
+﻿export const fixedDockedPanelProps = {
   initiallyDocked: true,
   lockSheetPosition: true,
   movingSheet: true,

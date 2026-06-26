@@ -1,4 +1,4 @@
-export function createMockId(prefix: string) {
+﻿export function createMockId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`;
 }
 

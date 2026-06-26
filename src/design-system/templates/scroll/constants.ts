@@ -1,4 +1,4 @@
-export const newsrollHomeSheetDockedGap = 40;
+﻿export const newsrollHomeSheetDockedGap = 40;
 export const newsrollHomeSheetInitialGap = 40;
 export const newsrollHomeSheetScrollSelector = ".container_newsFeed, .wrapper_newsGridScroll";
 export const newsrollPagePanelDockedGap = 40;

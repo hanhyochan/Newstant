@@ -1,4 +1,4 @@
-export const signupViewOrder = [
+﻿export const signupViewOrder = [
   "signupAgreement",
   "signupEmail",
   "signupNickname",

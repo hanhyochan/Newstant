@@ -2,12 +2,11 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 import { cn } from "../shared/utils";
 
-export type TabButtonState = "active" | "default";
+export type TabButtonState = "active" | "default" | "selected";
 
 export interface TabButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  dataState?: string;
   state?: TabButtonState;
 }
 
@@ -16,7 +15,6 @@ export const TabButton = forwardRef<HTMLButtonElement, TabButtonProps>(
     {
       children,
       className,
-      dataState,
       state = "default",
       type = "button",
       ...props
@@ -30,7 +28,7 @@ export const TabButton = forwardRef<HTMLButtonElement, TabButtonProps>(
           "btn_tab",
           className,
         )}
-        data-state={dataState ?? state}
+        data-state={state}
         ref={ref}
         type={type}
       >

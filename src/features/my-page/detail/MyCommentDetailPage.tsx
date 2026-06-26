@@ -1,5 +1,4 @@
-﻿import {
-  Fragment,
+import {
   type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
@@ -7,7 +6,6 @@
 
 import {
   ChipLabel,
-  IconButton,
   PillTabMenu,
   IconTextButton,
   NewsHeadlineRowButton as AllNewsHeadlineItem,
@@ -66,7 +64,6 @@ function MyCommentPreviewThread({
   onOpenComment: () => void;
 }) {
   const replyToggleId = `${instanceId}-reply-toggle-${comment.id}`;
-  const replyListId = `${instanceId}-reply-list-${comment.id}`;
   const commentReplies: CommentReplyItem[] = Array.from(
     { length: Math.min(comment.replies, 3) },
     (_, replyIndex) => ({
@@ -76,7 +73,6 @@ function MyCommentPreviewThread({
   );
   const likeCount = comment.likes;
   const dislikeCount = comment.dislikes;
-  const hasCommentReplies = commentReplies.length > 0;
 
   function openCommentFromControl(event: MouseEvent<HTMLElement>) {
     event.stopPropagation();
@@ -105,8 +101,6 @@ function MyCommentPreviewThread({
       <p>{comment.body}</p>
       <footer>
         <TextButton
-          aria-controls={hasCommentReplies ? replyListId : undefined}
-          aria-expanded={hasCommentReplies ? false : undefined}
           id={replyToggleId}
           onClick={openCommentFromControl}
           type="button"
@@ -136,70 +130,6 @@ function MyCommentPreviewThread({
           </IconTextButton>
         </span>
       </footer>
-      {hasCommentReplies ? (
-        <div
-          aria-hidden="true"
-          aria-labelledby={replyToggleId}
-          className="wrapper_commentReplies"
-          id={replyListId}
-          role="region"
-        >
-          <div className="wrapper_commentRepliesInner">
-            {commentReplies.map((reply, replyIndex) => (
-              <Fragment key={reply.id}>
-                <article
-                  className="wrapper_commentReplyItem"
-                  id={`${instanceId}-reply-${reply.id}`}
-                >
-                  <header>
-                    <span className="wrapper_commentMeta">
-                      <strong>{reply.author}</strong>
-                      <NewsCreatedTime>{reply.date}</NewsCreatedTime>
-                    </span>
-                    <span className="wrapper_commentAction">
-                      <IconButton
-                        aria-expanded={false}
-                        aria-haspopup="menu"
-                        className="btn_commentAction"
-                        disabled
-                        icon="detail"
-                        label="대댓글 더보기"
-                      />
-                    </span>
-                  </header>
-                  <ChipLabel>{reply.choice}</ChipLabel>
-                  <p>{reply.body}</p>
-                  <footer>
-                    <span>
-                      <IconTextButton
-                        aria-label="대댓글 좋아요"
-                        disabled
-                        icon="thumbUp"
-                        tone="like"
-                        size="small"
-                      >
-                        {getVisibleReactionCount(reply.likes)}
-                      </IconTextButton>
-                      <IconTextButton
-                        aria-label="대댓글 싫어요"
-                        disabled
-                        icon="thumbDown"
-                        tone="dislike"
-                        size="small"
-                      >
-                        {getVisibleReactionCount(reply.dislikes)}
-                      </IconTextButton>
-                    </span>
-                  </footer>
-                </article>
-                {replyIndex < commentReplies.length - 1 ? (
-                  <span aria-hidden="true" className="divider_commentItem" />
-                ) : null}
-              </Fragment>
-            ))}
-          </div>
-        </div>
-      ) : null}
     </article>
   );
 }

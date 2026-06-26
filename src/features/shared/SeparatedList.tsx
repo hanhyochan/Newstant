@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 
-import { NewsRollDivider } from "@/design-system/components";
+import { Divider } from "@/design-system/components";
 
 type DividerPlacement = "after-wrapped-item" | "before-item" | "inside-wrapped-item";
 
@@ -12,12 +12,12 @@ export type SeparatedListProps<T> = {
   renderItem: (item: T, index: number) => ReactNode;
 };
 
-function Divider({ className }: { className: string }) {
-  return <NewsRollDivider className={className} />;
+function ListDivider({ className }: { className?: string }) {
+  return <Divider className={className} />;
 }
 
 export function SeparatedList<T>({
-  dividerClassName = "newsroll_divider_horizontal",
+  dividerClassName,
   dividerPlacement = "before-item",
   getKey,
   items,
@@ -35,7 +35,7 @@ export function SeparatedList<T>({
                 {renderItem(item, index)}
               </div>
               {index < items.length - 1 ? (
-                <Divider className={dividerClassName} />
+                <ListDivider className={dividerClassName} />
               ) : null}
             </Fragment>
           );
@@ -46,7 +46,7 @@ export function SeparatedList<T>({
             <div className="wrapper_separatedItem" key={key}>
               {renderItem(item, index)}
               {index < items.length - 1 ? (
-                <Divider className={dividerClassName} />
+                <ListDivider className={dividerClassName} />
               ) : null}
             </div>
           );
@@ -55,7 +55,7 @@ export function SeparatedList<T>({
         return (
           <Fragment key={key}>
             {index > 0 ? (
-              <NewsRollDivider className={dividerClassName} />
+              <Divider className={dividerClassName} />
             ) : null}
             {renderItem(item, index)}
           </Fragment>

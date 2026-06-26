@@ -1,4 +1,4 @@
-    .newsroll_motion_enterUp {
+﻿    .newsroll_motion_enterUp {
         animation: newsroll_enterUp var(--newsroll-docked-pop-motion-duration, 260ms)
             var(--newsroll-docked-pop-motion-easing, ease) both;
     }

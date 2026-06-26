@@ -1,4 +1,4 @@
-export { NewsRollCommonLayout } from "./common-layout";
+﻿export { NewsRollCommonLayout } from "./common-layout";
 export { NewsRollArticleDetailPanel } from "./article-detail-panel";
 export { NewsRollDockedControls } from "./docked-controls";
 export { NewsRollDetailBackButton } from "./detail-back-button";

@@ -9,7 +9,7 @@ import {
   PaginationButton,
   Icon,
   IconButton,
-  NewsRollDivider,
+  Divider,
   PrimaryButton,
   PrimaryButtonGroup,
   getSearchHighlightTargetId,
@@ -231,7 +231,7 @@ export function PolicyDetailContent({
         </div>
       </div>
 
-      <NewsRollDivider className="newsroll_policy_detail_actions_divider" />
+      <Divider className="newsroll_policy_detail_actions_divider" />
 
       <p className="newsroll_policy_detail_summary">
         <SearchHighlightText

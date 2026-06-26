@@ -1,4 +1,4 @@
-import { ContentActionButton } from "@/design-system/components";
+import { ContentActionButton, Icon } from "@/design-system/components";
 
 export function MoreActionButton({
   ariaLabel,
@@ -27,12 +27,7 @@ export function MoreActionButton({
     >
       <span>{expanded ? expandedLabel : collapsedLabel}</span>
       {showIcon ? (
-        <img
-          alt=""
-          aria-hidden="true"
-          className="newsroll_icon_image newsroll_all_more_icon"
-          src="/icons/icon_chevron.svg"
-        />
+        <Icon className="newsroll_all_more_icon" name="chevron" />
       ) : null}
     </ContentActionButton>
   );

@@ -7,8 +7,7 @@ import {
 import {
   PrimaryButton,
   PrimaryButtonGroup,
-  NewsRollCheckField,
-  NewsRollCheckIconField,
+  CheckInput,
   PillTabMenu,
   NewsListCardButton as AllNewsRelayItem,
 } from "@/design-system/components";
@@ -114,9 +113,9 @@ export function MyRecentDetailPage({
     selectableViewIds.length > 0 &&
     selectableViewIds.every((viewId) => selectedViewIds.has(viewId));
   const selectAllControl = (
-    <NewsRollCheckField
+    <CheckInput
       checked={isAllSelected}
-      className="btn_myRecentSelectAll"
+      role="selectAll"
       size="lg"
       disabled={selectableViewIds.length === 0 || isDeleting}
       label="전체 선택"
@@ -261,10 +260,11 @@ export function MyRecentDetailPage({
                     data-selection-mode={isSelectionMode ? "true" : "false"}
                   >
                     {isSelectionMode ? (
-                      <NewsRollCheckIconField
+                      <CheckInput
+                        variant="withoutText"
                         ariaLabel={`${item.title} 선택`}
                         checked={isSelected}
-                        className="btn_myRecentItemCheck"
+                        role="selectionItem"
                         onChange={() => toggleItemSelection(item.viewId)}
                         size="md"
                       />

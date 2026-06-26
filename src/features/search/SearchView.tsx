@@ -13,6 +13,7 @@ import {
   Icon,
   SearchHighlightText,
   SearchResultButton,
+  TextInput,
 } from "@/design-system/components";
 import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
 
@@ -301,18 +302,17 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
           className="form_searchComposer newsroll_motion_enterUp"
           onSubmit={(event) => event.preventDefault()}
         >
-          <label className="input_searchField">
-            <span className="sr_only">통합검색어 입력</span>
-            <input
-              name="global-search"
-              onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="검색 키워드를 입력해주세요"
-              ref={searchInputRef}
-              type="search"
-              value={query}
-            />
-            <Icon name="search" />
-          </label>
+          <TextInput
+            aria-label="통합검색어 입력"
+            mode="dark"
+            name="global-search"
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            placeholder="검색 키워드를 입력해주세요"
+            ref={searchInputRef}
+            rightSlot={<Icon name="search" />}
+            type="search"
+            value={query}
+          />
         </form>
 
         {normalizedQuery ? (

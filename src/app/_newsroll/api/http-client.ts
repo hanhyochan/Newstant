@@ -1,4 +1,4 @@
-import { buildApiUrl } from "../api-config";
+﻿import { buildApiUrl } from "../api-config";
 
 type QueryParams = Record<string, string | number | boolean | undefined | null>;
 

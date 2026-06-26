@@ -76,14 +76,6 @@
   line-height: var(--line-height-20);
 }
 
-.newsroll_icon_button {
-  width: var(--spacing-padding-horizontal-24);
-  height: var(--spacing-padding-vertical-24);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .newsroll_toolbar_icon {
   color: var(--color-common-100);
 }
@@ -390,6 +382,7 @@
   min-height: 52px;
   display: inline-flex;
   align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
   padding-inline: var(--spacing-padding-horizontal-12);
   border: var(--border-1) solid var(--color-line-normal-normal);
   border-radius: var(--radius-8);
@@ -414,6 +407,12 @@
 .text_input input::placeholder,
 .textarea::placeholder {
   color: var(--color-label-assistive);
+}
+
+.text_input input[type="search"]::-webkit-search-cancel-button,
+.text_input input[type="search"]::-webkit-search-decoration {
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .text_input[data-state="error"] {
@@ -662,13 +661,6 @@
   line-height: var(--line-height-40);
 }
 
-.newsroll_icon_button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-label-assistive);
-}
-
 .newsroll_toolbar_icon {
   width: var(--spacing-padding-horizontal-24);
   height: var(--spacing-padding-vertical-24);
@@ -904,151 +896,151 @@
   pointer-events: auto;
 }
 
-.newsroll_icon_alarm {
-  --newsroll-icon-outline-url: url("/icons/icon_alarm_outline.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_alarm_active.svg");
+.icon_alarm {
+  --icon-outline-url: url("/icons/icon_alarm_outline.svg");
+  --icon-fill-url: url("/icons/icon_alarm_active.svg");
 }
 
-.newsroll_icon_bookmark {
-  --newsroll-icon-outline-url: url("/icons/icon_bookmark_line.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_bookmark_active.svg");
+.icon_bookmark {
+  --icon-outline-url: url("/icons/icon_bookmark_line.svg");
+  --icon-fill-url: url("/icons/icon_bookmark_active.svg");
   color: var(--color-cool-neutral-50);
 }
 
-.newsroll_icon_arrow {
-  --newsroll-icon-outline-url: url("/icons/icon_arrow.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_arrow.svg");
+.icon_arrow {
+  --icon-outline-url: url("/icons/icon_arrow.svg");
+  --icon-fill-url: url("/icons/icon_arrow.svg");
 }
 
-.newsroll_icon_chat {
-  --newsroll-icon-outline-url: url("/icons/icon_chat_bubble_active.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_chat_bubble_active.svg");
+.icon_chat {
+  --icon-outline-url: url("/icons/icon_chat_bubble_active.svg");
+  --icon-fill-url: url("/icons/icon_chat_bubble_active.svg");
 }
 
-.newsroll_icon_chevron {
-  --newsroll-icon-outline-url: url("/icons/icon_chevron.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_chevron.svg");
+.icon_chevron {
+  --icon-outline-url: url("/icons/icon_chevron.svg");
+  --icon-fill-url: url("/icons/icon_chevron.svg");
 }
 
-.newsroll_icon_close {
-  --newsroll-icon-outline-url: url("/icons/icon_close.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_close.svg");
+.icon_close {
+  --icon-outline-url: url("/icons/icon_close.svg");
+  --icon-fill-url: url("/icons/icon_close.svg");
 }
 
-.newsroll_icon_detail {
-  --newsroll-icon-outline-url: url("/icons/icon_detail.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_detail.svg");
+.icon_detail {
+  --icon-outline-url: url("/icons/icon_detail.svg");
+  --icon-fill-url: url("/icons/icon_detail.svg");
 }
 
-.newsroll_icon_dots {
-  --newsroll-icon-outline-url: url("/icons/icon_notgood.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_notgood_active.svg");
+.icon_dots {
+  --icon-outline-url: url("/icons/icon_notgood.svg");
+  --icon-fill-url: url("/icons/icon_notgood_active.svg");
 }
 
-.newsroll_icon_earth {
-  --newsroll-icon-outline-url: url("/icons/icon_all_news.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_all_news_active.svg");
+.icon_earth {
+  --icon-outline-url: url("/icons/icon_all_news.svg");
+  --icon-fill-url: url("/icons/icon_all_news_active.svg");
 }
 
-.newsroll_icon_allNews {
-  --newsroll-icon-outline-url: url("/icons/icon_all_news.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_all_news_active.svg");
+.icon_allNews {
+  --icon-outline-url: url("/icons/icon_all_news.svg");
+  --icon-fill-url: url("/icons/icon_all_news_active.svg");
 }
 
-.newsroll_icon_fourSquare {
-  --newsroll-icon-outline-url: url("/icons/icon_four_square_outline.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_four_square_active.svg");
+.icon_fourSquare {
+  --icon-outline-url: url("/icons/icon_four_square_outline.svg");
+  --icon-fill-url: url("/icons/icon_four_square_active.svg");
 }
 
-.newsroll_icon_eye {
-  --newsroll-icon-outline-url: url("/icons/icon_eye.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_eye.svg");
+.icon_eye {
+  --icon-outline-url: url("/icons/icon_eye.svg");
+  --icon-fill-url: url("/icons/icon_eye.svg");
 }
 
-.newsroll_icon_home {
-  --newsroll-icon-outline-url: url("/icons/icon_home.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_home_active.svg");
+.icon_home {
+  --icon-outline-url: url("/icons/icon_home.svg");
+  --icon-fill-url: url("/icons/icon_home_active.svg");
 }
 
-.newsroll_icon_list {
-  --newsroll-icon-outline-url: url("/icons/icon_list_bulleted_outline.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_list_bulleted_active.svg");
+.icon_list {
+  --icon-outline-url: url("/icons/icon_list_bulleted_outline.svg");
+  --icon-fill-url: url("/icons/icon_list_bulleted_active.svg");
 }
 
-.newsroll_icon_loudspeaker {
-  --newsroll-icon-outline-url: url("/icons/icon_policy.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_policy_active.svg");
+.icon_loudspeaker {
+  --icon-outline-url: url("/icons/icon_policy.svg");
+  --icon-fill-url: url("/icons/icon_policy_active.svg");
 }
 
-.newsroll_icon_policy {
-  --newsroll-icon-outline-url: url("/icons/icon_policy.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_policy_active.svg");
+.icon_policy {
+  --icon-outline-url: url("/icons/icon_policy.svg");
+  --icon-fill-url: url("/icons/icon_policy_active.svg");
 }
 
-.newsroll_icon_plus {
-  --newsroll-icon-outline-url: url("/icons/icon_plus.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_plus.svg");
+.icon_plus {
+  --icon-outline-url: url("/icons/icon_plus.svg");
+  --icon-fill-url: url("/icons/icon_plus.svg");
 }
 
-.newsroll_icon_question {
-  --newsroll-icon-outline-url: url("/icons/icon_information.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_information_active.svg");
+.icon_question {
+  --icon-outline-url: url("/icons/icon_information.svg");
+  --icon-fill-url: url("/icons/icon_information_active.svg");
 }
 
-.newsroll_icon_vote {
-  --newsroll-icon-outline-url: url("/icons/icon_vote.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_vote_active.svg");
+.icon_vote {
+  --icon-outline-url: url("/icons/icon_vote.svg");
+  --icon-fill-url: url("/icons/icon_vote_active.svg");
 }
 
-.newsroll_icon_information {
-  --newsroll-icon-outline-url: url("/icons/icon_information.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_information_active.svg");
+.icon_information {
+  --icon-outline-url: url("/icons/icon_information.svg");
+  --icon-fill-url: url("/icons/icon_information_active.svg");
 }
 
-.newsroll_icon_search {
-  --newsroll-icon-outline-url: url("/icons/icon_search_outline.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_search_active.svg");
+.icon_search {
+  --icon-outline-url: url("/icons/icon_search_outline.svg");
+  --icon-fill-url: url("/icons/icon_search_active.svg");
 }
 
-.newsroll_icon_setting {
-  --newsroll-icon-outline-url: url("/icons/icon_setting.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_setting_active.svg");
+.icon_setting {
+  --icon-outline-url: url("/icons/icon_setting.svg");
+  --icon-fill-url: url("/icons/icon_setting_active.svg");
 }
 
-.newsroll_icon_share {
-  --newsroll-icon-outline-url: url("/icons/icon_share_nodes_outline.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_share_nodes_active.svg");
+.icon_share {
+  --icon-outline-url: url("/icons/icon_share_nodes_outline.svg");
+  --icon-fill-url: url("/icons/icon_share_nodes_active.svg");
   color: var(--color-cool-neutral-50);
 }
 
-.newsroll_icon_sizeIncrease {
-  --newsroll-icon-outline-url: url("/icons/icon_sizeIncrease.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_sizeIncrease.svg");
+.icon_sizeIncrease {
+  --icon-outline-url: url("/icons/icon_sizeIncrease.svg");
+  --icon-fill-url: url("/icons/icon_sizeIncrease.svg");
 }
 
-.newsroll_icon_submit {
-  --newsroll-icon-outline-url: url("/icons/icon_submit.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_submit.svg");
+.icon_submit {
+  --icon-outline-url: url("/icons/icon_submit.svg");
+  --icon-fill-url: url("/icons/icon_submit.svg");
 }
 
-.newsroll_icon_thumbDown {
-  --newsroll-icon-outline-url: url("/icons/icon_bad.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_notgood_active.svg");
+.icon_thumbDown {
+  --icon-outline-url: url("/icons/icon_bad.svg");
+  --icon-fill-url: url("/icons/icon_notgood_active.svg");
 }
 
-.newsroll_icon_thumbUp {
-  --newsroll-icon-outline-url: url("/icons/icon_good.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_good_active.svg");
+.icon_thumbUp {
+  --icon-outline-url: url("/icons/icon_good.svg");
+  --icon-fill-url: url("/icons/icon_good_active.svg");
 }
 
-.newsroll_icon_user {
-  --newsroll-icon-outline-url: url("/icons/icon_my_page.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_my_page_active.svg");
+.icon_user {
+  --icon-outline-url: url("/icons/icon_my_page.svg");
+  --icon-fill-url: url("/icons/icon_my_page_active.svg");
 }
 
-.newsroll_icon_myPage {
-  --newsroll-icon-outline-url: url("/icons/icon_my_page.svg");
-  --newsroll-icon-fill-url: url("/icons/icon_my_page_active.svg");
+.icon_myPage {
+  --icon-outline-url: url("/icons/icon_my_page.svg");
+  --icon-fill-url: url("/icons/icon_my_page_active.svg");
 }
 
 @media (max-width: 430px) {
@@ -1094,14 +1086,6 @@
 .newsroll_header {
   gap: var(--spacing-gap-vertical-24);
   padding: var(--spacing-padding-vertical-24) 0 0;
-}
-
-.newsroll_icon_button {
-  width: var(--spacing-padding-horizontal-24);
-  height: var(--spacing-padding-vertical-24);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .newsroll_toolbar_icon {
@@ -1229,19 +1213,19 @@
   color: var(--color-common-100);
 }
 
-.text_input_dark {
+.text_input[data-mode="dark"] {
   color: var(--color-common-100);
   background: transparent;
   border-color: var(--color-common-100);
 }
 
-.text_input_dark input::placeholder {
+.text_input[data-mode="dark"] input::placeholder {
   color: var(--color-neutral-80);
   opacity: 1;
   -webkit-text-fill-color: var(--color-neutral-80);
 }
 
-.text_input_dark:focus-within {
+.text_input[data-mode="dark"]:focus-within {
   border-color: var(--color-common-100);
 }
 
@@ -1297,42 +1281,32 @@
   z-index: 2;
 }
 
-.container_authLayout .text_input_dark input::placeholder {
+.container_authLayout .text_input[data-mode="dark"] input::placeholder {
   color: var(--color-neutral-80);
   opacity: 1;
   -webkit-text-fill-color: var(--color-neutral-80);
 }
 
-.container_authLayout .text_input_dark input {
+.container_authLayout .text_input[data-mode="dark"] input {
   color: var(--color-common-100);
   caret-color: var(--color-common-100);
   -webkit-text-fill-color: var(--color-common-100);
 }
 
-.container_authLayout .text_input_dark input.input_authEmailControl,
-.container_authLayout .text_input_dark input.input_authEmailControl:focus,
-.container_authLayout .text_input_dark input.input_authEmailControl:active,
-.container_authLayout .text_input_dark input.input_authEmailControl:valid,
-.container_authLayout .text_input_dark input.input_authEmailControl:invalid {
+.container_authLayout .text_input[data-mode="dark"] input:focus,
+.container_authLayout .text_input[data-mode="dark"] input:active,
+.container_authLayout .text_input[data-mode="dark"] input:valid,
+.container_authLayout .text_input[data-mode="dark"] input:invalid {
   color: var(--color-common-100);
   caret-color: var(--color-common-100);
   -webkit-text-fill-color: var(--color-common-100);
   text-shadow: 0 0 0 var(--color-common-100);
 }
 
-.container_authLayout .text_input_dark input.input_authEmailControl::placeholder,
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:focus::placeholder,
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:active::placeholder,
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:valid::placeholder,
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:invalid::placeholder {
+.container_authLayout .text_input[data-mode="dark"] input:focus::placeholder,
+.container_authLayout .text_input[data-mode="dark"] input:active::placeholder,
+.container_authLayout .text_input[data-mode="dark"] input:valid::placeholder,
+.container_authLayout .text_input[data-mode="dark"] input:invalid::placeholder {
   color: var(--color-neutral-80);
   opacity: 1;
   -webkit-text-fill-color: var(--color-neutral-80);
@@ -1340,36 +1314,19 @@
 }
 
 .container_authLayout
-  .text_input_dark
-  input.input_authEmailControl::selection {
+  .text_input[data-mode="dark"]
+  input::selection {
   color: var(--color-common-0);
   background: var(--color-common-100);
   -webkit-text-fill-color: var(--color-common-0);
 }
 
-.container_authLayout .text_input_dark input:-webkit-autofill,
-.container_authLayout .text_input_dark input:-webkit-autofill:hover,
-.container_authLayout .text_input_dark input:-webkit-autofill:focus {
+.container_authLayout .text_input[data-mode="dark"] input:-webkit-autofill,
+.container_authLayout .text_input[data-mode="dark"] input:-webkit-autofill:hover,
+.container_authLayout .text_input[data-mode="dark"] input:-webkit-autofill:focus {
   caret-color: var(--color-common-100);
   -webkit-text-fill-color: var(--color-common-100);
   box-shadow: 0 0 0 1000px var(--color-newsroll-purple-20) inset;
-  transition: background-color 9999s ease-out;
-}
-
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:-webkit-autofill,
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:-webkit-autofill:hover,
-.container_authLayout
-  .text_input_dark
-  input.input_authEmailControl:-webkit-autofill:focus {
-  color: var(--color-common-100);
-  caret-color: var(--color-common-100);
-  -webkit-text-fill-color: var(--color-common-100);
-  box-shadow: 0 0 0 1000px var(--color-newsroll-purple-20) inset;
-  text-shadow: 0 0 0 var(--color-common-100);
   transition: background-color 9999s ease-out;
 }
 
@@ -1508,7 +1465,7 @@
   padding: 0;
 }
 
-.wrapper_signupEmailField .text_input_dark,
+.wrapper_signupEmailField .text_input[data-mode="dark"],
 .wrapper_signupEmailField .text_input {
   flex: 1 1 auto;
 }
@@ -1530,7 +1487,7 @@
   padding: 0;
 }
 
-.wrapper_signupVerificationCodeInput .text_input_dark,
+.wrapper_signupVerificationCodeInput .text_input[data-mode="dark"],
 .wrapper_signupVerificationCodeInput .text_input {
   padding-right: calc(48px + var(--spacing-padding-horizontal-12));
 }
@@ -1544,8 +1501,8 @@
   padding: 0;
 }
 
-.container_authLayout .text_input_dark[data-state="error"],
-.container_authLayout .text_input_dark[data-state="error"]:focus-within {
+.container_authLayout .text_input[data-mode="dark"][data-state="error"],
+.container_authLayout .text_input[data-mode="dark"][data-state="error"]:focus-within {
   border-color: var(--color-status-negative);
 }
 
@@ -1663,7 +1620,7 @@
   border-color: var(--color-newsroll-purple-30);
 }
 
-.btn_loginAuto {
+.field_check[data-role='autoLogin'] {
   width: fit-content;
   display: inline-flex;
   align-items: center;
@@ -1739,7 +1696,7 @@
   border-color: var(--color-line-normal-neutral);
 }
 
-.btn_signupAgreementAll {
+.field_check[data-role='agreementAll'] {
   width: 100%;
   min-width: 0;
   padding: 0;
@@ -1826,45 +1783,6 @@
   padding: 0;
 }
 
-.input_searchField {
-  width: 100%;
-  min-width: 0;
-  min-height: var(--spacing-padding-vertical-60);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-gap-horizontal-16);
-  box-sizing: border-box;
-  padding: var(--spacing-padding-vertical-12)
-    var(--spacing-padding-horizontal-16);
-  border: var(--border-1) solid var(--color-common-100);
-  border-radius: var(--radius-8);
-  color: var(--color-common-100);
-  background: transparent;
-}
-
-.input_searchField input {
-  width: 100%;
-  min-width: 0;
-  flex: 1;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  color: var(--color-common-100);
-  background: transparent;
-  font-size: 16px;
-  font-weight: var(--font-weight-500);
-  line-height: 24px;
-}
-
-.input_searchField input::placeholder {
-  color: var(--color-neutral-80);
-  opacity: 1;
-}
-
-.input_searchField .newsroll_icon_20 {
-  color: var(--color-common-100);
-}
-
 .list_searchResults {
   width: 100%;
   min-width: 0;
@@ -1943,11 +1861,6 @@
   pointer-events: auto;
 }
 
-.newsroll_screen_all .newsroll_icon_button {
-  width: var(--spacing-padding-horizontal-24);
-  height: var(--spacing-padding-vertical-24);
-}
-
 .newsroll_screen_all .newsroll_text_size_button {
   padding: 0;
 }
@@ -1962,7 +1875,7 @@
   line-height: var(--line-height-24);
 }
 
-.newsroll_all_breaking_label .newsroll_icon_policy {
+.newsroll_all_breaking_label .icon_policy {
   width: var(--spacing-padding-horizontal-24);
   height: var(--spacing-padding-vertical-24);
 }
@@ -2306,7 +2219,7 @@
   background: var(--color-background-transparent-alternative);
 }
 
-.newsroll_all_detail_back .newsroll_icon_chevron {
+.newsroll_all_detail_back .icon_chevron {
   transform: rotate(180deg);
 }
 
@@ -2682,12 +2595,7 @@
   box-sizing: border-box;
 }
 
-.btn_myRecentSelectAll {
-  align-self: flex-start;
-  color: var(--color-cool-neutral-15);
-}
-
-.btn_myModerationSelectAll {
+.field_check[data-role='selectAll'] {
   align-self: flex-start;
   color: var(--color-cool-neutral-15);
 }
@@ -2700,18 +2608,14 @@
   justify-content: flex-start;
 }
 
-.btn_myRecentSelectAll .box_newsrollCheck,
-.btn_myModerationSelectAll .box_newsrollCheck,
-.btn_myModerationItemCheck .box_newsrollCheck,
-.btn_myRecentItemCheck .box_newsrollCheck {
+.field_check[data-role='selectAll'] .box_check,
+.field_check[data-role='selectionItem'] .box_check {
   border-color: var(--color-line-normal-normal);
   color: var(--color-common-100);
 }
 
-.btn_myRecentSelectAll .box_newsrollCheck.is_checked,
-.btn_myModerationSelectAll .box_newsrollCheck.is_checked,
-.btn_myModerationItemCheck .box_newsrollCheck.is_checked,
-.btn_myRecentItemCheck .box_newsrollCheck.is_checked {
+.field_check[data-role='selectAll'] .box_check.is_checked,
+.field_check[data-role='selectionItem'] .box_check.is_checked {
   border-color: var(--color-newsroll-purple-50);
   background: var(--color-newsroll-purple-50);
 }
@@ -2742,14 +2646,7 @@
   flex: 1 1 auto;
 }
 
-.btn_myRecentItemCheck {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  margin-top: var(--spacing-padding-vertical-4);
-}
-
-.btn_myModerationItemCheck {
+.field_check[data-role='selectionItem'] {
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
@@ -3657,7 +3554,7 @@
   line-height: var(--line-height-fixed-20);
 }
 
-.wrapper_infoInquiry .textarea_infoComposer {
+.textarea[data-variant='inquiry'] {
   width: 100%;
   min-height: 196px;
   border: var(--newsroll-main-border-width, 1.5px) solid
@@ -3670,7 +3567,7 @@
   line-height: 24px;
 }
 
-.wrapper_infoInquiry .textarea_infoComposer::placeholder {
+.textarea[data-variant='inquiry']::placeholder {
   color: var(--color-cool-neutral-50);
 }
 
@@ -4392,14 +4289,14 @@ body::-webkit-scrollbar {
 
 .container_homeScreen.is_homeSheetDocked
   .newsroll_homeDockedAlarm
-  .newsroll_icon_policy {
+  .icon_policy {
   width: 20px;
   height: 20px;
 }
 
 .newsroll_sheetFrame.is_newsrollSheetDocked
   .newsroll_homeDockedAlarm
-  .newsroll_icon_policy {
+  .icon_policy {
   width: 20px;
   height: 20px;
 }
@@ -4418,7 +4315,7 @@ body::-webkit-scrollbar {
   background: transparent;
 }
 
-.btn_newsViewOption .newsroll_icon_20 {
+.btn_newsViewOption .icon[data-size="20"] {
   width: 20px;
   height: 20px;
 }
@@ -4905,7 +4802,7 @@ body::-webkit-scrollbar {
 
 .wrapper_articleActions
   .btn_articleTool[aria-pressed="true"]
-  .newsroll_icon_20,
+  .icon[data-size="20"],
 .wrapper_articleReaction {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4934,27 +4831,6 @@ body::-webkit-scrollbar {
 .newsroll_policy_detail_actions_divider {
   width: 100%;
   flex: 0 0 auto;
-}
-
-.newsroll_policy_detail_page_button {
-  width: auto;
-  min-height: 40px;
-  padding-inline: 0;
-  border: 0;
-  background: transparent;
-}
-
-.newsroll_policy_detail_page_button:disabled {
-  color: var(--color-label-assistive);
-  cursor: default;
-}
-
-.newsroll_policy_detail_page_button .newsroll_icon_arrow {
-  transform-origin: center;
-}
-
-.newsroll_policy_detail_page_button:first-child .newsroll_icon_arrow {
-  transform: rotate(180deg);
 }
 
 .btn_myLogout {

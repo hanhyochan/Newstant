@@ -1,7 +1,7 @@
-import { Fragment } from "react";
+﻿import { Fragment } from "react";
 
 import {
-  NewsRollDivider,
+  Divider,
   OnoffToggleButton,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
@@ -30,7 +30,7 @@ export function MyNewsViewTimePage({
       {sections.map((section, sectionIndex) => (
         <Fragment key={section.label}>
           {sectionIndex > 0 ? (
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
           ) : null}
           <section
             aria-label={`${section.label} 시간 설정`}
@@ -45,7 +45,7 @@ export function MyNewsViewTimePage({
                   <label className="btn_myTimeRow" key={time}>
                     <input
                       checked={isSelected}
-                      className="input_newsrollCheck"
+                      className="input_check"
                       onChange={() => onToggleTime(time)}
                       type="checkbox"
                     />

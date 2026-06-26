@@ -1,9 +1,9 @@
-import { Fragment } from "react";
+﻿import { Fragment } from "react";
 import { createPortal } from "react-dom";
 
 import {
   IconButton,
-  NewsRollDivider,
+  Divider,
   PillTabMenu,
   PrimaryButton,
   PrimaryButtonGroup,
@@ -194,7 +194,7 @@ export function MyCustomNewsSettingsPage({
       {categoryGroups.map((group, groupIndex) => (
         <Fragment key={group.title}>
           {groupIndex > 0 ? (
-            <NewsRollDivider className="divider_mySection" />
+            <Divider className="divider_mySection" />
           ) : null}
           <section className="container_myCategorySection">
             <h2 className="text_mySectionTitle">{group.title}</h2>
@@ -220,7 +220,7 @@ export function MyCustomNewsSettingsPage({
           </section>
         </Fragment>
       ))}
-      <NewsRollDivider className="divider_mySection" />
+      <Divider className="divider_mySection" />
       <BlockedKeywordSettingsSection
         blockedKeywordSettings={blockedKeywordSettings}
         inputValue={blockedKeywordInputValue}
