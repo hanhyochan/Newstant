@@ -9,7 +9,7 @@ const meta: Meta<typeof IconButton> = {
     layout: "centered",
   },
   args: {
-    className: "newsroll_toolbar_icon",
+    className: "toolbar_icon",
     icon: "search",
     label: "검색",
   },
@@ -22,8 +22,8 @@ type Story = StoryObj<typeof meta>;
 export const Toolbar: Story = {
   render: () => (
     <div className="ds_inline_stack">
-      <IconButton className="newsroll_toolbar_icon" icon="search" label="검색" />
-      <IconButton className="newsroll_toolbar_icon" icon="alarm" label="알림" />
+      <IconButton className="toolbar_icon" icon="search" label="검색" />
+      <IconButton className="toolbar_icon" icon="alarm" label="알림" />
     </div>
   ),
 };

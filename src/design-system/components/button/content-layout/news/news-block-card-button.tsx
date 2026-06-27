@@ -29,20 +29,20 @@ export function NewsBlockCardButton({
   return (
     <button
       aria-pressed={ariaPressed}
-      className="btn_newsBlockItem wrapper_contentMeta"
+      className="btn_newsCardBlock wrapper_contentMeta"
       onClick={onClick}
       type="button"
     >
       {categoryLabel ? (
-        <span className="newsroll_blockKicker">
+        <span className="wrapper_newsCardKicker">
           <ChipLabel>{categoryLabel}</ChipLabel>
         </span>
       ) : null}
       <img alt={imageAlt} src={imageSrc} />
       <strong>{title}</strong>
       {showDate ? (
-        <p className="newsroll_blockMeta wrapper_betweenRow">
-          <DateTimeText className="newsroll_createdTime" dateTime={dateTime}>
+        <p className="wrapper_newsCardDateRow wrapper_betweenRow u_m0">
+          <DateTimeText dateTime={dateTime}>
             {dateLabel}
           </DateTimeText>
         </p>

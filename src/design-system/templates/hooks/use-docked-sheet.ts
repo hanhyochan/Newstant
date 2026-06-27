@@ -164,7 +164,7 @@ export function useDockedSheet({
     }
 
     const screenTop = screen.getBoundingClientRect().top;
-    const toolbar = topNode.querySelector(".newsroll_toolbar");
+    const toolbar = topNode.querySelector(".toolbar");
     const dockedControls = dockedControlsSelector
       ? topNode.querySelector(dockedControlsSelector)
       : null;

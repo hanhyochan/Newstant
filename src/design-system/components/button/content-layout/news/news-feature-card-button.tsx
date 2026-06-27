@@ -22,13 +22,13 @@ export function NewsFeatureCardButton({
   return (
     <button
       aria-label={`${item.category ?? "뉴스"} 기사: ${item.title}`}
-      className="newsroll_all_latest_card wrapper_contentMeta"
+      className="btn_newsCardFeature wrapper_contentMeta"
       onClick={onClick}
       type="button"
     >
       <ChipLabel>{item.category}</ChipLabel>
-      <img alt="" className="newsroll_all_latest_image" src={item.image} />
-      <span className="wrapper_contentMeta">
+      <img alt="" className="img_newsCardFeature" src={item.image} />
+      <span className="wrapper_contentMeta u_minH0">
         <strong>{item.title}</strong>
         <NewsCardMeta />
       </span>

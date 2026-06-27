@@ -223,12 +223,12 @@ export function InfoView({
   return (
     <NewsRollCommonLayout
       aria-label="인포메이션"
-      className="newsroll_sheetFrame newsroll_info_screen"
+      className="sheetFrame info_screen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       {...fixedDockedPanelProps}
       minInitialTop={pagePanelInitialTop}
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_info_sheet"
+      sheetClassName="sheetFrameSheet container_homeSheet info_sheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
         <NewsRollHeaderTop>
@@ -239,7 +239,7 @@ export function InfoView({
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
-            className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
+            className="motion_dockedPop allDockedControls panelHeaderRow"
             isDetailOpen={isNoticeDetailOpen}
           >
             {isNoticeDetailOpen ? (

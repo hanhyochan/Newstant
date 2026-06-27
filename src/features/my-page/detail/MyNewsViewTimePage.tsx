@@ -2,7 +2,7 @@
 
 import {
   Divider,
-  OnoffToggleButton,
+  SettingRowButton,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
 
@@ -42,16 +42,13 @@ export function MyNewsViewTimePage({
                 const isSelected = selectedTimes.has(time);
 
                 return (
-                  <label className="btn_myTimeRow" key={time}>
-                    <input
-                      checked={isSelected}
-                      className="input_check"
-                      onChange={() => onToggleTime(time)}
-                      type="checkbox"
-                    />
-                    <span className="text_myTimeValue">{time}</span>
-                    <OnoffToggleButton checked={isSelected} />
-                  </label>
+                  <SettingRowButton
+                    checked={isSelected}
+                    className="btn_myTimeRow"
+                    key={time}
+                    label={time}
+                    onClick={() => onToggleTime(time)}
+                  />
                 );
               })}
             </div>

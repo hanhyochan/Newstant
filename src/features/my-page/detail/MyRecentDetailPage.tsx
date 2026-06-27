@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   getEnterFromRightMotionClassName,
@@ -248,7 +248,7 @@ export function MyRecentDetailPage({
             <DataUnavailableMessage target="최근 본 뉴스" />
           ) : (
             <SeparatedList
-              dividerClassName="newsroll_all_itemDivider"
+              dividerClassName="all_itemDivider"
               getKey={(item, index) => `${item.viewId}-${item.title}-${index}`}
               items={visibleRecentItems}
               renderItem={(item, index) => {
@@ -293,9 +293,12 @@ export function MyRecentDetailPage({
         <PrimaryButton
             className="btn_myRecentDelete"
             disabled={isDeleting}
-            onClick={deleteSelectedItems}
+            onClick={deleteSelectedItems}
+
+
             tone="danger"
-            type="button"
+            type="button"
+
           >
             삭제하기
           </PrimaryButton>

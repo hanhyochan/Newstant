@@ -76,7 +76,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           });
       }}
     >
-      <label className="wrapper_contentMeta wrapper_fieldStack">
+      <label className="wrapper_contentMeta wrapper_fieldStack u_w100">
         <span className="text_infoFieldLabel">문의 유형</span>
         <SelectButton
           ariaLabel="문의 유형"
@@ -92,7 +92,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           value={selectedInquiryType}
         />
       </label>
-      <div className="wrapper_contentMeta wrapper_fieldStack">
+      <div className="wrapper_contentMeta wrapper_fieldStack u_w100">
         <span className="text_infoFieldLabel">제목</span>
         <TextInput
           aria-label="문의 제목"
@@ -102,7 +102,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           value={inquiryTitle}
         />
       </div>
-      <div className="wrapper_contentMeta wrapper_fieldStack">
+      <div className="wrapper_contentMeta wrapper_fieldStack u_w100">
         <span className="text_infoFieldLabel">내용</span>
         <Textarea
           aria-label="문의 내용"

@@ -299,7 +299,7 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
       onClose={onClose}
     >
         <form
-          className="form_searchComposer newsroll_motion_enterUp"
+          className="form_searchComposer motion_enterUp"
           onSubmit={(event) => event.preventDefault()}
         >
           <TextInput

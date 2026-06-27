@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
@@ -146,22 +146,22 @@ function PolicyListItem({
 
   return (
     <ContentSummaryButton
-      className="newsroll_policy_list_item"
+      className="btn_contentListItem"
       onClick={onSelect}
       selected={isSelected}
     >
-      <div className="wrapper_policyItemContent wrapper_panelContent">
+      <div className="wrapper_contentMeta wrapper_panelContent">
         <div className="wrapper_contentMeta">
           <h2>{item.title}</h2>
           <p className="text_infoBody text_lineClamp2">{item.summary}</p>
-          <div className="newsroll_policy_dates">
+          <div className="wrapper_contentDateGroup">
             <span>
               <strong>{policyDate.label}</strong>
               <DateTimeText>{policyDate.date}</DateTimeText>
             </span>
           </div>
         </div>
-        <div className="newsroll_policy_list_tags">
+        <div className="wrapper_contentTagGroup u_gapH8">
           {item.tags.map((tag) => (
             <ChipLabel key={`${item.title}-${tag}`}>
               {tag}
@@ -343,18 +343,18 @@ export function PolicyView({
   return (
     <NewsRollCommonLayout
       aria-label="국가정책"
-      className="newsroll_sheetFrame newsroll_policy_screen"
+      className="sheetFrame policy_screen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       minInitialTop={pagePanelInitialTop}
       movingSheet
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_policy_sheet"
+      sheetClassName="sheetFrameSheet container_homeSheet policy_sheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
         <NewsRollSummaryHeroTop
           controls={
             <NewsRollDockedControls
-              className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
+              className="motion_dockedPop allDockedControls panelHeaderRow"
               isDetailOpen={isPolicyDetailOpen}
             >
               {isPolicyDetailOpen ? (
@@ -382,7 +382,7 @@ export function PolicyView({
           hero={{
             ariaLabel: "맞춤 정책 요약",
             caption: "국가정책 정보가 있습니다.",
-            className: "newsroll_policy_hero",
+            className: "policy_hero",
             count: formatHeroCount(policyTotalCount),
             greeting: `${currentUser.nickname}님을 위한`,
             unit: "개",
@@ -413,10 +413,10 @@ export function PolicyView({
             searchTargetKey={policySearchTargetKey}
           />
         ) : (
-          <div className="newsroll_policy_listContent">
+          <div className="policy_listContent">
             <PillTabMenu
               ariaLabel="연령 필터"
-              className="newsroll_all_category_tabs wrapper_tabScroller newsroll_policy_age_tabs"
+              className="all_category_tabs wrapper_tabScroller policy_age_tabs"
               getPanelId={() => "policy-list-panel"}
               getTabId={(age) => `policy-age-tab-${policyAgeTabs.indexOf(age)}`}
               items={policyAgeTabs.map((label) => ({ id: label, label }))}
@@ -430,7 +430,7 @@ export function PolicyView({
 
             <div
               aria-labelledby={`policy-age-tab-${activeAgeIndex}`}
-              className={`newsroll_policy_listSection ${policyAgeSwipeMotionClassName}`.trim()}
+              className={`policy_listSection ${policyAgeSwipeMotionClassName}`.trim()}
               id="policy-list-panel"
               ref={policyListSectionRef}
               role="tabpanel"
@@ -446,12 +446,12 @@ export function PolicyView({
                 size="small"
                 value={sortOrder}
               />
-              <div className="newsroll_policy_items wrapper_scrollList">
+              <div className="policy_items wrapper_scrollList">
                 {policyLoadFailed ? (
                   <DataUnavailableMessage target="국가정책" />
                 ) : (
                   <SeparatedList
-                    dividerClassName="newsroll_policy_itemDivider"
+                    dividerClassName="divider_listItem"
                     dividerPlacement="after-wrapped-item"
                     getKey={(item, index) =>
                       `${activeAge}-${sortOrder}-${item.id}-${index}`

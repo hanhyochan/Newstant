@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -35,12 +35,12 @@ export function ConfirmDialog({
   return createPortal(
     <div
       aria-modal="true"
-      className="container_myDialog"
+      className="container_dialog"
       onClick={onCancel ?? onConfirm}
       role="dialog"
     >
       <div
-        className="wrapper_myDialogContent"
+        className="wrapper_dialogContent"
         onClick={(event) => event.stopPropagation()}
       >
         <h3 className="text_myDialogTitle text_confirmDialogMessage">{message}</h3>

@@ -60,7 +60,7 @@ export function SelectButton<T extends string>({
         type="button"
       >
         {selectedLabel}
-        <span aria-hidden="true" className="newsroll_dropdownArrow" />
+        <span aria-hidden="true" className="icon_dropdownArrow" />
       </button>
       {isOpen ? (
         <FloatingMenuPanel

@@ -12,8 +12,8 @@ export function NewsCardMeta({
   dateTime = "2026-12-31T08:30:00",
 }: NewsCardMetaProps) {
   return (
-    <p className="newsroll_all_meta">
-      <DateTimeText className="newsroll_createdTime" dateTime={dateTime}>
+    <p className="wrapper_newsCardMeta">
+      <DateTimeText dateTime={dateTime}>
         {date}
       </DateTimeText>
     </p>

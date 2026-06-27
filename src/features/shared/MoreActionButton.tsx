@@ -21,13 +21,13 @@ export function MoreActionButton({
     <ContentActionButton
       aria-label={ariaLabel}
       aria-expanded={showIcon ? expanded : undefined}
-      className={tone === "light" ? "newsroll_all_more" : undefined}
+      className={tone === "light" ? "btn_moreAction" : undefined}
       onClick={onClick}
       tone={tone}
     >
       <span>{expanded ? expandedLabel : collapsedLabel}</span>
       {showIcon ? (
-        <Icon className="newsroll_all_more_icon" name="chevron" />
+        <Icon className="icon_moreAction" name="chevron" />
       ) : null}
     </ContentActionButton>
   );

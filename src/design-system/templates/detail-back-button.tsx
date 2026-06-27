@@ -15,7 +15,7 @@ export function NewsRollDetailBackButton({
 }: NewsRollDetailBackButtonProps) {
   return (
     <IconButton
-      className={cn("newsroll_homeDetailBack newsroll_all_detail_back", className)}
+      className={cn("btn_detailBack", className)}
       icon="chevron"
       label={ariaLabel}
       tone="translucent"

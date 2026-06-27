@@ -130,7 +130,7 @@ function resetNewsRollViewport() {
       document.documentElement,
       document.body,
       ...document.querySelectorAll<HTMLElement>(
-        ".newsroll_phone, .newsroll_policy_screen, .container_myScreen, .newsroll_info_screen",
+        ".phone, .policy_screen, .container_myScreen, .info_screen",
       ),
     ];
 
@@ -1116,8 +1116,8 @@ export function NewsHomeScreen() {
 
   if (isSplashVisible) {
     return (
-      <main className="newsroll_screen newsroll_screen_splash">
-        <div className="newsroll_phone" aria-label="NewsRoll">
+      <main className="screen screen_splash">
+        <div className="phone" aria-label="NewsRoll">
           <NewsRollSplashScreen />
         </div>
       </main>
@@ -1131,8 +1131,8 @@ export function NewsHomeScreen() {
 
   return (
     <main
-      className={`newsroll_screen${effectiveView === "home" ? " newsroll_screen_home" : ""}${
-        effectiveView === "all" ? " newsroll_screen_all" : ""
+      className={`screen${effectiveView === "home" ? " screen_home" : ""}${
+        effectiveView === "all" ? " screen_all" : ""
       }${
         effectiveView === "login" ||
         effectiveView === "passwordResetEmail" ||
@@ -1143,17 +1143,17 @@ export function NewsHomeScreen() {
         effectiveView === "signupPassword" ||
         effectiveView === "signupAge" ||
         effectiveView === "signupCategory"
-          ? " newsroll_screen_login"
+          ? " screen_login"
           : ""
       }${
         effectiveView === "search" || effectiveView === "notifications"
-          ? " newsroll_screen_search"
+          ? " screen_search"
           : ""
-      }${isEffectivePanelView ? " newsroll_screen_panel" : ""}${
-        isTextLarge ? " newsroll_text_large" : ""
-      }${isDarkMode ? " newsroll_dark" : ""}`}
+      }${isEffectivePanelView ? " screen_panel" : ""}${
+        isTextLarge ? " text_large" : ""
+      }${isDarkMode ? " dark" : ""}`}
     >
-      <div className="newsroll_phone" aria-label="NewsRoll">
+      <div className="phone" aria-label="NewsRoll">
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
           authError={authError}
@@ -1233,7 +1233,7 @@ export function NewsHomeScreen() {
       effectiveView !== "signupPassword" &&
       effectiveView !== "signupAge" &&
       effectiveView !== "signupCategory" ? (
-        <nav className="newsroll_bottom_nav" aria-label="하단 탐색">
+        <nav className="bottom_nav" aria-label="하단 탐색">
           {navItems.map((item) => (
             <IconButton
               aria-current={effectiveView === item.tab ? "page" : undefined}

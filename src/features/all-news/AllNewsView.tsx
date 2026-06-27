@@ -441,7 +441,7 @@ export function AllNewsView({
     }
 
     const firstCard = node.querySelector<HTMLElement>(
-      ".newsroll_all_latest_card",
+      ".btn_newsCardFeature",
     );
     const cardStep = firstCard
       ? firstCard.offsetWidth +
@@ -460,7 +460,7 @@ export function AllNewsView({
   function resetAllNewsPanelScroll(panelSelector: string) {
     const scrollToTop = () => {
       const panelContent = feedRef.current?.querySelector<HTMLElement>(
-        `${panelSelector} .newsroll_all_panelContent`,
+        `${panelSelector} .all_panelContent`,
       );
 
       panelContent?.scrollTo({ left: 0, top: 0 });
@@ -475,7 +475,7 @@ export function AllNewsView({
       return;
     }
 
-    resetAllNewsPanelScroll(".newsroll_all_press_panel");
+    resetAllNewsPanelScroll(".all_press_panel");
     setShowAllHeadlines(false);
     setActivePress(nextPress);
   }
@@ -485,7 +485,7 @@ export function AllNewsView({
       return;
     }
 
-    resetAllNewsPanelScroll(".newsroll_all_relay_panel");
+    resetAllNewsPanelScroll(".all_relay_panel");
     setActiveRelayCategory(nextCategory);
   }
 
@@ -508,7 +508,7 @@ export function AllNewsView({
   return (
     <NewsRollCommonLayout
       aria-label="전체 뉴스"
-      className={`newsroll_sheetFrame ${entryMotionClassName}`.trim()}
+      className={`sheetFrame ${entryMotionClassName}`.trim()}
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       minInitialTop={allNewsMinInitialTop}
@@ -521,14 +521,14 @@ export function AllNewsView({
       onTouchStartCapture={isDetailOpen ? undefined : handleAllNewsTouchStart}
       onWheelCapture={isDetailOpen ? undefined : dockedPanelScroll.handleWheel}
       ref={screenRef}
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet newsroll_all_sheetFrameSheet"
+      sheetClassName="sheetFrameSheet container_homeSheet all_sheetFrameSheet"
       sheetNestedScrollResetSelector={
         isDetailOpen
           ? homeDockedScrollSelectors.contentScroller
           : allNewsDockedScrollSelectors.contentScroller
       }
       sheetScrollSelector={
-        isDetailOpen ? newsrollNewsFeedDetailSelector : ".newsroll_all_feed"
+        isDetailOpen ? newsrollNewsFeedDetailSelector : ".all_feed"
       }
       top={
         <NewsRollHeaderTop>
@@ -539,7 +539,7 @@ export function AllNewsView({
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
-            className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
+            className="motion_dockedPop allDockedControls panelHeaderRow"
             isDetailOpen={isDetailOpen}
           >
             {isDetailOpen ? (
@@ -556,12 +556,12 @@ export function AllNewsView({
               onClick={showBreakingNewsList}
             />
           </NewsRollDockedControls>
-          <div className="newsroll_all_breaking_label">
+          <div className="all_breaking_label">
             <Icon name="policy" />
             <span>속보</span>
           </div>
-          <div className="newsroll_all_breakingBody" ref={breakingBodyRef}>
-            <div className="newsroll_all_breaking_stack" id="all-breaking-news">
+          <div className="all_breakingBody" ref={breakingBodyRef}>
+            <div className="all_breaking_stack" id="all-breaking-news">
               {breakingItems.length > 0 ? (
                 breakingItems.map((item) => (
                   <NoticeCardLink
@@ -595,13 +595,13 @@ export function AllNewsView({
         />
       ) : (
         <section
-          className="container_newsFeed newsroll_all_feed"
+          className="container_newsFeed all_feed"
           aria-label="전체 뉴스 콘텐츠 영역"
           ref={feedRef}
         >
           <AllNewsSectionPanel
             ariaLabel="최신 뉴스"
-            className="newsroll_all_latest_panel"
+            className="all_latest_panel"
             headingLevel="h1"
             title={
               <>
@@ -611,7 +611,7 @@ export function AllNewsView({
           >
             <div
               aria-label="최신 뉴스 목록"
-              className={`newsroll_all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
+              className={`all_latest_scroller${isLatestDragging ? " is_dragging" : ""}`}
               onPointerCancel={stopLatestDrag}
               onPointerDown={handleLatestPointerDown}
               onPointerLeave={stopLatestDrag}
@@ -648,7 +648,7 @@ export function AllNewsView({
 
           <AllNewsSectionPanel
             ariaLabel="언론사별 헤드라인"
-            className="newsroll_all_press_panel"
+            className="all_press_panel"
             contentProps={{
               "aria-labelledby": `all-news-press-tab-${activePressIndex}`,
               id: "all-news-headline-panel",
@@ -656,11 +656,11 @@ export function AllNewsView({
             }}
             title="언론사별 헤드라인"
           >
-            <div className="newsroll_all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style newsroll_all_pressHeadline_tabMenu">
+            <div className="all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style all_pressHeadline_tabMenu">
               <PillTabMenu
                 ariaLabel="언론사 선택"
-                className="newsroll_all_pressHeadline_tabScroller wrapper_tabScroller"
-                getButtonClassName={() => "newsroll_all_pressHeadline_tabButton"}
+                className="all_pressHeadline_tabScroller wrapper_tabScroller"
+                getButtonClassName={() => "all_pressHeadline_tabButton"}
                 getPanelId={() => "all-news-headline-panel"}
                 getTabId={(press) =>
                   `all-news-press-tab-${visibleAllNewsPresses.indexOf(press)}`
@@ -673,7 +673,7 @@ export function AllNewsView({
                 renderItemContent={(item) => (
                   <>
                     <div
-                      className="newsroll_all_pressHeadline_logo"
+                      className="all_pressHeadline_logo"
                       aria-hidden="true"
                     />
                     <span>{item.label}</span>
@@ -687,7 +687,7 @@ export function AllNewsView({
               {...pressSwipeHandlers}
             >
               <SeparatedList
-                dividerClassName="newsroll_all_itemDivider"
+                dividerClassName="all_itemDivider"
                 getKey={(item, index) => `${item.title}-${index}`}
                 items={headlineItems}
                 renderItem={(item, index) => (
@@ -720,7 +720,7 @@ export function AllNewsView({
 
           <AllNewsSectionPanel
             ariaLabel="릴레이 뉴스"
-            className="newsroll_all_relay_panel"
+            className="all_relay_panel"
             contentProps={{
               "aria-labelledby": `all-news-relay-tab-${activeRelayIndex}`,
               id: `all-news-relay-panel-${activeRelayIndex}`,
@@ -728,10 +728,10 @@ export function AllNewsView({
             }}
             title="릴레이 뉴스"
           >
-            <div className="newsroll_all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style newsroll_all_category_tabSticky">
+            <div className="all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style all_category_tabSticky">
               <PillTabMenu
                 ariaLabel="릴레이 뉴스 카테고리"
-                className="newsroll_all_category_tabs wrapper_tabScroller"
+                className="all_category_tabs wrapper_tabScroller"
                 getPanelId={(category) =>
                   category === activeRelayCategory
                     ? `all-news-relay-panel-${visibleAllNewsRelayCategories.indexOf(category)}`
@@ -753,7 +753,7 @@ export function AllNewsView({
               {...relaySwipeHandlers}
             >
               <SeparatedList
-                dividerClassName="newsroll_all_itemDivider"
+                dividerClassName="all_itemDivider"
                 getKey={(item, index) => `${item.title}-${index}`}
                 items={relayItems}
                 renderItem={(item, index) => (

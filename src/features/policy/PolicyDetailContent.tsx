@@ -60,7 +60,7 @@ function getPolicyDateDisplay(item: PolicyDetailContentItem) {
 }
 
 function getEnterFromRightMotionClassName(isLeaving = false) {
-  return `newsroll_motion_enterFromRight${isLeaving ? " is_motionLeaving" : ""}`;
+  return `motion_enterFromRight${isLeaving ? " is_motionLeaving" : ""}`;
 }
 
 export function PolicyDetailContent({
@@ -164,12 +164,12 @@ export function PolicyDetailContent({
 
   return (
     <div
-      className={`newsroll_policy_detail_content ${getEnterFromRightMotionClassName(isLeaving)}`}
+      className={`wrapper_detailContent ${getEnterFromRightMotionClassName(isLeaving)}`}
     >
-      <div className="newsroll_policy_detail_main">
-      <div className="newsroll_policy_detail_header">
+      <div className="wrapper_detailMain">
+      <div className="wrapper_detailHeader">
         <div className="wrapper_contentMeta">
-          <div className="newsroll_policy_detail_body">
+          <div className="wrapper_detailBody">
             <h1>
               <SearchHighlightText
                 query={searchTargetKey === "title" ? searchQuery : ""}
@@ -184,15 +184,15 @@ export function PolicyDetailContent({
             </h1>
           </div>
 
-          <div className="wrapper_articleMetaActions wrapper_betweenRow newsroll_policy_detail_meta_actions">
-            <div className="newsroll_policy_detail_dates">
+          <div className="wrapper_articleMetaActions wrapper_betweenRow wrapper_detailMetaActions">
+            <div className="wrapper_detailDateGroup u_flexWrap">
               <span>
                 <strong>{policyDate.label}</strong>
                 <DateTimeText>{policyDate.date}</DateTimeText>
               </span>
             </div>
 
-            <div className="wrapper_articleActions wrapper_actionGroup wrapper_actionGroup_style" aria-label="정책 도구" role="group">
+            <div className="wrapper_articleActions wrapper_actionGroupu_itemsCenter wrapper_actionGroup_style" aria-label="정책 도구" role="group">
               <IconButton
                 className="btn_articleTool"
                 icon="share"
@@ -214,7 +214,7 @@ export function PolicyDetailContent({
           </div>
         </div>
 
-        <div className="newsroll_policy_detail_tags">
+        <div className="wrapper_detailTagGroup u_gapH8">
           {item.tags.map((tag) => (
             <ChipLabel key={`${item.title}-${tag}`}>
               <SearchHighlightText
@@ -232,9 +232,9 @@ export function PolicyDetailContent({
         </div>
       </div>
 
-      <Divider className="newsroll_policy_detail_actions_divider" />
+      <Divider className="divider_detailActions" />
 
-      <p className="newsroll_policy_detail_summary">
+      <p className="text_detailSummary">
         <SearchHighlightText
           query={searchTargetKey === "summary" ? searchQuery : ""}
           targetId={
@@ -248,7 +248,7 @@ export function PolicyDetailContent({
       </p>
 
       {hideDetailList ? null : (
-        <dl className="newsroll_policy_detail_list">
+        <dl className="list_detailDefinition">
           {item.details.map((detail, index) => (
             <div key={`${item.title}-${detail.label}`}>
               <dt>
@@ -297,7 +297,7 @@ export function PolicyDetailContent({
       {hideDetailToggle ? null : (
         <PrimaryButtonGroup>
         <PrimaryButton
-          className="newsroll_policy_detail_toggle"
+          className="btn_detailToggle"
           leftIcon={<Icon name="plus" />}
         >
           상세보기
@@ -307,7 +307,7 @@ export function PolicyDetailContent({
       </div>
 
       <div
-        className="newsroll_policy_detail_pagination wrapper_betweenRow"
+        className="wrapper_detailPagination wrapper_betweenRow"
         role="group"
         aria-label="이전글 다음글"
       >

@@ -12,7 +12,7 @@ export const newsrollArticleContentScrollerSelector = ".wrapper_articleCardConte
 export const newsrollArticleCardSelector = ".container_articleCard";
 export const newsrollNewsFeedSelector = ".container_newsFeed";
 export const newsrollNewsFeedDetailSelector = ".container_newsFeed_detail";
-export const newsrollPagePanelContentSelector = ".newsroll_page_panelContent";
+export const newsrollPagePanelContentSelector = ".page_panelContent";
 
 export const newsrollHomeDockedScrollSelectors = {
   contentScroller: newsrollArticleContentScrollerSelector,

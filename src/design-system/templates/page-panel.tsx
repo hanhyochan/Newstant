@@ -12,11 +12,11 @@ export function NewsRollPagePanel({
   contentRef,
 }: NewsRollPagePanelProps) {
   return (
-    <section className="container_newsFeed newsroll_page_feed" aria-label={ariaLabel}>
-      <article className="container_articleCard newsroll_page_panel">
+    <section className="container_newsFeed page_feed" aria-label={ariaLabel}>
+      <article className="container_articleCard page_panel">
         <div
           aria-label={ariaLabel}
-          className="wrapper_articleCardContent newsroll_page_panelContent"
+          className="wrapper_articleCardContent page_panelContent"
           ref={contentRef}
           role="region"
           tabIndex={0}

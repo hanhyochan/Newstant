@@ -20,10 +20,10 @@ export function NewsRollPurpleOverlayPage({
   onClose,
 }: NewsRollPurpleOverlayPageProps) {
   return (
-    <section className="newsroll_search_page" aria-label={ariaLabel}>
-      <div className="newsroll_toolbar newsroll_search_top" aria-label="상단 도구">
+    <section className="search_page" aria-label={ariaLabel}>
+      <div className="toolbar search_top" aria-label="상단 도구">
         <IconButton
-          className="newsroll_toolbar_icon newsroll_search_close"
+          className="toolbar_icon search_close"
           icon="close"
           label={closeLabel}
           onClick={onClose}

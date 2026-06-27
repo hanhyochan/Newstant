@@ -89,18 +89,18 @@ export function NewsToolbar({
   const hasUnreadNotifications = useUnreadNotificationState(showNotifications);
 
   return (
-    <div className="newsroll_toolbar" aria-label="상단 도구">
+    <div className="toolbar" aria-label="상단 도구">
       <IconButton
         aria-label="글자 크기"
         aria-pressed={isTextLarge}
-        className="newsroll_text_size_button"
+        className="text_size_button"
         icon="sizeIncrease"
         label="글자 크기"
         onClick={onToggleTextSize}
       />
       {showSearch ? (
         <IconButton
-          className="newsroll_toolbar_icon"
+          className="toolbar_icon"
           icon="search"
           label="검색"
           onClick={onOpenSearch}
@@ -108,7 +108,7 @@ export function NewsToolbar({
       ) : null}
       {showNotifications ? (
         <IconButton
-          className="newsroll_toolbar_icon"
+          className="toolbar_icon"
           hasUnreadIndicator={hasUnreadNotifications}
           icon="alarm"
           label="알림"
@@ -137,7 +137,7 @@ export function DockedAlarmButton({
   return (
     <IconButton
       aria-pressed={isPressed ?? props["aria-pressed"]}
-      className={["newsroll_homeDockedAlarm", className].filter(Boolean).join(" ")}
+      className={["homeDockedAlarm", className].filter(Boolean).join(" ")}
       icon="policy"
       label={label}
       tone="primary"

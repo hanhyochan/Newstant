@@ -16,7 +16,7 @@ export function NewsRollDockedControls({
   return (
     <div
       className={cn(
-        "wrapper_homeDockedControls newsroll_dockedControls",
+        "wrapper_homeDockedControls dockedControls",
         isDetailOpen && "is_detailOpen",
         className,
       )}

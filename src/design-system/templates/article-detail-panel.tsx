@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { IconButton } from "../components/button/icon-button";
 
@@ -26,7 +26,7 @@ export function NewsRollArticleDetailPanel({
       <article aria-labelledby={labelledBy} className={articleClassName}>
         {backLabel && onBack ? (
           <IconButton
-            className="newsroll_all_detail_back"
+            className="btn_detailBack"
             icon="chevron"
             label={backLabel}
             onClick={onBack}

@@ -30,11 +30,11 @@ export function NoticeCardLink({
   updatedAt,
 }: NoticeCardLinkProps) {
   const baseClassName =
-    isListItem ? "newsroll_noticeListCardLink" : "btn_noticeCardLink";
+    isListItem ? "btn_noticeListCardLink" : "btn_noticeCardLink";
   const cardClassName = cn(
     baseClassName,
-    "newsroll_noticeCardLink",
-    `newsroll_noticeCardLink_${type}`,
+    "noticeCardLink",
+    `noticeCardLink_${type}`,
   );
   const titleClassName =
     isListItem ? "text_noticeListCardTitle" : "text_noticeCardTitle";

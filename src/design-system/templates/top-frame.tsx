@@ -28,8 +28,8 @@ export function NewsRollTopFrame({
         <div
           className={cn(
             "container_homeToolbar",
-            "newsroll_headerTop",
-            "newsroll_all_breakingHeader",
+            "headerTop",
+            "all_breakingHeader",
             headerClassName,
           )}
         >

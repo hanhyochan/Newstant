@@ -121,8 +121,8 @@ export function useSwipeTabNavigation<T extends string>({
     swipeMotionClassName: motion
       ? [
           motion.direction === "fromRight"
-            ? "newsroll_motion_tabSwipeFromRight"
-            : "newsroll_motion_tabSwipeFromLeft",
+            ? "motion_tabSwipeFromRight"
+            : "motion_tabSwipeFromLeft",
           motion.isAlternate ? "is_motionCycleB" : "is_motionCycleA",
         ].join(" ")
       : "",

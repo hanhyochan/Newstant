@@ -187,10 +187,10 @@ export function MyBookmarkDetailPage({
                   />
                 ) : (
                   <ContentSummaryButton
-                    className="newsroll_policy_list_item"
+                    className="btn_contentListItem"
                     onClick={() => onOpenPolicy(item.policy)}
                   >
-                    <div className="newsroll_policy_list_tags">
+                    <div className="wrapper_contentTagGroup u_gapH8">
                       {item.tags.map((tag) => (
                         <ChipLabel key={`${item.title}-${tag}`}>
                           {tag}

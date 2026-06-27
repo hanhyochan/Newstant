@@ -223,7 +223,7 @@ export function NewsCreatedTime({
   dateTime?: string;
 }) {
   return (
-    <DateTimeText className="newsroll_createdTime" dateTime={dateTime}>
+    <DateTimeText dateTime={dateTime}>
       {children}
     </DateTimeText>
   );
@@ -589,10 +589,10 @@ export const allNewsLatest = [
 
 export const allNewsPresses = ["중앙일보", "국민일보", "한겨레"];
 export const allNewsDockedScrollSelectors = {
-  contentScroller: ".newsroll_all_panelContent",
-  immediatePanel: ".newsroll_all_latest_panel",
-  latestScroller: ".newsroll_all_latest_scroller",
-  panel: ".newsroll_all_panel",
+  contentScroller: ".all_panelContent",
+  immediatePanel: ".all_latest_panel",
+  latestScroller: ".all_latest_scroller",
+  panel: ".all_panel",
 };
 export const allNewsSwipeAxisThresholdPx = 8;
 export type SwipeAxis = "horizontal" | "vertical";
@@ -639,7 +639,7 @@ export const allNewsHeadlinesByPress: Record<
 export const allNewsRelayCategories = ["정치", "경제", "사회", "문화", "국제"];
 
 function HomeArticleMeta({
-  className = "newsroll_article_meta wrapper_betweenRow",
+  className = "article_meta wrapper_betweenRow u_m0",
   date,
   dateTime = defaultNewsDateTime,
 }: {
@@ -708,7 +708,7 @@ function HomeMainHeader({
           caption: "새로운 소식이 있습니다.",
           controls: (
             <NewsRollDockedControls
-              className={`newsroll_motion_dockedPop newsroll_homeDockedMotion ${dockedControlsMotionClassName}`.trim()}
+              className={`motion_dockedPop homeDockedMotion ${dockedControlsMotionClassName}`.trim()}
               isDetailOpen={isDetailOpen}
             >
               {isDetailOpen ? (
@@ -2232,7 +2232,7 @@ function CommentReactionPanel({
   return (
     <>
       <section
-        className="wrapper_commentPanel newsroll_motion_enterUp"
+        className="wrapper_commentPanel motion_enterUp"
         id={id}
         ref={panelRef}
         aria-label="댓글 반응"
@@ -2548,17 +2548,17 @@ function CommentReactionPanel({
       {reportTarget ? (
         <ClientPortal>
           <div
-            className="container_myDialog"
+            className="container_dialog"
             onClick={() => setReportTarget(null)}
             role="dialog"
             aria-modal="true"
           >
             <div
-              className="wrapper_myDialogContent"
+              className="wrapper_dialogContent"
               onClick={(event) => event.stopPropagation()}
             >
               <h3 className="text_myDialogTitle">신고 사유 선택</h3>
-              <label className="wrapper_contentMeta wrapper_fieldStack">
+              <label className="wrapper_contentMeta wrapper_fieldStack u_w100">
                 <span className="text_infoFieldLabel">신고 경위</span>
                 <SelectButton
                   ariaLabel="신고 경위"
@@ -3038,7 +3038,7 @@ export function HomeReelCard({
             date={article.date}
             dateTime={article.dateTime}
           />
-          <div className="wrapper_articleActions wrapper_actionGroup wrapper_actionGroup_style" aria-label="기사 도구" role="group">
+          <div className="wrapper_articleActions wrapper_actionGroupu_itemsCenter wrapper_actionGroup_style" aria-label="기사 도구" role="group">
             <IconButton
               className="btn_articleTool"
               icon="share"
@@ -3217,9 +3217,9 @@ export function NewsRollStateCard({
   role?: "alert" | "status";
 }) {
   return (
-    <article className="container_articleCard wrapper_panelSurface_style newsroll_homeStateCard">
+    <article className="container_articleCard wrapper_panelSurface_style homeStateCard">
       <div
-        className="wrapper_articleCardContent wrapper_panelContent u_minH0 newsroll_homeStateContent"
+        className="wrapper_articleCardContent wrapper_panelContent u_minH0 homeStateContent"
         role={role}
         tabIndex={0}
       >
@@ -3237,7 +3237,7 @@ function AllNewsPanelContent({
   className,
   ...props
 }: AllNewsPanelContentProps) {
-  const classNames = ["newsroll_all_panelContent", "wrapper_panelContent", "u_minH0", className]
+  const classNames = ["all_panelContent", "wrapper_panelContent", "u_minH0", className]
     .filter(Boolean)
     .join(" ");
 
@@ -3269,11 +3269,11 @@ export function AllNewsSectionPanel({
 
   return (
     <article
-      className={`container_articleCard wrapper_panelSurface_style newsroll_all_panel ${className}`}
+      className={`container_articleCard wrapper_panelSurface_style all_panel ${className}`}
       aria-label={ariaLabel}
     >
       <AllNewsPanelContent {...contentProps}>
-        <Heading className="newsroll_all_section_title">{title}</Heading>
+        <Heading className="text_sectionTitle">{title}</Heading>
         {children}
       </AllNewsPanelContent>
     </article>

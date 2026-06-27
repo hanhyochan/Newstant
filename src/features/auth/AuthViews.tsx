@@ -76,8 +76,8 @@ function SocialLoginButtons({
   onEmailLoginClick: () => void;
 }) {
   return (
-    <div className="wrapper_socialLoginGroup">
-      <div className="wrapper_socialLoginOptions">
+    <div className="wrapper_socialLoginGroup u_gapV24">
+      <div className="wrapper_socialLoginOptions u_gapV16">
         <span className="text_socialLoginTitle">빠른 로그인</span>
         <div className="wrapper_socialLogin" aria-label="소셜 로그인">
           {socialLoginProviders.map((provider) => (
@@ -190,7 +190,7 @@ export function LoginView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <TextInput mode="dark"
                 aria-describedby={emailValidation.errorMessage ? loginEmailErrorId : undefined}
                 aria-invalid={Boolean(emailValidation.errorMessage)}
@@ -211,7 +211,7 @@ export function LoginView({
                 message={emailValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -568,12 +568,12 @@ function SignupAgreementDetailView({
   return (
     <NewsRollCommonLayout
       aria-label={agreement.title}
-      className="newsroll_sheetFrame container_authAgreementScreen"
+      className="sheetFrame container_authAgreementScreen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       {...fixedDockedPanelProps}
       minInitialTop={pagePanelInitialTop}
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet"
+      sheetClassName="sheetFrameSheet container_homeSheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
         <NewsRollHeaderTop>
@@ -585,7 +585,7 @@ function SignupAgreementDetailView({
             onToggleTextSize={onToggleTextSize}
           />
           <NewsRollDockedControls
-            className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
+            className="motion_dockedPop allDockedControls panelHeaderRow"
             isDetailOpen
           >
             <NewsRollDetailBackButton
@@ -698,10 +698,10 @@ function SignupAgreementSearchView({
   }, []);
 
   return (
-    <section className="newsroll_search_page" aria-label="동의 문구 통합검색">
-      <div className="newsroll_toolbar newsroll_search_top" aria-label="검색 도구">
+    <section className="search_page" aria-label="동의 문구 통합검색">
+      <div className="toolbar search_top" aria-label="검색 도구">
         <IconButton
-          className="newsroll_toolbar_icon newsroll_search_close"
+          className="toolbar_icon search_close"
           icon="close"
           label="동의 본문으로 돌아가기"
           onClick={onBack}
@@ -710,7 +710,7 @@ function SignupAgreementSearchView({
 
       <div className="wrapper_searchContent">
         <form
-          className="form_searchComposer newsroll_motion_enterUp"
+          className="form_searchComposer motion_enterUp"
           onSubmit={(event) => event.preventDefault()}
         >
           <TextInput
@@ -1047,7 +1047,7 @@ export function SignupEmailView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -1096,7 +1096,7 @@ export function SignupEmailView({
               ) : null}
             </div>
             {isVerificationSent ? (
-              <div className="wrapper_authField wrapper_fieldStack">
+              <div className="wrapper_authField wrapper_fieldStack u_w100">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
                     <TextInput mode="dark"
@@ -1317,7 +1317,7 @@ export function PasswordResetEmailView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -1366,7 +1366,7 @@ export function PasswordResetEmailView({
               ) : null}
             </div>
             {isVerificationSent ? (
-              <div className="wrapper_authField wrapper_fieldStack">
+              <div className="wrapper_authField wrapper_fieldStack u_w100">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
                     <TextInput mode="dark"
@@ -1481,7 +1481,7 @@ export function PasswordResetPasswordView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1514,7 +1514,7 @@ export function PasswordResetPasswordView({
                 message={nextPasswordValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1648,7 +1648,7 @@ export function SignupNicknameView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -1760,7 +1760,7 @@ export function SignupPasswordView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1791,7 +1791,7 @@ export function SignupPasswordView({
                 message={passwordValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField wrapper_fieldStack">
+            <div className="wrapper_authField wrapper_fieldStack u_w100">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={

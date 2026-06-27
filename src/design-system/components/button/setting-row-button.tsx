@@ -22,7 +22,7 @@ export function SettingRowButton({
   if (showChevron && typeof checked !== "boolean") {
     return (
       <ChevronRowButton
-        className={cn("btn_mySettingRow", className)}
+        className={cn("btn_settingRow", className)}
         data-variant="link"
         type={type}
         {...props}
@@ -36,7 +36,7 @@ export function SettingRowButton({
     <button
       aria-pressed={checked}
       className={cn(
-        "btn_mySettingRow",
+        "btn_settingRow",
         className,
       )}
       data-variant={showChevron ? "link" : "default"}

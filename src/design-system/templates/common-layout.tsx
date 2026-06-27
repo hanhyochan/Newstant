@@ -75,7 +75,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
   sheetScrollSelector,
   sheetUndockSignal,
   top,
-  topClassName = "container_home newsroll_sheetFrameTop",
+  topClassName = "container_home sheetFrameTop",
   topProps,
   topRef,
   ...rootProps
@@ -113,8 +113,8 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
     <section
       {...sectionProps}
       className={mergeClassNames(
-        "newsroll_common_layout",
-        movingSheet ? "newsroll_common_layout_movingSheet" : undefined,
+        "common_layout",
+        movingSheet ? "common_layout_movingSheet" : undefined,
         movingSheet && dockedSheet.isSheetDocked ? dockedClassName : undefined,
         className,
       )}
@@ -128,7 +128,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
       <div
         {...topProps}
         className={mergeClassNames(
-          "newsroll_common_top",
+          "common_top",
           "wrapper_topShell",
           "wrapper_topShell_style",
           topClassName,
@@ -140,7 +140,7 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
       </div>
       <div
         {...sheetProps}
-        className={mergeClassNames("newsroll_common_sheet", sheetClassName, sheetProps?.className)}
+        className={mergeClassNames("common_sheet", sheetClassName, sheetProps?.className)}
         ref={mergeRefs(dockedSheet.sheetRef, sheetRef)}
       >
         {children}

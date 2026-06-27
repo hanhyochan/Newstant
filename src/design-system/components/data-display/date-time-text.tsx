@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/design-system/utils/cn";
+
 export type DateTimeTextProps = {
   children: ReactNode;
   className?: string;
@@ -12,7 +14,7 @@ export function DateTimeText({
   dateTime,
 }: DateTimeTextProps) {
   return (
-    <time className={className} dateTime={dateTime}>
+    <time className={cn("text_createdTime", className)} dateTime={dateTime}>
       {children}
     </time>
   );

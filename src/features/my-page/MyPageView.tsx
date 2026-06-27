@@ -1166,12 +1166,12 @@ export function MyPageView({
   return (
     <NewsRollCommonLayout
       aria-label="마이페이지"
-      className="newsroll_sheetFrame container_myScreen"
+      className="sheetFrame container_myScreen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
       {...fixedDockedPanelProps}
       minInitialTop={pagePanelInitialTop}
-      sheetClassName="newsroll_sheetFrameSheet container_homeSheet container_mySheet"
+      sheetClassName="sheetFrameSheet container_homeSheet container_mySheet"
       sheetNestedScrollResetSelector={
         isMyArticleDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
       }
@@ -1188,7 +1188,7 @@ export function MyPageView({
               onToggleTextSize={onToggleTextSize}
             />
             <NewsRollDockedControls
-              className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow"
+              className="motion_dockedPop allDockedControls panelHeaderRow"
               isDetailOpen
             >
               <NewsRollDetailBackButton
@@ -1209,7 +1209,7 @@ export function MyPageView({
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
-            <NewsRollDockedControls className="newsroll_motion_dockedPop newsroll_allDockedControls newsroll_panelHeaderRow">
+            <NewsRollDockedControls className="motion_dockedPop allDockedControls panelHeaderRow">
               <h1 className="text_panelHeaderTitle">마이페이지</h1>
               <DockedAlarmButton
                 isPressed={false}
@@ -1359,7 +1359,7 @@ export function MyPageView({
               <strong>{currentUser.nickname}님</strong>
               <span>안녕하세요</span>
             </span>
-            <div className="wrapper_articleActions wrapper_actionGroup wrapper_actionGroup_style" aria-label="프로필 도구" role="group">
+            <div className="wrapper_articleActions wrapper_actionGroupu_itemsCenter wrapper_actionGroup_style" aria-label="프로필 도구" role="group">
               <IconButton
                 aria-pressed={isProfileSettingsOpen}
                 className="btn_articleTool"

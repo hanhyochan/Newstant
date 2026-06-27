@@ -21,7 +21,7 @@ export function BottomFixedActionBar({
   const [isMounted, setIsMounted] = useState(false);
   const classNames = [
     "container_commentComposerFixed",
-    isLeaving ? "newsroll_motion_exitDown" : "newsroll_motion_enterUp",
+    isLeaving ? "motion_exitDown" : "motion_enterUp",
     className,
   ]
     .filter(Boolean)

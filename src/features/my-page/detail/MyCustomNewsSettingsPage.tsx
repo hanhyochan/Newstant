@@ -1,4 +1,4 @@
-﻿import { Fragment } from "react";
+import { Fragment } from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -33,13 +33,13 @@ function BlockedKeywordDialog({
 
   return createPortal(
     <div
-      className="container_myDialog"
+      className="container_dialog"
       onClick={onCancel}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="wrapper_myDialogContent"
+        className="wrapper_dialogContent"
         onClick={(event) => event.stopPropagation()}
       >
         <h3 className="text_myDialogTitle">차단 키워드 추가</h3>

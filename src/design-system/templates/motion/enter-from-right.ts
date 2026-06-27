@@ -8,11 +8,11 @@ import {
 } from "../scroll/constants";
 
 export function getEnterFromRightMotionClassName(isLeaving = false) {
-  return `newsroll_motion_enterFromRight${isLeaving ? " is_motionLeaving" : ""}`;
+  return `motion_enterFromRight${isLeaving ? " is_motionLeaving" : ""}`;
 }
 
 export function hasActiveEnterFromRightMotion() {
-  return Boolean(document.querySelector(".newsroll_motion_enterFromRight"));
+  return Boolean(document.querySelector(".motion_enterFromRight"));
 }
 
 export function requestEnterFromRightExitMotion() {

@@ -1,4 +1,4 @@
-﻿import { ContentSummaryButton } from "@/design-system/components";
+import { ContentSummaryButton } from "@/design-system/components";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 
@@ -30,7 +30,7 @@ export function InfoNoticeSection({
           items={items}
           renderItem={(notice, index) => (
             <ContentSummaryButton
-              className="btn_infoNoticeItem"
+              className="btn_noticeListItem"
               onClick={() => onNoticeSelect(notice, index)}
             >
               <div className="wrapper_contentMeta">

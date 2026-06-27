@@ -214,16 +214,16 @@ function InquiryDetailContent({
   const inquiryReplyEmail = inquiry.replyEmail ?? replyEmail;
 
   return (
-    <div className="newsroll_policy_detail_content">
-      <div className="newsroll_policy_detail_main">
-      <div className="newsroll_policy_detail_header">
+    <div className="wrapper_detailContent">
+      <div className="wrapper_detailMain">
+      <div className="wrapper_detailHeader">
         <div className="wrapper_contentMeta">
-          <div className="newsroll_policy_detail_body">
+          <div className="wrapper_detailBody">
             <h1>{inquiry.title}</h1>
           </div>
 
-          <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
-            <div className="newsroll_policy_detail_dates">
+          <div className="wrapper_articleMetaActions wrapper_detailMetaActions">
+            <div className="wrapper_detailDateGroup u_flexWrap">
               <span>
                 <DateTimeText dateTime={inquiry.createdAt}>
                   {formatDate(inquiry.createdAt)}
@@ -234,9 +234,9 @@ function InquiryDetailContent({
         </div>
       </div>
 
-      <Divider className="newsroll_policy_detail_actions_divider" />
+      <Divider className="divider_detailActions" />
 
-      <p className="newsroll_policy_detail_summary">{inquiry.content}</p>
+      <p className="text_detailSummary">{inquiry.content}</p>
       {inquiryReplyEmail ? (
         <p className="text_mySettingsDetailBody">
           답변은 {inquiryReplyEmail}로 발송됩니다.
@@ -245,7 +245,7 @@ function InquiryDetailContent({
       </div>
 
       <div
-        className="newsroll_policy_detail_pagination wrapper_betweenRow"
+        className="wrapper_detailPagination wrapper_betweenRow"
         role="group"
         aria-label="문의 이전글 다음글"
       >
@@ -305,16 +305,16 @@ function InquiryHistory({
   }
 
   return (
-    <div className="newsroll_policy_items wrapper_scrollList">
+    <div className="policy_items wrapper_scrollList">
       {inquiries.map((inquiry, index) => (
         <Fragment key={inquiry.id}>
           <ContentSummaryButton
-            className="newsroll_policy_list_item"
+            className="btn_contentListItem"
             onClick={() => onSelectInquiry(inquiry.id)}
           >
             <div className="wrapper_contentMeta">
               <h2>{inquiry.title}</h2>
-              <div className="newsroll_policy_dates">
+              <div className="wrapper_contentDateGroup">
                 <span>
                   <DateTimeText dateTime={inquiry.createdAt}>
                     {formatDate(inquiry.createdAt)}
@@ -324,7 +324,7 @@ function InquiryHistory({
             </div>
           </ContentSummaryButton>
           {index < inquiries.length - 1 ? (
-            <Divider className="newsroll_policy_itemDivider" />
+            <Divider className="divider_listItem" />
           ) : null}
         </Fragment>
       ))}
@@ -812,7 +812,7 @@ function AccountEditForm({
           .catch(() => setStatus("error"));
       }}
     >
-      <div className="wrapper_mySettingsField wrapper_fieldStack">
+      <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
         <span className="text_infoFieldLabel">닉네임</span>
         <div className="wrapper_signupEmailField">
           <TextInput
@@ -868,7 +868,7 @@ function AccountEditForm({
           </p>
         ) : null}
       </div>
-      <div className="wrapper_mySettingsField wrapper_fieldStack">
+      <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
         <span className="text_infoFieldLabel">이메일</span>
         <div className="wrapper_signupEmailField">
           <TextInput
@@ -920,7 +920,7 @@ function AccountEditForm({
         ) : null}
       </div>
       {isVerificationSent ? (
-        <div className="wrapper_mySettingsField wrapper_fieldStack">
+        <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
           <span className="text_infoFieldLabel">인증번호</span>
           <div className="wrapper_signupVerificationCode">
             <div className="wrapper_signupVerificationCodeInput">
@@ -1018,7 +1018,7 @@ function SettingsPasswordField({
   value: string;
 }) {
   return (
-    <label className="wrapper_mySettingsField wrapper_fieldStack">
+    <label className="wrapper_mySettingsField wrapper_fieldStack u_w100">
       <span className="text_infoFieldLabel">{label}</span>
       <div className="wrapper_loginPasswordField">
         <TextInput
