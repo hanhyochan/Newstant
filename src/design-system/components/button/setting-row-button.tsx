@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { ChevronRowButton } from "./chevron-row-button";
 import { OnoffToggleButton } from "./onoffToggle-button";
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export interface SettingRowButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {

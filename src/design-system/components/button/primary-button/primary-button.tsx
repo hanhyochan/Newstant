@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-import { cn } from "../../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type PrimaryButtonTone = "default" | "neutral" | "danger";
 

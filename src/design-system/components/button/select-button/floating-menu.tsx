@@ -5,7 +5,7 @@ import {
   type RefObject,
 } from "react";
 
-import { cn } from "../../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type FloatingMenuPanelAlign = "start" | "end";
 export type FloatingMenuPanelSize = "default" | "small";

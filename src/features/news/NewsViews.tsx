@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   Fragment,
@@ -38,6 +38,7 @@ import {
   IconButton,
   Divider,
   ContentActionButton,
+  DateTimeText,
   SelectButton,
   NewsViewToggle,
   PillTabMenu,
@@ -222,9 +223,9 @@ export function NewsCreatedTime({
   dateTime?: string;
 }) {
   return (
-    <time className="newsroll_createdTime" dateTime={dateTime}>
+    <DateTimeText className="newsroll_createdTime" dateTime={dateTime}>
       {children}
-    </time>
+    </DateTimeText>
   );
 }
 
@@ -638,7 +639,7 @@ export const allNewsHeadlinesByPress: Record<
 export const allNewsRelayCategories = ["정치", "경제", "사회", "문화", "국제"];
 
 function HomeArticleMeta({
-  className = "newsroll_article_meta",
+  className = "newsroll_article_meta wrapper_betweenRow",
   date,
   dateTime = defaultNewsDateTime,
 }: {
@@ -2236,7 +2237,7 @@ function CommentReactionPanel({
         ref={panelRef}
         aria-label="댓글 반응"
       >
-        <div className="wrapper_commentSummary">
+        <div className="wrapper_commentSummary wrapper_betweenRow">
           <span className="text_commentTotal">댓글 {allComments.length}</span>
           <TextButton
             aria-pressed={myCommentsOnly}
@@ -2258,7 +2259,7 @@ function CommentReactionPanel({
             <h3>투표 선택지 별</h3>
             <PillTabMenu
               ariaLabel="안내 선택지별 댓글 필터"
-              className="wrapper_commentTabs"
+              className="wrapper_commentTabs wrapper_tabScroller"
               items={commentTabs}
               onChange={setActiveChoice}
               value={activeChoice}
@@ -2281,7 +2282,7 @@ function CommentReactionPanel({
             />
 
             <div
-              className="wrapper_commentList"
+              className="wrapper_commentList wrapper_scrollList"
               id={commentListId}
               style={commentListStyle}
             >
@@ -2557,7 +2558,7 @@ function CommentReactionPanel({
               onClick={(event) => event.stopPropagation()}
             >
               <h3 className="text_myDialogTitle">신고 사유 선택</h3>
-              <label className="wrapper_infoField">
+              <label className="wrapper_contentMeta wrapper_fieldStack">
                 <span className="text_infoFieldLabel">신고 경위</span>
                 <SelectButton
                   ariaLabel="신고 경위"
@@ -2996,14 +2997,14 @@ export function HomeReelCard({
   const articleContent = (
     <div
       aria-labelledby={articleTitleId}
-      className="wrapper_articleCardContent"
+      className="wrapper_articleCardContent wrapper_panelContent u_minH0"
       id={articleContentId}
       role="region"
       tabIndex={0}
     >
-      <div className="wrapper_articleSummary">
+      <div className="wrapper_contentMeta">
         <div
-          className="wrapper_articleKicker"
+          className="wrapper_articleKicker wrapper_betweenRow"
         >
           <ChipLabel>
             <SearchHighlightText
@@ -3032,12 +3033,12 @@ export function HomeReelCard({
             {article.title}
           </SearchHighlightText>
         </ArticleTitle>
-        <div className="wrapper_articleMetaActions">
+        <div className="wrapper_articleMetaActions wrapper_betweenRow">
           <HomeArticleMeta
             date={article.date}
             dateTime={article.dateTime}
           />
-          <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
+          <div className="wrapper_articleActions wrapper_actionGroup wrapper_actionGroup_style" aria-label="기사 도구" role="group">
             <IconButton
               className="btn_articleTool"
               icon="share"
@@ -3156,7 +3157,7 @@ export function HomeReelCard({
   return (
     <article
       aria-labelledby={articleTitleId}
-      className="container_articleCard"
+      className="container_articleCard wrapper_panelSurface_style"
       ref={cardRef}
     >
       {articleContent}
@@ -3216,9 +3217,9 @@ export function NewsRollStateCard({
   role?: "alert" | "status";
 }) {
   return (
-    <article className="container_articleCard newsroll_homeStateCard">
+    <article className="container_articleCard wrapper_panelSurface_style newsroll_homeStateCard">
       <div
-        className="wrapper_articleCardContent newsroll_homeStateContent"
+        className="wrapper_articleCardContent wrapper_panelContent u_minH0 newsroll_homeStateContent"
         role={role}
         tabIndex={0}
       >
@@ -3236,7 +3237,7 @@ function AllNewsPanelContent({
   className,
   ...props
 }: AllNewsPanelContentProps) {
-  const classNames = ["newsroll_all_panelContent", className]
+  const classNames = ["newsroll_all_panelContent", "wrapper_panelContent", "u_minH0", className]
     .filter(Boolean)
     .join(" ");
 
@@ -3268,7 +3269,7 @@ export function AllNewsSectionPanel({
 
   return (
     <article
-      className={`container_articleCard newsroll_all_panel ${className}`}
+      className={`container_articleCard wrapper_panelSurface_style newsroll_all_panel ${className}`}
       aria-label={ariaLabel}
     >
       <AllNewsPanelContent {...contentProps}>

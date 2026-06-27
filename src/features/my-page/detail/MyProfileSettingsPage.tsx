@@ -32,7 +32,7 @@ export function MyProfileSettingsPage({
             aria-label={`${section.title} 설정`}
             className="container_mySettingsDetailSection"
           >
-            <div className="wrapper_mySettingsList">
+            <div className="wrapper_mySettingsList wrapper_scrollList">
               {section.items.map((item, itemIndex) => (
                 <MySettingRow
                   key={item}

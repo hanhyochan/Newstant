@@ -37,7 +37,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
 
   if (items.length === 0) {
     return (
-      <section className="container_infoList" aria-label="1:1 문의">
+      <section className="container_infoList wrapper_scrollList" aria-label="1:1 문의">
         <DataUnavailableMessage target="문의 유형" />
       </section>
     );
@@ -45,7 +45,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
 
   return (
     <form
-      className="wrapper_infoInquiry"
+      className="wrapper_infoInquiry wrapper_panelContent"
       aria-label="1:1 문의"
       onSubmit={(event) => {
         event.preventDefault();
@@ -76,7 +76,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           });
       }}
     >
-      <label className="wrapper_infoField">
+      <label className="wrapper_contentMeta wrapper_fieldStack">
         <span className="text_infoFieldLabel">문의 유형</span>
         <SelectButton
           ariaLabel="문의 유형"
@@ -92,7 +92,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           value={selectedInquiryType}
         />
       </label>
-      <div className="wrapper_infoField">
+      <div className="wrapper_contentMeta wrapper_fieldStack">
         <span className="text_infoFieldLabel">제목</span>
         <TextInput
           aria-label="문의 제목"
@@ -102,7 +102,7 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
           value={inquiryTitle}
         />
       </div>
-      <div className="wrapper_infoField">
+      <div className="wrapper_contentMeta wrapper_fieldStack">
         <span className="text_infoFieldLabel">내용</span>
         <Textarea
           aria-label="문의 내용"

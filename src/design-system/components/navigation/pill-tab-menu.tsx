@@ -2,7 +2,7 @@ import { Fragment, useRef, type KeyboardEvent } from "react";
 import type { ReactNode } from "react";
 
 import { TabButton } from "../button/tab-button";
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type PillTabItem<T extends string> = {
   id: T;

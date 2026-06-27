@@ -6,6 +6,7 @@ import {
 
 import {
   ChipLabel,
+  DateTimeText,
   PillTabMenu,
   IconTextButton,
   NewsHeadlineRowButton as AllNewsHeadlineItem,
@@ -48,9 +49,9 @@ function MyCommentCreatedDate({
   dateTime?: string;
 }) {
   return (
-    <time className="text_myCommentCreatedDate" dateTime={dateTime}>
+    <DateTimeText className="text_myCommentCreatedDate" dateTime={dateTime}>
       {children}
-    </time>
+    </DateTimeText>
   );
 }
 
@@ -177,13 +178,13 @@ export function MyCommentDetailPage({
     >
       <h2 className="text_mySectionTitle">댓글</h2>
       <div
-        className="wrapper_myTabbedDetailContent"
+        className="wrapper_myTabbedDetailContent wrapper_panelContent"
         {...commentTabSwipeHandlers}
       >
       {showTabs ? (
         <PillTabMenu
           ariaLabel="내 댓글 카테고리"
-          className="tab_myCategoryMenu"
+          className="tab_myCategoryMenu wrapper_tabScroller"
           items={[...tabs]}
           onChange={(nextCategory) =>
             onCategoryChange(nextCategory as MyCommentKind)
@@ -191,7 +192,7 @@ export function MyCommentDetailPage({
           value={activeCommentKind}
         />
       ) : null}
-      <div className={`wrapper_myCommentList ${commentTabSwipeMotionClassName}`.trim()}>
+      <div className={`wrapper_myCommentList wrapper_scrollList ${commentTabSwipeMotionClassName}`.trim()}>
         {visibleCommentItems.length === 0 ? (
           <DataUnavailableMessage target="댓글" />
         ) : (

@@ -311,7 +311,7 @@ export function HomeView({
           role="tabpanel"
           aria-labelledby="home-news-view-tab-block"
         >
-          <div className="wrapper_newsGridScroll">
+          <div className="wrapper_newsGridScroll wrapper_gridList">
             {isHomeLoading ? (
               <NewsRollStateCard role="status">
                 <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>

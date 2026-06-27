@@ -71,13 +71,13 @@ export function MyVoteDetailPage({
     >
       <h2 className="text_mySectionTitle">투표</h2>
       <div
-        className="wrapper_myTabbedDetailContent"
+        className="wrapper_myTabbedDetailContent wrapper_panelContent"
         {...voteTabSwipeHandlers}
       >
       {showTabs ? (
         <PillTabMenu
           ariaLabel="내가 참여한 투표 카테고리"
-          className="tab_myCategoryMenu"
+          className="tab_myCategoryMenu wrapper_tabScroller"
           items={tabs.map((category) => ({
             id: category,
             label: category,
@@ -86,7 +86,7 @@ export function MyVoteDetailPage({
           value={activeCategory}
         />
       ) : null}
-      <div className={`wrapper_myVoteList ${voteTabSwipeMotionClassName}`.trim()}>
+      <div className={`wrapper_myVoteList wrapper_scrollList ${voteTabSwipeMotionClassName}`.trim()}>
         {visibleVoteItems.length === 0 ? (
           <DataUnavailableMessage target="투표" />
         ) : (

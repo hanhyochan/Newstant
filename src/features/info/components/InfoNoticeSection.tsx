@@ -19,7 +19,7 @@ export function InfoNoticeSection({
   onNoticeSelect: (notice: InfoNoticeItem, index: number) => void;
 }) {
   return (
-    <section className="container_infoList" aria-label="공지사항">
+    <section className="container_infoList wrapper_scrollList" aria-label="공지사항">
       {items.length === 0 ? (
         <DataUnavailableMessage target="공지사항" />
       ) : (
@@ -33,7 +33,7 @@ export function InfoNoticeSection({
               className="btn_infoNoticeItem"
               onClick={() => onNoticeSelect(notice, index)}
             >
-              <div className="wrapper_infoNoticeContent">
+              <div className="wrapper_contentMeta">
                 <span className="text_infoItemTitle">{notice.title}</span>
                 <p className="text_infoBody text_lineClamp2">
                   {notice.summary}

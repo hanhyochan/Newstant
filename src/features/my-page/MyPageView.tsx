@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
@@ -1359,7 +1359,7 @@ export function MyPageView({
               <strong>{currentUser.nickname}님</strong>
               <span>안녕하세요</span>
             </span>
-            <div className="wrapper_articleActions" aria-label="프로필 도구" role="group">
+            <div className="wrapper_articleActions wrapper_actionGroup wrapper_actionGroup_style" aria-label="프로필 도구" role="group">
               <IconButton
                 aria-pressed={isProfileSettingsOpen}
                 className="btn_articleTool"
@@ -1424,7 +1424,7 @@ export function MyPageView({
           <section className="container_mySettingsSection">
             <Divider className="divider_mySection" />
             <h2 className="text_mySectionTitle">뉴스 설정</h2>
-            <div className="wrapper_mySettingsList">
+            <div className="wrapper_mySettingsList wrapper_scrollList">
               <MySettingRow
                 label="맞춤형 뉴스 설정"
                 onClick={openCustomNewsSettings}
@@ -1439,7 +1439,7 @@ export function MyPageView({
           >
             <Divider className="divider_mySection" />
             <h2 className="text_mySectionTitle">알림 설정</h2>
-            <div className="wrapper_mySettingsList">
+            <div className="wrapper_mySettingsList wrapper_scrollList">
               {myNotificationLabels.map((label) => (
                 <MySettingRow
                   checked={notificationSettings[label]}
@@ -1459,7 +1459,7 @@ export function MyPageView({
           <section className="container_mySettingsSection">
             <Divider className="divider_mySection" />
             <h2 className="text_mySectionTitle">디스플레이 설정</h2>
-            <div className="wrapper_mySettingsList">
+            <div className="wrapper_mySettingsList wrapper_scrollList">
               <MySettingRow
                 checked={isDarkMode}
                 label="다크모드"

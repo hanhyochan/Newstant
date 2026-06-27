@@ -16,6 +16,7 @@ import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation"
 import {
   PaginationButton,
   ContentSummaryButton,
+  DateTimeText,
   FieldActionButton,
   IconButton,
   PrimaryButton,
@@ -216,14 +217,18 @@ function InquiryDetailContent({
     <div className="newsroll_policy_detail_content">
       <div className="newsroll_policy_detail_main">
       <div className="newsroll_policy_detail_header">
-        <div className="newsroll_policy_detail_titleMeta">
+        <div className="wrapper_contentMeta">
           <div className="newsroll_policy_detail_body">
             <h1>{inquiry.title}</h1>
           </div>
 
           <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
             <div className="newsroll_policy_detail_dates">
-              <span>{formatDate(inquiry.createdAt)}</span>
+              <span>
+                <DateTimeText dateTime={inquiry.createdAt}>
+                  {formatDate(inquiry.createdAt)}
+                </DateTimeText>
+              </span>
             </div>
           </div>
         </div>
@@ -240,7 +245,7 @@ function InquiryDetailContent({
       </div>
 
       <div
-        className="newsroll_policy_detail_pagination"
+        className="newsroll_policy_detail_pagination wrapper_betweenRow"
         role="group"
         aria-label="문의 이전글 다음글"
       >
@@ -300,17 +305,21 @@ function InquiryHistory({
   }
 
   return (
-    <div className="newsroll_policy_items">
+    <div className="newsroll_policy_items wrapper_scrollList">
       {inquiries.map((inquiry, index) => (
         <Fragment key={inquiry.id}>
           <ContentSummaryButton
             className="newsroll_policy_list_item"
             onClick={() => onSelectInquiry(inquiry.id)}
           >
-            <div className="wrapper_policyItemContent wrapper_myInquiryItemContent">
+            <div className="wrapper_contentMeta">
               <h2>{inquiry.title}</h2>
               <div className="newsroll_policy_dates">
-                <span>{formatDate(inquiry.createdAt)}</span>
+                <span>
+                  <DateTimeText dateTime={inquiry.createdAt}>
+                    {formatDate(inquiry.createdAt)}
+                  </DateTimeText>
+                </span>
               </div>
             </div>
           </ContentSummaryButton>
@@ -491,7 +500,7 @@ function ModerationHistory({
       {isReport ? null : (
         <PillTabMenu
           ariaLabel="차단 숨김 내역"
-          className="tab_myCategoryMenu"
+          className="tab_myCategoryMenu wrapper_tabScroller"
           items={moderationTabs}
           onChange={setActiveTab}
           role="tablist"
@@ -513,7 +522,7 @@ function ModerationHistory({
       ) : (
         <>
           <div
-            className={`wrapper_mySettingsList ${moderationTabSwipeMotionClassName}`.trim()}
+            className={`wrapper_mySettingsList wrapper_scrollList ${moderationTabSwipeMotionClassName}`.trim()}
           >
             {filteredActions.map((action, index) => {
               const isSelected = selectedActionIds.has(action.id);
@@ -538,11 +547,14 @@ function ModerationHistory({
                         size="md"
                       />
                     ) : null}
-                    <div className="wrapper_mySettingsHistoryText">
-                      <span className="text_mySettingsHistoryMeta">
+                    <div className="wrapper_mySettingsHistoryText wrapper_contentMeta">
+                      <DateTimeText
+                        className="text_mySettingsHistoryMeta"
+                        dateTime={action.createdAt}
+                      >
                         {formatDate(action.createdAt)}
-                      </span>
-                      <div className="wrapper_mySettingsHistoryHeader">
+                      </DateTimeText>
+                      <div className="wrapper_mySettingsHistoryHeader wrapper_betweenRow">
                         <strong>{targetLabel}</strong>
                       </div>
                       {isReport && action.reason ? <p>{action.reason}</p> : null}
@@ -800,7 +812,7 @@ function AccountEditForm({
           .catch(() => setStatus("error"));
       }}
     >
-      <div className="wrapper_mySettingsField">
+      <div className="wrapper_mySettingsField wrapper_fieldStack">
         <span className="text_infoFieldLabel">닉네임</span>
         <div className="wrapper_signupEmailField">
           <TextInput
@@ -856,7 +868,7 @@ function AccountEditForm({
           </p>
         ) : null}
       </div>
-      <div className="wrapper_mySettingsField">
+      <div className="wrapper_mySettingsField wrapper_fieldStack">
         <span className="text_infoFieldLabel">이메일</span>
         <div className="wrapper_signupEmailField">
           <TextInput
@@ -908,7 +920,7 @@ function AccountEditForm({
         ) : null}
       </div>
       {isVerificationSent ? (
-        <div className="wrapper_mySettingsField">
+        <div className="wrapper_mySettingsField wrapper_fieldStack">
           <span className="text_infoFieldLabel">인증번호</span>
           <div className="wrapper_signupVerificationCode">
             <div className="wrapper_signupVerificationCodeInput">
@@ -1006,7 +1018,7 @@ function SettingsPasswordField({
   value: string;
 }) {
   return (
-    <label className="wrapper_mySettingsField">
+    <label className="wrapper_mySettingsField wrapper_fieldStack">
       <span className="text_infoFieldLabel">{label}</span>
       <div className="wrapper_loginPasswordField">
         <TextInput

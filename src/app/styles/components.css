@@ -1046,3 +1046,171 @@
   outline: var(--border-2) solid var(--color-accent-foreground-blue);
   outline-offset: var(--spacing-gap-vertical-4);
 }
+/* --------------------------------------------------------------------------
+ * News Content Components
+ * --------------------------------------------------------------------------
+ * Component-owned sizing, typography, clipping, and interaction details for
+ * reusable news content buttons/cards. Generic layout primitives stay in
+ * common-layout.css.
+ */
+.newsroll_all_latest_card {
+  width: min(78vw, 300px);
+  height: 100%;
+  min-height: 0;
+  flex: 0 0 min(78vw, 300px);
+  align-items: flex-start;
+  overflow: hidden;
+  padding-inline: 0;
+  scroll-snap-align: start;
+  text-align: left;
+}
+
+.newsroll_all_headline_item > .wrapper_contentMeta {
+  min-width: 0;
+  flex: 1;
+}
+
+.newsroll_all_latest_card > .wrapper_contentMeta,
+.newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_card > .wrapper_contentMeta {
+  min-height: 0;
+}
+
+.newsroll_sheetFrame.is_newsrollSheetDocked .newsroll_all_latest_card > .wrapper_contentMeta > strong {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.newsroll_all_latest_card > .wrapper_contentMeta > strong,
+.newsroll_all_headline_item > .wrapper_contentMeta > strong,
+.newsroll_all_relay_item strong {
+  width: 100%;
+  max-width: 100%;
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.newsroll_all_latest_card > .wrapper_contentMeta > strong,
+.newsroll_all_relay_item .newsroll_all_relay_title_large {
+  font-size: var(--font-size-18);
+}
+
+/* All-news panel sizing: keeps the latest-news panel within the common sheet. */
+.newsroll_all_latest_panel {
+  --newsroll-all-latest-panel-natural-height: 540px;
+  --newsroll-all-latest-panel-available-height: calc(
+    100dvh - var(--newsroll-common-sheet-stop-top, 168px) -
+      var(--newsroll-bottom-nav-clearance)
+  );
+  --newsroll-all-latest-panel-height: min(
+    var(--newsroll-all-latest-panel-natural-height),
+    var(--newsroll-all-latest-panel-available-height)
+  );
+  height: var(--newsroll-all-latest-panel-height);
+  min-height: 0;
+  max-height: var(--newsroll-all-latest-panel-height);
+  overflow: hidden;
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4)
+  );
+}
+
+.newsroll_all_latest_panel .wrapper_panelContent {
+  overflow: hidden;
+}
+
+.newsroll_all_press_panel {
+  min-height: 765px;
+}
+
+.newsroll_all_relay_panel {
+  min-height: 2011px;
+}
+
+.newsroll_all_relay_panel .wrapper_panelContent {
+  gap: 0;
+}
+
+.newsroll_all_press_panel .newsroll_all_section_title,
+.newsroll_all_relay_panel .newsroll_all_section_title {
+  padding-bottom: var(--spacing-gap-vertical-24);
+}
+
+.newsroll_all_section_title {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+}
+
+.newsroll_all_section_title strong {
+  font-weight: inherit;
+}
+
+.newsroll_all_latest_scroller {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-gap-horizontal-24);
+  align-items: stretch;
+  cursor: grab;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.newsroll_all_latest_scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.newsroll_all_latest_scroller.is_dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.wrapper_articleCardContent.wrapper_panelContent {
+  touch-action: pan-y;
+}
+
+.wrapper_articleActions.wrapper_actionGroup {
+  color: var(--color-cool-neutral-50);
+}
+
+.wrapper_articleActions.wrapper_actionGroup .btn_articleTool {
+  width: auto;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: inherit;
+  line-height: 0;
+}
+
+.newsroll_blockMeta.wrapper_betweenRow,
+.newsroll_article_meta.wrapper_betweenRow {
+  margin: 0;
+}
+
+/* Article body typography: keep article copy at the requested 16px baseline. */
+.container_articleCard .text_articleBody {
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+}

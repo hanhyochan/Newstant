@@ -19,11 +19,11 @@ export function NewsHeadlineRowButton({
   return (
     <button
       aria-label={`헤드라인 기사: ${item.title}`}
-      className="newsroll_all_headline_item"
+      className="newsroll_all_headline_item wrapper_betweenRow"
       onClick={onClick}
       type="button"
     >
-      <span className="newsroll_all_headline_body">
+      <span className="wrapper_contentMeta">
         <strong>{item.title}</strong>
         <NewsCardMeta />
       </span>

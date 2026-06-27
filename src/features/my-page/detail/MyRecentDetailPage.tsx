@@ -217,14 +217,14 @@ export function MyRecentDetailPage({
     >
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
       <div
-        className="wrapper_myTabbedDetailContent"
+        className="wrapper_myTabbedDetailContent wrapper_panelContent"
         {...recentTabSwipeHandlers}
       >
         {showTabs ? (
           <>
             <PillTabMenu
               ariaLabel="최근 본 뉴스 카테고리"
-              className="tab_myCategoryMenu"
+              className="tab_myCategoryMenu wrapper_tabScroller"
               items={tabs.map((category) => ({
                 id: category,
                 label: category,
@@ -242,7 +242,7 @@ export function MyRecentDetailPage({
           </div>
         )}
         <div
-          className={`wrapper_allTabPanelBody ${recentTabSwipeMotionClassName}`.trim()}
+          className={`wrapper_allTabPanelBody wrapper_panelContent ${recentTabSwipeMotionClassName}`.trim()}
         >
           {visibleRecentItems.length === 0 ? (
             <DataUnavailableMessage target="최근 본 뉴스" />

@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "react";
 
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type OnoffToggleButtonProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   checked?: boolean;

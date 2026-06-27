@@ -8,7 +8,7 @@ import type {
 import { useId } from "react";
 
 import { CheckInput, type CheckSize } from "../input/check-field";
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type ChevronRowButtonType = "default" | "checkbox";
 

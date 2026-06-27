@@ -4,7 +4,7 @@ import type {
   ReactNode,
 } from "react";
 
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 type ContentActionButtonSharedProps = {
   children: ReactNode;

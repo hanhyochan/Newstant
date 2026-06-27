@@ -200,7 +200,7 @@ export function MyCustomNewsSettingsPage({
             <h2 className="text_mySectionTitle">{group.title}</h2>
             <PillTabMenu
               ariaLabel={group.title}
-              className="tab_myCategoryMenu"
+              className="tab_myCategoryMenu wrapper_tabScroller"
               getItemState={(optionId) => {
                 const isSelected =
                   selectedCategorySettings[groupIndex]?.has(optionId) ?? false;

@@ -190,7 +190,7 @@ export function LoginView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <TextInput mode="dark"
                 aria-describedby={emailValidation.errorMessage ? loginEmailErrorId : undefined}
                 aria-invalid={Boolean(emailValidation.errorMessage)}
@@ -211,7 +211,7 @@ export function LoginView({
                 message={emailValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1047,7 +1047,7 @@ export function SignupEmailView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -1096,7 +1096,7 @@ export function SignupEmailView({
               ) : null}
             </div>
             {isVerificationSent ? (
-              <div className="wrapper_authField">
+              <div className="wrapper_authField wrapper_fieldStack">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
                     <TextInput mode="dark"
@@ -1317,7 +1317,7 @@ export function PasswordResetEmailView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -1366,7 +1366,7 @@ export function PasswordResetEmailView({
               ) : null}
             </div>
             {isVerificationSent ? (
-              <div className="wrapper_authField">
+              <div className="wrapper_authField wrapper_fieldStack">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
                     <TextInput mode="dark"
@@ -1481,7 +1481,7 @@ export function PasswordResetPasswordView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1514,7 +1514,7 @@ export function PasswordResetPasswordView({
                 message={nextPasswordValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1648,7 +1648,7 @@ export function SignupNicknameView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -1760,7 +1760,7 @@ export function SignupPasswordView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1791,7 +1791,7 @@ export function SignupPasswordView({
                 message={passwordValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField">
+            <div className="wrapper_authField wrapper_fieldStack">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -1906,7 +1906,7 @@ export function SignupAgeView({
         >
           <PillTabMenu
             ariaLabel="나의 연령대 선택"
-            className="wrapper_authTabMenu"
+            className="wrapper_authTabMenu wrapper_tabScroller"
             getItemState={(id) => (selectedAge === id ? "active" : "default")}
             items={signupAgeItems}
             onChange={setSelectedAge}
@@ -1973,7 +1973,7 @@ export function SignupCategoryView({
         >
           <PillTabMenu
             ariaLabel="관심 카테고리 선택"
-            className="wrapper_authTabMenu"
+            className="wrapper_authTabMenu wrapper_tabScroller"
             getItemState={(id) => (selectedCategories.includes(id) ? "active" : "default")}
             items={signupCategoryItems}
             keyboardNavigation={false}

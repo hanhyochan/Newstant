@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
@@ -656,10 +656,10 @@ export function AllNewsView({
             }}
             title="언론사별 헤드라인"
           >
-            <div className="newsroll_all_tabSticky newsroll_all_pressHeadline_tabMenu">
+            <div className="newsroll_all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style newsroll_all_pressHeadline_tabMenu">
               <PillTabMenu
                 ariaLabel="언론사 선택"
-                className="newsroll_all_pressHeadline_tabScroller"
+                className="newsroll_all_pressHeadline_tabScroller wrapper_tabScroller"
                 getButtonClassName={() => "newsroll_all_pressHeadline_tabButton"}
                 getPanelId={() => "all-news-headline-panel"}
                 getTabId={(press) =>
@@ -683,7 +683,7 @@ export function AllNewsView({
               />
             </div>
             <div
-              className={`wrapper_allTabPanelBody ${pressSwipeMotionClassName}`.trim()}
+              className={`wrapper_allTabPanelBody wrapper_panelContent ${pressSwipeMotionClassName}`.trim()}
               {...pressSwipeHandlers}
             >
               <SeparatedList
@@ -728,10 +728,10 @@ export function AllNewsView({
             }}
             title="릴레이 뉴스"
           >
-            <div className="newsroll_all_tabSticky newsroll_all_category_tabSticky">
+            <div className="newsroll_all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style newsroll_all_category_tabSticky">
               <PillTabMenu
                 ariaLabel="릴레이 뉴스 카테고리"
-                className="newsroll_all_category_tabs"
+                className="newsroll_all_category_tabs wrapper_tabScroller"
                 getPanelId={(category) =>
                   category === activeRelayCategory
                     ? `all-news-relay-panel-${visibleAllNewsRelayCategories.indexOf(category)}`
@@ -749,7 +749,7 @@ export function AllNewsView({
               />
             </div>
             <div
-              className={`wrapper_allTabPanelBody ${relaySwipeMotionClassName}`.trim()}
+              className={`wrapper_allTabPanelBody wrapper_panelContent ${relaySwipeMotionClassName}`.trim()}
               {...relaySwipeHandlers}
             >
               <SeparatedList

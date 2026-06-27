@@ -1,7 +1,7 @@
 import type { MouseEventHandler } from "react";
 
 import { Icon } from "../icon/icon";
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type NoticeCardLinkType =
   | "breaking"

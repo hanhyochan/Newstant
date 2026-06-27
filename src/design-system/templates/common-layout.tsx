@@ -127,7 +127,13 @@ export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayout
     >
       <div
         {...topProps}
-        className={mergeClassNames("newsroll_common_top", topClassName, topProps?.className)}
+        className={mergeClassNames(
+          "newsroll_common_top",
+          "wrapper_topShell",
+          "wrapper_topShell_style",
+          topClassName,
+          topProps?.className,
+        )}
         ref={mergeRefs(dockedSheet.topRef, topRef)}
       >
         {top}

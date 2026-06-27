@@ -1,6 +1,6 @@
-import type { ButtonHTMLAttributes } from "react";
+﻿import type { ButtonHTMLAttributes } from "react";
 
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type SocialLoginProvider = "google" | "naver" | "kakao";
 

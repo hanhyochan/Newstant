@@ -13,7 +13,7 @@ export function InfoFaqSection({ items }: { items: Faq[] }) {
     question.replace(/^(Q\.\s*)+/i, "");
 
   return (
-    <section className="container_infoList" aria-label="FAQ">
+    <section className="container_infoList wrapper_scrollList" aria-label="FAQ">
       {items.length === 0 ? (
         <DataUnavailableMessage target="FAQ" />
       ) : (

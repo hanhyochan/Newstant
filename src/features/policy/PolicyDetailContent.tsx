@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
 
@@ -6,6 +6,7 @@ import { bookmarkApi } from "@/app/_newsroll/api";
 import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
   ChipLabel,
+  DateTimeText,
   PaginationButton,
   Icon,
   IconButton,
@@ -167,7 +168,7 @@ export function PolicyDetailContent({
     >
       <div className="newsroll_policy_detail_main">
       <div className="newsroll_policy_detail_header">
-        <div className="newsroll_policy_detail_titleMeta">
+        <div className="wrapper_contentMeta">
           <div className="newsroll_policy_detail_body">
             <h1>
               <SearchHighlightText
@@ -183,15 +184,15 @@ export function PolicyDetailContent({
             </h1>
           </div>
 
-          <div className="wrapper_articleMetaActions newsroll_policy_detail_meta_actions">
+          <div className="wrapper_articleMetaActions wrapper_betweenRow newsroll_policy_detail_meta_actions">
             <div className="newsroll_policy_detail_dates">
               <span>
                 <strong>{policyDate.label}</strong>
-                {policyDate.date}
+                <DateTimeText>{policyDate.date}</DateTimeText>
               </span>
             </div>
 
-            <div className="wrapper_articleActions" aria-label="정책 도구" role="group">
+            <div className="wrapper_articleActions wrapper_actionGroup wrapper_actionGroup_style" aria-label="정책 도구" role="group">
               <IconButton
                 className="btn_articleTool"
                 icon="share"
@@ -306,7 +307,7 @@ export function PolicyDetailContent({
       </div>
 
       <div
-        className="newsroll_policy_detail_pagination"
+        className="newsroll_policy_detail_pagination wrapper_betweenRow"
         role="group"
         aria-label="이전글 다음글"
       >

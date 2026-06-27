@@ -80,8 +80,10 @@ export type {
   SocialLoginButtonProps,
   SocialLoginProvider,
 } from "./button/social-login-button";
-export { ChipLabel } from "./chip/chip-label";
-export type { ChipLabelProps } from "./chip/chip-label";
+export { ChipLabel } from "./data-display/chip-label";
+export type { ChipLabelProps } from "./data-display/chip-label";
+export { DateTimeText } from "./data-display/date-time-text";
+export type { DateTimeTextProps } from "./data-display/date-time-text";
 export { Icon } from "./icon/icon";
 export type { IconName, IconSize } from "./icon/icon";
 export {
@@ -104,8 +106,8 @@ export type {
   ActionMenuProps,
   UseActionMenuDismissProps,
 } from "./button/select-button/action-menu";
-export { Divider } from "./shared/divider";
-export type { DividerProps } from "./shared/divider";
+export { Divider } from "./data-display/divider";
+export type { DividerProps } from "./data-display/divider";
 export { OnoffToggleButton } from "./button/onoffToggle-button";
 export type { OnoffToggleButtonProps } from "./button/onoffToggle-button";
 export { NewViewToggleButton } from "./button/newViewToggle-button";

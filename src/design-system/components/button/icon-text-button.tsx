@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { Icon, type IconName } from "../icon/icon";
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type IconTextButtonSize = "default" | "small";
 export type FeedbackIconTextButtonTone = "dislike" | "like" | "neutral";

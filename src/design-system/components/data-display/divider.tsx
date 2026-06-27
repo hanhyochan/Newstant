@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "react";
 
-import { cn } from "./utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type DividerProps = HTMLAttributes<HTMLSpanElement> & {
   orientation?: "horizontal" | "vertical";

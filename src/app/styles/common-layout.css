@@ -1,0 +1,103 @@
+/* --------------------------------------------------------------------------
+ * Common Layout
+ * --------------------------------------------------------------------------
+ * Structural layout primitives only.
+ * Keep visual styling such as color, background, border, radius, and shadow in
+ * appearance.css unless the style belongs to a reusable component.
+ */
+
+/* Content metadata: title, date, summary, image, or supporting meta text. */
+.wrapper_contentMeta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+}
+
+/* Form field stack: label + input/select/textarea + validation message. */
+.wrapper_fieldStack {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+}
+
+/* Between row: left information with right-side action or metadata. */
+.wrapper_betweenRow {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}
+
+/* Action group: compact horizontal icon/action button cluster. */
+.wrapper_actionGroup {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-8);
+}
+
+/* Horizontal tab/chip scroller. State and button visuals stay in components.css. */
+.wrapper_tabScroller {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.wrapper_tabScroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* Panel content: vertical content stack inside a sheet/card/panel. */
+.wrapper_panelContent {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  min-height: 0;
+}
+
+/* Repeated vertical list with consistent spacing. */
+.wrapper_scrollList {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+}
+
+/* Sticky header region. Visual surface is provided by wrapper_stickyHeader_style. */
+.wrapper_stickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Two-column grid list used by block news layouts. */
+.wrapper_gridList {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.wrapper_gridList::-webkit-scrollbar {
+  display: none;
+}
+
+/* Purple top shell layout. Visual color is provided by wrapper_topShell_style. */
+.wrapper_topShell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}

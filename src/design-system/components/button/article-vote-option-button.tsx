@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, CSSProperties } from "react";
 
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type ArticleVoteOptionButtonState = "active" | "default";
 export type ArticleVoteOptionButtonVariant = "binary" | "stacked";

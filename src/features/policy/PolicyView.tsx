@@ -12,6 +12,7 @@ import { getCurrentUserSnapshot } from "@/app/_newsroll/auth/current-user";
 import {
   ChipLabel,
   ContentSummaryButton,
+  DateTimeText,
   SelectButton,
   PillTabMenu
 } from "@/design-system/components";
@@ -149,14 +150,14 @@ function PolicyListItem({
       onClick={onSelect}
       selected={isSelected}
     >
-      <div className="wrapper_policyItemContent">
-        <div className="newsroll_policy_list_body">
+      <div className="wrapper_policyItemContent wrapper_panelContent">
+        <div className="wrapper_contentMeta">
           <h2>{item.title}</h2>
           <p className="text_infoBody text_lineClamp2">{item.summary}</p>
           <div className="newsroll_policy_dates">
             <span>
               <strong>{policyDate.label}</strong>
-              {policyDate.date}
+              <DateTimeText>{policyDate.date}</DateTimeText>
             </span>
           </div>
         </div>
@@ -415,7 +416,7 @@ export function PolicyView({
           <div className="newsroll_policy_listContent">
             <PillTabMenu
               ariaLabel="연령 필터"
-              className="newsroll_all_category_tabs newsroll_policy_age_tabs"
+              className="newsroll_all_category_tabs wrapper_tabScroller newsroll_policy_age_tabs"
               getPanelId={() => "policy-list-panel"}
               getTabId={(age) => `policy-age-tab-${policyAgeTabs.indexOf(age)}`}
               items={policyAgeTabs.map((label) => ({ id: label, label }))}
@@ -445,7 +446,7 @@ export function PolicyView({
                 size="small"
                 value={sortOrder}
               />
-              <div className="newsroll_policy_items">
+              <div className="newsroll_policy_items wrapper_scrollList">
                 {policyLoadFailed ? (
                   <DataUnavailableMessage target="국가정책" />
                 ) : (

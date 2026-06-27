@@ -1,6 +1,6 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { cn } from "../components/shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 type NewsRollDockedControlsProps = {
   children: ReactNode;

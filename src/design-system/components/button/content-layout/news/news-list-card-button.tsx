@@ -21,7 +21,7 @@ export function NewsListCardButton({
   return (
     <button
       aria-label={`릴레이 뉴스 기사: ${item.title}`}
-      className="newsroll_all_relay_item"
+      className="newsroll_all_relay_item wrapper_contentMeta"
       onClick={onClick}
       type="button"
     >

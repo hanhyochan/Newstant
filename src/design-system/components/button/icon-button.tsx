@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 
 import { Icon, type IconName, type IconSize } from "../icon/icon";
-import { cn } from "../shared/utils";
+import { cn } from "@/design-system/utils/cn";
 
 export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   hasUnreadIndicator?: boolean;

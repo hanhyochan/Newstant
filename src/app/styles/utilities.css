@@ -1,0 +1,10 @@
+/* --------------------------------------------------------------------------
+ * Utilities
+ * --------------------------------------------------------------------------
+ * Single-property exceptions only. Do not add multi-property utility bundles.
+ */
+
+/* Allow nested flex/scroll children to shrink inside constrained panels. */
+.u_minH0 {
+  min-height: 0;
+}

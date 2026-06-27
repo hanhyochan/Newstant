@@ -1,6 +1,7 @@
 import type { MouseEventHandler } from "react";
 
-import { ChipLabel } from "@/design-system/components/chip/chip-label";
+import { ChipLabel } from "@/design-system/components/data-display/chip-label";
+import { DateTimeText } from "@/design-system/components/data-display/date-time-text";
 
 export type NewsBlockCardButtonProps = {
   ariaPressed?: boolean;
@@ -28,7 +29,7 @@ export function NewsBlockCardButton({
   return (
     <button
       aria-pressed={ariaPressed}
-      className="btn_newsBlockItem"
+      className="btn_newsBlockItem wrapper_contentMeta"
       onClick={onClick}
       type="button"
     >
@@ -40,10 +41,10 @@ export function NewsBlockCardButton({
       <img alt={imageAlt} src={imageSrc} />
       <strong>{title}</strong>
       {showDate ? (
-        <p className="newsroll_blockMeta">
-          <time className="newsroll_createdTime" dateTime={dateTime}>
+        <p className="newsroll_blockMeta wrapper_betweenRow">
+          <DateTimeText className="newsroll_createdTime" dateTime={dateTime}>
             {dateLabel}
-          </time>
+          </DateTimeText>
         </p>
       ) : null}
     </button>
