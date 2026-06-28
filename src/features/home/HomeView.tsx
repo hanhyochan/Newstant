@@ -18,7 +18,10 @@ import type {
   UserPreference
 } from "@/app/_newsroll/api/types";
 import {
-  NewsBlockCardButton
+  NewsBlockCardButton,
+  NewsBlockCardSkeleton,
+  NewsFeatureCardSkeleton,
+  SkeletonList,
 } from "@/design-system/components";
 import {
   useEnterFromRightExitMotion
@@ -275,7 +278,7 @@ export function HomeView({
         >
           {isHomeLoading ? (
             <NewsRollStateCard role="status">
-              <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>
+              <NewsFeatureCardSkeleton />
             </NewsRollStateCard>
           ) : newsError ? (
             <NewsRollStateCard role="alert">
@@ -313,9 +316,10 @@ export function HomeView({
         >
           <div className="wrapper_newsGridScroll wrapper_gridList">
             {isHomeLoading ? (
-              <NewsRollStateCard role="status">
-                <p className="text_commentEmpty">뉴스를 불러오는 중입니다.</p>
-              </NewsRollStateCard>
+              <SkeletonList
+                count={6}
+                renderItem={() => <NewsBlockCardSkeleton />}
+              />
             ) : newsError ? (
               <NewsRollStateCard role="alert">
                 <p className="text_commentEmpty">{newsError}</p>

@@ -81814,6 +81814,30 @@
       "createdAt": "2026-06-27T03:34:47.265Z",
       "isRead": false,
       "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-28-09_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "09:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-28T07:03:38.425Z",
+      "isRead": false,
+      "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-28-12_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "12:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-28T07:03:38.425Z",
+      "isRead": false,
+      "readAt": null
     }
   ]
 }

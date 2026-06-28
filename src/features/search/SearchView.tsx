@@ -13,6 +13,10 @@ import {
   Icon,
   SearchHighlightText,
   SearchResultButton,
+
+  SearchResultSkeleton,
+
+  SkeletonList,
   TextInput,
 } from "@/design-system/components";
 import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
@@ -317,9 +321,12 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
 
         {normalizedQuery ? (
           isSearchLoading ? (
-            <p className="text_searchStatus" role="status">
-              뉴스를 불러오는 중입니다.
-            </p>
+            <div className="list_searchResults" aria-busy="true">
+              <SkeletonList
+                count={4}
+                renderItem={() => <SearchResultSkeleton />}
+              />
+            </div>
           ) : searchError ? (
             <p className="text_searchStatus" role="alert">
               {searchError}

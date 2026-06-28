@@ -21,6 +21,11 @@ import {
   NewsFeatureCardButton as AllNewsLatestCard,
   NewsHeadlineRowButton as AllNewsHeadlineItem,
   NewsListCardButton as AllNewsRelayItem,
+  NewsFeatureCardSkeleton as AllNewsLatestCardSkeleton,
+  NewsHeadlineRowSkeleton as AllNewsHeadlineItemSkeleton,
+  NewsListCardSkeleton as AllNewsRelayItemSkeleton,
+  NoticeCardSkeleton,
+  SkeletonList,
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
@@ -153,6 +158,7 @@ export function AllNewsView({
   const [isLatestDragging, setIsLatestDragging] = useState(false);
   const [detailArticle, setDetailArticle] = useState<HomeArticle | null>(null);
   const [allNewsArticles, setAllNewsArticles] = useState<HomeArticle[]>([]);
+  const [isAllNewsLoading, setIsAllNewsLoading] = useState(true);
   const [showAllBreaking, setShowAllBreaking] = useState(
     initialShowAllBreaking,
   );
@@ -262,23 +268,31 @@ export function AllNewsView({
     let ignore = false;
 
     async function loadAllNews() {
-      const [nextNews, nextUserPreferences] = await Promise.all([
-        newsApi.getNewsList(),
-        userApi.getUserPreferences(currentUserId),
-      ]);
+      setIsAllNewsLoading(true);
 
-      if (!ignore) {
-        setAllNewsArticles(nextNews.map(getHomeArticleFromNews));
-        setUserPreference(nextUserPreferences[0] ?? null);
+      try {
+        const [nextNews, nextUserPreferences] = await Promise.all([
+          newsApi.getNewsList(),
+          userApi.getUserPreferences(currentUserId),
+        ]);
+
+        if (!ignore) {
+          setAllNewsArticles(nextNews.map(getHomeArticleFromNews));
+          setUserPreference(nextUserPreferences[0] ?? null);
+        }
+      } catch {
+        if (!ignore) {
+          setAllNewsArticles([]);
+          setUserPreference(null);
+        }
+      } finally {
+        if (!ignore) {
+          setIsAllNewsLoading(false);
+        }
       }
     }
 
-    loadAllNews().catch(() => {
-      if (!ignore) {
-        setAllNewsArticles([]);
-        setUserPreference(null);
-      }
-    });
+    loadAllNews();
 
     return () => {
       ignore = true;
@@ -562,7 +576,14 @@ export function AllNewsView({
           </div>
           <div className="all_breakingBody" ref={breakingBodyRef}>
             <div className="all_breaking_stack" id="all-breaking-news">
-              {breakingItems.length > 0 ? (
+              {isAllNewsLoading ? (
+                <SkeletonList
+                  count={3}
+                  renderItem={() => (
+                    <NoticeCardSkeleton isListItem type="breaking" />
+                  )}
+                />
+              ) : breakingItems.length > 0 ? (
                 breakingItems.map((item) => (
                   <NoticeCardLink
                     id={item.id}
@@ -598,6 +619,7 @@ export function AllNewsView({
           className="container_newsFeed all_feed"
           aria-label="전체 뉴스 콘텐츠 영역"
           ref={feedRef}
+          aria-busy={isAllNewsLoading}
         >
           <AllNewsSectionPanel
             ariaLabel="최신 뉴스"
@@ -620,7 +642,12 @@ export function AllNewsView({
               ref={latestScrollerRef}
               role="group"
             >
-              {allNewsLatestItems.length > 0 ? (
+              {isAllNewsLoading ? (
+                <SkeletonList
+                  count={4}
+                  renderItem={() => <AllNewsLatestCardSkeleton />}
+                />
+              ) : allNewsLatestItems.length > 0 ? (
                 allNewsLatestItems.map((item, index) => (
                   <AllNewsLatestCard
                     item={item}
@@ -651,6 +678,7 @@ export function AllNewsView({
             className="all_press_panel"
             contentProps={{
               "aria-labelledby": `all-news-press-tab-${activePressIndex}`,
+              className: "all_panelContentFlush",
               id: "all-news-headline-panel",
               role: "tabpanel",
             }}
@@ -686,6 +714,13 @@ export function AllNewsView({
               className={`wrapper_allTabPanelBody wrapper_panelContent ${pressSwipeMotionClassName}`.trim()}
               {...pressSwipeHandlers}
             >
+              {isAllNewsLoading ? (
+                <SkeletonList
+                  count={4}
+                  renderItem={() => <AllNewsHeadlineItemSkeleton />}
+                />
+              ) : (
+                <>
               <SeparatedList
                 dividerClassName="all_itemDivider"
                 getKey={(item, index) => `${item.title}-${index}`}
@@ -715,6 +750,8 @@ export function AllNewsView({
                   tone="light"
                 />
               ) : null}
+                </>
+              )}
             </div>
           </AllNewsSectionPanel>
 
@@ -752,6 +789,13 @@ export function AllNewsView({
               className={`wrapper_allTabPanelBody wrapper_panelContent ${relaySwipeMotionClassName}`.trim()}
               {...relaySwipeHandlers}
             >
+              {isAllNewsLoading ? (
+                <SkeletonList
+                  count={5}
+                  renderItem={() => <AllNewsRelayItemSkeleton />}
+                />
+              ) : (
+                <>
               <SeparatedList
                 dividerClassName="all_itemDivider"
                 getKey={(item, index) => `${item.title}-${index}`}
@@ -771,6 +815,8 @@ export function AllNewsView({
               {relayItems.length === 0 ? (
                 <DataUnavailableMessage target="릴레이 뉴스" />
               ) : null}
+                </>
+              )}
             </div>
           </AllNewsSectionPanel>
         </section>

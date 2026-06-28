@@ -10,7 +10,11 @@ import {
   getCurrentUserSnapshot,
   hydrateCurrentUserSession,
 } from "@/app/_newsroll/auth/current-user";
-import { NoticeCardLink } from "@/design-system/components";
+import {
+  NoticeCardLink,
+  NoticeCardSkeleton,
+  SkeletonList,
+} from "@/design-system/components";
 import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
 
 type NotificationViewProps = {
@@ -126,9 +130,12 @@ export function NotificationView({
       onClose={closeNotifications}
     >
       {isLoading ? (
-        <p className="text_searchStatus" role="status">
-          알림을 불러오는 중입니다.
-        </p>
+        <div className="list_searchResults list_notificationResults" aria-busy="true">
+          <SkeletonList
+            count={5}
+            renderItem={() => <NoticeCardSkeleton type="notificationUnread" />}
+          />
+        </div>
       ) : loadError ? (
         <p className="text_searchStatus" role="alert">
           {loadError}
