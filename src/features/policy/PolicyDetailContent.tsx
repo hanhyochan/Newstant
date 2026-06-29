@@ -192,23 +192,23 @@ export function PolicyDetailContent({
               </span>
             </div>
 
-            <div className="wrapper_articleActions wrapper_actionGroupu_itemsCenter wrapper_actionGroup_style" aria-label="정책 도구" role="group">
+            <div className="wrapper_articleActions wrapper_actionGroup u_itemsCenter" aria-label="정책 도구" role="group">
               <IconButton
-                className="btn_articleTool"
                 icon="share"
                 label="공유"
                 onClick={() => {
                   void sharePolicy();
                 }}
+                variant="articleTool"
               />
               <IconButton
                 aria-pressed={isBookmarked}
-                className="btn_articleTool"
                 icon="bookmark"
                 label="북마크"
                 onClick={() => {
                   void togglePolicyBookmark();
                 }}
+                variant="articleTool"
               />
             </div>
           </div>

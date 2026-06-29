@@ -81169,8 +81169,8 @@
       "inquiryReplies": true,
       "newsViewTime": true,
       "policyUpdates": true,
-      "darkMode": false,
-      "updatedAt": "2026-06-29T01:02:59.900Z"
+      "darkMode": true,
+      "updatedAt": "2026-06-29T04:33:31.571Z"
     }
   ],
   "userPreferences": [
@@ -81869,6 +81869,18 @@
       "createdAt": "2026-12-31T23:59:59+09:00",
       "isRead": true,
       "readAt": "2026-06-29T02:02:32.888Z"
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-29-12_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "12:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-29T03:00:28.487Z",
+      "isRead": false,
+      "readAt": null
     }
   ]
 }

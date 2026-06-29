@@ -31,8 +31,8 @@ export const Toolbar: Story = {
 export const ArticleTools: Story = {
   render: () => (
     <div className="wrapper_articleActions" aria-label="기사 도구" role="group">
-      <IconButton className="btn_articleTool" icon="share" label="공유" />
-      <IconButton className="btn_articleTool" icon="bookmark" label="북마크" />
+      <IconButton icon="share" label="공유" variant="articleTool" />
+      <IconButton icon="bookmark" label="북마크" variant="articleTool" />
     </div>
   ),
 };

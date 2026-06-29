@@ -928,10 +928,7 @@
   flex-direction: column;
   gap: var(--spacing-gap-vertical-8);
 }
-.wrapper_articleReaction,
-.wrapper_articleActions
-  .btn_articleTool[aria-pressed="true"]
-  .icon[data-size="20"] {
+.wrapper_articleReaction {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
@@ -1246,6 +1243,11 @@
   width: 24px;
   height: 24px;
 }
+.btn_iconButton[data-variant="articleTool"] {
+  width: auto;
+  height: auto;
+  line-height: 0;
+}
 .btn_iconButton[data-variant="shaped"] {
   width: 44px;
   height: 44px;
@@ -1412,16 +1414,6 @@
   align-items: center;
   gap: var(--spacing-gap-horizontal-8);
   padding: 0;
-  white-space: nowrap;
-}
-.btn_originalArticle {
-  width: 100%;
-  min-height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-gap-horizontal-8);
-  padding-inline: var(--spacing-padding-horizontal-16);
   white-space: nowrap;
 }
 .btn_pagination {
@@ -2157,8 +2149,7 @@
   text-align: left;
 }
 .btn_contentListItem + .btn_contentListItem,
-.all_breakingHeader .btn_originalArticle[data-tone="dark"],
-.all_breakingHeader .btn_originalArticle[data-tone="dark"],
+.all_breakingHeader .btn_contentAction[data-tone="dark"],
 .headerTop > .toolbar,
 .policy_items,
 .container_myRecent,
@@ -2315,6 +2306,40 @@
 }
 .text_contentAccordionBody {
   padding-inline-start: var(--spacing-padding-horizontal-24);
+}
+.wrapper_contentAccordionBodyMotion {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+}
+.container_contentAccordion[data-state="open"] .wrapper_contentAccordionBodyMotion {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}
+.wrapper_contentAccordionBodyInner {
+  min-height: 0;
+  overflow: hidden;
 }
 .headerTop .toolbar {
   min-height: 40px;
@@ -2542,11 +2567,6 @@
   width: 100%;
   flex: 0 0 auto;
 }
-.btn_commentPanel {
-  width: 100%;
-  gap: var(--spacing-gap-horizontal-8);
-  white-space: nowrap;
-}
 .form_commentComposer {
   position: relative;
   display: flex;
@@ -2746,14 +2766,6 @@
   width: auto;
   min-width: calc(5px + 2px + var(--spacing-padding-horizontal-24));
 }
-.wrapper_articleActions.wrapper_actionGroup .btn_articleTool {
-  width: auto;
-  height: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
 .container_authLayout .btn_authBack {
   position: absolute;
   top: var(--spacing-padding-vertical-48);
@@ -2773,7 +2785,7 @@
   flex: 1 1 auto;
   min-height: 100%;
 }
-.container_myProfile button:not(.btn_articleTool) {
+.container_myProfile button:not(.btn_iconButton) {
   min-width: 119px;
   min-height: 42px;
   padding: 0 var(--spacing-padding-horizontal-16);
@@ -2831,14 +2843,6 @@
   height: 100%;
   max-height: 100%;
   overflow: hidden;
-}
-.wrapper_articleActions .btn_articleTool {
-  width: auto;
-  height: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
 }
 .container_homeScreen .homeDockedMotion {
   width: 100%;

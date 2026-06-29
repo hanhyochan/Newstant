@@ -291,6 +291,18 @@
         --color-label-disable: rgb(55 56 60 / 16%);
         --color-label-neutral: rgb(46 47 51 / 88%);
         --color-label-normal: #171719;
+
+        /* app theme aliases */
+        --app-surface: var(--color-common-100);
+        --app-surface-muted: var(--color-cool-neutral-98);
+        --app-text: var(--color-cool-neutral-15);
+        --app-text-muted: var(--color-cool-neutral-50);
+        --app-border: var(--color-cool-neutral-96);
+        --app-control-surface: var(--color-common-100);
+        --app-input-surface: var(--color-background-elevated-normal);
+        --app-input-text: var(--color-label-normal);
+        --app-input-border: var(--color-line-normal-normal);
+
         /* color: semantic / line */
         --color-line-normal-alternative: rgb(112 115 124 / 8%);
         --color-line-normal-neutral: rgb(112 115 124 / 16%);
@@ -533,7 +545,7 @@
 .text_mySectionTitle,
 .text_myTimeSectionLabel,
 .text_infoFieldLabel {
-            color: var(--color-cool-neutral-15);
+            color: var(--app-text);
             font-size: var(--font-size-fixed-16);
             font-weight: var(--font-weight-600);
             line-height: var(--line-height-fixed-20);
@@ -722,7 +734,7 @@
 .container_authLayout .btn_loginPasswordToggle,
 .dark
     .wrapper_articleActions
-    .btn_articleTool
+    .btn_iconButton[data-variant="articleTool"]
     > :is(.icon_share,
 .icon_bookmark),
 .dark .container_articleCard .text_articleBody,
@@ -940,8 +952,7 @@
   line-height: var(--line-height-20);
 }
 
-.data_table th,
-.btn_commentPanel {
+.data_table th {
   font-weight: var(--font-weight-500);
 }
 
@@ -1220,7 +1231,7 @@
 .text_myKeywordDialogTitle,
 .text_sectionTitle,
 .text_mySectionTitle {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
   line-height: 26px;
@@ -1230,7 +1241,7 @@
 .tab_myBlockedKeywordMenu .btn_tab {
   border: var(--border-1) solid var(--newsroll-divider-color);
   border-radius: var(--radius-full);
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   background: transparent;
   font-size: var(--font-size-15);
   font-weight: var(--font-weight-500);
@@ -1256,7 +1267,7 @@
 
 .tab_myCategoryMenu button[data-state="default"],
 .tab_myBlockedKeywordMenu .btn_tab[data-state="default"] {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   border-color: var(--newsroll-divider-color);
   background: transparent;
 }
@@ -1289,7 +1300,7 @@
 }
 
 .btn_myTimeRow {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   background: transparent;
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-500);
@@ -1317,7 +1328,7 @@
 }
 
 .text_infoItemTitle {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
   line-height: var(--line-height-24);
@@ -1868,6 +1879,19 @@
     --newsroll-divider-color: var(--color-cool-neutral-30);
 }
 
+.dark,
+body:has(.dark) {
+    --app-surface: var(--color-cool-neutral-15);
+    --app-surface-muted: var(--color-cool-neutral-20);
+    --app-text: var(--color-common-100);
+    --app-text-muted: var(--color-cool-neutral-100);
+    --app-border: var(--color-cool-neutral-30);
+    --app-control-surface: var(--color-cool-neutral-30);
+    --app-input-surface: var(--color-cool-neutral-15);
+    --app-input-text: var(--color-cool-neutral-100);
+    --app-input-border: var(--color-newsroll-purple-50);
+}
+
 .dark .page_panel {
     border-radius: var(--radius-20);
     background: var(--color-cool-neutral-15);
@@ -1876,12 +1900,6 @@
 .dark .bottom_nav,
 .dark.screen_all .bottom_nav {
     border-top-color: var(--color-cool-neutral-30);
-}
-
-.dark .btn_originalArticle[data-tone='light'] {
-    color: var(--color-cool-neutral-100);
-    background: var(--color-cool-neutral-15);
-    border-color: var(--color-cool-neutral-30);
 }
 
 .dark [role='tab']:not(.btn_newsViewOption),
@@ -1902,10 +1920,11 @@
     .all_pressHeadline_tabScroller
     .all_pressHeadline_tabButton[aria-selected='true'],
 .dark .btn_tab[aria-selected='true']:not(.btn_newsViewOption),
-.dark .btn_tab[data-state='active']:not(.btn_newsViewOption) {
-    color: var(--color-common-100);
-    background: var(--color-cool-neutral-30);
-    border-color: var(--color-cool-neutral-30);
+.dark .btn_tab[data-state='active']:not(.btn_newsViewOption),
+.dark .btn_tab[data-state='selected']:not(.btn_newsViewOption) {
+    color: var(--color-cool-neutral-15);
+    background: var(--color-common-100);
+    border-color: var(--color-common-100);
 }
 
 .dark .all_tabSticky,
@@ -1984,8 +2003,7 @@ strong),
     .wrapper_articleReaction
     .btn_iconTextButton[data-size='default'][data-tone='neutral'][aria-pressed='true']
     > .icon[data-size="20"],
-.wrapper_articleActions.wrapper_actionGroup,
-.wrapper_actionGroup_style {
+.wrapper_articleActions.wrapper_actionGroup {
     color: var(--color-cool-neutral-50);
 }
 
@@ -2020,7 +2038,7 @@ strong),
 }
 
 .text_articleGuide {
-  color: var(--color-common-0);
+  color: var(--app-text);
   font-family: var(--font-sans);
   font-size: var(--font-size-16);
   font-style: normal;
@@ -2052,32 +2070,11 @@ strong),
     line-height: 24px;
 }
 
-.dark .form_commentComposer .text_input input,
-.dark .text_input input,
-.dark .textarea,
-.dark .textarea[data-variant='inquiry'],
-body:has(.dark) .form_commentComposer .text_input input,
-body:has(.dark) .text_input input,
-body:has(.dark) .textarea,
-body:has(.dark) .textarea[data-variant='inquiry'],
-.dark .form_commentComposer .text_input input::placeholder,
-.dark .text_input input::placeholder,
-.dark .textarea::placeholder,
-.dark .textarea[data-variant='inquiry']::placeholder,
-body:has(.dark) .form_commentComposer .text_input input::placeholder,
-body:has(.dark) .text_input input::placeholder,
-body:has(.dark) .textarea::placeholder,
-body:has(.dark) .textarea[data-variant='inquiry']::placeholder,
-.dark .btn_textAction,
 .dark .wrapper_commentReplyItem,
 .dark .wrapper_commentReplyItem :where(p,
 strong,
 time) {
     color: var(--color-cool-neutral-100);
-}
-
-.dark .btn_articleGuideOption {
-    background: var(--color-cool-neutral-30);
 }
 
 .btn_detailBack .icon_chevron {
@@ -2103,9 +2100,9 @@ time) {
 .btn_iconButton[data-variant="bottomNav"][aria-current="page"] .icon[data-size="20"],
 .btn_newsViewOption[aria-selected="true"] .icon[data-size="20"],
 .wrapper_articleReaction > button[aria-pressed="true"] .icon[data-size="20"],
-.wrapper_articleActions .btn_articleTool[aria-pressed="true"] .icon[data-size="20"],
+.wrapper_articleActions .btn_iconButton[data-variant="articleTool"][aria-pressed="true"] .icon[data-size="20"],
 .wrapper_articleActions
-    .btn_articleTool[aria-pressed='true']
+    .btn_iconButton[data-variant="articleTool"][aria-pressed='true']
     .icon[data-size="20"],
 .wrapper_articleReaction > button[aria-pressed='true'] .icon[data-size="20"] {
   --icon-url: var(--icon-fill-url);
@@ -2119,12 +2116,10 @@ time) {
 
 .btn_primary:focus-visible,
 .btn_iconButton:focus-visible,
-.btn_articleTool:focus-visible,
 .btn_articleGuideOption:focus-visible,
 .btn_fieldActionButton:focus-visible,
-.btn_commentPanel:focus-visible,
 .btn_commentSubmit:focus-visible,
-.btn_originalArticle:focus-visible,
+.btn_contentAction:focus-visible,
 .btn_textAction:focus-visible,
 .form_commentComposer .text_input:focus-within,
 .text_size_button:focus-visible,
@@ -2139,8 +2134,7 @@ time) {
   outline-offset: var(--spacing-gap-vertical-4);
 }
 
-.wrapper_articleActions.wrapper_actionGroup .btn_articleTool,
-.wrapper_articleActions .btn_articleTool {
+.wrapper_articleActions .btn_iconButton[data-variant="articleTool"] {
   color: inherit;
   line-height: 0;
 }
@@ -2161,7 +2155,7 @@ time) {
   line-height: var(--line-height-24);
 }
 
-.container_myProfile button:not(.btn_articleTool) {
+.container_myProfile button:not(.btn_iconButton) {
   border: var(--border-1) solid var(--color-line-normal-normal);
   border-radius: var(--radius-8);
   color: var(--color-label-neutral);
@@ -2242,9 +2236,6 @@ time) {
         var(--line-height-24);
 }
 
-.wrapper_articleActions
-  .btn_articleTool[aria-pressed="true"]
-  .icon[data-size="20"],
 .wrapper_articleReaction {
   border: 0;
   border-radius: 0;
@@ -2335,11 +2326,7 @@ time) {
 }
 
 .dark .container_commentComposerFixed,
-.dark :is(.text_input, .textarea, .form_commentComposer .text_input),
-.dark .textarea[data-variant='inquiry'],
-body:has(.dark) .container_commentComposerFixed,
-body:has(.dark) :is(.text_input, .textarea, .form_commentComposer .text_input),
-body:has(.dark) .textarea[data-variant='inquiry'] {
+body:has(.dark) .container_commentComposerFixed {
     color: var(--color-cool-neutral-100);
     background: var(--color-cool-neutral-15);
     border-color: var(--color-newsroll-purple-50);
@@ -2489,12 +2476,12 @@ body:has(.dark) .textarea[data-variant='inquiry'] {
 
 .container_articleCard {
   border-radius: var(--radius-20);
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   background: var(--color-background-elevated-normal);
 }
 
 .container_articleCard :where(h1, h2) {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
   line-height: 26px;

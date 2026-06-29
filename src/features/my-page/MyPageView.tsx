@@ -1359,13 +1359,13 @@ export function MyPageView({
               <strong>{currentUser.nickname}님</strong>
               <span>안녕하세요</span>
             </span>
-            <div className="wrapper_articleActions wrapper_actionGroupu_itemsCenter wrapper_actionGroup_style" aria-label="프로필 도구" role="group">
+            <div className="wrapper_articleActions wrapper_actionGroup u_itemsCenter" aria-label="프로필 도구" role="group">
               <IconButton
                 aria-pressed={isProfileSettingsOpen}
-                className="btn_articleTool"
                 icon="setting"
                 label="설정"
                 onClick={openProfileSettings}
+                variant="articleTool"
               />
             </div>
           </section>

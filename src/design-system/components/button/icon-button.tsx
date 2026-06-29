@@ -9,7 +9,7 @@ export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "chi
   icon: IconName;
   iconSize?: IconSize;
   label: string;
-  variant?: "plain" | "shaped" | "bottomNav" | "circle";
+  variant?: "articleTool" | "plain" | "shaped" | "bottomNav" | "circle";
 };
 
 export function IconButton({

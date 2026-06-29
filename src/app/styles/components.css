@@ -101,7 +101,7 @@
 }
 
 .btn_settingRow {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   background: transparent;
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-500);
@@ -116,7 +116,7 @@
 }
 
 .text_contentAccordionTitle {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
   line-height: var(--line-height-24);
@@ -143,8 +143,10 @@
 .btn_newsCardBlock strong,
 .btn_newsCardList strong,
 .btn_newsCardFeature > .wrapper_contentMeta > strong,
-.btn_newsCardRow > .wrapper_contentMeta > strong {
-  color: var(--color-cool-neutral-15);
+.btn_newsCardRow > .wrapper_contentMeta > strong,
+.btn_contentListItem .wrapper_contentMeta :where(h1, h2),
+.wrapper_contentMeta > :where(h1, h2) {
+  color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
   line-height: 26px;
@@ -230,8 +232,8 @@
 .btn_iconButton[data-variant="circle"] {
   border: var(--border-1) solid var(--newsroll-divider-color);
   border-radius: var(--radius-full);
-  color: var(--color-cool-neutral-15);
-  background: var(--color-background-elevated-normal);
+  color: var(--app-text);
+  background: var(--app-surface);
 }
 
 .btn_iconButton[data-tone="primary"]:is([data-variant="circle"], [data-variant="shaped"]) {
@@ -242,14 +244,14 @@
 
 .btn_iconButton[data-tone="neutral"]:is([data-variant="circle"], [data-variant="shaped"]) {
   border-color: var(--newsroll-divider-color);
-  color: var(--color-cool-neutral-15);
-  background: var(--color-background-elevated-normal);
+  color: var(--app-text);
+  background: var(--app-surface);
 }
 
 .btn_iconButton[data-tone="danger"]:is([data-variant="circle"], [data-variant="shaped"]) {
   border-color: var(--color-red-50);
   color: var(--color-red-50);
-  background: var(--color-background-elevated-normal);
+  background: var(--app-surface);
 }
 
 .btn_iconButton[data-tone="translucent"]:is([data-variant="circle"],
@@ -260,7 +262,7 @@
 }
 
 .btn_iconButton[data-variant="bottomNav"] {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   pointer-events: auto;
 }
 
@@ -438,7 +440,7 @@
 .btn_textAction,
 .btn_pagination {
   border: 0;
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   background: transparent;
   cursor: pointer;
   font-size: var(--font-size-15);
@@ -448,7 +450,7 @@
 
 .btn_textAction:active,
 .btn_textAction[aria-pressed="true"] {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   background: transparent;
 }
 
@@ -473,7 +475,7 @@
 }
 
 .btn_iconTextButton[data-size="default"] {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
   font-size: var(--font-size-15);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-20);
@@ -525,19 +527,27 @@
 }
 
 /* Button: ContentActionButton */
-.btn_originalArticle {
-  border: var(--border-1) solid var(--color-cool-neutral-96);
+.btn_contentAction {
+  width: 100%;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: var(--spacing-padding-horizontal-16);
+  border: var(--border-1) solid var(--app-border);
   border-radius: var(--radius-8);
-  color: var(--color-cool-neutral-50);
-  background: var(--color-common-100);
+  color: var(--app-text-muted);
+  background: var(--app-surface);
   cursor: pointer;
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-20);
   text-decoration: none;
+  white-space: nowrap;
 }
 
-.btn_originalArticle[data-tone="dark"],
+.btn_contentAction[data-tone="dark"],
 .text_input[data-mode="dark"] {
   color: var(--color-common-100);
   background: transparent;
@@ -563,8 +573,8 @@
 
 .btn_dropdownSelect {
   border-radius: var(--radius-8);
-  color: var(--color-cool-neutral-15);
-  background: var(--color-background-elevated-normal);
+  color: var(--app-text);
+  background: var(--app-surface);
 }
 
 .btn_dropdownSelect[data-size="small"] {
@@ -593,14 +603,14 @@
 }
 
 .panel_dropdown {
-  border: var(--border-1) solid var(--color-line-normal-normal);
+  border: var(--border-1) solid var(--app-border);
   border-radius: var(--radius-8);
-  background: var(--color-background-elevated-normal);
+  background: var(--app-surface);
 }
 
 .btn_dropdownItem {
-  color: var(--color-cool-neutral-15);
-  background: var(--color-background-elevated-normal);
+  color: var(--app-text);
+  background: var(--app-surface);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-20);
@@ -676,8 +686,8 @@
 .btn_articleGuideOption {
   border: var(--border-1) solid transparent;
   border-radius: var(--radius-8);
-  color: var(--color-cool-neutral-50);
-  background: var(--color-common-100);
+  color: var(--app-text-muted);
+  background: var(--app-control-surface);
   cursor: pointer;
   font-size: var(--font-size-15);
   font-weight: var(--font-weight-500);
@@ -685,8 +695,8 @@
 }
 
 .btn_articleGuideOption[aria-pressed="true"] {
-  color: var(--color-cool-neutral-15);
-  border-color: var(--color-cool-neutral-96);
+  color: var(--app-text);
+  border-color: var(--app-border);
 }
 
 .btn_articleGuideOption[aria-pressed="true"] .text_articleGuideOption {
@@ -781,11 +791,11 @@
 
 
 .text_input {
-  border: var(--border-1) solid var(--color-line-normal-normal);
+  border: var(--border-1) solid var(--app-input-border);
   border-radius: var(--radius-8);
   cursor: text;
-  color: var(--color-label-normal);
-  background: var(--color-background-elevated-normal);
+  color: var(--app-input-text);
+  background: var(--app-input-surface);
   font-size: var(--font-size-16);
   line-height: var(--line-height-24);
 }
@@ -854,11 +864,11 @@
 .textarea {
   resize: vertical;
   outline: 0;
-  border: var(--border-1) solid var(--color-line-normal-normal);
+  border: var(--border-1) solid var(--app-input-border);
   border-radius: var(--radius-8);
   cursor: text;
-  color: var(--color-label-normal);
-  background: var(--color-background-elevated-normal);
+  color: var(--app-input-text);
+  background: var(--app-input-surface);
   font-size: var(--font-size-16);
   line-height: var(--line-height-24);
 }
@@ -910,7 +920,7 @@
 
 
 .field_check[data-role='selectAll'] {
-  color: var(--color-cool-neutral-15);
+  color: var(--app-text);
 }
 
 

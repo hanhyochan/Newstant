@@ -3038,23 +3038,23 @@ export function HomeReelCard({
             date={article.date}
             dateTime={article.dateTime}
           />
-          <div className="wrapper_articleActions wrapper_actionGroupu_itemsCenter wrapper_actionGroup_style" aria-label="기사 도구" role="group">
+          <div className="wrapper_articleActions wrapper_actionGroup u_itemsCenter" aria-label="기사 도구" role="group">
             <IconButton
-              className="btn_articleTool"
               icon="share"
               label="공유"
               onClick={() => {
                 void shareArticle();
               }}
+              variant="articleTool"
             />
             <IconButton
               aria-pressed={isBookmarked}
-              className="btn_articleTool"
               icon="bookmark"
               label="북마크"
               onClick={() => {
                 void toggleBookmark();
               }}
+              variant="articleTool"
             />
           </div>
         </div>
@@ -3131,7 +3131,6 @@ export function HomeReelCard({
         <PrimaryButton
         aria-controls={isCommentPanelOpen ? commentPanelId : undefined}
         aria-expanded={isCommentPanelOpen}
-        className="btn_commentPanel"
         leftIcon={<Icon name="chat" />}
         onClick={handleCommentPanelToggle}
       >

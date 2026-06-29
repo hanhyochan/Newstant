@@ -36,7 +36,7 @@ export function ContentActionButton({
   tone = "light",
   ...props
 }: ContentActionButtonProps) {
-  const classNames = cn("btn_originalArticle", className);
+  const classNames = cn("btn_contentAction", className);
 
   if (href) {
     return (
