@@ -81111,6 +81111,13 @@
       "userId": "user-doyun",
       "type": "like",
       "createdAt": "2026-06-23T07:29:30.755Z"
+    },
+    {
+      "id": "comment-reaction-notify-hamster-20260629-001",
+      "commentId": "comment-9a18e62d-bc8f-4ae9-8dc5-eb39472fde0f",
+      "userId": "user-minji",
+      "type": "like",
+      "createdAt": "2026-12-31T23:59:59+09:00"
     }
   ],
   "blockedKeywordSettings": [
@@ -81163,7 +81170,7 @@
       "newsViewTime": true,
       "policyUpdates": true,
       "darkMode": false,
-      "updatedAt": "2026-06-27T09:30:06.482Z"
+      "updatedAt": "2026-06-29T01:02:59.900Z"
     }
   ],
   "userPreferences": [
@@ -81812,8 +81819,8 @@
       "targetType": null,
       "targetId": null,
       "createdAt": "2026-06-27T03:34:47.265Z",
-      "isRead": false,
-      "readAt": null
+      "isRead": true,
+      "readAt": "2026-06-29T01:31:28.932Z"
     },
     {
       "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-28-09_00",
@@ -81824,8 +81831,8 @@
       "targetType": null,
       "targetId": null,
       "createdAt": "2026-06-28T07:03:38.425Z",
-      "isRead": false,
-      "readAt": null
+      "isRead": true,
+      "readAt": "2026-06-29T01:31:28.931Z"
     },
     {
       "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-28-12_00",
@@ -81836,8 +81843,32 @@
       "targetType": null,
       "targetId": null,
       "createdAt": "2026-06-28T07:03:38.425Z",
-      "isRead": false,
-      "readAt": null
+      "isRead": true,
+      "readAt": "2026-06-29T01:31:28.931Z"
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-29-09_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "09:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-29T00:29:43.472Z",
+      "isRead": true,
+      "readAt": "2026-06-29T01:31:28.930Z"
+    },
+    {
+      "id": "notification-commentReaction-user-5da62014-46f6-453f-8e3c-47bb64bdc700-comment-reaction-notify-hamster-20260629-001",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "commentReaction",
+      "title": "내 댓글/대댓글에 좋아요 반응이 달렸습니다",
+      "body": "asd",
+      "targetType": "news",
+      "targetId": "news-015",
+      "createdAt": "2026-12-31T23:59:59+09:00",
+      "isRead": true,
+      "readAt": "2026-06-29T02:02:32.888Z"
     }
   ]
 }

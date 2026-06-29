@@ -635,14 +635,6 @@
   color: var(--color-common-100);
 }
 
-.noticeCardSkeleton {
-  min-height: 48px;
-  background: var(--color-newsroll-purple-30);
-  color: transparent;
-  pointer-events: none;
-  animation: skeletonPulse 1.2s ease-in-out infinite;
-}
-
 .text_noticeCardTitle {
   color: var(--color-cool-neutral-15);
   font-size: var(--font-size-16);
@@ -650,6 +642,33 @@
   line-height: var(--line-height-24);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.noticeCardLink_breaking {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-50);
+}
+
+.noticeCardLink_notificationUnread {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-common-100);
+}
+
+.noticeCardLink_notificationRead {
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+}
+
+.noticeCardLink_notificationRead .text_noticeCardTitle {
+  color: var(--color-common-100);
+}
+
+.noticeCardSkeleton {
+  min-height: 48px;
+  background: var(--color-newsroll-purple-30);
+  color: transparent;
+  pointer-events: none;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
 }
 
 /* Component: ArticleGuide poll card */
