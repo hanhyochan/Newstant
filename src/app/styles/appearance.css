@@ -1931,7 +1931,8 @@ body:has(.dark) {
 .dark .all_pressHeadline_tabMenu,
 .dark .all_pressHeadline_tabScroller,
 .dark .all_category_tabSticky,
-.dark .all_category_tabs {
+.dark .all_category_tabs,
+.dark .info_screen .tab_myCategoryMenu {
     background: var(--color-common-0);
 }
 
