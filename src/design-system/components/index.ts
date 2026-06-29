@@ -38,6 +38,7 @@ export {
   NewsFeatureCardSkeleton,
   NewsHeadlineRowSkeleton,
   NewsListCardSkeleton,
+  NewsReelCardSkeleton,
 } from "./button/content-layout/news/news-card-skeletons";
 export type {
   NewsListCardButtonItem,

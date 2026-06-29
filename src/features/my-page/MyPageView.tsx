@@ -36,6 +36,7 @@ import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
 import {
   IconButton,
   NewsBlockCardButton,
+  NewsBlockCardSkeleton,
   Divider,
   IconTextButton,
   TextButton
@@ -106,7 +107,6 @@ import {
   type OpenArticleDetail,
   type PolicyItem
 } from "@/features/news/NewsViews";
-import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 
 const myRecentPreviewLimit = 10;
@@ -1394,7 +1394,11 @@ export function MyPageView({
           <section className="container_myRecent" aria-label="최근 본 뉴스">
             <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
             {myDynamicRecentItems.length === 0 ? (
-              <DataUnavailableMessage target="최근 본 뉴스" />
+              <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">
+                {Array.from({ length: myRecentPreviewLimit }, (_, index) => (
+                  <NewsBlockCardSkeleton key={index} />
+                ))}
+              </div>
             ) : (
               <>
                 <div className="wrapper_myRecentScroller wrapper_myPageRecentBlock">

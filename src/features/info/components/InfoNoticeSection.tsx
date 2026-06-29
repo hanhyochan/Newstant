@@ -1,5 +1,4 @@
-import { ContentSummaryButton } from "@/design-system/components";
-import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
+import { ContentSummaryButton, Skeleton } from "@/design-system/components";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 
 export type InfoNoticeItem = {
@@ -11,6 +10,8 @@ export type InfoNoticeItem = {
   updatedAt: string;
 };
 
+const noticeSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
+
 export function InfoNoticeSection({
   items,
   onNoticeSelect,
@@ -21,7 +22,21 @@ export function InfoNoticeSection({
   return (
     <section className="container_infoList wrapper_scrollList" aria-label="공지사항">
       {items.length === 0 ? (
-        <DataUnavailableMessage target="공지사항" />
+        <SeparatedList
+          dividerClassName="divider_infoSection"
+          dividerPlacement="inside-wrapped-item"
+          getKey={(item) => `notice-skeleton-${item}`}
+          items={noticeSkeletonItems}
+          renderItem={() => (
+            <div aria-hidden="true" className="btn_noticeListItem">
+              <div className="wrapper_contentMeta">
+                <Skeleton shape="title" width="lg" />
+                <Skeleton shape="text" width="full" />
+                <Skeleton shape="text" width="sm" />
+              </div>
+            </div>
+          )}
+        />
       ) : (
         <SeparatedList
           dividerClassName="divider_infoSection"

@@ -20,7 +20,7 @@ import type {
 import {
   NewsBlockCardButton,
   NewsBlockCardSkeleton,
-  NewsFeatureCardSkeleton,
+  NewsReelCardSkeleton,
   SkeletonList,
 } from "@/design-system/components";
 import {
@@ -277,9 +277,7 @@ export function HomeView({
           aria-labelledby="home-news-view-tab-reels"
         >
           {isHomeLoading ? (
-            <NewsRollStateCard role="status">
-              <NewsFeatureCardSkeleton />
-            </NewsRollStateCard>
+            <NewsReelCardSkeleton />
           ) : newsError ? (
             <NewsRollStateCard role="alert">
               <p className="text_commentEmpty">{newsError}</p>

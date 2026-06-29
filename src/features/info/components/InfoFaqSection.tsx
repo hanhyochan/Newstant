@@ -1,9 +1,10 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 
 import { type Faq } from "@/app/_newsroll/api";
-import { ContentAccordion } from "@/design-system/components";
-import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
+import { ContentAccordion, Skeleton } from "@/design-system/components";
 import { SeparatedList } from "@/features/shared/SeparatedList";
+
+const faqSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
 
 export function InfoFaqSection({ items }: { items: Faq[] }) {
   const [openFaqIndexes, setOpenFaqIndexes] = useState<Set<number>>(
@@ -15,7 +16,25 @@ export function InfoFaqSection({ items }: { items: Faq[] }) {
   return (
     <section className="container_infoList wrapper_scrollList" aria-label="FAQ">
       {items.length === 0 ? (
-        <DataUnavailableMessage target="FAQ" />
+        <SeparatedList
+          dividerClassName="divider_infoSection"
+          getKey={(item) => `faq-skeleton-${item}`}
+          items={faqSkeletonItems}
+          renderItem={() => (
+            <div
+              aria-hidden="true"
+              className="container_contentAccordion"
+              data-state="closed"
+            >
+              <div className="btn_contentAccordionTrigger">
+                <span className="text_contentAccordionTitle">
+                  <Skeleton shape="title" width="lg" />
+                </span>
+                <span className="icon_contentAccordionChevron" aria-hidden="true" />
+              </div>
+            </div>
+          )}
+        />
       ) : (
         <SeparatedList
           dividerClassName="divider_infoSection"

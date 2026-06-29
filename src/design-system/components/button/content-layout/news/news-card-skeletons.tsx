@@ -32,6 +32,27 @@ export function NewsFeatureCardSkeleton() {
   );
 }
 
+export function NewsReelCardSkeleton() {
+  return (
+    <article
+      aria-hidden="true"
+      className="container_articleCard wrapper_panelSurface_style"
+    >
+      <div className="wrapper_articleCardContent wrapper_panelContent u_minH0">
+        <Skeleton shape="chip" width="xs" />
+        <Skeleton shape="title" width="full" />
+        <Skeleton shape="text" width="sm" />
+        <Skeleton shape="media" />
+        <span className="wrapper_contentMeta u_minH0">
+          <Skeleton shape="text" width="full" />
+          <Skeleton shape="text" width="lg" />
+          <Skeleton shape="text" width="md" />
+        </span>
+      </div>
+    </article>
+  );
+}
+
 export function NewsHeadlineRowSkeleton() {
   return (
     <div className="btn_newsCardRow wrapper_betweenRow" aria-hidden="true">

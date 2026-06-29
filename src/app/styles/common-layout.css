@@ -1434,6 +1434,16 @@
   padding-inline: 0;
   white-space: nowrap;
 }
+.wrapper_dropdownSelect {
+  position: relative;
+  justify-self: start;
+}
+.wrapper_dropdownSelect[data-size="small"] {
+  width: 60px;
+}
+.wrapper_dropdownSelect[data-size="default"] {
+  width: 100%;
+}
 .btn_dropdownSelect {
   width: 100%;
   display: inline-flex;

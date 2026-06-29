@@ -635,6 +635,14 @@
   color: var(--color-common-100);
 }
 
+.noticeCardSkeleton {
+  min-height: 48px;
+  background: var(--color-newsroll-purple-30);
+  color: transparent;
+  pointer-events: none;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
+}
+
 .text_noticeCardTitle {
   color: var(--color-cool-neutral-15);
   font-size: var(--font-size-16);
