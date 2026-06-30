@@ -5,18 +5,22 @@ import { Icon, type IconName } from "./icon";
 const icons: IconName[] = [
   "alarm",
   "allNews",
+  "arrow",
   "bookmark",
   "chat",
   "chevron",
+  "close",
   "detail",
   "dots",
   "earth",
+  "eye",
   "fourSquare",
   "home",
   "information",
   "list",
   "loudspeaker",
   "myPage",
+  "plus",
   "policy",
   "question",
   "search",
@@ -29,6 +33,8 @@ const icons: IconName[] = [
   "user",
   "vote",
 ];
+
+const sizes = [12, 20] as const;
 
 const publicIconFiles = [
   "icon_alarm_active.svg",
@@ -82,9 +88,11 @@ const meta: Meta<typeof Icon> = {
   },
   args: {
     name: "search",
+    size: 20,
   },
   argTypes: {
     name: { control: "select", options: icons },
+    size: { control: "radio", options: sizes },
   },
 };
 
@@ -96,9 +104,25 @@ export const Playground: Story = {};
 
 export const Gallery: Story = {
   render: () => (
-    <div className="ds_inline_stack">
+    <div className="ds_inline_stack" style={{ maxWidth: 720 }}>
       {icons.map((name) => (
-        <Icon key={name} name={name} />
+        <span className="ds_inline_stack" key={name}>
+          <Icon name={name} />
+          <span className="type-caption_2">{name}</span>
+        </span>
+      ))}
+    </div>
+  ),
+};
+
+export const SizeOptions: Story = {
+  render: () => (
+    <div className="ds_inline_stack">
+      {sizes.map((size) => (
+        <span className="ds_inline_stack" key={size}>
+          <Icon name="search" size={size} />
+          <span className="type-caption_2">{size}px</span>
+        </span>
       ))}
     </div>
   ),

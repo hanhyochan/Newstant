@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { IconTextButton } from "./icon-text-button";
 
+const sizes = ["default", "small"] as const;
+const tones = ["bookmark", "comment", "dislike", "like", "neutral", "vote"] as const;
+
 const meta: Meta<typeof IconTextButton> = {
   title: "Design System/Components/Icon Text Button",
   component: IconTextButton,
@@ -9,17 +12,22 @@ const meta: Meta<typeof IconTextButton> = {
     layout: "centered",
   },
   argTypes: {
-    size: { control: "select", options: ["default", "small"] },
-    tone: {
-      control: "select",
-      options: ["bookmark", "comment", "dislike", "like", "neutral", "vote"],
-    },
+    size: { control: "radio", options: sizes },
+    tone: { control: "select", options: tones },
+  },
+  args: {
+    children: "좋아요 16",
+    icon: "thumbUp",
+    size: "default",
+    tone: "like",
   },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};
 
 export const Default: Story = {
   render: () => (
@@ -46,6 +54,34 @@ export const Small: Story = {
       <IconTextButton icon="thumbDown" size="small" tone="dislike">
         16
       </IconTextButton>
+    </div>
+  ),
+};
+
+export const ToneOptions: Story = {
+  render: () => (
+    <div className="ds_inline_stack">
+      {tones.map((tone) => (
+        <IconTextButton
+          icon={
+            tone === "bookmark"
+              ? "bookmark"
+              : tone === "comment"
+                ? "chat"
+                : tone === "vote"
+                  ? "vote"
+                  : tone === "dislike"
+                    ? "thumbDown"
+                    : tone === "like"
+                      ? "thumbUp"
+                      : "dots"
+          }
+          key={tone}
+          tone={tone}
+        >
+          {tone}
+        </IconTextButton>
+      ))}
     </div>
   ),
 };
