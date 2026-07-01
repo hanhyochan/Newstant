@@ -1173,7 +1173,8 @@
 }
 
 .btn_contentListItem h2,
-.wrapper_detailBody h1 {
+.wrapper_detailBody h1,
+.wrapper_detailHeader h1 {
   color: var(--color-cool-neutral-15);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
@@ -2268,6 +2269,12 @@ time) {
   border-radius: 0;
 }
 
+.wrapper_articleMiniReaction {
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-3);
+}
+
 .wrapper_commentReplies.is_open {
     background: var(--color-cool-neutral-98);
     opacity: 1;
@@ -2310,6 +2317,8 @@ time) {
 
 @media (prefers-reduced-motion: reduce) {
 
+    .box_newsrollSplashLogo,
+    .wrapper_articleMiniReaction,
     .motion_dockedPop,
     .container_homeScreen .homeDockedMotion,
     .container_homeScreen.is_homeSheetDocked .homeDockedMotion,
@@ -2626,3 +2635,4 @@ body:has(.dark) .container_commentComposerFixed {
 .wrapper_scrollListDivider_style {
   --newsroll-divider-color: var(--color-line-normal-normal);
 }
+

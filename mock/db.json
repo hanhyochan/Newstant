@@ -12670,7 +12670,7 @@
       "id": "article-reaction-26025b0b-2225-4bf3-b3e0-2b64d72c6bed",
       "newsId": "news-015",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
-      "type": "like",
+      "type": "neutral",
       "createdAt": "2026-06-27T01:50:29.553Z"
     }
   ],
@@ -13645,7 +13645,7 @@
       "id": "recent-a97416f6-9eb1-47b9-a592-5ee785ebbabc",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-015",
-      "viewedAt": "2026-06-27T09:46:25.168Z"
+      "viewedAt": "2026-06-30T13:45:38.013Z"
     },
     {
       "id": "recent-14b2ad9a-1399-4512-be9c-ee8ec7f42975",
@@ -13675,7 +13675,7 @@
       "id": "recent-7c42cd17-d5fd-4fdd-9d16-8a4b5a952397",
       "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
       "newsId": "news-022",
-      "viewedAt": "2026-06-25T05:05:13.811Z"
+      "viewedAt": "2026-06-30T13:53:36.207Z"
     }
   ],
   "polls": [
@@ -81169,8 +81169,8 @@
       "inquiryReplies": true,
       "newsViewTime": true,
       "policyUpdates": true,
-      "darkMode": true,
-      "updatedAt": "2026-06-29T04:33:31.571Z"
+      "darkMode": false,
+      "updatedAt": "2026-06-30T13:18:10.188Z"
     }
   ],
   "userPreferences": [
@@ -81879,6 +81879,42 @@
       "targetType": null,
       "targetId": null,
       "createdAt": "2026-06-29T03:00:28.487Z",
+      "isRead": false,
+      "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-30-21_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "21:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-30T13:05:35.221Z",
+      "isRead": false,
+      "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-30-09_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "09:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-30T13:05:35.221Z",
+      "isRead": false,
+      "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-06-30-12_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "12:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-06-30T13:05:35.221Z",
       "isRead": false,
       "readAt": null
     }

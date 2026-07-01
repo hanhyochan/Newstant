@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from "react";
 
-import { bookmarkApi } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
 import {
   ChipLabel,
   DateTimeText,
@@ -18,6 +16,7 @@ import {
   SearchHighlightText,
 } from "@/design-system/components";
 import { useShareContent } from "@/design-system/templates";
+import { useBookmarkTarget } from "@/features/shared/use-bookmark-target";
 
 type PolicyDetailItem = {
   label: string;
@@ -64,6 +63,7 @@ function getEnterFromRightMotionClassName(isLeaving = false) {
 }
 
 export function PolicyDetailContent({
+  hideBookmarkButton = false,
   hideDetailList = false,
   hideDetailToggle = false,
   isLeaving = false,
@@ -73,6 +73,7 @@ export function PolicyDetailContent({
   searchQuery,
   searchTargetKey,
 }: {
+  hideBookmarkButton?: boolean;
   hideDetailList?: boolean;
   hideDetailToggle?: boolean;
   isLeaving?: boolean;
@@ -82,10 +83,17 @@ export function PolicyDetailContent({
   searchQuery?: string;
   searchTargetKey?: string;
 }) {
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState<string | null>(null);
+  const { isBookmarked, toggleBookmark: togglePolicyBookmark } = useBookmarkTarget({
+    enabled: !hideBookmarkButton,
+    targetId: item.id,
+    targetType: "welfarePolicy",
+  });
   const policyDate = getPolicyDateDisplay(item);
   const policySearchRootId = `policy-detail-${item.id ?? item.title}`;
+  const policySearchTargetId = getSearchHighlightTargetId(
+    policySearchRootId,
+    searchTargetKey,
+  );
   const sharePolicy = useShareContent({
     text: item.summary,
     title: item.title,
@@ -100,67 +108,18 @@ export function PolicyDetailContent({
       return;
     }
 
-    scrollSearchHighlightTargetIntoView(
-      getSearchHighlightTargetId(policySearchRootId, searchTargetKey),
+    const retryDelays = [0, 180, 360];
+    const timeoutIds = retryDelays.map((delay) =>
+      window.setTimeout(() => {
+        scrollSearchHighlightTargetIntoView(policySearchTargetId);
+      }, delay),
     );
-  }, [policySearchRootId, searchQuery, searchTargetKey]);
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadBookmarkState() {
-      if (!item.id) {
-        setIsBookmarked(false);
-        setBookmarkId(null);
-        return;
-      }
-
-      const bookmarks = await bookmarkApi.getBookmarks(currentUserId);
-      const bookmark = bookmarks.find(
-        (entry) =>
-          entry.targetType === "welfarePolicy" && entry.targetId === item.id,
-      );
-
-      if (!ignore) {
-        setIsBookmarked(Boolean(bookmark));
-        setBookmarkId(bookmark?.id ?? null);
-      }
-    }
-
-    loadBookmarkState().catch(() => {
-      if (!ignore) {
-        setIsBookmarked(false);
-        setBookmarkId(null);
-      }
-    });
 
     return () => {
-      ignore = true;
+      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId));
     };
-  }, [item.id]);
+  }, [policySearchTargetId, searchQuery, searchTargetKey]);
 
-  async function togglePolicyBookmark() {
-    if (!item.id) {
-      setIsBookmarked((current) => !current);
-      return;
-    }
-
-    if (isBookmarked && bookmarkId) {
-      setIsBookmarked(false);
-      setBookmarkId(null);
-      await bookmarkApi.removeBookmark(bookmarkId);
-      return;
-    }
-
-    const bookmark = await bookmarkApi.addBookmark({
-      targetId: item.id,
-      targetType: "welfarePolicy",
-      userId: currentUserId,
-    });
-
-    setIsBookmarked(true);
-    setBookmarkId(bookmark.id);
-  }
 
   return (
     <div
@@ -169,8 +128,7 @@ export function PolicyDetailContent({
       <div className="wrapper_detailMain">
       <div className="wrapper_detailHeader">
         <div className="wrapper_contentMeta">
-          <div className="wrapper_detailBody">
-            <h1>
+          <h1>
               <SearchHighlightText
                 query={searchTargetKey === "title" ? searchQuery : ""}
                 targetId={
@@ -181,8 +139,7 @@ export function PolicyDetailContent({
               >
                 {item.title}
               </SearchHighlightText>
-            </h1>
-          </div>
+          </h1>
 
           <div className="wrapper_articleMetaActions wrapper_betweenRow wrapper_detailMetaActions">
             <div className="wrapper_detailDateGroup u_flexWrap">
@@ -201,15 +158,17 @@ export function PolicyDetailContent({
                 }}
                 variant="articleTool"
               />
-              <IconButton
-                aria-pressed={isBookmarked}
-                icon="bookmark"
-                label="북마크"
-                onClick={() => {
-                  void togglePolicyBookmark();
-                }}
-                variant="articleTool"
-              />
+              {hideBookmarkButton ? null : (
+                <IconButton
+                  aria-pressed={isBookmarked}
+                  icon="bookmark"
+                  label="북마크"
+                  onClick={() => {
+                    void togglePolicyBookmark();
+                  }}
+                  variant="articleTool"
+                />
+              )}
             </div>
           </div>
         </div>

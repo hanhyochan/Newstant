@@ -10,17 +10,16 @@ import {
   useState,
   type CSSProperties,
   type HTMLAttributes,
-  type ReactNode
+  type ReactNode,
+  type Ref
 } from "react";
 import { createPortal } from "react-dom";
 
 import {
-  bookmarkApi,
   commentApi,
   newsApi,
   pollApi,
   userContentActionApi,
-  type ArticleReactionType,
   type Comment,
   type NewsListItem,
   type UserContentAction
@@ -53,7 +52,6 @@ import {
   TextInput,
   Textarea,
   useActionMenuDismiss,
-  type IconName
 } from "@/design-system/components";
 import {
   NewsRollArticleDetailPanel,
@@ -80,6 +78,15 @@ import {
 } from "@/design-system/templates";
 import { useCommentThread } from "@/features/comments/hooks/use-comment-thread";
 import {
+  getVisibleReactionCount,
+  MiniReactionControls,
+  ReactionControls,
+  type Reaction,
+  type ReactionValue,
+} from "@/features/news/article/article-reactions";
+export { getVisibleReactionCount } from "@/features/news/article/article-reactions";
+import { useArticleReaction } from "@/features/news/article/use-article-reaction";
+import {
   emptyCommentReactionCounts,
   formatCommentDate,
   getCommentAuthor,
@@ -92,12 +99,14 @@ import {
 import { BottomFixedActionBar } from "@/features/shared/BottomFixedActionBar";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
+import { useBookmarkTarget } from "@/features/shared/use-bookmark-target";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import type { Tab } from "@/features/shell/navigation";
+export type { BodySearchSelection, BodySearchSelectionInput } from "@/features/search/model";
+export { navItems } from "@/features/shell/navigation";
+export type { Tab } from "@/features/shell/navigation";
 
-export type Tab = "home" | "all" | "policy" | "my" | "info";
 export type HomeViewMode = "reels" | "block";
-type Reaction = "like" | "dislike" | "neutral" | null;
-type ReactionValue = Exclude<Reaction, null>;
 type CommentSortOrder = "latest" | "popular";
 type CommentAction = "block" | "delete" | "edit" | "hide" | "report";
 type CommentReportTarget = {
@@ -122,35 +131,6 @@ export type OpenArticleDetail = (
   article: HomeArticle,
   options?: ArticleDetailOpenOptions,
 ) => void;
-export type BodySearchSelection =
-  | {
-      article: HomeArticle;
-      id: number;
-      kind: "news";
-      searchQuery?: string;
-      searchTargetKey?: string;
-    }
-  | {
-      id: number;
-      kind: "policy";
-      policy: PolicyItem;
-      searchQuery?: string;
-      searchTargetKey?: string;
-    };
-export type BodySearchSelectionInput =
-  | {
-      article: HomeArticle;
-      kind: "news";
-      searchQuery?: string;
-      searchTargetKey?: string;
-    }
-  | {
-      kind: "policy";
-      policy: PolicyItem;
-      searchQuery?: string;
-      searchTargetKey?: string;
-    };
-
 const commentPanelOpenHintOffset = 112;
 
 export type HomeArticle = {
@@ -402,13 +382,6 @@ export const homeArticles: HomeArticle[] = [
 const homeBreakingTitle =
   "정청래, ‘필버 중단’ 국민의 힘에 “대구/경북 통합 찬반 당론 먼저 정하라”";
 
-export const navItems: { icon: IconName; label: string; tab: Tab }[] = [
-  { icon: "home", label: "메인화면", tab: "home" },
-  { icon: "allNews", label: "전체 뉴스", tab: "all" },
-  { icon: "policy", label: "국가정책", tab: "policy" },
-  { icon: "myPage", label: "마이페이지", tab: "my" },
-  { icon: "information", label: "인포메이션", tab: "info" },
-];
 
 const articleBody = `최근 국내 부동산 시장이 다시 한번 변곡점에 서고 있다. 상반기 동안 이어졌던 거래 회복 흐름이 둔화되며, 시장 전반에 신중한 분위기가 확산되는 모습이다.
 
@@ -426,38 +399,6 @@ const articleGuideQuestion =
   "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?";
 
 export const binaryGuideOptions = ["그렇다", "아니다"];
-
-const reactionItems: {
-  icon: IconName;
-  label: string;
-  value: ReactionValue;
-}[] = [
-  { icon: "thumbUp", label: "좋아요", value: "like" },
-  { icon: "thumbDown", label: "싫어요", value: "dislike" },
-  { icon: "dots", label: "글쎄요", value: "neutral" },
-];
-
-const emptyArticleReactionCounts: Record<ReactionValue, number> = {
-  dislike: 0,
-  like: 0,
-  neutral: 0,
-};
-
-export function getVisibleReactionCount(count: number) {
-  return count > 0 ? count : null;
-}
-
-function getArticleReactionCounts(
-  reactions: { type: ReactionValue }[],
-): Record<ReactionValue, number> {
-  return reactions.reduce<Record<ReactionValue, number>>(
-    (counts, reaction) => ({
-      ...counts,
-      [reaction.type]: counts[reaction.type] + 1,
-    }),
-    { ...emptyArticleReactionCounts },
-  );
-}
 
 const commentBodies = [
   "예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트예시텍스트...",
@@ -874,46 +815,6 @@ export function HomeShell({
     >
       {children}
     </NewsRollCommonLayout>
-  );
-}
-
-function ReactionControls({
-  className = "",
-  counts,
-  reaction,
-  onReactionChange,
-}: {
-  className?: string;
-  counts: Record<ReactionValue, number>;
-  reaction: Reaction;
-  onReactionChange: (reaction: Reaction) => void;
-}) {
-  return (
-    <div
-      className={`wrapper_articleReaction ${className}`.trim()}
-      aria-label="기사 평가"
-      role="group"
-    >
-      {reactionItems.map((item) => (
-        <IconTextButton
-          aria-pressed={reaction === item.value}
-          icon={item.icon}
-          key={item.value}
-          onClick={() =>
-            onReactionChange(reaction === item.value ? null : item.value)
-          }
-          tone={item.value}
-          size="default"
-        >
-          <strong>
-            {item.label}
-            {getVisibleReactionCount(counts[item.value]) == null
-              ? ""
-              : ` ${counts[item.value]}`}
-          </strong>
-        </IconTextButton>
-      ))}
-    </div>
   );
 }
 
@@ -2681,17 +2582,26 @@ export function HomeReelCard({
   onCommentPanelOpenChange?: (open: boolean) => void;
   recordRecentOnView?: boolean;
 }) {
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState<string | null>(null);
+  const { isBookmarked, toggleBookmark } = useBookmarkTarget({
+    onAfterAdd: recordArticleActivity,
+    targetId: article.id,
+    targetType: "news",
+  });
   const [internalCommentPanelOpen, setInternalCommentPanelOpen] = useState(
     initialCommentId != null || initialReplyTargetId != null,
   );
-  const [reaction, setReaction] = useState<Reaction>(null);
-  const [articleReactionId, setArticleReactionId] = useState<string | null>(null);
-  const [articleReactionCounts, setArticleReactionCounts] = useState<
-    Record<ReactionValue, number>
-  >({ ...emptyArticleReactionCounts });
+  const {
+    articleReactionCounts,
+    reaction,
+    toggleArticleReaction,
+  } = useArticleReaction({
+    newsId: article.id,
+    onAfterChange: recordArticleActivity,
+  });
+  const [isMiniReactionCardVisible, setIsMiniReactionCardVisible] = useState(false);
+  const [isArticleReactionReached, setIsArticleReactionReached] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
+  const articleReactionRef = useRef<HTMLDivElement>(null);
   const hasTrackedViewRef = useRef(false);
   const numericIndex = typeof index === "number" ? index : 0;
   const commentPanelId = `home-comment-panel-${index}`;
@@ -2778,51 +2688,6 @@ export function HomeReelCard({
     setCommentPanelOpen((current) => !current);
   }
 
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadUserArticleState() {
-      if (!article.id) {
-        setIsBookmarked(false);
-        setBookmarkId(null);
-        setReaction(null);
-        setArticleReactionId(null);
-        setArticleReactionCounts({ ...emptyArticleReactionCounts });
-        return;
-      }
-
-      const [bookmarks, nextReaction, nextReactions] = await Promise.all([
-        bookmarkApi.getBookmarks(currentUserId),
-        newsApi.getNewsReaction(article.id, currentUserId),
-        newsApi.getNewsReactions(article.id),
-      ]);
-      const bookmark = bookmarks.find(
-        (item) => item.targetType === "news" && item.targetId === article.id,
-      );
-
-      if (!ignore) {
-        setIsBookmarked(Boolean(bookmark));
-        setBookmarkId(bookmark?.id ?? null);
-        setReaction(nextReaction?.type ?? null);
-        setArticleReactionId(nextReaction?.id ?? null);
-        setArticleReactionCounts(getArticleReactionCounts(nextReactions));
-      }
-    }
-
-    loadUserArticleState().catch(() => {
-      if (!ignore) {
-        setIsBookmarked(false);
-        setBookmarkId(null);
-        setReaction(null);
-        setArticleReactionId(null);
-        setArticleReactionCounts({ ...emptyArticleReactionCounts });
-      }
-    });
-
-    return () => {
-      ignore = true;
-    };
-  }, [article.id]);
 
   useEffect(() => {
     hasTrackedViewRef.current = false;
@@ -2878,6 +2743,73 @@ export function HomeReelCard({
     };
   }, [article.id, framed, recordRecentOnView]);
 
+
+  useEffect(() => {
+    if (!framed) {
+      setIsMiniReactionCardVisible(false);
+      return;
+    }
+
+    const target = cardRef.current;
+
+    if (!target || typeof IntersectionObserver === "undefined") {
+      setIsMiniReactionCardVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setIsMiniReactionCardVisible(
+          Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.55),
+        );
+      },
+      { threshold: [0, 0.55, 0.75] },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [article.id, framed]);
+
+  useEffect(() => {
+    if (!framed) {
+      setIsArticleReactionReached(false);
+      return;
+    }
+
+    const scroller = document.getElementById(articleContentId);
+    const target = articleReactionRef.current;
+
+    if (!(scroller instanceof HTMLElement) || !target) {
+      setIsArticleReactionReached(false);
+      return;
+    }
+
+    const scrollerNode = scroller;
+    const targetNode = target;
+
+    function updateArticleReactionReached() {
+      const scrollerRect = scrollerNode.getBoundingClientRect();
+      const targetRect = targetNode.getBoundingClientRect();
+
+      setIsArticleReactionReached(targetRect.top <= scrollerRect.bottom);
+    }
+
+    updateArticleReactionReached();
+    scrollerNode.addEventListener("scroll", updateArticleReactionReached, {
+      passive: true,
+    });
+    window.addEventListener("resize", updateArticleReactionReached);
+
+    return () => {
+      scrollerNode.removeEventListener("scroll", updateArticleReactionReached);
+      window.removeEventListener("resize", updateArticleReactionReached);
+    };
+  }, [article.id, articleContentId, framed, isCommentPanelOpen]);
+
   async function recordArticleActivity() {
     if (!article.id) {
       return;
@@ -2891,76 +2823,6 @@ export function HomeReelCard({
       .catch(() => undefined);
   }
 
-  async function toggleBookmark() {
-    if (!article.id) {
-      return;
-    }
-
-    if (isBookmarked && bookmarkId) {
-      setIsBookmarked(false);
-      setBookmarkId(null);
-      await bookmarkApi.removeBookmark(bookmarkId);
-      return;
-    }
-
-    const bookmark = await bookmarkApi.addBookmark({
-      targetId: article.id,
-      targetType: "news",
-      userId: currentUserId,
-    });
-    await recordArticleActivity();
-
-    setIsBookmarked(true);
-    setBookmarkId(bookmark.id);
-  }
-
-  async function toggleArticleReaction(nextReaction: Reaction) {
-    if (!article.id) {
-      return;
-    }
-
-    const previousReaction = reaction;
-
-    setReaction(nextReaction);
-    setArticleReactionCounts((currentCounts) => {
-      const nextCounts = { ...currentCounts };
-
-      if (previousReaction) {
-        nextCounts[previousReaction] = Math.max(0, nextCounts[previousReaction] - 1);
-      }
-      if (nextReaction) {
-        nextCounts[nextReaction] += 1;
-      }
-
-      return nextCounts;
-    });
-
-    if (nextReaction === null) {
-      if (articleReactionId) {
-        setArticleReactionId(null);
-        await newsApi.removeNewsReaction(articleReactionId);
-      }
-      return;
-    }
-
-    if (articleReactionId) {
-      await newsApi.updateNewsReaction(
-        articleReactionId,
-        nextReaction as ArticleReactionType,
-      );
-      await recordArticleActivity();
-      return;
-    }
-
-    const createdReaction = await newsApi.addNewsReaction({
-      newsId: article.id,
-      type: nextReaction as ArticleReactionType,
-      userId: currentUserId,
-    });
-    await recordArticleActivity();
-
-    setArticleReactionId(createdReaction.id);
-  }
 
   useEffect(() => {
     if (initialCommentId == null && initialReplyTargetId == null) {
@@ -2993,6 +2855,9 @@ export function HomeReelCard({
     initialSearchQuery,
     initialSearchTargetKey,
   ]);
+
+  const isMiniArticleReactionVisible =
+    framed && isMiniReactionCardVisible && !isArticleReactionReached;
 
   const articleContent = (
     <div
@@ -3116,6 +2981,7 @@ export function HomeReelCard({
       <ReactionControls
         counts={articleReactionCounts}
         reaction={reaction}
+        rootRef={articleReactionRef}
         onReactionChange={(nextReaction) => {
           void toggleArticleReaction(nextReaction);
         }}
@@ -3160,6 +3026,14 @@ export function HomeReelCard({
       ref={cardRef}
     >
       {articleContent}
+      <MiniReactionControls
+        counts={articleReactionCounts}
+        isVisible={isMiniArticleReactionVisible}
+        reaction={reaction}
+        onReactionChange={(nextReaction) => {
+          void toggleArticleReaction(nextReaction);
+        }}
+      />
     </article>
   );
 }

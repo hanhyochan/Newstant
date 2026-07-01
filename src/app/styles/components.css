@@ -522,7 +522,8 @@
 }
 
 .btn_iconTextButton[data-size="small"][data-tone="like"][aria-pressed="true"] .icon[data-size="20"],
-.btn_iconTextButton[data-size="small"][data-tone="dislike"][aria-pressed="true"] .icon[data-size="20"] {
+.btn_iconTextButton[data-size="small"][data-tone="dislike"][aria-pressed="true"] .icon[data-size="20"],
+.btn_iconTextButton[data-size="small"][data-tone="neutral"][aria-pressed="true"] .icon[data-size="20"] {
   --icon-url: var(--icon-fill-url);
 }
 

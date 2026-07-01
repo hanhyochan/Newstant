@@ -36,10 +36,10 @@ import {
   filterArticlesByBlockedKeywords,
   getHomeArticleFromNews,
   getLatestBreakingNewsItem,
-  type BodySearchSelection,
   type HomeArticle,
   type HomeViewMode,
 } from "@/features/news/NewsViews";
+import type { BodySearchSelection } from "@/features/search/model";
 import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 
 function hasSelectedValues(values: string[]) {

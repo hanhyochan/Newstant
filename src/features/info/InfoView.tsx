@@ -265,6 +265,7 @@ export function InfoView({
       >
         {noticeDetailItem ? (
           <PolicyDetailContent
+            hideBookmarkButton
             hideDetailList
             hideDetailToggle
             isLeaving={noticeDetailExitMotion.isLeaving}

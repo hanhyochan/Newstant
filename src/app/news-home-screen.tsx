@@ -39,12 +39,13 @@ import { MyPageView } from "@/features/my-page/MyPageView";
 import { NotificationView } from "@/features/notifications/NotificationView";
 import {
   getHomeArticleFromNews,
-  navItems,
   type BlockedKeywordSetting,
-  type BodySearchSelection,
-  type BodySearchSelectionInput,
-  type Tab
 } from "@/features/news/NewsViews";
+import type {
+  BodySearchSelection,
+  BodySearchSelectionInput,
+} from "@/features/search/model";
+import { navItems, type Tab } from "@/features/shell/navigation";
 import {
   getPolicyItemFromWelfarePolicy,
   PolicyView,
@@ -101,10 +102,12 @@ function NewsRollSplashScreen() {
   return (
     <section className="container_newsrollSplash" aria-label="NewsRoll 로딩">
       <img
+        alt=""
         aria-hidden="true"
         className="box_newsrollSplashLogo"
+        height={57}
         src="/images/logo.svg"
-        alt=""
+        width={90}
       />
     </section>
   );

@@ -34,6 +34,7 @@ import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import type { BodySearchSelection } from "@/features/search/model";
 
 type SortOrder = "popular" | "latest";
 
@@ -51,16 +52,6 @@ type PolicyItem = {
   title: string;
   updatedAt: string;
 };
-
-type BodySearchSelection =
-  | { article: unknown; id: number; kind: "news" }
-  | {
-      id: number;
-      kind: "policy";
-      policy: PolicyItem;
-      searchQuery?: string;
-      searchTargetKey?: string;
-    };
 
 function formatHeroCount(count: number) {
   return new Intl.NumberFormat("ko-KR").format(count);
@@ -237,6 +228,11 @@ export function PolicyView({
       ? visiblePolicyItems[detailItemIndex + 1]
       : null;
   const isPolicyDetailOpen = detailItem !== null;
+  const isBodySearchDetail =
+    bodySearchSelection?.kind === "policy" &&
+    detailItem != null &&
+    (bodySearchSelection.policy.id ?? bodySearchSelection.policy.title) ===
+      (detailItem.id ?? detailItem.title);
   const policyDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isPolicyDetailOpen,
     resetKey: detailItem?.id ?? detailItem?.title,
@@ -346,6 +342,8 @@ export function PolicyView({
       className="sheetFrame policy_screen"
       dockedGap={pagePanelDockedGap}
       initialGap={pagePanelInitialGap}
+      initiallyDocked={isBodySearchDetail}
+      lockSheetPosition={isBodySearchDetail}
       minInitialTop={pagePanelInitialTop}
       movingSheet
       sheetClassName="sheetFrameSheet container_homeSheet policy_sheet"
