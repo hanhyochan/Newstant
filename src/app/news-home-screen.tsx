@@ -100,7 +100,12 @@ function isProtectedView(view: View) {
 function NewsRollSplashScreen() {
   return (
     <section className="container_newsrollSplash" aria-label="NewsRoll 로딩">
-      <span aria-hidden="true" className="box_newsrollSplashLogo" />
+      <img
+        aria-hidden="true"
+        className="box_newsrollSplashLogo"
+        src="/images/logo.svg"
+        alt=""
+      />
     </section>
   );
 }

@@ -1742,8 +1742,8 @@
   overflow-y: visible;
 }
 .box_newsrollSplashLogo {
-  width: var(--size-52);
-  height: var(--size-52);
+  width: clamp(112px, 30vw, 154px);
+  height: auto;
   display: block;
 }
 .header {
