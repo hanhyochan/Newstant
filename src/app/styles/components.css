@@ -1,37 +1,37 @@
 
 /* Component visuals for elements whose layout is owned by common-layout.css. */
-/* Component-owned created-time/dropdown/notice-list rules moved from appearance.css. */
+/* Created-time, dropdown, and notice-list component visuals. */
 
 .btn_noticeListCardLink {
-    border-radius: var(--radius-20);
+  border-radius: var(--radius-20);
   color: var(--color-cool-neutral-15);
-    background: var(--color-newsroll-purple-50);
-    font-size: var(--font-size-16);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-24);
+  background: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
 }
 
 .text_createdTime {
-    color: var(--color-cool-neutral-50);
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-400);
-    line-height: var(--line-height-20);
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
 }
-/* End created-time/dropdown/notice-list rules. */
+/* End created-time, dropdown, and notice-list component visuals. */
 
-/* Component-owned rules moved from appearance.css. */
+/* Core reusable component visuals. */
 
 .btn_newsCardRow,
 .btn_newsCardList {
-            border: 0;
-            background: transparent;
-        }
+  border: 0;
+  background: transparent;
+}
 
 .img_newsCardThumbnail,
 .btn_newsCardList img {
-            border-radius: var(--radius-8);
-            object-fit: cover;
-        }
+  border-radius: var(--radius-8);
+  object-fit: cover;
+}
 
 .btn_tab {
   border: 0;
@@ -157,9 +157,9 @@
 
 .btn_newsCardBlock .text_createdTime {
   color: var(--color-cool-neutral-50);
-  font-size: var(--font-size-13);
+  font-size: var(--font-size-14);
   font-weight: var(--font-weight-400);
-  line-height: 13px;
+  line-height: var(--line-height-20);
 }
 
 .btn_newsCardBlock img {
@@ -182,7 +182,7 @@
     font-size: var(--font-size-16);
     line-height: var(--line-height-24);
 }
-/* End moved component-owned rules. */
+/* End core reusable component visuals. */
 
 /* Button: PrimaryButton */
 .btn_primary {
@@ -782,12 +782,12 @@
 
 
 /*  --------------------------------------------------------------------------
- * Migrated component selectors
+ * Component Form Controls
  * -------------------------------------------------------------------------- */
 
 
 
-/*  From src/app/styles/appearance.css */
+/* Form control visual states. */
 
 
 
@@ -976,7 +976,7 @@
 
 
 
-/*  From src/app/styles/appearance.css */
+/* Form control visual states. */
 
 
 
@@ -1162,7 +1162,7 @@
 
 
 /*  --------------------------------------------------------------------------
- * Migrated component style declarations from common-layout.css
+ * Component Visual Declarations
  * --------------------------------------------------------------------------  */
 
 

@@ -1992,11 +1992,9 @@ strong),
 
 /* Elevated sticky tab region surface. */
 
-/*  App-owned selectors migrated from non-appearance CSS files
- */
+/* App-owned appearance selectors. */
 
-/*  From src/app/styles/components.css
- */
+/* Component-adjacent app appearance states. */
 
 .dark .btn_iconTextButton[data-size='default'][data-tone='dislike'] .icon[data-size="20"],
 .dark .btn_iconTextButton[data-size='default'][data-tone='bookmark'] .icon[data-size="20"],
@@ -2119,11 +2117,9 @@ time) {
     background: var(--color-background-transparent-alternative);
 }
 
-/*  Remaining app-owned selectors migrated from non-appearance CSS files
- */
+/* Remaining app-owned appearance selectors. */
 
-/*  From src/app/styles/common-layout.css
- */
+/* Layout selector appearance states. */
 
 .btn_iconButton[data-variant="bottomNav"][aria-current="page"] .icon[data-size="20"],
 .btn_newsViewOption[aria-selected="true"] .icon[data-size="20"],
@@ -2406,7 +2402,7 @@ body:has(.dark) .container_commentComposerFixed {
  */
 
 /*  --------------------------------------------------------------------------
- * Migrated app appearance declarations from common-layout.css and utilities.css
+ * App Appearance Declarations
  * --------------------------------------------------------------------------
  */
 

@@ -6,13 +6,14 @@ import type {
   User,
   UserContentAction,
   UserContentActionType,
-} from "@/app/_newsroll/api";
+} from "@/shared/newsroll/api";
 import {
   authEmailSchema,
   signupNicknameSchema,
   verificationCodeSchema,
-} from "@/app/_newsroll/auth-validation";
-import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation";
+} from "@/shared/newsroll/auth-validation";
+import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+import { useVerificationCodeFlow } from "@/features/shared/hooks/use-verification-code-flow";
 import {
   PaginationButton,
   ContentSummaryButton,
@@ -601,7 +602,6 @@ function AccountEditForm({
   user: User | null;
   users: User[];
 }) {
-  const verificationTimerRef = useRef<number | null>(null);
   const [nickname, setNickname] = useState(user?.nickname ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
@@ -610,10 +610,16 @@ function AccountEditForm({
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isEmailChecking, setIsEmailChecking] = useState(false);
   const [emailCheckMessage, setEmailCheckMessage] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isVerificationConfirmed, setIsVerificationConfirmed] = useState(false);
-  const [isVerificationSent, setIsVerificationSent] = useState(false);
-  const [remainingVerificationSeconds, setRemainingVerificationSeconds] = useState(0);
+  const {
+    formattedVerificationTime,
+    isVerificationConfirmed,
+    isVerificationSent,
+    resetVerificationCode,
+    setVerificationCode,
+    startVerificationCode: startVerificationTimer,
+    verificationCode,
+    confirmVerificationCode: markVerificationConfirmed,
+  } = useVerificationCodeFlow(180, { resetOnExpire: false });
   const [status, setStatus] = useState<"error" | "saving" | "saved" | null>(null);
   const nicknameValidation = useZodFieldValidation(signupNicknameSchema, nickname);
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
@@ -638,9 +644,6 @@ function AccountEditForm({
   const accountEmailErrorId = "account-edit-email-error";
   const accountEmailCheckId = "account-edit-email-check";
   const accountVerificationCodeErrorId = "account-edit-verification-code-error";
-  const formattedVerificationTime = `${Math.floor(
-    remainingVerificationSeconds / 60,
-  )}:${String(remainingVerificationSeconds % 60).padStart(2, "0")}`;
 
   useEffect(() => {
     setNickname(user?.nickname ?? "");
@@ -653,43 +656,7 @@ function AccountEditForm({
     setStatus(null);
   }, [user]);
 
-  useEffect(() => {
-    if (!isVerificationSent || remainingVerificationSeconds <= 0) {
-      return undefined;
-    }
 
-    verificationTimerRef.current = window.setTimeout(() => {
-      setRemainingVerificationSeconds((current) => current - 1);
-    }, 1000);
-
-    return () => {
-      if (verificationTimerRef.current !== null) {
-        window.clearTimeout(verificationTimerRef.current);
-        verificationTimerRef.current = null;
-      }
-    };
-  }, [isVerificationSent, remainingVerificationSeconds]);
-
-  useEffect(
-    () => () => {
-      if (verificationTimerRef.current !== null) {
-        window.clearTimeout(verificationTimerRef.current);
-      }
-    },
-    [],
-  );
-
-  function resetVerificationCode() {
-    if (verificationTimerRef.current !== null) {
-      window.clearTimeout(verificationTimerRef.current);
-      verificationTimerRef.current = null;
-    }
-
-    setVerificationCode("");
-    setIsVerificationSent(false);
-    setIsVerificationConfirmed(false);
-    setRemainingVerificationSeconds(0);
-  }
 
   function updateNickname(value: string) {
     setNickname(value);
@@ -770,22 +737,15 @@ function AccountEditForm({
       return;
     }
 
-    if (verificationTimerRef.current !== null) {
-      window.clearTimeout(verificationTimerRef.current);
-    }
-
     setEmailCheckMessage("인증번호를 발송했습니다.");
-    setVerificationCode("");
-    setIsVerificationConfirmed(false);
-    setIsVerificationSent(true);
-    setRemainingVerificationSeconds(180);
+    startVerificationTimer();
   }
 
   function confirmVerificationCode() {
     verificationCodeValidation.markTouched();
 
     if (verificationCodeValidation.isValid) {
-      setIsVerificationConfirmed(true);
+      markVerificationConfirmed();
     }
   }
 
@@ -937,7 +897,6 @@ function AccountEditForm({
                 onBlur={verificationCodeValidation.markTouched}
                 onChange={(event) => {
                   setVerificationCode(event.currentTarget.value);
-                  setIsVerificationConfirmed(false);
                 }}
                 placeholder="인증번호 6자리"
                 state={verificationCodeValidation.errorMessage ? "error" : "default"}

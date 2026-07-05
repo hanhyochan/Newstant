@@ -1,7 +1,7 @@
-﻿import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { bookmarkApi, type BookmarkTargetType } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
+import { bookmarkApi, type BookmarkTargetType } from "@/shared/newsroll/api";
+import { currentUserId } from "@/shared/newsroll/auth/current-user";
 
 type UseBookmarkTargetOptions = {
   enabled?: boolean;

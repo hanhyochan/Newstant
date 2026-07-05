@@ -1,10 +1,10 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   inquiryApi,
   type InquiryType,
-} from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
+} from "@/shared/newsroll/api";
+import { currentUserId } from "@/shared/newsroll/auth/current-user";
 import {
   Icon,
   PrimaryButton,

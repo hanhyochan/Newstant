@@ -1,8 +1,8 @@
-﻿import type { Comment } from "@/app/_newsroll/api";
+import type { Comment } from "@/shared/newsroll/api";
 import {
   currentUserId,
   getCurrentUserDisplayName,
-} from "@/app/_newsroll/auth/current-user";
+} from "@/shared/newsroll/auth/current-user";
 
 export type CommentId = string;
 export type CommentReactionValue = "like" | "dislike";

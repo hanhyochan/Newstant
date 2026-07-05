@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { type Faq } from "@/app/_newsroll/api";
+import { type Faq } from "@/shared/newsroll/api";
 import { ContentAccordion, Skeleton } from "@/design-system/components";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 

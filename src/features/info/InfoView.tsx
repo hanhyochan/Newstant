@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -24,8 +24,8 @@ import {
   type Faq,
   type InquiryType,
   type Notice,
-} from "@/app/_newsroll/api";
-import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
+} from "@/shared/newsroll/api";
+import { fixedDockedPanelProps } from "@/shared/newsroll/my-info-panel-behavior";
 import {
   InfoFaqSection,
 } from "@/features/info/components/InfoFaqSection";

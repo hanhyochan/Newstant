@@ -1,6 +1,7 @@
 .next
 .next-dev
 .next-build
+.next-e2e
 node_modules
 storybook-static
 .env
@@ -9,3 +10,5 @@ storybook-static
 .history
 *.log
 tsconfig.tsbuildinfo
+test-results/
+playwright-report/

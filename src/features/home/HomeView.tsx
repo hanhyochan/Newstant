@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
@@ -10,13 +10,13 @@ import {
 import {
   newsApi,
   userApi,
-} from "@/app/_newsroll/api";
+} from "@/shared/newsroll/api";
 import {
   currentUserId
-} from "@/app/_newsroll/auth/current-user";
+} from "@/shared/newsroll/auth/current-user";
 import type {
   UserPreference
-} from "@/app/_newsroll/api/types";
+} from "@/shared/newsroll/api/types";
 import {
   NewsBlockCardButton,
   NewsBlockCardSkeleton,
@@ -27,18 +27,19 @@ import {
   useEnterFromRightExitMotion
 } from "@/design-system/templates";
 
+import { ArticleDetailContent, HomeReelCard } from "@/features/news/article/HomeReelCard";
 import {
-  ArticleDetailContent,
-  HomeReelCard,
   HomeShell,
   NewsRollStateCard,
+} from "@/features/news/NewsViews";
+import {
   defaultNewsDateTime,
   filterArticlesByBlockedKeywords,
   getHomeArticleFromNews,
   getLatestBreakingNewsItem,
   type HomeArticle,
   type HomeViewMode,
-} from "@/features/news/NewsViews";
+} from "@/features/news/model";
 import type { BodySearchSelection } from "@/features/search/model";
 import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 

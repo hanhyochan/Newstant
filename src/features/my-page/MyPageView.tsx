@@ -20,26 +20,23 @@ import {
   userContentActionApi,
   welfareApi,
   type Inquiry,
-  type NotificationSettings,
   type UpdateUserInput,
   type User,
   type UserContentAction,
-  type UserNewsViewTime,
-  type UserPreference
-} from "@/app/_newsroll/api";
+} from "@/shared/newsroll/api";
 import {
   currentUserId,
   getCurrentUserSnapshot,
   setCurrentUserSession,
-} from "@/app/_newsroll/auth/current-user";
-import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
+} from "@/shared/newsroll/auth/current-user";
+import { fixedDockedPanelProps } from "@/shared/newsroll/my-info-panel-behavior";
 import {
+  Divider,
   IconButton,
+  IconTextButton,
   NewsBlockCardButton,
   NewsBlockCardSkeleton,
-  Divider,
-  IconTextButton,
-  TextButton
+  TextButton,
 } from "@/design-system/components";
 import {
   NewsRollCommonLayout,
@@ -54,20 +51,20 @@ import {
   newsrollPagePanelInitialGap as pagePanelInitialGap,
   newsrollPagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
-  useEnterFromRightExitMotion
+  useEnterFromRightExitMotion,
 } from "@/design-system/templates";
 import {
   getCommentItemFromApi,
-  type CommentId
+  type CommentId,
 } from "@/features/comments/utils/comment-data";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { MySettingRow } from "@/features/my-page/components/MySettingRow";
 import {
   MyBookmarkDetailPage,
-  type MyBookmarkTypeTab,
   type MyBookmarkNewsSummaryItem,
   type MyBookmarkPolicySummaryItem,
   type MyBookmarkSummaryItem,
+  type MyBookmarkTypeTab,
 } from "@/features/my-page/detail/MyBookmarkDetailPage";
 import {
   MyCommentDetailPage,
@@ -90,371 +87,56 @@ import {
   MyVoteDetailPage,
   type MyVoteSummaryItem,
 } from "@/features/my-page/detail/MyVoteDetailPage";
+import {
+  getAgeGroupPreferenceId,
+  getCategorySettingsFromPreference,
+  getInitialCategorySettings,
+  getMyCategoryOptionId,
+  getMyCategoryTabItems,
+  getMyPolicyAgeTabs,
+  getMyProfileSettingItemId,
+  getMySummaryCategoryTabs,
+  getNewsCategoryPreferenceIds,
+  getNewsViewTimesFromApi,
+  getNotificationSettingsFromApi,
+  getPolicyBookmarkItem,
+  getPressPreferenceIds,
+  hasMultipleMyCommentKinds,
+  myBookmarkTabs,
+  myCategoryGroups,
+  myCommentTabs,
+  myNewsViewTimeSections,
+  myNotificationLabels,
+  myOrderedProfileSettingSections,
+  myPolicyAgeLabelById,
+  myRecentPreviewLimit,
+  mySummaryAllTabLabel,
+  mySummaryItems,
+  shouldShowMyCategoryTabs,
+  type MyPageDetailView,
+  type MySummaryView,
+} from "@/features/my-page/model";
 import { buildMyActivitySummary } from "@/features/my-page/utils/my-activity-summary";
+import { useMyPageNavigation } from "@/features/my-page/hooks/use-my-page-navigation";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
+import { ArticleDetailContent } from "@/features/news/article/HomeReelCard";
+import { getAllNewsPreviewFromArticle } from "@/features/news/all-news/all-news-model";
 import {
-  ArticleDetailContent,
   binaryGuideOptions,
-  formatNewsDate,
-  getAllNewsPreviewFromArticle,
-  getHomeArticleFromNews,
   guideOptions,
+} from "@/features/news/model";
+import {
+  formatNewsDate,
+  getHomeArticleFromNews,
   type ArticleDetailOpenOptions,
   type BlockedKeywordSetting,
   type HomeArticle,
   type OpenArticleDetail,
-  type PolicyItem
-} from "@/features/news/NewsViews";
+  type PolicyItem,
+} from "@/features/news/model";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
-
-const myRecentPreviewLimit = 10;
-
-const myCategoryGroups = [
-  {
-    items: ["정치", "경제", "사회", "문화", "국제", "지역", "스포츠", "IT과학"],
-    title: "나의 관심 카테고리 설정",
-    active: new Set(["정치"]),
-  },
-  {
-    items: ["미성년", "청년", "중장년", "노년"],
-    title: "나의 연령대 설정",
-    active: new Set(["청년"]),
-  },
-  {
-    items: ["중앙일보", "국민일보", "한겨레"],
-    title: "관심 언론사 설정",
-    active: new Set(["중앙일보", "국민일보", "한겨레"]),
-  },
-];
-
-const myAgeGroupPreferenceIds = ["minor", "youth", "middle", "senior"] as const;
-const myPolicyAgeLabelById = {
-  middle: "중장년",
-  minor: "미성년",
-  senior: "노년",
-  youth: "청년",
-} as const;
-const myNewsCategoryPreferenceIds = [
-  "politics",
-  "economy",
-  "society",
-  "culture",
-  "world",
-  "local",
-  "sports",
-  "science",
-] as const;
-const myPressPreferenceIds = ["joongang", "kukmin", "hani"] as const;
-
-function getMyCategoryOptionId(groupIndex: number, itemIndex: number) {
-  return `${groupIndex}-${itemIndex}`;
-}
-
-function getPreferenceOptionId(
-  groupIndex: number,
-  preferenceIds: readonly string[],
-  preferenceId?: string,
-) {
-  const itemIndex = preferenceIds.findIndex((id) => id === preferenceId);
-
-  return itemIndex >= 0 ? getMyCategoryOptionId(groupIndex, itemIndex) : "";
-}
-
-function getPreferenceIdFromOption(
-  groupIndex: number,
-  preferenceIds: readonly string[],
-  optionId?: string,
-) {
-  const itemIndex = preferenceIds.findIndex(
-    (_, index) => getMyCategoryOptionId(groupIndex, index) === optionId,
-  );
-
-  return itemIndex >= 0 ? preferenceIds[itemIndex] : "";
-}
-
-function getAgeGroupOptionId(ageGroupId?: string) {
-  return getPreferenceOptionId(1, myAgeGroupPreferenceIds, ageGroupId);
-}
-
-function getAgeGroupPreferenceId(optionId?: string) {
-  return getPreferenceIdFromOption(1, myAgeGroupPreferenceIds, optionId);
-}
-
-function getNewsCategoryOptionIds(categoryIds: string[]) {
-  return categoryIds
-    .map((categoryId) =>
-      getPreferenceOptionId(0, myNewsCategoryPreferenceIds, categoryId),
-    )
-    .filter((optionId): optionId is string => Boolean(optionId));
-}
-
-function getNewsCategoryPreferenceIds(optionIds: string[]) {
-  return optionIds
-    .map((optionId) =>
-      getPreferenceIdFromOption(0, myNewsCategoryPreferenceIds, optionId),
-    )
-    .filter((categoryId): categoryId is string => Boolean(categoryId));
-}
-
-function getPressOptionIds(pressIds: string[]) {
-  return pressIds
-    .map((pressId) => getPreferenceOptionId(2, myPressPreferenceIds, pressId))
-    .filter((optionId): optionId is string => Boolean(optionId));
-}
-
-function getPressPreferenceIds(optionIds: string[]) {
-  return optionIds
-    .map((optionId) =>
-      getPreferenceIdFromOption(2, myPressPreferenceIds, optionId),
-    )
-    .filter((pressId): pressId is string => Boolean(pressId));
-}
-
-function getMyCategoryTabItems(groupIndex: number) {
-  return myCategoryGroups[groupIndex].items.map((item, itemIndex) => ({
-    id: getMyCategoryOptionId(groupIndex, itemIndex),
-    label: item,
-  }));
-}
-
-function getInitialCategorySettings() {
-  return myCategoryGroups.map(
-    (group, groupIndex) =>
-      new Set(
-        group.items
-          .map((item, itemIndex) =>
-            group.active.has(item)
-              ? getMyCategoryOptionId(groupIndex, itemIndex)
-              : null,
-          )
-          .filter((item): item is string => Boolean(item)),
-      ),
-  );
-}
-function getCategorySettingsFromPreference(preference: UserPreference | null) {
-  const initialSettings = getInitialCategorySettings();
-
-  if (!preference) {
-    return initialSettings;
-  }
-
-  const categoryIds = getNewsCategoryOptionIds(preference.categoryIds);
-  const ageGroupOptionId = getAgeGroupOptionId(preference.ageGroupId);
-  const ageGroupIds = ageGroupOptionId ? [ageGroupOptionId] : [];
-  const pressIds = getPressOptionIds(preference.pressIds);
-
-  return [
-    new Set(categoryIds.length > 0 ? categoryIds : initialSettings[0]),
-    new Set(ageGroupIds.length > 0 ? ageGroupIds : initialSettings[1]),
-    new Set(pressIds.length > 0 ? pressIds : initialSettings[2]),
-  ];
-}
-
-function getNotificationSettingsFromApi(settings: NotificationSettings | null) {
-  return {
-    "속보": settings?.breakingNews ?? true,
-    "내 댓글/대댓글 반응": settings?.commentReplies ?? true,
-    "내 국가정책 업데이트": settings?.policyUpdates ?? true,
-    "문의글 답변": settings?.inquiryReplies ?? true,
-    "뉴스 보기 타임 알림": settings?.newsViewTime ?? true,
-  };
-}
-
-function getNewsViewTimesFromApi(settings: UserNewsViewTime | null) {
-  return new Set(settings?.times?.length ? settings.times : ["07:00", "21:00"]);
-}
-
-const mySummaryItems = [
-  { count: 56, icon: "bookmark", label: "북마크", tone: "bookmark", value: "bookmark" },
-  { count: 54, icon: "vote", label: "투표", tone: "vote", value: "vote" },
-  { count: 15, icon: "chat", label: "댓글", tone: "comment", value: "comment" },
-] as const;
-const myNotificationLabels = [
-  "속보",
-  "내 댓글/대댓글 반응",
-  "내 국가정책 업데이트",
-  "문의글 답변",
-  "뉴스 보기 타임 알림",
-] as const;
-type MySummaryView = (typeof mySummaryItems)[number]["value"];
-type MyPageDetailView =
-  | "recent"
-  | "customNewsSettings"
-  | "newsViewTime"
-  | "profileSettings"
-  | MySummaryView
-  | null;
-
-const mySummaryAllTabLabel = "전체";
-const myBookmarkTabs = ["뉴스", "국가정책"] as const;
-const myCommentTabs = [
-  { id: "comment", label: "댓글" },
-  { id: "reply", label: "대댓글" },
-] as const;
-
-function getUniqueValues<T extends string>(items: T[]) {
-  return Array.from(new Set(items));
-}
-
-function getMySummaryCategoryTabs(items: { category: string }[]) {
-  return [
-    mySummaryAllTabLabel,
-    ...getUniqueValues(items.map((item) => item.category)),
-  ];
-}
-
-function getMyPolicyAgeTabs(items: { policyAgeLabels: string[] }[]) {
-  return [
-    mySummaryAllTabLabel,
-    ...getUniqueValues(items.flatMap((item) => item.policyAgeLabels)),
-  ];
-}
-
-function shouldShowMyCategoryTabs(items: { category: string }[]) {
-  return getUniqueValues(items.map((item) => item.category)).length > 1;
-}
-
-function hasMultipleMyCommentKinds(items: { commentKind: Exclude<MyCommentKind, "all"> }[]) {
-  return getUniqueValues(items.map((item) => item.commentKind)).length > 1;
-}
-
-function formatPolicyBookmarkDate(value: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-function getPolicyBookmarkItem(policy: {
-  ageGroupIds?: string[];
-  applicationEndDate: string;
-  applicationMethod: string;
-  applicationStartDate: string;
-  businessEndDate: string;
-  businessStartDate: string;
-  category: string;
-  documents: string;
-  id: string;
-  institution: string;
-  label: string;
-  registeredAt: string;
-  selectionMethod: string;
-  subcategory: string;
-  summary: string;
-  supportContent: string;
-  targetAge: string;
-  title: string;
-  updatedAt: string;
-}): PolicyItem {
-  return {
-    ageGroupIds: policy.ageGroupIds,
-    details: [
-      { label: "지원 대상 연령", value: policy.targetAge },
-      { label: "지원 내용", value: policy.supportContent },
-      { label: "지원 기관", value: policy.institution },
-      {
-        label: "사업 기간",
-        value: `${policy.businessStartDate} ~ ${policy.businessEndDate}`,
-      },
-      {
-        label: "신청 기간",
-        value: `${policy.applicationStartDate} ~ ${policy.applicationEndDate}`,
-      },
-      { label: "신청 방법", value: policy.applicationMethod },
-      { label: "선발 방식", value: policy.selectionMethod },
-      { label: "제출 서류", value: policy.documents },
-    ],
-    id: policy.id,
-    registeredAt: formatPolicyBookmarkDate(policy.registeredAt),
-    summary: policy.summary,
-    tags: [policy.category, policy.subcategory, policy.label],
-    title: policy.title,
-    updatedAt: formatPolicyBookmarkDate(policy.updatedAt),
-  };
-}
-
-const myNewsViewTimeSections = [
-  {
-    label: "아침",
-    times: ["06:00", "07:00", "08:00", "09:00"],
-  },
-  {
-    label: "점심",
-    times: ["11:00", "12:00", "13:00", "14:00"],
-  },
-  {
-    label: "저녁",
-    times: ["16:00", "17:00", "18:00", "19:00"],
-  },
-  {
-    label: "밤",
-    times: ["21:00", "22:00", "23:00"],
-  },
-] as const;
-
-const myProfileSettingSections = [
-  {
-    title: "계정",
-    items: ["내 정보 수정", "비밀번호 찾기 / 재설정"],
-  },
-  {
-    title: "동의 및 약관",
-    items: [
-      "약관 동의",
-      "개인정보 처리방침",
-      "서비스 이용약관",
-      "개인정보 수집·이용 동의",
-      "마케팅/알림 수신 동의",
-    ],
-  },
-  {
-    title: "활동 관리",
-    items: ["문의 내역", "신고 내역", "차단/숨김 설정"],
-  },
-  {
-    title: "NewsRoll",
-    items: [
-      "앱 정보",
-      "오픈소스 라이선스",
-      "개인정보 처리방침 변경 이력",
-      "서비스 약관 변경 이력",
-    ],
-  },
-] as const;
-
-const myOrderedProfileSettingSections = [
-  myProfileSettingSections[0],
-  myProfileSettingSections[2],
-  myProfileSettingSections[1],
-  myProfileSettingSections[3],
-] as readonly (typeof myProfileSettingSections)[number][];
-
-const myProfileSettingItemIds: MyProfileSettingItemId[][] = [
-  ["accountEdit", "passwordReset"],
-  ["inquiryHistory", "reportHistory", "blockedHiddenSettings"],
-  [
-    "agreement",
-    "privacyPolicy",
-    "termsOfService",
-    "privacyConsent",
-    "marketingConsent",
-  ],
-  ["appInfo", "openSourceLicenses", "privacyPolicyHistory", "termsHistory"],
-];
-
-function getMyProfileSettingItemId(sectionIndex: number, itemIndex: number) {
-  return myProfileSettingItemIds[sectionIndex]?.[itemIndex] ?? null;
-}
-
 export function MyPageView({
   blockedKeywordSettings,
   isDarkMode,
@@ -483,15 +165,26 @@ export function MyPageView({
   onToggleTextSize: () => void;
 }) {
   const currentUser = getCurrentUserSnapshot();
-  const [activeDetailView, setActiveDetailView] =
-    useState<MyPageDetailView>(null);
-  const [myArticleDetail, setMyArticleDetail] = useState<{
-    article: HomeArticle;
-    commentId?: CommentId;
-    replyToCommentId?: CommentId;
-    scrollTarget?: ArticleDetailOpenOptions["scrollTarget"];
-  } | null>(null);
-  const [myPolicyDetail, setMyPolicyDetail] = useState<PolicyItem | null>(null);
+  const {
+    activeDetailView,
+    activeProfileSettingItemId,
+    isBookmarkOpen,
+    isCommentOpen,
+    isCustomNewsSettingsOpen,
+    isMyArticleDetailOpen,
+    isMyNestedDetailOpen,
+    isMyPolicyDetailOpen,
+    isNewsViewTimeOpen,
+    isProfileSettingsOpen,
+    isRecentOpen,
+    isVoteOpen,
+    myArticleDetail,
+    myPolicyDetail,
+    setActiveDetailView,
+    setActiveProfileSettingItemId,
+    setMyArticleDetail,
+    setMyPolicyDetail,
+  } = useMyPageNavigation();
   const [activeRecentCategory, setActiveRecentCategory] = useState(
     () => mySummaryAllTabLabel,
   );
@@ -527,21 +220,18 @@ export function MyPageView({
   );
   const [notificationSettings, setNotificationSettings] = useState<
     Record<string, boolean>
-  >({
-    "내 댓글/대댓글 반응": true,
-    "내 국가정책 업데이트": true,
-    "문의글 답변": true,
-    "뉴스 보기 타임 알림": true,
-    속보: true,
-  });
+  >(() =>
+    Object.fromEntries(myNotificationLabels.map((label) => [label, true])) as Record<
+      string,
+      boolean
+    >,
+  );
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [profileUsers, setProfileUsers] = useState<User[]>([]);
   const [myInquiryItems, setMyInquiryItems] = useState<Inquiry[]>([]);
   const [myContentActionItems, setMyContentActionItems] = useState<
     UserContentAction[]
   >([]);
-  const [activeProfileSettingItemId, setActiveProfileSettingItemId] =
-    useState<MyProfileSettingItemId | null>(null);
   const [selectedNewsViewTimes, setSelectedNewsViewTimes] = useState(
     () => new Set(["07:00", "21:00"]),
   );
@@ -552,18 +242,7 @@ export function MyPageView({
     useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [blockedKeywordInputValue, setBlockedKeywordInputValue] = useState("");
-  const myPanelContentRef = useRef<HTMLDivElement>(null);
-  const isRecentOpen = activeDetailView === "recent";
-  const isCustomNewsSettingsOpen = activeDetailView === "customNewsSettings";
-  const isNewsViewTimeOpen = activeDetailView === "newsViewTime";
-  const isProfileSettingsOpen = activeDetailView === "profileSettings";
-  const isBookmarkOpen = activeDetailView === "bookmark";
-  const isVoteOpen = activeDetailView === "vote";
-  const isCommentOpen = activeDetailView === "comment";
-  const isMyArticleDetailOpen = myArticleDetail !== null;
-  const isMyPolicyDetailOpen = myPolicyDetail !== null;
-  const isMyNestedDetailOpen = isMyArticleDetailOpen || isMyPolicyDetailOpen;
-  const dynamicCommentCategoryTabs = useMemo(
+  const myPanelContentRef = useRef<HTMLDivElement>(null);  const dynamicCommentCategoryTabs = useMemo(
     () => myCommentTabs,
     [],
   );
@@ -635,8 +314,13 @@ export function MyPageView({
       ) as Record<MySummaryView, number>,
     [myBookmarkCount, myDynamicCommentItems.length, myVoteCount],
   );
-  const activeSummary: MySummaryView | null =
-    isBookmarkOpen || isVoteOpen || isCommentOpen ? activeDetailView : null;
+  const activeSummary: MySummaryView | null = isBookmarkOpen
+    ? "bookmark"
+    : isVoteOpen
+      ? "vote"
+      : isCommentOpen
+        ? "comment"
+        : null;
   const isMyDetailOpen = activeDetailView !== null || isMyNestedDetailOpen;
   const myDetailScrollRestore = useDetailScrollRestore({
     isDetailOpen: isMyDetailOpen,

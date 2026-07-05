@@ -16,16 +16,18 @@ import {
   getEnterFromRightMotionClassName,
   useSwipeTabNavigation,
 } from "@/design-system/templates";
+import { NewsCreatedTime } from "@/features/news/article/NewsCreatedTime";
 import {
-  NewsCreatedTime,
   commentReplyTemplates,
-  defaultNewsDateTime,
-  getVisibleReactionCount,
-  type AllNewsArticlePreview,
   type CommentReplyItem,
+} from "@/features/news/comments/comment-model";
+import { getVisibleReactionCount } from "@/features/news/article/article-reactions";
+import type { AllNewsArticlePreview } from "@/features/news/all-news/all-news-model";
+import {
+  defaultNewsDateTime,
   type HomeArticle,
   type OpenArticleDetail,
-} from "@/features/news/NewsViews";
+} from "@/features/news/model";
 import { type CommentId, type CommentItem } from "@/features/comments/utils/comment-data";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";

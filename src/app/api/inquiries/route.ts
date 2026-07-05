@@ -1,7 +1,7 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { buildApiUrl } from "../../_newsroll/api-config";
+import { buildApiUrl } from "@/shared/newsroll/api-config";
 
 const inquirySchema = z.object({
   content: z.string().trim().min(1),

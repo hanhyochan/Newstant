@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -7,7 +7,7 @@ import {
   welfareApi,
   type NewsListItem,
   type WelfarePolicy,
-} from "@/app/_newsroll/api";
+} from "@/shared/newsroll/api";
 import {
   Icon,
   SearchHighlightText,

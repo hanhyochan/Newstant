@@ -1,4 +1,5 @@
-﻿import {
+import {
+  ArticleVoteOptionButton,
   PillTabMenu,
   NewsHeadlineRowButton as AllNewsHeadlineItem,
 } from "@/design-system/components";
@@ -6,13 +7,12 @@ import {
   getEnterFromRightMotionClassName,
   useSwipeTabNavigation,
 } from "@/design-system/templates";
+import type { AllNewsArticlePreview } from "@/features/news/all-news/all-news-model";
 import {
-  ArticleVoteOptionButton,
   binaryGuideOptions,
-  type AllNewsArticlePreview,
   type HomeArticle,
   type OpenArticleDetail,
-} from "@/features/news/NewsViews";
+} from "@/features/news/model";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 

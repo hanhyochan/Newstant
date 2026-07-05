@@ -11,9 +11,9 @@ import {
   type TouchEvent,
 } from "react";
 
-import { newsApi, userApi } from "@/app/_newsroll/api";
-import { currentUserId } from "@/app/_newsroll/auth/current-user";
-import type { UserPreference } from "@/app/_newsroll/api/types";
+import { newsApi, userApi } from "@/shared/newsroll/api";
+import { currentUserId } from "@/shared/newsroll/auth/current-user";
+import type { UserPreference } from "@/shared/newsroll/api/types";
 import {
   NoticeCardLink,
   Icon,
@@ -50,10 +50,10 @@ import {
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 import { SeparatedList } from "@/features/shared/SeparatedList";
+import { ArticleDetailContent } from "@/features/news/article/HomeReelCard";
 
 import {
   AllNewsSectionPanel,
-  ArticleDetailContent,
   allNewsDockedScrollSelectors,
   allNewsPresses,
   allNewsRelayCategories,

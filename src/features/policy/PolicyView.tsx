@@ -7,8 +7,8 @@ import {
   useState,
 } from "react";
 
-import { welfareApi, type WelfarePolicy } from "@/app/_newsroll/api";
-import { getCurrentUserSnapshot } from "@/app/_newsroll/auth/current-user";
+import { welfareApi, type WelfarePolicy } from "@/shared/newsroll/api";
+import { getCurrentUserSnapshot } from "@/shared/newsroll/auth/current-user";
 import {
   ChipLabel,
   ContentSummaryButton,

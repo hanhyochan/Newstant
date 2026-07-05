@@ -10,7 +10,7 @@ import {
   TextInput,
 } from "@/design-system/components";
 import { getEnterFromRightMotionClassName } from "@/design-system/templates";
-import { type BlockedKeywordSetting } from "@/features/news/NewsViews";
+import { type BlockedKeywordSetting } from "@/features/news/model";
 
 type CategoryGroup = {
   title: string;

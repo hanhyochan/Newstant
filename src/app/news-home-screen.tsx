@@ -1,27 +1,30 @@
-﻿"use client";
+"use client";
 
 import {
   useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
 import { IconButton } from "@/design-system/components";
-import {
-  getEnterFromRightMotionClassName,
-  hasActiveEnterFromRightMotion,
-  newsrollDetailRevealDelayMs as nextArticleRevealDelayMs,
-  requestEnterFromRightExitMotion,
-} from "@/design-system/templates";
 import { AllNewsView } from "@/features/all-news/AllNewsView";
 import {
   getNextAuthView,
   getPreviousAuthView,
   isAuthView,
 } from "@/features/auth/auth-flow";
+import {
+  getSignupAgeGroupId,
+  getSignupCategoryId,
+  isProtectedView,
+  type SignupDraft,
+  type View,
+} from "@/app/news-home-model";
+import { useBlockedKeywords } from "@/app/hooks/use-blocked-keywords";
+import { useNewsHomeBootstrap } from "@/app/hooks/use-news-home-bootstrap";
+import { useNewsHomeNavigation } from "@/app/hooks/use-news-home-navigation";
 import {
   LoginView,
   PasswordResetEmailView,
@@ -40,7 +43,7 @@ import { NotificationView } from "@/features/notifications/NotificationView";
 import {
   getHomeArticleFromNews,
   type BlockedKeywordSetting,
-} from "@/features/news/NewsViews";
+} from "@/features/news/model";
 import type {
   BodySearchSelection,
   BodySearchSelectionInput,
@@ -56,47 +59,16 @@ import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMess
 import {
   newsApi,
   notificationApi,
-  settingsApi,
   userApi,
   welfareApi,
-  type AppNotification,
-  type BlockedKeywordPreference
-} from "./_newsroll/api";
+  type AppNotification
+} from "@/shared/newsroll/api";
 import {
   clearCurrentUserSession,
   currentUserId,
   getStoredCurrentUserSession,
-  hydrateCurrentUserSession,
   setCurrentUserSession,
-} from "./_newsroll/auth/current-user";
-
-type View =
-  | Tab
-  | "notifications"
-  | "search"
-  | "login"
-  | "passwordResetEmail"
-  | "passwordResetPassword"
-  | "signupAgreement"
-  | "signupEmail"
-  | "signupNickname"
-  | "signupPassword"
-  | "signupAge"
-  | "signupCategory";
-
-type SignupDraft = {
-  ageGroupId?: string;
-  agreementIds?: string[];
-  categoryIds?: string[];
-  email?: string;
-  marketingAgreed?: boolean;
-  nickname?: string;
-  password?: string;
-};
-
-function isProtectedView(view: View) {
-  return !isAuthView(view);
-}
+} from "@/shared/newsroll/auth/current-user";
 
 function NewsRollSplashScreen() {
   return (
@@ -111,20 +83,6 @@ function NewsRollSplashScreen() {
       />
     </section>
   );
-}
-
-function normalizeBlockedKeyword(value: string) {
-  return value.trim().toLocaleLowerCase("ko-KR");
-}
-
-function getBlockedKeywordSettingsFromApi(
-  items: BlockedKeywordPreference[],
-): BlockedKeywordSetting[] {
-  return items.map((item) => ({
-    id: item.id,
-    isActive: item.isActive,
-    keyword: item.keyword,
-  }));
 }
 
 function resetNewsRollViewport() {
@@ -420,19 +378,6 @@ export function NewsHomeScreen() {
     Boolean(getStoredCurrentUserSession()),
   );
   const [isSplashVisible, setIsSplashVisible] = useState(true);
-  const [searchBackView, setSearchBackView] = useState<Tab>("home");
-  const viewNavigationTimerRef = useRef<number | null>(null);
-  const allNewsEntryMotionTimerRef = useRef<number | null>(null);
-  const [viewResetKeys, setViewResetKeys] = useState<Record<Tab, number>>({
-    all: 0,
-    home: 0,
-    info: 0,
-    my: 0,
-    policy: 0,
-  });
-  const [allNewsEntryMotionClassName, setAllNewsEntryMotionClassName] =
-    useState("");
-  const [isAllNewsBreakingEntry, setIsAllNewsBreakingEntry] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTextLarge, setIsTextLarge] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -443,30 +388,34 @@ export function NewsHomeScreen() {
     useState(false);
   const [bodySearchSelection, setBodySearchSelection] =
     useState<BodySearchSelection | null>(null);
-  const [blockedKeywordSettings, setBlockedKeywordSettings] = useState<
-    BlockedKeywordSetting[]
-  >([]);
-  const blockedKeywords = useMemo(
-    () =>
-      blockedKeywordSettings
-        .filter((setting) => setting.isActive)
-        .map((setting) => setting.keyword),
-    [blockedKeywordSettings],
-  );
-  const activeViewResetKey =
-    activeView === "search" ||
-    activeView === "notifications" ||
-    activeView === "login" ||
-    activeView === "passwordResetEmail" ||
-    activeView === "passwordResetPassword" ||
-    activeView === "signupAgreement" ||
-    activeView === "signupEmail" ||
-    activeView === "signupNickname" ||
-    activeView === "signupPassword" ||
-    activeView === "signupAge" ||
-    activeView === "signupCategory"
-      ? 0
-      : viewResetKeys[activeView];
+  const {
+    addBlockedKeyword,
+    blockedKeywords,
+    blockedKeywordSettings,
+    deleteBlockedKeyword,
+    loadBlockedKeywordSettings,
+    toggleBlockedKeyword,
+  } = useBlockedKeywords();  const {
+    activeViewResetKey,
+    allNewsEntryMotionClassName,
+    isAllNewsBreakingEntry,
+    openBreakingNewsView,
+    openDefaultTab,
+    openNotifications,
+    openSearch,
+    requireAuthenticatedView,
+    searchBackView,
+    setAllNewsEntryMotionClassName,
+    setIsAllNewsBreakingEntry,
+    setSearchBackView,
+    setViewResetKeys,
+  } = useNewsHomeNavigation({
+    activeView,
+    isAuthenticated,
+    setActiveView,
+    setBodySearchSelection,
+    setIsAuthenticated,
+  });
 
   useLayoutEffect(() => {
     resetNewsRollViewport();
@@ -474,8 +423,8 @@ export function NewsHomeScreen() {
 
   const loadRootSettings = useCallback(
     async (userId = currentUserId, options: { ignore?: () => boolean } = {}) => {
-      const [keywords, notifications] = await Promise.all([
-        settingsApi.getBlockedKeywords(userId),
+      const [, notifications] = await Promise.all([
+        loadBlockedKeywordSettings(userId, options),
         notificationApi.getNotificationSettings(userId),
       ]);
 
@@ -483,10 +432,9 @@ export function NewsHomeScreen() {
         return;
       }
 
-      setBlockedKeywordSettings(getBlockedKeywordSettingsFromApi(keywords));
       setIsDarkMode(notifications?.darkMode ?? false);
     },
-    [],
+    [loadBlockedKeywordSettings],
   );
 
   const loadInitialContentData = useCallback(
@@ -502,185 +450,12 @@ export function NewsHomeScreen() {
     [loadRootSettings],
   );
 
-  useEffect(() => {
-    let ignore = false;
-    async function boot() {
-      setIsSplashVisible(true);
-      const storedUser = hydrateCurrentUserSession();
-
-      if (storedUser) {
-        setIsAuthenticated(true);
-        setActiveView("home");
-        await loadInitialContentData(storedUser.id, { ignore: () => ignore });
-      } else {
-        setIsAuthenticated(false);
-        setActiveView("login");
-        await Promise.resolve();
-      }
-
-      if (!ignore) {
-        setIsSplashVisible(false);
-      }
-    }
-
-    boot().catch(() => {
-      if (!ignore) {
-        setIsAuthenticated(false);
-        setActiveView("login");
-        setIsSplashVisible(false);
-      }
-    });
-
-    return () => {
-      ignore = true;
-    };
-  }, [loadInitialContentData]);
-
-  useEffect(() => {
-    if (!isAuthenticated && isProtectedView(activeView)) {
-      setBodySearchSelection(null);
-      setAllNewsEntryMotionClassName("");
-      setIsAllNewsBreakingEntry(false);
-      setSearchBackView("home");
-      setActiveView("login");
-    }
-  }, [activeView, isAuthenticated]);
-
-  useEffect(() => {
-    return () => {
-      if (viewNavigationTimerRef.current !== null) {
-        window.clearTimeout(viewNavigationTimerRef.current);
-      }
-
-      if (allNewsEntryMotionTimerRef.current !== null) {
-        window.clearTimeout(allNewsEntryMotionTimerRef.current);
-      }
-    };
-  }, []);
-
-  function requireAuthenticatedView() {
-    const storedUser = hydrateCurrentUserSession();
-
-    if (storedUser) {
-      setIsAuthenticated(true);
-      return true;
-    }
-
-    setIsAuthenticated(false);
-    setBodySearchSelection(null);
-    setAllNewsEntryMotionClassName("");
-    setIsAllNewsBreakingEntry(false);
-    setSearchBackView("home");
-    setActiveView("login");
-    return false;
-  }
-
-  function openSearch() {
-    if (!requireAuthenticatedView()) {
-      return;
-    }
-
-    if (activeView !== "search") {
-      setSearchBackView(
-        activeView === "notifications" || isAuthView(activeView) ? "home" : activeView,
-      );
-    }
-
-    setActiveView("search");
-  }
-
-  function openNotifications() {
-    if (!requireAuthenticatedView()) {
-      return;
-    }
-
-    if (activeView !== "notifications") {
-      setSearchBackView(
-        activeView === "search" || isAuthView(activeView) ? "home" : activeView,
-      );
-    }
-
-    setActiveView("notifications");
-  }
-
-  function openDefaultTab(tab: Tab) {
-    if (!requireAuthenticatedView()) {
-      return;
-    }
-
-    const moveToTab = () => {
-      setAllNewsEntryMotionClassName("");
-      setIsAllNewsBreakingEntry(false);
-      setBodySearchSelection(null);
-      setActiveView(tab);
-      setSearchBackView(tab);
-      setViewResetKeys((current) => ({
-        ...current,
-        [tab]: current[tab] + 1,
-      }));
-    };
-
-    if (hasActiveEnterFromRightMotion()) {
-      requestEnterFromRightExitMotion();
-
-      if (viewNavigationTimerRef.current !== null) {
-        window.clearTimeout(viewNavigationTimerRef.current);
-      }
-
-      viewNavigationTimerRef.current = window.setTimeout(() => {
-        viewNavigationTimerRef.current = null;
-        moveToTab();
-      }, nextArticleRevealDelayMs);
-
-      return;
-    }
-
-    moveToTab();
-  }
-
-  function openBreakingNewsView() {
-    if (!requireAuthenticatedView()) {
-      return;
-    }
-
-    const moveToBreakingNews = () => {
-      setAllNewsEntryMotionClassName(getEnterFromRightMotionClassName());
-      setIsAllNewsBreakingEntry(true);
-      setBodySearchSelection(null);
-      setActiveView("all");
-      setSearchBackView("all");
-      setViewResetKeys((current) => ({
-        ...current,
-        all: current.all + 1,
-      }));
-
-      if (allNewsEntryMotionTimerRef.current !== null) {
-        window.clearTimeout(allNewsEntryMotionTimerRef.current);
-      }
-
-      allNewsEntryMotionTimerRef.current = window.setTimeout(() => {
-        allNewsEntryMotionTimerRef.current = null;
-        setAllNewsEntryMotionClassName("");
-      }, nextArticleRevealDelayMs);
-    };
-
-    if (hasActiveEnterFromRightMotion()) {
-      requestEnterFromRightExitMotion();
-
-      if (viewNavigationTimerRef.current !== null) {
-        window.clearTimeout(viewNavigationTimerRef.current);
-      }
-
-      viewNavigationTimerRef.current = window.setTimeout(() => {
-        viewNavigationTimerRef.current = null;
-        moveToBreakingNews();
-      }, nextArticleRevealDelayMs);
-
-      return;
-    }
-
-    moveToBreakingNews();
-  }
+  useNewsHomeBootstrap({
+    loadInitialContentData,
+    setActiveView,
+    setIsAuthenticated,
+    setIsSplashVisible,
+  });
 
   function openNextAuthStep() {
     setActiveView((current) => {
@@ -692,26 +467,6 @@ export function NewsHomeScreen() {
 
       return nextAuthView === "home" ? "signupAgreement" : nextAuthView;
     });
-  }
-
-  function getSignupAgeGroupId(ageId: string) {
-    if (ageId === "teens") {
-      return "minor";
-    }
-
-    if (ageId === "sixties") {
-      return "senior";
-    }
-
-    if (ageId === "twenties") {
-      return "youth";
-    }
-
-    return "middle";
-  }
-
-  function getSignupCategoryId(categoryId: string) {
-    return categoryId === "tech" ? "science" : categoryId;
   }
 
   async function checkSignupNickname(nickname: string) {
@@ -964,88 +719,6 @@ export function NewsHomeScreen() {
       setIsSplashVisible(false);
     } finally {
       setIsAuthSubmitting(false);
-    }
-  }
-
-  function addBlockedKeyword(keyword: string) {
-    const normalizedKeyword = normalizeBlockedKeyword(keyword);
-
-    if (!normalizedKeyword) {
-      return;
-    }
-
-    if (
-      blockedKeywordSettings.some(
-        (item) => normalizeBlockedKeyword(item.keyword) === normalizedKeyword,
-      )
-    ) {
-      return;
-    }
-
-    setBlockedKeywordSettings((current) => {
-      const hasSameKeyword = current.some(
-        (item) => normalizeBlockedKeyword(item.keyword) === normalizedKeyword,
-      );
-
-      return hasSameKeyword
-        ? current
-        : [...current, { isActive: true, keyword: keyword.trim() }];
-    });
-
-    settingsApi
-      .createBlockedKeyword({
-        isActive: true,
-        keyword: keyword.trim(),
-        userId: currentUserId,
-      })
-      .then((createdKeyword) => {
-        setBlockedKeywordSettings((current) =>
-          current.map((item) =>
-            !item.id && normalizeBlockedKeyword(item.keyword) === normalizedKeyword
-              ? {
-                  id: createdKeyword.id,
-                  isActive: createdKeyword.isActive,
-                  keyword: createdKeyword.keyword,
-                }
-              : item,
-          ),
-        );
-      })
-      .catch(() => undefined);
-  }
-
-  function toggleBlockedKeyword(keyword: string) {
-    const targetKeyword = blockedKeywordSettings.find(
-      (setting) => setting.keyword === keyword,
-    );
-    const nextIsActive = !targetKeyword?.isActive;
-
-    setBlockedKeywordSettings((current) =>
-      current.map((setting) =>
-        setting.keyword === keyword
-          ? { ...setting, isActive: !setting.isActive }
-          : setting,
-      ),
-    );
-
-    if (targetKeyword?.id) {
-      settingsApi
-        .updateBlockedKeyword(targetKeyword.id, { isActive: nextIsActive })
-        .catch(() => undefined);
-    }
-  }
-
-  function deleteBlockedKeyword(keyword: string) {
-    const targetKeyword = blockedKeywordSettings.find(
-      (setting) => setting.keyword === keyword,
-    );
-
-    setBlockedKeywordSettings((current) =>
-      current.filter((setting) => setting.keyword !== keyword),
-    );
-
-    if (targetKeyword?.id) {
-      settingsApi.deleteBlockedKeyword(targetKeyword.id).catch(() => undefined);
     }
   }
 

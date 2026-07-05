@@ -1,15 +1,15 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   notificationApi,
   type AppNotification,
-} from "@/app/_newsroll/api";
+} from "@/shared/newsroll/api";
 import {
   getCurrentUserSnapshot,
   hydrateCurrentUserSession,
-} from "@/app/_newsroll/auth/current-user";
+} from "@/shared/newsroll/auth/current-user";
 import {
   NoticeCardLink,
   NoticeCardSkeleton,

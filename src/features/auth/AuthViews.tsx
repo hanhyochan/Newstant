@@ -1,16 +1,14 @@
-﻿"use client";
+"use client";
 
 import {
   useEffect,
   useMemo,
   useRef,
   useState,
-  type MouseEventHandler,
   type ReactNode,
 } from "react";
 
 import {
-  FieldActionButton,
   ChevronRowButton,
   CheckInput,
   Icon,
@@ -23,8 +21,6 @@ import {
   scrollSearchHighlightTargetIntoView,
   SearchHighlightText,
   SearchResultButton,
-  SocialLoginButton,
-  TextButton,
   TextInput,
 } from "@/design-system/components";
 import {
@@ -45,489 +41,39 @@ import {
   signupNicknameSchema,
   signupPasswordSchema,
   verificationCodeSchema,
-} from "@/app/_newsroll/auth-validation";
-import { fixedDockedPanelProps } from "@/app/_newsroll/my-info-panel-behavior";
-import { useZodFieldValidation } from "@/app/_newsroll/use-zod-field-validation";
+} from "@/shared/newsroll/auth-validation";
+import { fixedDockedPanelProps } from "@/shared/newsroll/my-info-panel-behavior";
+import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+import { useVerificationCodeFlow } from "@/features/shared/hooks/use-verification-code-flow";
 import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
-
-const socialLoginProviders = [
-  "google",
-  "naver",
-  "kakao",
-] as const;
-
-function AuthTextActionButton({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick: MouseEventHandler<HTMLButtonElement>;
-}) {
-  return (
-    <TextButton onClick={onClick} type="button">
-      {children}
-    </TextButton>
-  );
-}
-
-function SocialLoginButtons({
-  onEmailLoginClick,
-}: {
-  onEmailLoginClick: () => void;
-}) {
-  return (
-    <div className="wrapper_socialLoginGroup u_gapV24">
-      <div className="wrapper_socialLoginOptions u_gapV16">
-        <span className="text_socialLoginTitle">빠른 로그인</span>
-        <div className="wrapper_socialLogin" aria-label="소셜 로그인">
-          {socialLoginProviders.map((provider) => (
-            <SocialLoginButton key={provider} provider={provider} />
-          ))}
-        </div>
-      </div>
-      <AuthTextActionButton onClick={onEmailLoginClick}>
-        이메일로 로그인·회원가입
-      </AuthTextActionButton>
-    </div>
-  );
-}
-
-function AuthValidationError({
-  id,
-  message,
-}: {
-  id: string;
-  message?: string;
-}) {
-  return message ? (
-    <p className="text_authValidationError" id={id} role="alert">
-      {message}
-    </p>
-  ) : null;
-}
-
-function SignupFieldActionButton({
-  children,
-  disabled,
-  onClick,
-}: {
-  children: ReactNode;
-  disabled: boolean;
-  onClick: () => void | Promise<void>;
-}) {
-  return (
-    <FieldActionButton
-      disabled={disabled}
-      onClick={onClick}
-      type="button"
-    >
-      {children}
-    </FieldActionButton>
-  );
-}
-
-function AuthBackButton({ onClick }: { onClick: () => void }) {
-  return (
-    <NewsRollDetailBackButton
-      ariaLabel="이전 화면으로 돌아가기"
-      className="btn_authBack"
-      onClick={onClick}
-    />
-  );
-}
-
-export function LoginView({
-  isSubmitting = false,
-  loginError,
-  onLogin,
-  onPasswordResetStart,
-  onSignup,
-}: {
-  isSubmitting?: boolean;
-  loginError?: string;
-  onLogin: (input: {
-    email: string;
-    isAutoLogin: boolean;
-    password: string;
-  }) => Promise<void> | void;
-  onPasswordResetStart: () => void;
-  onSignup: () => void;
-}) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isAutoLogin, setIsAutoLogin] = useState(false);
-  const [isEmailLoginVisible, setIsEmailLoginVisible] = useState(false);
-  const emailValidation = useZodFieldValidation(authEmailSchema, email);
-  const passwordValidation = useZodFieldValidation(loginPasswordSchema, password);
-  const isLoginReady = emailValidation.isValid && passwordValidation.isValid;
-  const loginEmailErrorId = "login-email-error";
-  const loginPasswordErrorId = "login-password-error";
-
-  return (
-    <AuthLayout
-      ariaLabel="로그인"
-      className={!isEmailLoginVisible ? "container_authLayout_loginLanding" : undefined}
-    >
-      {!isEmailLoginVisible ? (
-        <div className="wrapper_loginContent wrapper_loginLandingContent">
-          <h1 className="text_loginLandingHero">세상을 스크롤하다</h1>
-          <SocialLoginButtons onEmailLoginClick={() => setIsEmailLoginVisible(true)} />
-        </div>
-      ) : (
-      <div className="wrapper_loginContent wrapper_loginEmailContent">
-        <AuthBackButton onClick={() => setIsEmailLoginVisible(false)} />
-        <h1 className="text_loginTitle">세상을 스크롤하다</h1>
-
-        <form
-          className="form_login"
-          onSubmit={(event) => {
-            event.preventDefault();
-
-            if (isLoginReady && !isSubmitting) {
-              onLogin({ email, isAutoLogin, password });
-            }
-          }}
-        >
-          <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
-              <TextInput mode="dark"
-                aria-describedby={emailValidation.errorMessage ? loginEmailErrorId : undefined}
-                aria-invalid={Boolean(emailValidation.errorMessage)}
-                aria-label="이메일 입력"
-                autoComplete="email"
-                autoCapitalize="none"
-                autoCorrect="off"
-                onBlur={emailValidation.markTouched}
-                onChange={(event) => setEmail(event.currentTarget.value)}
-                placeholder="이메일"
-                spellCheck={false}
-                state={emailValidation.errorMessage ? "error" : "default"}
-                type="email"
-                value={email}
-              />
-              <AuthValidationError
-                id={loginEmailErrorId}
-                message={emailValidation.errorMessage}
-              />
-            </div>
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
-              <div className="wrapper_loginPasswordField">
-                <TextInput mode="dark"
-                  aria-describedby={
-                    passwordValidation.errorMessage ? loginPasswordErrorId : undefined
-                  }
-                  aria-invalid={Boolean(passwordValidation.errorMessage)}
-                  aria-label="비밀번호 입력"
-                  autoComplete="current-password"
-                  onBlur={passwordValidation.markTouched}
-                  onChange={(event) => setPassword(event.currentTarget.value)}
-                  placeholder="비밀번호"
-                  state={passwordValidation.errorMessage ? "error" : "default"}
-                  type={isPasswordVisible ? "text" : "password"}
-                  value={password}
-                  hasEndAction
-                />
-                <IconButton
-                  aria-pressed={isPasswordVisible}
-                  className="btn_loginPasswordToggle"
-                  icon="eye"
-                  iconSize={12}
-                  label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  onClick={() => setIsPasswordVisible((current) => !current)}
-                />
-              </div>
-              <AuthValidationError
-                id={loginPasswordErrorId}
-                message={passwordValidation.errorMessage}
-              />
-            </div>
-            <PrimaryButtonGroup>
-        <PrimaryButton
-              className="btn_loginSubmit"
-              disabled={!isLoginReady || isSubmitting}
-
-
-              type="submit"
-
-            >
-              로그인
-            </PrimaryButton>
-      </PrimaryButtonGroup>
-            <AuthValidationError id="login-submit-error" message={loginError} />
-            <div className="wrapper_loginActions">
-              <CheckInput
-                checked={isAutoLogin}
-                role="autoLogin"
-                size="md"
-                label="자동 로그인"
-                onChange={() => setIsAutoLogin((current) => !current)}
-              />
-              <AuthTextActionButton onClick={onPasswordResetStart}>
-                비밀번호가 기억나지 않으신가요?
-              </AuthTextActionButton>
-            </div>
-          </div>
-
-          <div className="wrapper_loginSignup">
-            <AuthTextActionButton onClick={onSignup}>
-              회원가입
-            </AuthTextActionButton>
-          </div>
-        </form>
-      </div>
-      )}
-    </AuthLayout>
-  );
-}
-
-function AuthLayout({
-  ariaLabel,
-  children,
-  className,
-}: {
-  ariaLabel: string;
-  children: ReactNode;
-  className?: string;
-}) {
-  const classNames = ["container_authLayout", className]
-    .filter(Boolean)
-    .join(" ");
-
-  return (
-    <section className={classNames} aria-label={ariaLabel}>
-      {children}
-    </section>
-  );
-}
-
-type SignupAgreementKey = "age" | "terms" | "privacy" | "marketing";
-
-const signupAgreementItems: Array<{
-  id: SignupAgreementKey;
-  required: boolean;
-  title: string;
-}> = [
-  {
-    id: "age",
-    required: true,
-    title: "만 14세 이상입니다",
-  },
-  {
-    id: "terms",
-    required: true,
-    title: "서비스 이용약관 동의",
-  },
-  {
-    id: "privacy",
-    required: true,
-    title: "개인정보 수집·이용 동의",
-  },
-  {
-    id: "marketing",
-    required: false,
-    title: "광고성 정보 수신 동의",
-  },
-];
-
-const signupAgreementDetails: Record<
-  SignupAgreementKey,
-  {
-    source: string;
-    title: string;
-    sections: Array<{
-      body: string[];
-      heading: string;
-    }>;
-  }
-> = {
-  age: {
-    source: "개인정보보호위원회 아동·청소년 개인정보 보호 안내 기준",
-    title: "만 14세 이상 확인",
-    sections: [
-      {
-        heading: "확인 사항",
-        body: [
-          "NewsRoll은 별도의 법정대리인 동의 절차를 제공하기 전까지 만 14세 이상 이용자를 대상으로 회원가입을 진행합니다.",
-          "만 14세 미만 아동의 개인정보를 수집·이용하려면 법정대리인에게 필요한 사항을 알리고 동의를 받아야 합니다.",
-          "가입자는 본인이 만 14세 이상임을 확인하며, 사실과 다른 정보로 가입한 경우 서비스 이용이 제한될 수 있습니다.",
-        ],
-      },
-    ],
-  },
-  terms: {
-    source: "공정거래위원회 전자상거래 표준약관 구조 참고",
-    title: "서비스 이용약관",
-    sections: [
-      {
-        heading: "목적",
-        body: [
-          "이 약관은 NewsRoll이 제공하는 뉴스 탐색, 맞춤 추천, 댓글, 투표, 알림 등 서비스의 이용 조건과 절차를 정합니다.",
-          "회원은 이 약관에 동의한 뒤 서비스를 이용할 수 있으며, 서비스 이용 과정에서 관련 법령과 운영 정책을 준수해야 합니다.",
-        ],
-      },
-      {
-        heading: "회원 계정 및 이용 제한",
-        body: [
-          "회원은 정확한 정보를 바탕으로 계정을 생성해야 하며, 계정과 비밀번호 관리 책임은 회원에게 있습니다.",
-          "타인의 권리 침해, 서비스 운영 방해, 허위 정보 입력, 불법적 목적의 이용이 확인되면 서비스 이용이 제한될 수 있습니다.",
-        ],
-      },
-      {
-        heading: "서비스 변경",
-        body: [
-          "NewsRoll은 서비스 안정성, 운영상 필요, 법령 변경 등에 따라 기능의 일부를 변경하거나 중단할 수 있습니다.",
-          "중요한 변경 사항은 서비스 화면 또는 공지사항을 통해 안내합니다.",
-        ],
-      },
-    ],
-  },
-  privacy: {
-    source: "개인정보 포털 개인정보 수집·이용 동의 양식 예시 참고",
-    title: "개인정보 수집·이용 동의",
-    sections: [
-      {
-        heading: "수집·이용 목적",
-        body: [
-          "회원 식별, 계정 생성, 로그인, 맞춤형 뉴스 추천, 관심 카테고리 설정, 알림 설정, 문의 응대 및 서비스 품질 개선을 위해 개인정보를 이용합니다.",
-        ],
-      },
-      {
-        heading: "수집 항목",
-        body: [
-          "필수 항목은 이메일, 비밀번호, 만 14세 이상 여부, 서비스 이용 기록입니다.",
-          "선택 항목은 연령대, 관심 카테고리, 관심 언론사, 가리고 싶은 키워드, 뉴스 보기 시간, 알림 설정입니다.",
-        ],
-      },
-      {
-        heading: "보유·이용 기간 및 거부 권리",
-        body: [
-          "개인정보는 회원 탈퇴 또는 수집·이용 목적 달성 시까지 보유하며, 관계 법령에 따라 보관이 필요한 정보는 해당 기간 동안 보관합니다.",
-          "개인정보 수집·이용 동의를 거부할 수 있으나, 필수 항목에 동의하지 않으면 회원가입과 맞춤형 서비스 이용이 제한될 수 있습니다.",
-        ],
-      },
-    ],
-  },
-  marketing: {
-    source: "KISA 불법스팸 방지를 위한 정보통신망법 안내서 참고",
-    title: "광고성 정보 수신 동의",
-    sections: [
-      {
-        heading: "수신 목적 및 내용",
-        body: [
-          "NewsRoll은 이벤트, 서비스 업데이트, 맞춤 혜택, 프로모션 안내 등 광고성 정보를 이메일 또는 카카오톡 등으로 전송할 수 있습니다.",
-          "광고성 정보는 이용자의 명시적 동의가 있는 경우에만 전송하며, 서비스 이용에 필수적인 고지와는 구분됩니다.",
-        ],
-      },
-      {
-        heading: "동의 철회 및 확인",
-        body: [
-          "이용자는 언제든지 광고성 정보 수신 동의를 철회할 수 있으며, 철회 후에는 광고성 정보가 전송되지 않습니다.",
-          "광고성 정보 수신 동의 사실은 관련 법령과 안내 기준에 따라 주기적으로 확인될 수 있습니다.",
-        ],
-      },
-      {
-        heading: "선택 동의 안내",
-        body: [
-          "광고성 정보 수신 동의는 선택 사항이며, 동의하지 않아도 회원가입과 기본 서비스 이용에는 제한이 없습니다.",
-        ],
-      },
-    ],
-  },
-};
-
-type SignupAgreementDetail = (typeof signupAgreementDetails)[SignupAgreementKey];
-
-type SignupAgreementSearchTarget = {
-  agreementId: SignupAgreementKey;
-  query: string;
-  targetKey: string;
-};
-
-type SignupAgreementSearchResult = SignupAgreementSearchTarget & {
-  agreementTitle: string;
-  label: string;
-  snippet: string;
-};
-
-function normalizeAgreementSearchQuery(query: string) {
-  return query.trim().toLocaleLowerCase("ko-KR");
-}
-
-function getAgreementSearchRootId(
-  agreementId: SignupAgreementKey,
-  targetKey: string,
-) {
-  return `signup-agreement-${agreementId}-${targetKey}`;
-}
-
-function getAgreementSearchSnippet(text: string, query: string) {
-  const normalizedText = text.toLocaleLowerCase("ko-KR");
-  const normalizedQuery = normalizeAgreementSearchQuery(query);
-  const matchIndex = normalizedText.indexOf(normalizedQuery);
-
-  if (matchIndex === -1) {
-    return text;
-  }
-
-  const start = Math.max(0, matchIndex - 32);
-  const end = Math.min(text.length, matchIndex + query.trim().length + 72);
-
-  return `${start > 0 ? "..." : ""}${text.slice(start, end)}${
-    end < text.length ? "..." : ""
-  }`;
-}
-
-function createSignupAgreementSearchResults(
-  query: string,
-): SignupAgreementSearchResult[] {
-  const normalizedQuery = normalizeAgreementSearchQuery(query);
-
-  if (!normalizedQuery) {
-    return [];
-  }
-
-  return signupAgreementItems.flatMap((item) => {
-    const agreement = signupAgreementDetails[item.id];
-    const fields: Array<{ label: string; targetKey: string; text: string }> = [
-      {
-        label: "제목",
-        targetKey: "title",
-        text: agreement.title,
-      },
-      ...agreement.sections.flatMap((section, sectionIndex) => [
-        {
-          label: section.heading,
-          targetKey: `section-${sectionIndex}-heading`,
-          text: section.heading,
-        },
-        ...section.body.map((paragraph, paragraphIndex) => ({
-          label: section.heading,
-          targetKey: `section-${sectionIndex}-paragraph-${paragraphIndex}`,
-          text: paragraph,
-        })),
-      ]),
-      {
-        label: "참고 기준",
-        targetKey: "source",
-        text: agreement.source,
-      },
-    ];
-
-    return fields
-      .filter((field) =>
-        field.text.toLocaleLowerCase("ko-KR").includes(normalizedQuery),
-      )
-      .map((field) => ({
-        agreementId: item.id,
-        agreementTitle: agreement.title,
-        label: field.label,
-        query: query.trim(),
-        snippet: getAgreementSearchSnippet(field.text, query),
-        targetKey: field.targetKey,
-      }));
-  });
-}
+import {
+  createSignupAgreementSearchResults,
+  getAgreementSearchRootId,
+  signupAgreementDetails,
+  signupAgreementItems,
+  type SignupAgreementDetail,
+  type SignupAgreementKey,
+  type SignupAgreementSearchResult,
+  type SignupAgreementSearchTarget,
+} from "@/features/auth/signup-agreement-model";
+import {
+  defaultSignupCategoryIds,
+  reservedSignupNicknames,
+  signupAgeItems,
+  signupCategoryItems,
+  type SignupAgeId,
+  type SignupCategoryId,
+} from "@/features/auth/signup-profile-model";
+import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
+import { AuthLayout } from "@/features/auth/components/AuthLayout";
+import { AuthTextActionButton } from "@/features/auth/components/AuthTextActionButton";
+import { AuthValidationError } from "@/features/auth/components/AuthValidationError";
+import { SignupFieldActionButton } from "@/features/auth/components/SignupFieldActionButton";
+import { SocialLoginButtons } from "@/features/auth/components/SocialLoginButtons";
+export { LoginView } from "@/features/auth/login/LoginView";
+export { PasswordResetPasswordView } from "@/features/auth/password-reset/PasswordResetPasswordView";
+export { SignupAgeView } from "@/features/auth/signup/SignupAgeView";
+export { SignupCategoryView } from "@/features/auth/signup/SignupCategoryView";
 
 function SignupAgreementDetailView({
   agreement,
@@ -897,15 +443,20 @@ export function SignupEmailView({
   onCheckEmail: (email: string) => Promise<boolean>;
   onNext: (email: string) => void;
 }) {
-  const verificationTimerRef = useRef<number | null>(null);
   const [email, setEmail] = useState("");
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isEmailChecking, setIsEmailChecking] = useState(false);
   const [emailCheckMessage, setEmailCheckMessage] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isVerificationConfirmed, setIsVerificationConfirmed] = useState(false);
-  const [isVerificationSent, setIsVerificationSent] = useState(false);
-  const [remainingVerificationSeconds, setRemainingVerificationSeconds] = useState(0);
+  const {
+    formattedVerificationTime,
+    isVerificationConfirmed,
+    isVerificationSent,
+    resetVerificationCode,
+    setVerificationCode,
+    startVerificationCode: startVerificationTimer,
+    verificationCode,
+    confirmVerificationCode: markVerificationConfirmed,
+  } = useVerificationCodeFlow();
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
   const verificationCodeValidation = useZodFieldValidation(
     verificationCodeSchema,
@@ -916,21 +467,6 @@ export function SignupEmailView({
   const signupEmailErrorId = "signup-email-error";
   const signupEmailCheckId = "signup-email-check";
   const signupVerificationCodeErrorId = "signup-verification-code-error";
-  const formattedVerificationTime = `${Math.floor(
-    remainingVerificationSeconds / 60,
-  )}:${String(remainingVerificationSeconds % 60).padStart(2, "0")}`;
-
-  function resetVerificationCode() {
-    if (verificationTimerRef.current !== null) {
-      window.clearTimeout(verificationTimerRef.current);
-      verificationTimerRef.current = null;
-    }
-
-    setIsVerificationSent(false);
-    setIsVerificationConfirmed(false);
-    setRemainingVerificationSeconds(0);
-  }
-
   async function startVerificationCode() {
     const isAvailable = await checkEmailDuplicate();
 
@@ -938,14 +474,7 @@ export function SignupEmailView({
       return;
     }
 
-    if (verificationTimerRef.current !== null) {
-      window.clearTimeout(verificationTimerRef.current);
-    }
-
-    setVerificationCode("");
-    setIsVerificationConfirmed(false);
-    setIsVerificationSent(true);
-    setRemainingVerificationSeconds(180);
+    startVerificationTimer();
   }
 
   async function checkEmailDuplicate() {
@@ -995,41 +524,9 @@ export function SignupEmailView({
     verificationCodeValidation.markTouched();
 
     if (verificationCodeValidation.isValid) {
-      setIsVerificationConfirmed(true);
+      markVerificationConfirmed();
     }
   }
-
-  useEffect(() => {
-    if (!isVerificationSent || remainingVerificationSeconds <= 0) {
-      return undefined;
-    }
-
-    verificationTimerRef.current = window.setTimeout(() => {
-      setRemainingVerificationSeconds((current) => current - 1);
-    }, 1000);
-
-    return () => {
-      if (verificationTimerRef.current !== null) {
-        window.clearTimeout(verificationTimerRef.current);
-        verificationTimerRef.current = null;
-      }
-    };
-  }, [isVerificationSent, remainingVerificationSeconds]);
-
-  useEffect(() => {
-    if (isVerificationSent && remainingVerificationSeconds === 0) {
-      resetVerificationCode();
-    }
-  }, [isVerificationSent, remainingVerificationSeconds]);
-
-  useEffect(
-    () => () => {
-      if (verificationTimerRef.current !== null) {
-        window.clearTimeout(verificationTimerRef.current);
-      }
-    },
-    [],
-  );
 
   return (
     <AuthLayout ariaLabel="회원가입 이메일 인증">
@@ -1112,7 +609,6 @@ export function SignupEmailView({
                       onBlur={verificationCodeValidation.markTouched}
                       onChange={(event) => {
                         setVerificationCode(event.currentTarget.value);
-                        setIsVerificationConfirmed(false);
                       }}
                       placeholder="인증번호 6자리"
                       state={
@@ -1163,8 +659,6 @@ export function SignupEmailView({
   );
 }
 
-const reservedSignupNicknames = ["콩콩이", "홍길동", "관리자", "뉴스롤"];
-
 export function PasswordResetEmailView({
   onBack,
   onCheckEmail,
@@ -1174,15 +668,20 @@ export function PasswordResetEmailView({
   onCheckEmail: (email: string) => Promise<boolean>;
   onNext: (email: string) => void;
 }) {
-  const verificationTimerRef = useRef<number | null>(null);
   const [email, setEmail] = useState("");
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isEmailChecking, setIsEmailChecking] = useState(false);
   const [emailCheckMessage, setEmailCheckMessage] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isVerificationConfirmed, setIsVerificationConfirmed] = useState(false);
-  const [isVerificationSent, setIsVerificationSent] = useState(false);
-  const [remainingVerificationSeconds, setRemainingVerificationSeconds] = useState(0);
+  const {
+    formattedVerificationTime,
+    isVerificationConfirmed,
+    isVerificationSent,
+    resetVerificationCode,
+    setVerificationCode,
+    startVerificationCode: startVerificationTimer,
+    verificationCode,
+    confirmVerificationCode: markVerificationConfirmed,
+  } = useVerificationCodeFlow();
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
   const verificationCodeValidation = useZodFieldValidation(
     verificationCodeSchema,
@@ -1194,21 +693,6 @@ export function PasswordResetEmailView({
   const passwordResetEmailCheckId = "password-reset-email-check";
   const passwordResetVerificationCodeErrorId =
     "password-reset-verification-code-error";
-  const formattedVerificationTime = `${Math.floor(
-    remainingVerificationSeconds / 60,
-  )}:${String(remainingVerificationSeconds % 60).padStart(2, "0")}`;
-
-  function resetVerificationCode() {
-    if (verificationTimerRef.current !== null) {
-      window.clearTimeout(verificationTimerRef.current);
-      verificationTimerRef.current = null;
-    }
-
-    setIsVerificationSent(false);
-    setIsVerificationConfirmed(false);
-    setRemainingVerificationSeconds(0);
-  }
-
   async function startVerificationCode() {
     emailValidation.markTouched();
 
@@ -1243,14 +727,7 @@ export function PasswordResetEmailView({
       return;
     }
 
-    if (verificationTimerRef.current !== null) {
-      window.clearTimeout(verificationTimerRef.current);
-    }
-
-    setVerificationCode("");
-    setIsVerificationConfirmed(false);
-    setIsVerificationSent(true);
-    setRemainingVerificationSeconds(180);
+    startVerificationTimer();
   }
 
   function updateEmail(value: string) {
@@ -1264,41 +741,9 @@ export function PasswordResetEmailView({
     verificationCodeValidation.markTouched();
 
     if (verificationCodeValidation.isValid) {
-      setIsVerificationConfirmed(true);
+      markVerificationConfirmed();
     }
   }
-
-  useEffect(() => {
-    if (!isVerificationSent || remainingVerificationSeconds <= 0) {
-      return undefined;
-    }
-
-    verificationTimerRef.current = window.setTimeout(() => {
-      setRemainingVerificationSeconds((current) => current - 1);
-    }, 1000);
-
-    return () => {
-      if (verificationTimerRef.current !== null) {
-        window.clearTimeout(verificationTimerRef.current);
-        verificationTimerRef.current = null;
-      }
-    };
-  }, [isVerificationSent, remainingVerificationSeconds]);
-
-  useEffect(() => {
-    if (isVerificationSent && remainingVerificationSeconds === 0) {
-      resetVerificationCode();
-    }
-  }, [isVerificationSent, remainingVerificationSeconds]);
-
-  useEffect(
-    () => () => {
-      if (verificationTimerRef.current !== null) {
-        window.clearTimeout(verificationTimerRef.current);
-      }
-    },
-    [],
-  );
 
   return (
     <AuthLayout ariaLabel="비밀번호 재설정 이메일 인증">
@@ -1382,7 +827,6 @@ export function PasswordResetEmailView({
                       onBlur={verificationCodeValidation.markTouched}
                       onChange={(event) => {
                         setVerificationCode(event.currentTarget.value);
-                        setIsVerificationConfirmed(false);
                       }}
                       placeholder="인증번호 6자리"
                       state={
@@ -1424,151 +868,6 @@ export function PasswordResetEmailView({
             다음
           </PrimaryButton>
       </PrimaryButtonGroup>
-        </form>
-      </div>
-    </AuthLayout>
-  );
-}
-
-export function PasswordResetPasswordView({
-  onBack,
-  onSubmit,
-  submitError,
-}: {
-  onBack: () => void;
-  onSubmit: (input: { nextPassword: string }) => Promise<void>;
-  submitError?: string;
-}) {
-  const [nextPassword, setNextPassword] = useState("");
-  const [nextPasswordConfirm, setNextPasswordConfirm] = useState("");
-  const [isNextPasswordVisible, setIsNextPasswordVisible] = useState(false);
-  const [isNextPasswordConfirmVisible, setIsNextPasswordConfirmVisible] =
-    useState(false);
-  const nextPasswordConfirmSchema = useMemo(
-    () => createSignupPasswordConfirmSchema(nextPassword),
-    [nextPassword],
-  );
-  const nextPasswordValidation = useZodFieldValidation(
-    signupPasswordSchema,
-    nextPassword,
-  );
-  const nextPasswordConfirmValidation = useZodFieldValidation(
-    nextPasswordConfirmSchema,
-    nextPasswordConfirm,
-  );
-  const isPasswordResetReady =
-    nextPasswordValidation.isValid &&
-    nextPasswordConfirmValidation.isValid;
-  const nextPasswordErrorId = "password-reset-next-password-error";
-  const nextPasswordConfirmErrorId = "password-reset-next-password-confirm-error";
-
-  return (
-    <AuthLayout ariaLabel="새 비밀번호 설정">
-      <div className="wrapper_signupStepContent">
-        <AuthBackButton onClick={onBack} />
-        <h1 className="text_loginTitle">새 비밀번호 설정</h1>
-
-        <form
-          className="form_signupStep"
-          onSubmit={(event) => {
-            event.preventDefault();
-
-            if (isPasswordResetReady) {
-              onSubmit({
-                nextPassword,
-              });
-            }
-          }}
-        >
-          <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
-              <div className="wrapper_loginPasswordField">
-                <TextInput mode="dark"
-                  aria-describedby={
-                    nextPasswordValidation.errorMessage ? nextPasswordErrorId : undefined
-                  }
-                  aria-invalid={Boolean(nextPasswordValidation.errorMessage)}
-                  aria-label="새 비밀번호 입력"
-                  autoComplete="new-password"
-                  onBlur={nextPasswordValidation.markTouched}
-                  onChange={(event) => setNextPassword(event.currentTarget.value)}
-                  placeholder="새 비밀번호 입력"
-                  state={nextPasswordValidation.errorMessage ? "error" : "default"}
-                  type={isNextPasswordVisible ? "text" : "password"}
-                  value={nextPassword}
-                  hasEndAction
-                />
-                <IconButton
-                  aria-pressed={isNextPasswordVisible}
-                  className="btn_loginPasswordToggle"
-                  icon="eye"
-                  iconSize={12}
-                  label={
-                    isNextPasswordVisible ? "새 비밀번호 숨기기" : "새 비밀번호 보기"
-                  }
-                  onClick={() => setIsNextPasswordVisible((current) => !current)}
-                />
-              </div>
-              <AuthValidationError
-                id={nextPasswordErrorId}
-                message={nextPasswordValidation.errorMessage}
-              />
-            </div>
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
-              <div className="wrapper_loginPasswordField">
-                <TextInput mode="dark"
-                  aria-describedby={
-                    nextPasswordConfirmValidation.errorMessage
-                      ? nextPasswordConfirmErrorId
-                      : undefined
-                  }
-                  aria-invalid={Boolean(nextPasswordConfirmValidation.errorMessage)}
-                  aria-label="새 비밀번호 다시 입력"
-                  autoComplete="new-password"
-                  onBlur={nextPasswordConfirmValidation.markTouched}
-                  onChange={(event) =>
-                    setNextPasswordConfirm(event.currentTarget.value)
-                  }
-                  placeholder="새 비밀번호 다시 입력하기"
-                  state={
-                    nextPasswordConfirmValidation.errorMessage ? "error" : "default"
-                  }
-                  type={isNextPasswordConfirmVisible ? "text" : "password"}
-                  value={nextPasswordConfirm}
-                  hasEndAction
-                />
-                <IconButton
-                  aria-pressed={isNextPasswordConfirmVisible}
-                  className="btn_loginPasswordToggle"
-                  icon="eye"
-                  iconSize={12}
-                  label={
-                    isNextPasswordConfirmVisible
-                      ? "새 비밀번호 확인 숨기기"
-                      : "새 비밀번호 확인 보기"
-                  }
-                  onClick={() =>
-                    setIsNextPasswordConfirmVisible((current) => !current)
-                  }
-                />
-              </div>
-              <AuthValidationError
-                id={nextPasswordConfirmErrorId}
-                message={nextPasswordConfirmValidation.errorMessage}
-              />
-            </div>
-          </div>
-
-          <PrimaryButtonGroup>
-        <PrimaryButton
-            className="btn_signupStepNext"
-            disabled={!isPasswordResetReady}
-            type="submit"
-          >
-            비밀번호 재설정
-          </PrimaryButton>
-      </PrimaryButtonGroup>
-          <AuthValidationError id="password-reset-submit-error" message={submitError} />
         </form>
       </div>
     </AuthLayout>
@@ -1842,159 +1141,6 @@ export function SignupPasswordView({
             다음
           </PrimaryButton>
       </PrimaryButtonGroup>
-        </form>
-      </div>
-    </AuthLayout>
-  );
-}
-
-type SignupAgeId = "teens" | "twenties" | "thirties" | "forties" | "fifties" | "sixties";
-type SignupCategoryId =
-  | "politics"
-  | "economy"
-  | "society"
-  | "culture"
-  | "world"
-  | "local"
-  | "sports"
-  | "science";
-
-const signupAgeItems: Array<{ id: SignupAgeId; label: string }> = [
-  { id: "teens", label: "10대" },
-  { id: "twenties", label: "20대" },
-  { id: "thirties", label: "30대" },
-  { id: "forties", label: "40대" },
-  { id: "fifties", label: "50대" },
-  { id: "sixties", label: "60대 이상" },
-];
-
-const signupCategoryItems: Array<{ id: SignupCategoryId; label: string }> = [
-  { id: "politics", label: "정치" },
-  { id: "economy", label: "경제" },
-  { id: "society", label: "사회" },
-  { id: "culture", label: "문화" },
-  { id: "world", label: "국제" },
-  { id: "local", label: "지역" },
-  { id: "sports", label: "스포츠" },
-  { id: "science", label: "IT과학" },
-];
-const defaultSignupCategoryIds = signupCategoryItems.map((item) => item.id);
-
-export function SignupAgeView({
-  onBack,
-  onNext,
-}: {
-  onBack: () => void;
-  onNext: (ageId: SignupAgeId) => void;
-}) {
-  const [selectedAge, setSelectedAge] = useState<SignupAgeId | null>(null);
-
-  return (
-    <AuthLayout ariaLabel="나의 연령대 선택">
-      <div className="wrapper_signupStepContent">
-        <AuthBackButton onClick={onBack} />
-        <h1 className="text_loginTitle">나의 연령대 선택</h1>
-
-        <form
-          className="form_signupStep"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (selectedAge) {
-              onNext(selectedAge);
-            }
-          }}
-        >
-          <PillTabMenu
-            ariaLabel="나의 연령대 선택"
-            className="wrapper_authTabMenu wrapper_tabScroller"
-            getItemState={(id) => (selectedAge === id ? "active" : "default")}
-            items={signupAgeItems}
-            onChange={setSelectedAge}
-            role="group"
-            value={selectedAge ?? signupAgeItems[0].id}
-          />
-
-          <PrimaryButtonGroup>
-        <PrimaryButton
-            className="btn_signupStepNext"
-            disabled={!selectedAge}
-
-
-            type="submit"
-
-          >
-            다음
-          </PrimaryButton>
-      </PrimaryButtonGroup>
-        </form>
-      </div>
-    </AuthLayout>
-  );
-}
-
-export function SignupCategoryView({
-  isSubmitting = false,
-  onBack,
-  submitError,
-  onNext,
-}: {
-  isSubmitting?: boolean;
-  onBack: () => void;
-  submitError?: string;
-  onNext: (categoryIds: SignupCategoryId[]) => Promise<void> | void;
-}) {
-  const [selectedCategories, setSelectedCategories] = useState<SignupCategoryId[]>(
-    defaultSignupCategoryIds,
-  );
-  const tabValue = selectedCategories[0] ?? signupCategoryItems[0].id;
-
-  function toggleCategory(categoryId: SignupCategoryId) {
-    setSelectedCategories((current) =>
-      current.includes(categoryId)
-        ? current.filter((id) => id !== categoryId)
-        : [...current, categoryId],
-    );
-  }
-
-  return (
-    <AuthLayout ariaLabel="관심 카테고리 선택">
-      <div className="wrapper_signupStepContent">
-        <AuthBackButton onClick={onBack} />
-        <h1 className="text_loginTitle">관심 카테고리 선택</h1>
-
-        <form
-          className="form_signupStep"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (selectedCategories.length > 0 && !isSubmitting) {
-              onNext(selectedCategories);
-            }
-          }}
-        >
-          <PillTabMenu
-            ariaLabel="관심 카테고리 선택"
-            className="wrapper_authTabMenu wrapper_tabScroller"
-            getItemState={(id) => (selectedCategories.includes(id) ? "active" : "default")}
-            items={signupCategoryItems}
-            keyboardNavigation={false}
-            onChange={toggleCategory}
-            role="group"
-            value={tabValue}
-          />
-
-          <PrimaryButtonGroup>
-        <PrimaryButton
-            className="btn_signupStepNext"
-            disabled={selectedCategories.length === 0 || isSubmitting}
-
-
-            type="submit"
-
-          >
-            시작하기
-          </PrimaryButton>
-      </PrimaryButtonGroup>
-          <AuthValidationError id="signup-submit-error" message={submitError} />
         </form>
       </div>
     </AuthLayout>

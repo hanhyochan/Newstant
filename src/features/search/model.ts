@@ -1,4 +1,4 @@
-﻿import { getSearchTextParagraphs } from "@/design-system/components";
+import { getSearchTextParagraphs } from "@/design-system/components";
 
 export type SearchArticle = {
   body?: string;
@@ -189,7 +189,7 @@ export function getBodySearchResults<
   return [...newsResults, ...policyResults];
 }
 
-import type { HomeArticle, PolicyItem } from "@/features/news/NewsViews";
+import type { HomeArticle, PolicyItem } from "@/features/news/model";
 
 export type BodySearchSelection =
   | {
