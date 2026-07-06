@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.stories.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ]
+}

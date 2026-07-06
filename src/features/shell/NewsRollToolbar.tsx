@@ -12,11 +12,25 @@ import { IconButton } from "@/design-system/components";
 const notificationsUpdatedEventName = "newsroll:notifications-updated";
 const notificationPollingIntervalMs = 5000;
 
+type IdleCallbackHandle = number;
+
+type WindowWithIdleCallback = Window & {
+  requestIdleCallback?: (callback: () => void) => IdleCallbackHandle;
+  cancelIdleCallback?: (handle: IdleCallbackHandle) => void;
+};
+
 function useUnreadNotificationState(isEnabled = true) {
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
 
   useEffect(() => {
     let ignore = false;
+    let hasScheduledSync = false;
+    let idleHandle: IdleCallbackHandle | null = null;
+    let fallbackTimer: number | null = null;
+
+    function getStoredUser() {
+      return hydrateCurrentUserSession() ?? getCurrentUserSnapshot();
+    }
 
     async function loadUnreadNotifications() {
       if (!isEnabled) {
@@ -25,15 +39,13 @@ function useUnreadNotificationState(isEnabled = true) {
       }
 
       try {
-        const storedUser =
-          hydrateCurrentUserSession() ?? getCurrentUserSnapshot();
+        const storedUser = getStoredUser();
 
         if (!storedUser) {
           setHasUnreadNotifications(false);
           return;
         }
 
-        await notificationApi.syncNotifications(storedUser.id);
         const notifications = await notificationApi.getNotifications(storedUser.id);
 
         if (!ignore) {
@@ -48,22 +60,67 @@ function useUnreadNotificationState(isEnabled = true) {
       }
     }
 
+    function scheduleNotificationSync() {
+      if (!isEnabled || hasScheduledSync) {
+        return;
+      }
+
+      const storedUser = getStoredUser();
+
+      if (!storedUser) {
+        return;
+      }
+
+      hasScheduledSync = true;
+      const runSync = () => {
+        notificationApi
+          .syncNotifications(storedUser.id)
+          .then(() => loadUnreadNotifications())
+          .catch(() => undefined);
+      };
+      const idleWindow = window as WindowWithIdleCallback;
+
+      if (idleWindow.requestIdleCallback) {
+        idleHandle = idleWindow.requestIdleCallback(runSync);
+        return;
+      }
+
+      fallbackTimer = window.setTimeout(runSync, 1200);
+    }
+
     loadUnreadNotifications();
+    scheduleNotificationSync();
+
     const pollingTimer = window.setInterval(
       loadUnreadNotifications,
       notificationPollingIntervalMs,
     );
 
-    window.addEventListener("focus", loadUnreadNotifications);
-    window.addEventListener(notificationsUpdatedEventName, loadUnreadNotifications);
+    function handleFocusOrNotificationUpdate() {
+      loadUnreadNotifications();
+    }
+
+    window.addEventListener("focus", handleFocusOrNotificationUpdate);
+    window.addEventListener(
+      notificationsUpdatedEventName,
+      handleFocusOrNotificationUpdate,
+    );
 
     return () => {
+      const idleWindow = window as WindowWithIdleCallback;
+
       ignore = true;
       window.clearInterval(pollingTimer);
-      window.removeEventListener("focus", loadUnreadNotifications);
+      if (idleHandle != null && idleWindow.cancelIdleCallback) {
+        idleWindow.cancelIdleCallback(idleHandle);
+      }
+      if (fallbackTimer != null) {
+        window.clearTimeout(fallbackTimer);
+      }
+      window.removeEventListener("focus", handleFocusOrNotificationUpdate);
       window.removeEventListener(
         notificationsUpdatedEventName,
-        loadUnreadNotifications,
+        handleFocusOrNotificationUpdate,
       );
     };
   }, [isEnabled]);

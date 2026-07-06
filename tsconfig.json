@@ -30,14 +30,17 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next-dev/types/**/*.ts",
     ".next-build/types/**/*.ts",
-    ".next/types/**/*.ts",
-    ".next-e2e/types/**/*.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tests/**",
+    "**/*.stories.tsx",
+    ".next-e2e/**",
+    "storybook-static/**"
   ]
 }

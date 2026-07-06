@@ -7,9 +7,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import dynamic from "next/dynamic";
 
 import { IconButton } from "@/design-system/components";
-import { AllNewsView } from "@/features/all-news/AllNewsView";
 import {
   getNextAuthView,
   getPreviousAuthView,
@@ -26,21 +26,6 @@ import { useBlockedKeywords } from "@/app/hooks/use-blocked-keywords";
 import { useNewsHomeBootstrap } from "@/app/hooks/use-news-home-bootstrap";
 import { useNewsHomeNavigation } from "@/app/hooks/use-news-home-navigation";
 import {
-  LoginView,
-  PasswordResetEmailView,
-  PasswordResetPasswordView,
-  SignupAgeView,
-  SignupAgreementView,
-  SignupCategoryView,
-  SignupEmailView,
-  SignupNicknameView,
-  SignupPasswordView,
-} from "@/features/auth/AuthViews";
-import { HomeView } from "@/features/home/HomeView";
-import { InfoView } from "@/features/info/InfoView";
-import { MyPageView } from "@/features/my-page/MyPageView";
-import { NotificationView } from "@/features/notifications/NotificationView";
-import {
   getHomeArticleFromNews,
   type BlockedKeywordSetting,
 } from "@/features/news/model";
@@ -49,11 +34,7 @@ import type {
   BodySearchSelectionInput,
 } from "@/features/search/model";
 import { navItems, type Tab } from "@/features/shell/navigation";
-import {
-  getPolicyItemFromWelfarePolicy,
-  PolicyView,
-} from "@/features/policy/PolicyView";
-import { SearchView } from "@/features/search/SearchView";
+import { getPolicyItemFromWelfarePolicy } from "@/features/policy/model";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import {
@@ -69,6 +50,96 @@ import {
   getStoredCurrentUserSession,
   setCurrentUserSession,
 } from "@/shared/newsroll/auth/current-user";
+
+const AllNewsView = dynamic<any>(
+  () => import("@/features/all-news/AllNewsView").then((module) => module.AllNewsView),
+  { loading: () => null, ssr: false },
+);
+const HomeView = dynamic<any>(
+  () => import("@/features/home/HomeView").then((module) => module.HomeView),
+  { loading: () => null, ssr: false },
+);
+const InfoView = dynamic<any>(
+  () => import("@/features/info/InfoView").then((module) => module.InfoView),
+  { loading: () => null, ssr: false },
+);
+const MyPageView = dynamic<any>(
+  () => import("@/features/my-page/MyPageView").then((module) => module.MyPageView),
+  { loading: () => null, ssr: false },
+);
+const NotificationView = dynamic<any>(
+  () =>
+    import("@/features/notifications/NotificationView").then(
+      (module) => module.NotificationView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const PolicyView = dynamic<any>(
+  () => import("@/features/policy/PolicyView").then((module) => module.PolicyView),
+  { loading: () => null, ssr: false },
+);
+const SearchView = dynamic<any>(
+  () => import("@/features/search/SearchView").then((module) => module.SearchView),
+  { loading: () => null, ssr: false },
+);
+const LoginView = dynamic<any>(
+  () => import("@/features/auth/login/LoginView").then((module) => module.LoginView),
+  { loading: () => null, ssr: false },
+);
+const PasswordResetPasswordView = dynamic<any>(
+  () =>
+    import("@/features/auth/password-reset/PasswordResetPasswordView").then(
+      (module) => module.PasswordResetPasswordView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const SignupAgeView = dynamic<any>(
+  () =>
+    import("@/features/auth/signup/SignupAgeView").then(
+      (module) => module.SignupAgeView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const SignupCategoryView = dynamic<any>(
+  () =>
+    import("@/features/auth/signup/SignupCategoryView").then(
+      (module) => module.SignupCategoryView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const PasswordResetEmailView = dynamic<any>(
+  () =>
+    import("@/features/auth/AuthViews").then(
+      (module) => module.PasswordResetEmailView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const SignupAgreementView = dynamic<any>(
+  () =>
+    import("@/features/auth/AuthViews").then(
+      (module) => module.SignupAgreementView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const SignupEmailView = dynamic<any>(
+  () =>
+    import("@/features/auth/AuthViews").then((module) => module.SignupEmailView),
+  { loading: () => null, ssr: false },
+);
+const SignupNicknameView = dynamic<any>(
+  () =>
+    import("@/features/auth/AuthViews").then(
+      (module) => module.SignupNicknameView,
+    ),
+  { loading: () => null, ssr: false },
+);
+const SignupPasswordView = dynamic<any>(
+  () =>
+    import("@/features/auth/AuthViews").then(
+      (module) => module.SignupPasswordView,
+    ),
+  { loading: () => null, ssr: false },
+);
 
 function NewsRollSplashScreen() {
   return (
@@ -437,17 +508,24 @@ export function NewsHomeScreen() {
     [loadBlockedKeywordSettings],
   );
 
+  const warmInitialContentData = useCallback((userId = currentUserId) => {
+    void Promise.allSettled([
+      userApi.getUserPreferences(userId),
+      newsApi.getNewsList(),
+      newsApi.getRecentNewsViews(userId),
+      welfareApi.getWelfarePolicyList("all"),
+    ]);
+  }, []);
+
   const loadInitialContentData = useCallback(
     async (userId = currentUserId, options: { ignore?: () => boolean } = {}) => {
-      await Promise.allSettled([
-        loadRootSettings(userId, options),
-        userApi.getUserPreferences(userId),
-        newsApi.getNewsList(),
-        newsApi.getRecentNewsViews(userId),
-        welfareApi.getWelfarePolicyList("all"),
-      ]);
+      await loadRootSettings(userId, options);
+
+      if (!options.ignore?.()) {
+        warmInitialContentData(userId);
+      }
     },
-    [loadRootSettings],
+    [loadRootSettings, warmInitialContentData],
   );
 
   useNewsHomeBootstrap({

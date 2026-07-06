@@ -1,5 +1,6 @@
-﻿import { currentUserId } from "../auth/current-user";
+import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
+import { createSessionResourceCache } from "./cache";
 import { apiClient } from "./http-client";
 import type {
   AddArticleReactionInput,
@@ -17,26 +18,42 @@ function getNewsDetail(newsId: string) {
   return apiClient.get<News>(`/news/${newsId}`);
 }
 
-export const newsApi = {
-  async getNewsList() {
-    const [news, categories, presses] = await Promise.all([
-      apiClient.get<News[]>("/news", {
-        _sort: "publishedAt",
-        _order: "desc",
-      }),
-      apiClient.get<NewsCategory[]>("/newsCategories"),
-      apiClient.get<Press[]>("/presses"),
-    ]);
-    const categoryById = new Map(
-      categories.map((category) => [category.id, category]),
-    );
-    const pressById = new Map(presses.map((press) => [press.id, press]));
+const newsCategoriesCache = createSessionResourceCache(() =>
+  apiClient.get<NewsCategory[]>("/newsCategories"),
+);
+const pressesCache = createSessionResourceCache(() =>
+  apiClient.get<Press[]>("/presses"),
+);
+const newsListCache = createSessionResourceCache(async () => {
+  const [news, categories, presses] = await Promise.all([
+    apiClient.get<News[]>("/news", {
+      _sort: "publishedAt",
+      _order: "desc",
+    }),
+    newsCategoriesCache.get(),
+    pressesCache.get(),
+  ]);
+  const categoryById = new Map(
+    categories.map((category) => [category.id, category]),
+  );
+  const pressById = new Map(presses.map((press) => [press.id, press]));
 
-    return news.map<NewsListItem>((item) => ({
-      ...item,
-      category: categoryById.get(item.categoryId),
-      press: pressById.get(item.pressId),
-    }));
+  return news.map<NewsListItem>((item) => ({
+    ...item,
+    category: categoryById.get(item.categoryId),
+    press: pressById.get(item.pressId),
+  }));
+});
+
+export function invalidateNewsCache() {
+  newsListCache.clear();
+  newsCategoriesCache.clear();
+  pressesCache.clear();
+}
+
+export const newsApi = {
+  getNewsList() {
+    return newsListCache.get();
   },
   getNewsDetail,
   async getNewsReaction(newsId: string, userId = currentUserId) {

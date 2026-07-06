@@ -10,7 +10,10 @@
     "lint": "next lint",
     "storybook": "set \"__NEXT_PRIVATE_RENDER_WORKER=1\" && storybook dev -p 6006",
     "build-storybook": "set \"__NEXT_PRIVATE_RENDER_WORKER=1\" && storybook build",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "typecheck:e2e": "tsc -p tsconfig.e2e.json --noEmit",
+    "typecheck:storybook": "tsc -p tsconfig.storybook.json --noEmit"
   },
   "dependencies": {
     "next": "14.2.26",
