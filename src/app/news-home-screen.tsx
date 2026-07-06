@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import dynamic from "next/dynamic";
+import styles from "./styles/newsroll.module.css";
 
 import { IconButton } from "@/design-system/components";
 import {
@@ -875,7 +876,7 @@ export function NewsHomeScreen() {
 
   if (isSplashVisible) {
     return (
-      <main className="screen screen_splash">
+      <main className={`${styles.newsrollScope} screen screen_splash`}>
         <div className="phone" aria-label="NewsRoll">
           <NewsRollSplashScreen />
         </div>
@@ -890,7 +891,7 @@ export function NewsHomeScreen() {
 
   return (
     <main
-      className={`screen${effectiveView === "home" ? " screen_home" : ""}${
+      className={`${styles.newsrollScope} screen${effectiveView === "home" ? " screen_home" : ""}${
         effectiveView === "all" ? " screen_all" : ""
       }${
         effectiveView === "login" ||

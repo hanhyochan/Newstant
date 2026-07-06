@@ -1,0 +1,505 @@
+/* Global design tokens shared by reset.css and NewsRoll CSS modules. */
+
+:root {
+    --font-sans:
+        var(--font-pretendard, 'Pretendard Variable'), 'Apple SD Gothic Neo', 'Malgun Gothic',
+        sans-serif;
+        /* color: atomic / common */
+        --color-common-0: var(--color-cool-neutral-15);
+        --color-common-100: #ffffff;
+
+        /* color: atomic / neutral */
+        --color-neutral-0: var(--color-cool-neutral-15);
+        --color-neutral-5: #0f0f0f;
+        --color-neutral-10: #171717;
+        --color-neutral-15: #1c1c1c;
+        --color-neutral-20: #2a2a2a;
+        --color-neutral-22: #303030;
+        --color-neutral-30: #474747;
+        --color-neutral-40: #5c5c5c;
+        --color-neutral-50: #737373;
+        --color-neutral-60: #8a8a8a;
+        --color-neutral-70: #9b9b9b;
+        --color-neutral-80: #b0b0b0;
+        --color-neutral-90: #c4c4c4;
+        --color-neutral-95: #dcdcdc;
+        --color-neutral-97: #f0f0f0;
+        --color-neutral-99: #f7f7f7;
+        --color-neutral-100: #ffffff;
+
+        /* color: atomic / cool neutral */
+        --color-cool-neutral-0: #000000;
+        --color-cool-neutral-5: #0f0f10;
+        --color-cool-neutral-7: #141415;
+        --color-cool-neutral-10: #171719;
+        --color-cool-neutral-15: #1b1c1e;
+        --color-cool-neutral-17: #212225;
+        --color-cool-neutral-20: #292a2d;
+        --color-cool-neutral-22: #2e2f33;
+        --color-cool-neutral-23: #333438;
+        --color-cool-neutral-25: #37383c;
+        --color-cool-neutral-30: #46474c;
+        --color-cool-neutral-40: #5a5c63;
+        --color-cool-neutral-50: #70737c;
+        --color-cool-neutral-60: #878a93;
+        --color-cool-neutral-70: #989ba2;
+        --color-cool-neutral-80: #aeb0b6;
+        --color-cool-neutral-90: #c2c4c8;
+        --color-cool-neutral-95: #dbdcdf;
+        --color-cool-neutral-96: #e1e2e4;
+        --color-cool-neutral-97: #eaebec;
+        --color-cool-neutral-98: #f4f4f5;
+        --color-cool-neutral-99: #f7f7f8;
+        --color-cool-neutral-100: #ffffff;
+
+        /* color: atomic / blue */
+        --color-blue-0: #000000;
+        --color-blue-10: #001536;
+        --color-blue-20: #002966;
+        --color-blue-30: #003e9c;
+        --color-blue-40: #0054d1;
+        --color-blue-45: #005eeb;
+        --color-blue-50: #0066ff;
+        --color-blue-55: #1a75ff;
+        --color-blue-60: #3385ff;
+        --color-blue-65: #4f95ff;
+        --color-blue-70: #69a5ff;
+        --color-blue-80: #9ec5ff;
+        --color-blue-90: #c9defe;
+        --color-blue-95: #eaf2fe;
+        --color-blue-99: #f7fbff;
+        --color-blue-100: #ffffff;
+
+        /* color: atomic / red */
+        --color-red-0: #000000;
+        --color-red-10: #3b0101;
+        --color-red-20: #730303;
+        --color-red-30: #b00c0c;
+        --color-red-40: #e52222;
+        --color-red-50: #ff4242;
+        --color-red-60: #ff6363;
+        --color-red-70: #ff8c8c;
+        --color-red-80: #ffb5b5;
+        --color-red-90: #fed5d5;
+        --color-red-95: #feecec;
+        --color-red-99: #fffafa;
+        --color-red-100: #ffffff;
+
+        /* color: atomic / red orange */
+        --color-red-orange-0: #000000;
+        --color-red-orange-10: #290f00;
+        --color-red-orange-20: #592100;
+        --color-red-orange-30: #913500;
+        --color-red-orange-40: #c94a00;
+        --color-red-orange-48: #f55a00;
+        --color-red-orange-50: #ff5e00;
+        --color-red-orange-60: #ff7b2e;
+        --color-red-orange-70: #ff9b61;
+        --color-red-orange-80: #ffbd96;
+        --color-red-orange-90: #fed9c4;
+        --color-red-orange-95: #feeee5;
+        --color-red-orange-99: #fffaf7;
+        --color-red-orange-100: #ffffff;
+
+        /* color: atomic / orange */
+        --color-orange-0: #000000;
+        --color-orange-10: #361e00;
+        --color-orange-20: #663a00;
+        --color-orange-30: #9c5800;
+        --color-orange-39: #d17600;
+        --color-orange-40: #d47800;
+        --color-orange-50: #ff9200;
+        --color-orange-60: #ffa938;
+        --color-orange-70: #ffc06e;
+        --color-orange-80: #ffd49c;
+        --color-orange-90: #fee6c6;
+        --color-orange-95: #fef4e6;
+        --color-orange-99: #fffcf7;
+        --color-orange-100: #ffffff;
+
+        /* color: atomic / yellow */
+        --color-yellow-0: #000000;
+        --color-yellow-10: #666600;
+        --color-yellow-20: #999900;
+        --color-yellow-30: #cccc00;
+        --color-yellow-40: #e6e600;
+        --color-yellow-50: #ffff00;
+        --color-yellow-60: #ffff33;
+        --color-yellow-70: #ffff66;
+        --color-yellow-80: #ffff99;
+        --color-yellow-90: #ffffcc;
+        --color-yellow-100: #ffffff;
+
+        /* color: atomic / green */
+        --color-green-0: #000000;
+        --color-green-10: #00240c;
+        --color-green-20: #004517;
+        --color-green-30: #006e25;
+        --color-green-40: #009632;
+        --color-green-50: #00bf40;
+        --color-green-60: #1ed45a;
+        --color-green-70: #49e57d;
+        --color-green-80: #7df5a5;
+        --color-green-90: #acfcc7;
+        --color-green-95: #d9ffe6;
+        --color-green-99: #f2fff6;
+        --color-green-100: #ffffff;
+
+        /* color: atomic / lime */
+        --color-lime-0: #000000;
+        --color-lime-10: #112900;
+        --color-lime-20: #225200;
+        --color-lime-30: #347d00;
+        --color-lime-37: #429e00;
+        --color-lime-40: #48ad00;
+        --color-lime-50: #58cf04;
+        --color-lime-60: #6be016;
+        --color-lime-70: #88f03e;
+        --color-lime-80: #aef779;
+        --color-lime-90: #ccfca9;
+        --color-lime-95: #e6ffd4;
+        --color-lime-99: #f8fff2;
+        --color-lime-100: #ffffff;
+
+        /* color: atomic / cyan */
+        --color-cyan-0: #000000;
+        --color-cyan-10: #00252b;
+        --color-cyan-20: #004854;
+        --color-cyan-30: #006f82;
+        --color-cyan-40: #0098b2;
+        --color-cyan-50: #00bdde;
+        --color-cyan-60: #28d0ed;
+        --color-cyan-70: #57dff7;
+        --color-cyan-80: #8aedff;
+        --color-cyan-90: #b5f4ff;
+        --color-cyan-95: #defaff;
+        --color-cyan-99: #f7feff;
+        --color-cyan-100: #ffffff;
+
+        /* color: atomic / light blue */
+        --color-light-blue-0: #000000;
+        --color-light-blue-10: #002130;
+        --color-light-blue-20: #004261;
+        --color-light-blue-30: #006796;
+        --color-light-blue-40: #008dcf;
+        --color-light-blue-50: #00aeff;
+        --color-light-blue-60: #3dc2ff;
+        --color-light-blue-70: #70d2ff;
+        --color-light-blue-80: #a1e1ff;
+        --color-light-blue-90: #c4ecfe;
+        --color-light-blue-95: #e5f6fe;
+        --color-light-blue-99: #f7fdff;
+        --color-light-blue-100: #ffffff;
+
+        /* color: atomic / violet */
+        --color-violet-0: #000000;
+        --color-violet-10: #11024d;
+        --color-violet-20: #23098f;
+        --color-violet-30: #3a16c9;
+        --color-violet-40: #4f29e5;
+        --color-violet-45: #5b37ed;
+        --color-violet-50: #6541f2;
+        --color-violet-60: #7d5ef7;
+        --color-violet-70: #9e86fc;
+        --color-violet-80: #c0b0ff;
+        --color-violet-90: #dbd3fe;
+        --color-violet-95: #f0ecfe;
+        --color-violet-99: #fbfaff;
+        --color-violet-100: #ffffff;
+
+        /* color: atomic / purple */
+        --color-purple-0: #000000;
+        --color-purple-10: #290247;
+        --color-purple-20: #580a7d;
+        --color-purple-30: #861cb8;
+        --color-purple-40: #ad36e3;
+        --color-purple-50: #cb59ff;
+        --color-purple-60: #d478ff;
+        --color-purple-70: #de96ff;
+        --color-purple-80: #e9baff;
+        --color-purple-90: #f2d6ff;
+        --color-purple-95: #f9edff;
+        --color-purple-99: #fefbff;
+        --color-purple-100: #ffffff;
+
+        /* color: atomic / pink */
+        --color-pink-0: #000000;
+        --color-pink-10: #3d0133;
+        --color-pink-20: #730560;
+        --color-pink-30: #a81690;
+        --color-pink-40: #d331b8;
+        --color-pink-46: #e846cd;
+        --color-pink-50: #f553da;
+        --color-pink-60: #fa73e3;
+        --color-pink-70: #ff94ed;
+        --color-pink-80: #ffb8f3;
+        --color-pink-90: #fed3f7;
+        --color-pink-95: #feecfb;
+        --color-pink-99: #fffafe;
+        --color-pink-100: #ffffff;
+
+        /* color: semantic / accent */
+        --color-accent-background-red-orange: #ff5e00;
+        --color-accent-foreground-red-orange: #f55a00;
+        --color-accent-foreground-red: #e52222;
+        --color-accent-foreground-orange: #d17600;
+        --color-accent-background-lime: #58cf04;
+        --color-accent-foreground-lime: #429e00;
+        --color-accent-foreground-green: #009632;
+        --color-accent-background-cyan: #00bdde;
+        --color-accent-foreground-cyan: #0098b2;
+        --color-accent-background-light-blue: #00aeff;
+        --color-accent-foreground-light-blue: #008dcf;
+        --color-accent-foreground-blue: #005eeb;
+        --color-accent-background-violet: #6541f2;
+        --color-accent-foreground-violet: #5b37ed;
+        --color-accent-background-purple: #cb59ff;
+        --color-accent-foreground-purple: #ad36e3;
+        --color-accent-background-pink: #f553da;
+        --color-accent-foreground-pink: #e846cd;
+
+        /* color: semantic / background */
+        --color-background-elevated-alternative: #f7f7f8;
+        --color-background-elevated-normal: #ffffff;
+        --color-background-normal-alternative: #f7f7f8;
+        --color-background-normal-normal: #ffffff;
+        --color-background-transparent-alternative: rgb(255 255 255 / 28%);
+        --color-background-transparent-strong: rgb(255 255 255 / 16%);
+        --color-background-transparent-normal: rgb(255 255 255 / 8%);
+
+        /* color: semantic / fill */
+        --color-fill-alternative: rgb(112 115 124 / 5%);
+        --color-fill-normal: rgb(112 115 124 / 8%);
+        --color-fill-strong: rgb(112 115 124 / 16%);
+
+        /* color: semantic / interaction */
+        --color-interaction-disable: #f4f4f5;
+        --color-interaction-inactive: #989ba2;
+
+        /* color: semantic / inverse */
+        --color-inverse-background: #1b1c1e;
+        --color-inverse-label: #f7f7f8;
+        --color-inverse-primary: #3385ff;
+
+        /* color: semantic / label */
+        --color-label-alternative: rgb(55 56 60 / 61%);
+        --color-label-assistive: rgb(55 56 60 / 28%);
+        --color-label-disable: rgb(55 56 60 / 16%);
+        --color-label-neutral: rgb(46 47 51 / 88%);
+        --color-label-normal: #171719;
+
+        /* app theme aliases */
+        --app-surface: var(--color-common-100);
+        --app-surface-muted: var(--color-cool-neutral-98);
+        --app-text: var(--color-cool-neutral-15);
+        --app-text-muted: var(--color-cool-neutral-50);
+        --app-border: var(--color-cool-neutral-96);
+        --app-control-surface: var(--color-common-100);
+        --app-input-surface: var(--color-background-elevated-normal);
+        --app-input-text: var(--color-label-normal);
+        --app-input-border: var(--color-line-normal-normal);
+
+        /* color: semantic / line */
+        --color-line-normal-alternative: rgb(112 115 124 / 8%);
+        --color-line-normal-neutral: rgb(112 115 124 / 16%);
+        --color-line-normal-normal: rgb(112 115 124 / 22%);
+        --color-line-normal-strong: rgb(112 115 124 / 52%);
+        --color-line-solid-0: #000000;
+        --color-line-solid-10: #1a0f26;
+        --color-line-solid-20: #34204c;
+        --color-line-solid-alternative: #f4f4f5;
+        --color-line-solid-neutral: #eaebec;
+        --color-line-solid-normal: #e1e2e4;
+        --color-line-solid-strong: #aeb0b6;
+
+        /* color: semantic / material */
+        --color-material-dimmer: rgb(23 23 25 / 52%);
+
+        /* color: semantic / static */
+        --color-static-black: #000000;
+        --color-static-white: #ffffff;
+
+        /* color: semantic / status */
+        --color-status-cautionary: #ff9200;
+        --color-status-negative: #ff4242;
+        --color-status-positive: #00bf40;
+
+        /* color: shadow */
+        --color-alpha-shadow1: rgb(0 0 0 / 5%);
+        --color-alpha-shadow2: rgb(0 0 0 / 8%);
+        --color-alpha-shadow3: rgb(0 0 0 / 12%);
+        --color-alpha-shadow4: rgb(0 0 0 / 16%);
+        --color-alpha-shadow5: rgb(0 0 0 / 18%);
+
+        /* color: opacity */
+        --color-opacity-0: #000000;
+        --color-opacity-0-2: #000000;
+        --color-opacity-0-3: #000000;
+        --color-opacity-0-4: #000000;
+        --color-opacity-0-5: #000000;
+        --color-opacity-0-6: #000000;
+        --color-opacity-0-7: #000000;
+
+        /* opacity */
+        --opacity-0: 0;
+        --opacity-5: 5%;
+        --opacity-8: 8%;
+        --opacity-12: 12%;
+        --opacity-16: 16%;
+        --opacity-22: 22%;
+        --opacity-28: 28%;
+        --opacity-35: 35%;
+        --opacity-43: 43%;
+        --opacity-52: 52%;
+        --opacity-61: 61%;
+        --opacity-74: 74%;
+        --opacity-88: 88%;
+        --opacity-97: 97%;
+        --opacity-100: 100%;
+
+        /* custom brand colors */
+        --color-newsroll-purple-0: #000000;
+        --color-newsroll-purple-10: #0d0026;
+        --color-newsroll-purple-20: #1a004c;
+        --color-newsroll-purple-30: #4f258f;
+        --color-newsroll-purple-40: #8360d4;
+        --color-newsroll-purple-50: #ba96ff;
+        --color-newsroll-purple-60: #c8abff;
+        --color-newsroll-purple-70: #d6c0ff;
+        --color-newsroll-purple-80: #e3d5ff;
+        --color-newsroll-purple-90: #f1eaff;
+        --color-newsroll-purple-95: #f8f5ff;
+        --color-newsroll-purple-99: #fefcff;
+        --color-newsroll-purple-100: #ffffff;
+        /* spacing: base */
+        --spacing-0: 0;
+
+        /* spacing: padding / horizontal */
+        --spacing-padding-horizontal-4: 4px;
+        --spacing-padding-horizontal-12: 12px;
+        --spacing-padding-horizontal-16: 16px;
+        --spacing-padding-horizontal-24: 24px;
+        --spacing-padding-horizontal-32: 32px;
+        --spacing-padding-horizontal-40: 40px;
+        --spacing-padding-horizontal-60: 60px;
+
+        /* spacing: padding / vertical */
+        --spacing-padding-vertical-4: 4px;
+        --spacing-padding-vertical-8: 8px;
+        --spacing-padding-vertical-12: 12px;
+        --spacing-padding-vertical-16: 16px;
+        --spacing-padding-vertical-24: 24px;
+        --spacing-padding-vertical-32: 32px;
+        --spacing-padding-vertical-40: 40px;
+        --spacing-padding-vertical-48: 48px;
+        --spacing-padding-vertical-60: 60px;
+
+        /* spacing: gap / horizontal */
+        --spacing-gap-horizontal-4: 4px;
+        --spacing-gap-horizontal-8: 8px;
+        --spacing-gap-horizontal-16: 16px;
+        --spacing-gap-horizontal-20: 20px;
+        --spacing-gap-horizontal-24: 24px;
+        --spacing-gap-horizontal-32: 32px;
+        --spacing-gap-horizontal-40: 40px;
+        --spacing-gap-horizontal-60: 60px;
+
+        /* spacing: gap / vertical */
+        --spacing-gap-vertical-4: 4px;
+        --spacing-gap-vertical-8: 8px;
+        --spacing-gap-vertical-12: 12px;
+        --spacing-gap-vertical-16: 16px;
+        --spacing-gap-vertical-20: 20px;
+        --spacing-gap-vertical-24: 24px;
+        --spacing-gap-vertical-32: 32px;
+        --spacing-gap-vertical-40: 40px;
+        --spacing-gap-vertical-60: 60px;
+        /* size */
+        --size-44: 44px;
+        --size-52: 52px;
+        --size-72: 72px;
+        --size-112: 112px;
+        --size-320: 320px;
+
+        /* radius */
+        --radius-0: 0;
+        --radius-2: 2px;
+        --radius-8: 8px;
+        --radius-16: 16px;
+        --radius-20: 20px;
+        --radius-24: 24px;
+        --radius-32: 32px;
+        --radius-40: 40px;
+        --radius-full: 9999px;
+
+        /* border */
+        --border-0-5: 0.5px;
+        --border-1: 1px;
+        --border-2: 2px;
+        --border-3: 3px;
+        --newsroll-divider-color: var(--color-cool-neutral-96);
+        --newsroll-divider-thickness: var(--newsroll-main-border-width, var(--border-1));
+        --newsroll-chevron-size: 8px;
+        --newsroll-chevron-transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+
+        /* shadow: position */
+        --shadow-y-3: 8px;
+        --shadow-blur-3: 16px;
+        --shadow-y-4: 16px;
+        --shadow-blur-4: 24px;
+
+        /* shadow: preset */
+        --shadow-1: 0 1px 2px 0 var(--color-alpha-shadow1, rgba(0, 0, 0, 0.05));
+        --shadow-2:
+            0 0 2px 0 var(--color-alpha-shadow1, rgba(0, 0, 0, 0.05)),
+            0 4px 8px 0 var(--color-alpha-shadow2, rgba(0, 0, 0, 0.08));
+        --shadow-3:
+            0 0 2px 0 var(--color-alpha-shadow2, rgba(0, 0, 0, 0.08)),
+            0 var(--shadow-y-3, 8px) var(--shadow-blur-3, 16px) 0
+                var(--color-alpha-shadow3, rgba(0, 0, 0, 0.12));
+        --shadow-4:
+            0 0 2px 0 var(--color-alpha-shadow2, rgba(0, 0, 0, 0.08)),
+            0 var(--shadow-y-4, 16px) var(--shadow-blur-4, 24px) 0
+                var(--color-alpha-shadow3, rgba(0, 0, 0, 0.12));
+        /* typography: font size */
+        --font-size-10: 10px;
+        --font-size-11: 11px;
+        --font-size-12: 12px;
+        --font-size-14: 14px;
+        --font-size-15: 15px;
+        --font-size-16: 16px;
+        --font-size-18: 18px;
+        --font-size-fixed-16: 16px;
+        --font-size-fixed-18: 18px;
+        --font-size-20: 20px;
+        --font-size-24: 24px;
+        --font-size-28: 28px;
+        --font-size-32: 32px;
+        --font-size-40: 40px;
+        --font-size-48: 48px;
+        --font-size-52: 52px;
+        --font-size-60: 60px;
+
+        /* typography: font weight */
+        --font-weight-300: 300;
+        --font-weight-400: 400;
+        --font-weight-500: 500;
+        --font-weight-600: 600;
+        --font-weight-700: 700;
+
+        /* typography: line height */
+        --line-height-16: 16px;
+        --line-height-20: 20px;
+        --line-height-24: 24px;
+        --line-height-fixed-20: 20px;
+        --line-height-fixed-26: 26px;
+        --line-height-32: 32px;
+        --line-height-40: 40px;
+        --line-height-44: 44px;
+        --line-height-48: 48px;
+        --line-height-60: 60px;
+        --line-height-72: 72px;
+        --line-height-90: 90px;
+  --newsroll-max-width: 768px;
+  --newsroll-shadow-card: 3px 3px 4px var(--color-alpha-shadow3);
+}

@@ -1,12 +1,20 @@
+import React from "react";
 import type { Preview } from "@storybook/react";
 
+import "../src/app/styles/tokens.css";
 import "../src/app/styles/reset.css";
-import "../src/app/styles/appearance.css";
-import "../src/app/styles/common-layout.css";
-import "../src/app/styles/components.css";
+import styles from "../src/app/styles/newsroll.module.css";
 import "../src/app/styles/utilities.css";
 
 const preview: Preview = {
+  decorators: [
+    (Story) =>
+      React.createElement(
+        "div",
+        { className: styles.newsrollScope },
+        React.createElement(Story),
+      ),
+  ],
   parameters: {
     backgrounds: {
       default: "neutral-95",

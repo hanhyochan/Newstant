@@ -1,0 +1,4870 @@
+/* From src/app/styles/the appearance section
+ *//* --------------------------------------------------------------------------
+ * Foundation Tokens
+ * --------------------------------------------------------------------------
+ * Kept first because all later managed CSS files use
+ * these tokens, reset rules, and icon masks.
+ */.newsrollScope :global(.all_breaking_label),
+.newsrollScope :global(.text_infoHeaderTitle),
+.newsrollScope :global(.text_panelHeaderTitle) {
+            color: var(--color-common-100);
+            font-size: var(--font-size-18);
+            font-weight: var(--font-weight-500);
+            line-height: var(--line-height-24);
+        }.newsrollScope :global(.btn_moreAction) {
+  border-radius: var(--radius-8);
+            color: var(--color-cool-neutral-15);
+            background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+        }.newsrollScope :global(.icon_moreActionChevron) {
+            border: solid currentColor;
+            border-width: 0 var(--border-1) var(--border-1) 0;
+            transform: rotate(45deg) translateY(-2px);
+            transition: var(--newsroll-chevron-transition);
+        }.newsrollScope :global(.all_panel) {
+  border-radius: var(--radius-20);
+            color: var(--color-cool-neutral-15);
+            background: var(--color-background-elevated-normal);
+  box-shadow: var(--newsroll-shadow-card);
+        }.newsrollScope :global(.text_sectionTitle),
+.newsrollScope :global(.list_detailDefinition dt),
+.newsrollScope :global(.text_mySectionTitle),
+.newsrollScope :global(.text_myTimeSectionLabel),
+.newsrollScope :global(.text_infoFieldLabel) {
+            color: var(--app-text);
+            font-size: var(--font-size-fixed-16);
+            font-weight: var(--font-weight-600);
+            line-height: var(--line-height-fixed-20);
+        }.newsrollScope :global(.text_sectionTitle strong) {
+            font-weight: inherit;
+        }.newsrollScope :global(.all_category_tabs button),
+.newsrollScope :global(.category_chip) {
+            border: 0;
+            border-radius: var(--radius-full);
+            color: var(--color-cool-neutral-15);
+            background: var(--color-neutral-95);
+            font-size: var(--font-size-14);
+            font-weight: var(--font-weight-500);
+            line-height: var(--line-height-20);
+        }.newsrollScope :global(.all_pressHeadline_logo),
+.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_logo) {
+            border-radius: var(--radius-full);
+            background: var(--color-cool-neutral-96);
+        }.newsrollScope :global(.all_press_panel .btn_moreAction) {
+  transform: none;
+  border: var(--border-1) solid var(--color-cool-neutral-96);
+  color: var(--color-cool-neutral-50);
+  background: var(--color-common-100);
+        }.newsrollScope :global(.all_category_tabs button) {
+  border: var(--border-1) solid var(--color-neutral-95);
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+        }/* typography: display */.newsrollScope :global(.type-display_1) {
+        font-size: var(--font-size-60);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-90);
+    }.newsrollScope :global(.type-display_2) {
+        font-size: var(--font-size-48);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-72);
+    }.newsrollScope :global(.type-display_3) {
+        font-size: var(--font-size-40);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-60);
+    }/* typography: headline */.newsrollScope :global(.type-headline_1) {
+        font-size: var(--font-size-32);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-48);
+    }.newsrollScope :global(.type-headline_2) {
+        font-size: var(--font-size-28);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-44);
+    }.newsrollScope :global(.type-headline_3),
+.newsrollScope :global(.metric_line span) {
+        font-size: var(--font-size-24);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-40);
+    }/* typography: title */.newsrollScope :global(.type-title_1) {
+        font-size: var(--font-size-20);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-40);
+    }.newsrollScope :global(.type-title_2) {
+        font-size: var(--font-size-18);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-32);
+    }/* typography: body */.newsrollScope :global(.type-body_1) {
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-24);
+    }.newsrollScope :global(.type-body_2) {
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-24);
+    }/* typography: label */.newsrollScope :global(.type-label_1) {
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }/* typography: caption */.newsrollScope :global(.type-caption_1) {
+        font-size: var(--font-size-12);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }.newsrollScope :global(.type-caption_2) {
+        font-size: var(--font-size-11);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }.newsrollScope :global(.type-caption_3) {
+        font-size: var(--font-size-10);
+        font-weight: var(--font-weight-500);
+            line-height: var(--line-height-24);
+    }.newsrollScope:global(.screen) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-20);
+  --font-size-13: 13px;
+    --newsroll-max-width: 430px;
+}.newsrollScope :global(.phone),
+.newsrollScope:global(.screen_splash),
+.newsrollScope:global(.screen_splash .phone),
+.newsrollScope :global(.search_top),
+.newsrollScope:global(.screen_login),
+.newsrollScope:global(.screen_login .phone),
+.newsrollScope:global(.screen),
+.newsrollScope:global(.screen_all .phone),
+.newsrollScope :global(.header),
+.newsrollScope :global(.policy_screen),
+.newsrollScope :global(.container_myScreen),
+.newsrollScope :global(.info_screen),
+.newsrollScope :global(.search_page),
+.newsrollScope :global(.container_newsrollSplash) {
+  background: var(--color-newsroll-purple-20);
+}.newsrollScope :global(.box_newsrollSplashLogo) {
+  animation: newsrollSplashBounce 1.15s cubic-bezier(0.34, 1.56, 0.64, 1)
+    infinite;
+  filter: drop-shadow(0 18px 18px rgb(78 39 132 / 18%));
+  transform-origin: center bottom;
+  will-change: transform;
+}@keyframes newsrollSplashBounce {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+  }
+
+  18% {
+    transform: translateY(0) scaleX(1.06) scaleY(0.94);
+  }
+
+  46% {
+    transform: translateY(-28px) scaleX(0.96) scaleY(1.05);
+  }
+
+  64% {
+    transform: translateY(0) scaleX(1.04) scaleY(0.96);
+  }
+
+  78% {
+    transform: translateY(-8px) scaleX(0.99) scaleY(1.02);
+  }
+}.newsrollScope :global(.text_size_button) {
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+  appearance: none;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--color-common-100);
+}.newsrollScope :global(.text_size_button strong) {
+  font-size: var(--font-size-20);
+  line-height: var(--line-height-40);
+}.newsrollScope :global(.toolbar_icon),
+.newsrollScope :global(.header),
+.newsrollScope :global(.search_close),
+.newsrollScope :global(.text_loginTitle),
+.newsrollScope :global(.headerTop .toolbar),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'] strong),
+.newsrollScope:global(.dark .btn_articleGuideOption[data-variant='binary'] .text_articleGuideOption),
+.newsrollScope:global(.dark .btn_articleGuideOption[data-variant='stacked'] .text_articleGuideOption),
+.newsrollScope:global(.dark .noticeCardLink_notificationRead .text_noticeCardTitle),
+.newsrollScope :global(.container_authLayout .btn_loginPasswordToggle),
+.newsrollScope:global(.dark .wrapper_articleActions .btn_iconButton[data-variant="articleTool"] > :is(.icon_share, .icon_bookmark)),
+.newsrollScope:global(.dark .container_articleCard .text_articleBody),
+.newsrollScope:global(.dark .container_articleCard .wrapper_articleSource),
+.newsrollScope:global(.dark .container_articleCard .text_articlePublisherName),
+.newsrollScope:global(.dark .container_articleCard .text_articleReporter),
+.newsrollScope :global(.container_myScreen) {
+  color: var(--color-common-100);
+}.newsrollScope :global(.greeting) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-18);
+  line-height: var(--line-height-32);
+}.newsrollScope :global(.greeting strong) {
+  font-weight: var(--font-weight-700);
+}.newsrollScope :global(.metric) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-24);
+  line-height: var(--line-height-40);
+}.newsrollScope :global(.metric_line strong) {
+  color: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-60);
+}.newsrollScope :global(.breaking_card) {
+  border-radius: var(--radius-20);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.breaking_icon) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: var(--color-common-0);
+}.newsrollScope :global(.feed),
+.newsrollScope :global(.info_sheet) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.article_card) {
+  border-radius: var(--radius-20);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-2);
+}.newsrollScope :global(.category_society) {
+  color: var(--color-common-100);
+  background: var(--color-orange-50);
+}.newsrollScope :global(.category_culture) {
+  color: var(--color-common-100);
+  background: var(--color-red-orange-40);
+}.newsrollScope :global(.category_tech) {
+  color: var(--color-common-100);
+  background: var(--color-red-orange-30);
+}.newsrollScope :global(.article_title) {
+  color: inherit;
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+}.newsrollScope :global(.article_date) {
+  color: var(--color-label-alternative);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.article_actions) {
+  color: var(--color-label-assistive);
+}.newsrollScope :global(.article_media) {
+  border-radius: var(--radius-8);
+  background: var(--color-fill-normal);
+}.newsrollScope :global(.article_media img) {
+  object-fit: cover;
+}.newsrollScope :global(.article_media span) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.reaction_summary) {
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-2);
+}.newsrollScope :global(.reaction_item) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+  font-weight: var(--font-weight-500);
+}.newsrollScope :global(.reaction_like) {
+  color: var(--color-red-40);
+}.newsrollScope :global(.reaction_dislike) {
+  color: var(--color-blue-40);
+}.newsrollScope :global(.vote_dot) {
+  border: var(--border-1) solid var(--color-line-normal-normal);
+  border-radius: var(--radius-full);
+}.newsrollScope :global(.bottom_nav) {
+  transform: translateX(-50%);
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
+  background: var(--color-background-elevated-normal);
+  pointer-events: auto;
+}.newsrollScope :global(.badge) {
+  color: var(--color-common-100);
+  background: var(--color-newsroll-purple-50);
+}.newsrollScope :global(.badge_small) {
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-16);
+}.newsrollScope :global(.badge_medium) {
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.badge_outline) {
+  border: var(--border-1) solid var(--color-newsroll-purple-50);
+  color: var(--color-newsroll-purple-50);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.badge_gray_line_outline) {
+  border: var(--border-1) solid var(--color-line-normal-neutral);
+  color: var(--color-label-normal);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.badge_square),
+.newsrollScope :global(.card_square),
+.newsrollScope :global(.table_wrap_square) {
+  border-radius: 0;
+}.newsrollScope :global(.badge_rounded),
+.newsrollScope :global(.card_rounded),
+.newsrollScope :global(.table_wrap_rounded) {
+  border-radius: var(--radius-8);
+}.newsrollScope :global(.badge_full),
+.newsrollScope :global(.card_full),
+.newsrollScope :global(.table_wrap_full) {
+  border-radius: var(--radius-full);
+}.newsrollScope :global(.card) {
+  box-shadow: var(--shadow-1);
+}.newsrollScope :global(.card_filled),
+.newsrollScope :global(.table_wrap_filled) {
+  border: 0;
+  background: var(--color-fill-normal);
+}.newsrollScope :global(.card_outline),
+.newsrollScope :global(.table_wrap_outline) {
+  border: var(--border-1) solid var(--color-newsroll-purple-50);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.card_gray_line_outline),
+.newsrollScope :global(.table_wrap_gray_line_outline) {
+  border: var(--border-1) solid var(--color-line-normal-neutral);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.data_table th),
+.newsrollScope :global(.data_table td) {
+  border-bottom: var(--border-1) solid var(--color-line-normal-alternative);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.data_table th) {
+  font-weight: var(--font-weight-500);
+}.newsrollScope :global(.toolbar_icon) {
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-common-100);
+}.newsrollScope :global(.category_chip) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-neutral-95);
+  border: 0;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}@media (max-width: 430px) {
+
+  .newsrollScope :global(.metric_line strong) {
+    font-size: var(--font-size-40);
+    line-height: var(--line-height-60);
+  }
+
+  .newsrollScope :global(.metric),
+  .newsrollScope :global(.metric_line span) {
+    font-size: var(--font-size-24);
+    line-height: var(--line-height-40);
+  }
+}.newsrollScope :global(.sr_only) {
+  clip: rect(0, 0, 0, 0);
+}.newsrollScope :global(.search_page),
+.newsrollScope :global(.policy_screen),
+.newsrollScope :global(.info_screen),
+.newsrollScope :global(.container_authLayout) {
+  color: var(--color-common-100);
+  background: var(--color-newsroll-purple-20);
+}.newsrollScope :global(.text_loginLandingHero) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-28);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-40);
+  word-break: keep-all;
+}.newsrollScope :global(.text_socialLoginTitle) {
+  color: var(--color-cool-neutral-80);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_loginTitle) {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_authValidationError) {
+  color: var(--color-status-negative);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_authValidation) {
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_authValidation[data-state="success"]) {
+  color: var(--color-status-positive);
+}.newsrollScope :global(.text_authValidation[data-state="error"]) {
+  color: var(--color-status-negative);
+}.newsrollScope :global(.text_signupVerificationTimer) {
+  color: var(--color-status-cautionary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-20);
+  transform: translateY(-50%);
+}.newsrollScope :global(.btn_loginPasswordToggle) {
+  border: 0;
+  color: var(--color-common-100);
+  background: transparent;
+  transform: translateY(-50%);
+}.newsrollScope :global(.btn_mySettingsPasswordToggle),
+.newsrollScope:global(.dark .btn_articleGuideOption[data-variant='stacked'][aria-pressed='true'] .text_articleGuideOption),
+.newsrollScope:global(.dark .btn_articleGuideOption[data-variant='stacked'][aria-pressed='true'] .text_articleGuidePercent),
+.newsrollScope:global(.dark .btn_articleGuideOption[data-variant='binary'][aria-pressed='true'] .text_articleGuideOption),
+.newsrollScope:global(.dark .noticeCardLink_notificationUnread .text_noticeCardTitle) {
+  color: var(--color-cool-neutral-15);
+}.newsrollScope :global(.divider_signupAgreementAll) {
+  background: var(--color-line-normal-neutral);
+  border-color: var(--color-line-normal-neutral);
+}.newsrollScope :global(.text_searchStatus) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope:global(.screen_all .bottom_nav) {
+  transform: translateX(-50%);
+  pointer-events: auto;
+}.newsrollScope :global(.all_panel),
+.newsrollScope :global(.page_panel) {
+  border-radius: var(--radius-20);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+  box-shadow: none;
+}.newsrollScope :global(.all_itemDivider) {
+  background: var(--newsroll-divider-color);
+}.newsrollScope :global(.all_latest_panel) {
+  --newsroll-all-latest-panel-natural-height: 540px;
+  --newsroll-all-latest-panel-available-height: calc(
+    100dvh - var(--newsroll-common-sheet-stop-top, 168px) -
+      var(--newsroll-bottom-nav-clearance)
+  );
+  --newsroll-all-latest-panel-height: min(
+    var(--newsroll-all-latest-panel-natural-height),
+    var(--newsroll-all-latest-panel-available-height)
+  );
+}.newsrollScope :global(.all_latest_scroller) {
+  cursor: grab;
+  user-select: none;
+}.newsrollScope :global(.all_latest_scroller.is_dragging) {
+  cursor: grabbing;
+}.newsrollScope :global(.btn_detailBack) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+}.newsrollScope :global(.policy_sheet),
+.newsrollScope :global(.info_sheet),
+.newsrollScope :global(.container_mySheet) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.policy_age_tabs),
+.newsrollScope :global(.info_screen .tab_myCategoryMenu),
+.newsrollScope :global(.all_tabSticky),
+.newsrollScope :global(.pageSurface_style),
+.newsrollScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
+.newsrollScope :global(.container_myVotePage > .tab_myCategoryMenu),
+.newsrollScope :global(.container_myCommentPage > .tab_myCategoryMenu),
+.newsrollScope :global(.wrapper_myTabbedDetailContent > .tab_myCategoryMenu),
+.newsrollScope :global(.wrapper_myTabbedDetailContent > .wrapper_myBookmarkTabStack),
+.newsrollScope :global(.wrapper_articleReaction > button[aria-pressed="true"]),
+.newsrollScope :global(.wrapper_stickyHeader_style) {
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.btn_contentListItem) {
+  border-bottom: 0;
+}.newsrollScope :global(.btn_contentListItem h2),
+.newsrollScope :global(.wrapper_detailBody h1),
+.newsrollScope :global(.wrapper_detailHeader h1) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+}.newsrollScope :global(.text_detailSummary),
+.newsrollScope :global(.list_detailDefinition dd),
+.newsrollScope :global(.wrapper_myProfileGreeting > span) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.list_detailDefinition div) {
+  border: 0;
+}.newsrollScope :global(.text_myVoteQuestion),
+.newsrollScope :global(.wrapper_authAgreementSection h2),
+.newsrollScope :global(.wrapper_mySettingsHistoryText strong) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_myCommentCreatedDate) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.my_summary_bookmark::before) {
+  content: "";
+  border: 2px solid var(--color-blue-50);
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+}.newsrollScope :global(.my_summary_bookmark::after) {
+  content: "";
+  border-right: 2px solid var(--color-blue-50);
+  border-bottom: 2px solid var(--color-blue-50);
+  border-left: 2px solid var(--color-blue-50);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 65%, 0 100%);
+}.newsrollScope :global(.my_summary_vote::before) {
+  content: "";
+  border: 2px solid var(--color-orange-50);
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}.newsrollScope :global(.my_summary_vote::after) {
+  content: "";
+  border: 2px solid var(--color-orange-50);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}.newsrollScope :global(.my_summary_comment::before) {
+  content: "";
+  border: 2px solid var(--color-newsroll-purple-50);
+  border-radius: var(--radius-full);
+}.newsrollScope :global(.my_summary_comment::after) {
+  content: "";
+  border-left: 2px solid var(--color-newsroll-purple-50);
+  border-bottom: 2px solid var(--color-newsroll-purple-50);
+  transform: skewX(-22deg);
+}.newsrollScope :global(.text_myTimeTitle),
+.newsrollScope :global(.text_myDialogTitle),
+.newsrollScope :global(.text_myKeywordDialogTitle),
+.newsrollScope :global(.text_sectionTitle),
+.newsrollScope :global(.text_mySectionTitle) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+}.newsrollScope :global(.tab_myCategoryMenu button),
+.newsrollScope :global(.tab_myBlockedKeywordMenu .btn_tab) {
+  border: var(--border-1) solid var(--newsroll-divider-color);
+  border-radius: var(--radius-full);
+  color: var(--app-text);
+  background: transparent;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.tab_myCategoryMenu button[data-state="active"]),
+.newsrollScope :global(.tab_myCategoryMenu button[data-state="selected"]),
+.newsrollScope :global(.all_category_tabs button[aria-selected='true']),
+.newsrollScope :global(.policy_age_tabs button[aria-selected='true']),
+.newsrollScope :global(.all_category_tabs button[data-state='active']),
+.newsrollScope :global(.policy_age_tabs button[data-state='active']),
+.newsrollScope :global(.all_category_tabs button[data-state='selected']),
+.newsrollScope :global(.policy_age_tabs button[data-state='selected']),
+.newsrollScope :global(.tab_myBlockedKeywordMenu .btn_tab[data-state="active"]),
+.newsrollScope :global(.tab_myBlockedKeywordMenu .btn_tab[data-state="selected"]),
+.newsrollScope :global(.wrapper_commentTabs button[aria-selected='true']) {
+  color: var(--color-common-100);
+  border-color: var(--color-common-0);
+  background: var(--color-common-0);
+  font-weight: var(--font-weight-700);
+}.newsrollScope :global(.tab_myCategoryMenu button[data-state="default"]),
+.newsrollScope :global(.tab_myBlockedKeywordMenu .btn_tab[data-state="default"]) {
+  color: var(--app-text);
+  border-color: var(--newsroll-divider-color);
+  background: transparent;
+}.newsrollScope :global(.text_myBlockedKeywordDescription),
+.newsrollScope :global(.text_infoSubmitStatus) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_mySettingsStatus.is_error),
+.newsrollScope :global(.text_infoSubmitStatus.is_error),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='like'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='like']),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='like'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .btn_textAction[data-tone='danger']),
+.newsrollScope:global(.dark .btn_textAction[data-tone='danger']:active),
+.newsrollScope:global(.dark .btn_textAction[data-tone='danger'][aria-pressed='true']),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='like'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='like'][aria-pressed='true'] > .icon[data-size="20"]) {
+  color: var(--color-red-50);
+}.newsrollScope :global(.btn_myTimeRow) {
+  color: var(--app-text);
+  background: transparent;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_infoHeaderTitle) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.btn_noticeListItem),
+.newsrollScope :global(.container_contentAccordion) {
+  border: 0;
+  background: transparent;
+}.newsrollScope :global(.text_infoMeta) {
+  color: var(--color-label-alternative);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_infoItemTitle) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_infoBody) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_lineClamp2),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}.newsrollScope :global(.headerTop .text_size_button) {
+  line-height: 0;
+}.newsrollScope :global(.headerTop .toolbar [aria-label="메뉴"]::before) {
+  content: "";
+  border-radius: var(--radius-full);
+  background: var(--color-orange-50);
+}.newsrollScope :global(.sheetFrame) {
+  --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
+  --newsroll-common-sheet-stop-top: 168px;
+  --newsroll-bottom-nav-clearance: var(--spacing-padding-vertical-60);
+  --newsroll-main-border-width: 1.5px;
+  isolation: isolate;
+  background: var(--color-newsroll-purple-20);
+}.newsrollScope :global(.sheetFrameSheet),
+.newsrollScope :global(.container_homeSheet) {
+  border-radius: 0;
+  background: var(--color-newsroll-purple-20);
+  will-change: top;
+}.newsrollScope :global(.all_breaking_extra) {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(calc(var(--spacing-gap-vertical-8) * -1));
+  transition:
+    grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+}.newsrollScope :global(.all_breakingBody[data-expanded="true"] .all_breaking_extra) {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}.newsrollScope :global(.all_breakingHeader .icon_moreAction) {
+  filter: brightness(0) invert(1);
+  transform: rotate(90deg);
+  transition: var(--newsroll-chevron-transition);
+}.newsrollScope :global(.icon_moreAction) {
+  transform: rotate(90deg);
+  transition: var(--newsroll-chevron-transition);
+}.newsrollScope :global(.all_press_panel .icon_moreAction) {
+  opacity: 0.55;
+}.newsrollScope :global(.all_pressHeadline_tabScroller button[aria-selected="true"] .all_pressHeadline_logo),
+.newsrollScope :global(.all_pressHeadline_tabScroller button[aria-selected='true'] .all_pressHeadline_logo),
+.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true'] .all_pressHeadline_logo) {
+  background: var(--color-common-100);
+}.newsrollScope :global(.all_pressHeadline_tabScroller button:not([aria-selected="true"]) .all_pressHeadline_logo),
+.newsrollScope :global(.all_pressHeadline_tabScroller button:not([aria-selected='true']) .all_pressHeadline_logo) {
+  background: var(--color-cool-neutral-96);
+}.newsrollScope :global(.text_greeting) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_heroUnit) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-32);
+}.newsrollScope :global(.text_heroCaption) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-32);
+}.newsrollScope :global(.motion_dockedPop) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(16px);
+  transition: none;
+  will-change: opacity, transform;
+}.newsrollScope :global(.sheetFrame .allDockedControls),
+.newsrollScope :global(.container_homeScreen .homeDockedMotion) {
+  transition: none;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .allDockedControls),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedMotion) {
+    transition:
+        max-height var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        transform var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        visibility 0ms linear 0ms;
+}.newsrollScope :global(.homeDockedAlarm) {
+  border-color: var(--color-newsroll-purple-50);
+  color: var(--color-common-0);
+  background: var(--color-newsroll-purple-50);
+}.newsrollScope :global(.btn_newsViewOption) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: transparent;
+}.newsrollScope :global(.btn_newsViewOption[aria-selected="true"]) {
+  color: var(--color-common-0);
+  background: var(--color-common-100);
+}.newsrollScope :global(.all_breaking_label) {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_sectionTitle) {
+  font-size: var(--font-size-fixed-16);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-fixed-20);
+}.newsrollScope :global(.bottom_nav),
+.newsrollScope:global(.screen_all .bottom_nav) {
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
+  transform: translateX(-50%);
+}.newsrollScope:global(.text_large) {
+  --font-size-10: 12px;
+  --font-size-11: 13.2px;
+  --font-size-12: 14.4px;
+  --font-size-13: 15.6px;
+  --font-size-14: 16.8px;
+  --font-size-15: 18px;
+  --font-size-16: 19.2px;
+  --font-size-18: 21.6px;
+  --font-size-fixed-16: 19.2px;
+  --font-size-fixed-18: 21.6px;
+  --font-size-20: 24px;
+  --font-size-24: 28.8px;
+  --font-size-28: 33.6px;
+  --font-size-32: 38.4px;
+  --font-size-40: 48px;
+  --font-size-48: 57.6px;
+  --font-size-52: 62.4px;
+  --font-size-60: 72px;
+  --line-height-16: 19.2px;
+  --line-height-20: 24px;
+  --line-height-24: 28.8px;
+  --line-height-fixed-20: 24px;
+  --line-height-fixed-26: 31.2px;
+  --line-height-32: 38.4px;
+  --line-height-40: 48px;
+  --line-height-44: 52.8px;
+  --line-height-48: 57.6px;
+  --line-height-60: 72px;
+}.newsrollScope :global(.img_articlePublisherLogo) {
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}/* --------------------------------------------------------------------------
+ * Motion
+ * --------------------------------------------------------------------------
+ * Motion classes and keyframes are retained here so the
+ * motion system stays available without changing behavior.
+ */.newsrollScope :global(.motion_enterUp) {
+    animation: newsroll_enterUp var(--newsroll-docked-pop-motion-duration, 260ms)
+        var(--newsroll-docked-pop-motion-easing, ease) both;
+    }.newsrollScope :global(.motion_exitDown) {
+    pointer-events: none;
+    animation: newsroll_exitDown var(--newsroll-docked-pop-motion-duration, 260ms)
+        var(--newsroll-docked-pop-motion-easing, ease) both;
+    }.newsrollScope :global(.motion_enterFromRight) {
+    animation: newsroll_enterFromRight var(--newsroll-docked-pop-motion-duration, 260ms)
+        var(--newsroll-docked-pop-motion-easing, ease) both;
+    will-change: opacity, transform;
+    }.newsrollScope :global(.motion_enterFromRight.is_motionLeaving) {
+        pointer-events: none;
+        animation-name: newsroll_exitToRight;
+    }.newsrollScope :global(.motion_tabSwipeFromRight),
+    .newsrollScope :global(.motion_tabSwipeFromLeft) {
+        animation-duration: var(--newsroll-docked-pop-motion-duration, 260ms);
+        animation-fill-mode: both;
+        animation-timing-function: var(--newsroll-docked-pop-motion-easing, ease);
+        will-change: opacity, transform;
+    }.newsrollScope :global(.motion_tabSwipeFromRight) {
+        --newsroll-tab-swipe-offset: 24px;
+    }.newsrollScope :global(.motion_tabSwipeFromLeft) {
+        --newsroll-tab-swipe-offset: -24px;
+    }.newsrollScope :global(.motion_tabSwipeFromRight.is_motionCycleA),
+    .newsrollScope :global(.motion_tabSwipeFromLeft.is_motionCycleA) {
+        animation-name: newsroll_tabSwipeEnterA;
+    }.newsrollScope :global(.motion_tabSwipeFromRight.is_motionCycleB),
+    .newsrollScope :global(.motion_tabSwipeFromLeft.is_motionCycleB) {
+        animation-name: newsroll_tabSwipeEnterB;
+    }@keyframes newsroll_enterUp {
+        from {
+            opacity: 0;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+    }@keyframes newsroll_exitDown {
+        from {
+            opacity: 1;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
+        }
+    }@keyframes newsroll_enterFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }@keyframes newsroll_exitToRight {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+    }@keyframes newsroll_tabSwipeEnterA {
+        from {
+            opacity: 0;
+            transform: translateX(var(--newsroll-tab-swipe-offset, 24px));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }@keyframes newsroll_tabSwipeEnterB {
+        from {
+            opacity: 0;
+            transform: translateX(var(--newsroll-tab-swipe-offset, 24px));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }/* --------------------------------------------------------------------------
+ * Screen Overrides
+ * --------------------------------------------------------------------------
+ * These remain before common-layout/components so the
+ * new managed files can still provide the final shared overrides.
+ */@keyframes newsroll_enterUp {
+    from {
+        opacity: 0;
+        transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+    }
+}@keyframes newsroll_exitDown {
+    from {
+        opacity: 1;
+        transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: var(--newsroll-enter-up-base-transform, translateX(0)) translateY(16px);
+    }
+}@keyframes newsroll_enterFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}@keyframes newsroll_exitToRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+}.newsrollScope :global(.form_commentComposer .btn_commentSubmit) {
+    color: var(--color-newsroll-purple-50);
+    background: transparent;
+    transform: translateY(-50%);
+}.newsrollScope :global(.text_commentTotal),
+.newsrollScope :global(.text_articleGuideTotal),
+.newsrollScope :global(.text_mySettingsDescription),
+.newsrollScope :global(.text_mySettingsDetailBody),
+.newsrollScope :global(.text_mySettingsHistoryMeta),
+.newsrollScope :global(.text_mySettingsStatus),
+.newsrollScope :global(.wrapper_mySettingsHistoryText p),
+.newsrollScope :global(.wrapper_contentDateGroup),
+.newsrollScope :global(.wrapper_detailDateGroup),
+.newsrollScope :global(.wrapper_commentGuideTabs h3) {
+    color: var(--color-cool-neutral-40);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-400);
+    line-height: var(--line-height-20);
+}.newsrollScope :global(.divider_commentItem) {
+    border-top: var(--border-1) solid var(--color-cool-neutral-96);
+}.newsrollScope :global(.text_commentEmpty),
+.newsrollScope :global(.wrapper_commentItem > footer),
+.newsrollScope :global(.wrapper_commentReplyItem footer) {
+    color: var(--color-cool-neutral-50);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_moreAction[aria-expanded='true'] .icon_moreActionChevron) {
+    transform: rotate(225deg) translate(-1px, -1px);
+}.newsrollScope :global(.btn_moreAction[aria-expanded='true'] .icon_moreAction) {
+    transform: rotate(270deg);
+}.newsrollScope :global(.all_category_tabs button:not([aria-selected='true'])),
+.newsrollScope :global(.policy_age_tabs button:not([aria-selected='true'])) {
+    color: var(--color-cool-neutral-15);
+    border: var(--border-1) solid var(--color-cool-neutral-96);
+    background: transparent;
+    font-weight: var(--font-weight-400);
+}.newsrollScope :global(.btn_contentListItem),
+.newsrollScope :global(.page_feed) {
+    background: transparent;
+}.newsrollScope :global(.all_panel),
+.newsrollScope :global(.wrapper_panelSurface_style) {
+    border-radius: var(--radius-20);
+    color: var(--color-cool-neutral-15);
+    background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+    border: var(--border-1) solid transparent;
+    border-radius: var(--radius-full);
+    color: inherit;
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+    cursor: pointer;
+}.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']) {
+    border: 0;
+    color: var(--color-common-100);
+    background: var(--color-common-0);
+}.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
+    border-color: var(--color-cool-neutral-96);
+    color: var(--color-cool-neutral-15);
+    background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.text_confirmDialogMessage) {
+    font-size: var(--font-size-16);
+}.newsrollScope :global(.text_contentAccordionBody) {
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}.newsrollScope :global(.all_category_tabs button),
+.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}.newsrollScope :global(.all_category_tabs button:not([aria-selected='true'])),
+.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
+    border: var(--border-1) solid var(--newsroll-divider-color);
+    background: transparent;
+}@media (prefers-reduced-motion: reduce) {
+    .newsrollScope :global(.motion_enterUp),
+    .newsrollScope :global(.motion_enterFromRight),
+    .newsrollScope :global(.motion_tabSwipeFromLeft),
+    .newsrollScope :global(.motion_tabSwipeFromRight) {
+        animation: none;
+    }
+}.newsrollScope:global(.dark) {
+    --color-background-elevated-normal: var(--color-cool-neutral-10);
+    --color-background-elevated-alternative: var(--color-cool-neutral-15);
+    --color-fill-normal: var(--color-cool-neutral-22);
+    --color-fill-alternative: var(--color-cool-neutral-20);
+    --color-fill-strong: var(--color-cool-neutral-30);
+    --color-label-alternative: var(--color-cool-neutral-100);
+    --color-label-assistive: var(--color-cool-neutral-100);
+    --color-label-neutral: var(--color-cool-neutral-100);
+    --color-label-normal: var(--color-cool-neutral-100);
+    --color-line-normal-alternative: var(--color-cool-neutral-30);
+    --color-line-normal-neutral: var(--color-cool-neutral-40);
+    --color-line-normal-normal: var(--color-cool-neutral-40);
+    --color-line-normal-strong: var(--color-cool-neutral-50);
+    --color-line-solid-alternative: var(--color-cool-neutral-30);
+    --color-line-solid-neutral: var(--color-cool-neutral-40);
+    --color-line-solid-normal: var(--color-cool-neutral-40);
+    --color-line-solid-strong: var(--color-cool-neutral-60);
+    --newsroll-divider-color: var(--color-cool-neutral-30);
+}.newsrollScope:global(.dark),
+.newsrollScope:global(.dark) {
+    --app-surface: var(--color-cool-neutral-15);
+    --app-surface-muted: var(--color-cool-neutral-20);
+    --app-text: var(--color-common-100);
+    --app-text-muted: var(--color-cool-neutral-100);
+    --app-border: var(--color-cool-neutral-30);
+    --app-control-surface: var(--color-cool-neutral-30);
+    --app-input-surface: var(--color-cool-neutral-15);
+    --app-input-text: var(--color-cool-neutral-100);
+    --app-input-border: var(--color-newsroll-purple-50);
+}.newsrollScope:global(.dark .page_panel) {
+    border-radius: var(--radius-20);
+    background: var(--color-cool-neutral-15);
+}.newsrollScope:global(.dark .bottom_nav),
+.newsrollScope:global(.dark.screen_all .bottom_nav) {
+    border-top-color: var(--color-cool-neutral-30);
+}.newsrollScope:global(.dark [role='tab']:not(.btn_newsViewOption)),
+.newsrollScope:global(.dark .tab_myCategoryMenu button),
+.newsrollScope:global(.dark .all_category_tabs button),
+.newsrollScope:global(.dark .all_pressHeadline_tabScroller .all_pressHeadline_tabButton),
+.newsrollScope:global(.dark .btn_tab:not(.btn_newsViewOption)) {
+    color: var(--color-common-100);
+    background: transparent;
+    border-color: var(--newsroll-divider-color);
+}.newsrollScope:global(.dark [role='tab'][aria-selected='true']:not(.btn_newsViewOption)),
+.newsrollScope:global(.dark .tab_myCategoryMenu button[data-state='active']),
+.newsrollScope:global(.dark .tab_myCategoryMenu button[data-state='selected']),
+.newsrollScope:global(.dark .all_category_tabs button[aria-selected='true']),
+.newsrollScope:global(.dark .all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']),
+.newsrollScope:global(.dark .btn_tab[aria-selected='true']:not(.btn_newsViewOption)),
+.newsrollScope:global(.dark .btn_tab[data-state='active']:not(.btn_newsViewOption)),
+.newsrollScope:global(.dark .btn_tab[data-state='selected']:not(.btn_newsViewOption)) {
+    color: var(--color-cool-neutral-15);
+    background: var(--color-common-100);
+    border-color: var(--color-common-100);
+}.newsrollScope:global(.dark .all_tabSticky),
+.newsrollScope:global(.dark .all_pressHeadline_tabMenu),
+.newsrollScope:global(.dark .all_pressHeadline_tabScroller),
+.newsrollScope:global(.dark .all_category_tabSticky),
+.newsrollScope:global(.dark .all_category_tabs),
+.newsrollScope:global(.dark .info_screen .tab_myCategoryMenu) {
+    background: var(--color-common-0);
+}.newsrollScope:global(.dark .btn_noticeCardLink),
+.newsrollScope:global(.dark .text_noticeCardTitle),
+.newsrollScope:global(.dark .text_noticeListCardTitle),
+.newsrollScope:global(.dark .btn_noticeListCardLink),
+.newsrollScope:global(.dark .btn_primary),
+.newsrollScope:global(.dark .btn_primary :where(span, strong)),
+.newsrollScope:global(.dark .btn_primary .icon[data-size="20"]) {
+    color: var(--color-common-0);
+}/* Purple top shell surface used by the common top frame. *//* Neutral visual tone for article/profile action clusters. *//* Elevated surface for sticky tab/header areas. *//* Elevated rounded panel surface for card-like screen sections. *//* Divider color hook for repeated list surfaces. *//* Generic elevated page surface. *//* Purple page/screen shell surface. *//* White sheet surface tone used by page sheets. *//* Elevated sticky tab region surface. *//* App-owned appearance selectors. *//* Component-adjacent app appearance states. */.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='dislike'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='bookmark'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='dislike']),
+.newsrollScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='dislike'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='dislike'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='dislike'][aria-pressed='true'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='bookmark'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='bookmark'][aria-pressed='true'] > .icon[data-size="20"]) {
+    color: var(--color-blue-50);
+}.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='neutral'] .icon[data-size="20"]),
+.newsrollScope :global(.form_commentComposer .text_input input::placeholder),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='neutral'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='neutral'][aria-pressed='true'] > .icon[data-size="20"]),
+.newsrollScope :global(.wrapper_articleActions.wrapper_actionGroup) {
+    color: var(--color-cool-neutral-50);
+}.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='vote'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='vote'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='vote'][aria-pressed='true'] > .icon[data-size="20"]) {
+    color: var(--color-red-orange-50);
+}.newsrollScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='comment'] .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='comment'] > .icon[data-size="20"]),
+.newsrollScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='comment'][aria-pressed='true'] > .icon[data-size="20"]) {
+    color: var(--color-newsroll-purple-50);
+}.newsrollScope:global(.dark .chip) {
+    color: var(--color-common-100);
+    background: var(--color-cool-neutral-40);
+    border-color: var(--color-cool-neutral-40);
+}.newsrollScope :global(.text_articleGuide) {
+  color: var(--app-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-16);
+  font-style: normal;
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+  letter-spacing: 0;
+}.newsrollScope :global(.text_articleGuideTotal strong) {
+  font-weight: var(--font-weight-400);
+}.newsrollScope :global(.form_commentComposer .text_input) {
+    border: var(--newsroll-main-border-width, 1.5px) solid var(--color-newsroll-purple-50);
+    border-radius: var(--radius-8);
+    color: var(--color-cool-neutral-15);
+    background: var(--color-background-elevated-normal);
+    cursor: text;
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}.newsrollScope :global(.form_commentComposer .text_input input) {
+    border: 0;
+    outline: 0;
+    color: var(--color-cool-neutral-15);
+    background: transparent;
+    font-size: 16px;
+    line-height: 24px;
+}.newsrollScope:global(.dark .wrapper_commentReplyItem),
+.newsrollScope:global(.dark .wrapper_commentReplyItem :where(p, strong, time)) {
+    color: var(--color-cool-neutral-100);
+}.newsrollScope :global(.btn_detailBack .icon_chevron) {
+  transform: rotate(180deg);
+}.newsrollScope:global(.dark .noticeCardLink_notificationUnread) {
+    color: var(--color-cool-neutral-15);
+    background: var(--color-common-100);
+}.newsrollScope:global(.dark .noticeCardLink_notificationRead) {
+    color: var(--color-common-100);
+    background: var(--color-background-transparent-alternative);
+}/* Remaining app-owned appearance selectors. *//* Layout selector appearance states. */.newsrollScope :global(.btn_iconButton[data-variant="bottomNav"][aria-current="page"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_newsViewOption[aria-selected="true"] .icon[data-size="20"]),
+.newsrollScope :global(.wrapper_articleReaction > button[aria-pressed="true"] .icon[data-size="20"]),
+.newsrollScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"][aria-pressed="true"] .icon[data-size="20"]),
+.newsrollScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"][aria-pressed='true'] .icon[data-size="20"]),
+.newsrollScope :global(.wrapper_articleReaction > button[aria-pressed='true'] .icon[data-size="20"]) {
+  --icon-url: var(--icon-fill-url);
+}.newsrollScope :global(.wrapper_articleGuide_binary .text_articleGuide) {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.btn_primary:focus-visible),
+.newsrollScope :global(.btn_iconButton:focus-visible),
+.newsrollScope :global(.btn_articleGuideOption:focus-visible),
+.newsrollScope :global(.btn_fieldActionButton:focus-visible),
+.newsrollScope :global(.btn_commentSubmit:focus-visible),
+.newsrollScope :global(.btn_contentAction:focus-visible),
+.newsrollScope :global(.btn_textAction:focus-visible),
+.newsrollScope :global(.form_commentComposer .text_input:focus-within),
+.newsrollScope :global(.text_size_button:focus-visible),
+.newsrollScope :global(.toolbar_icon:focus-visible),
+.newsrollScope :global(.btn_tab:focus-visible),
+.newsrollScope :global(.text_input:focus-within),
+.newsrollScope :global(.wrapper_articleCardContent:focus-visible),
+.newsrollScope :global(.wrapper_myPageCommentThread:focus-visible),
+.newsrollScope :global(.textarea:focus-visible),
+.newsrollScope :global(.chip:focus-visible) {
+  outline: var(--border-2) solid var(--color-accent-foreground-blue);
+  outline-offset: var(--spacing-gap-vertical-4);
+}.newsrollScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"]) {
+  color: inherit;
+  line-height: 0;
+}.newsrollScope :global(.container_authLayout .btn_loginSubmit:disabled),
+.newsrollScope :global(.container_authLayout .btn_signupAgreementNext:disabled),
+.newsrollScope :global(.container_authLayout .btn_signupStepNext:disabled) {
+  color: var(--color-newsroll-purple-40);
+  background: var(--color-newsroll-purple-30);
+  border-color: var(--color-newsroll-purple-30);
+}.newsrollScope :global(.wrapper_authAgreementSection p),
+.newsrollScope :global(.text_authAgreementSource) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.container_myProfile button:not(.btn_iconButton)) {
+  border: var(--border-1) solid var(--color-line-normal-normal);
+  border-radius: var(--radius-8);
+  color: var(--color-label-neutral);
+  background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_mySettingsDetailBody),
+.newsrollScope :global(.wrapper_mySettingsHistoryText p) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.motion_dockedPop.is_motionVisible),
+.newsrollScope :global(.is_motionVisible .motion_dockedPop),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .motion_dockedPop),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .motion_dockedPop) {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition:
+        opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        transform var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        visibility 0ms linear 0ms;
+}.newsrollScope:global(.text_large .container_hero .text_greeting),
+.newsrollScope:global(.text_large .container_hero .wrapper_hero) {
+  --font-size-10: 10px;
+  --font-size-11: 11px;
+  --font-size-12: 12px;
+  --font-size-13: 13px;
+  --font-size-14: 14px;
+  --font-size-15: 15px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
+  --font-size-fixed-16: 16px;
+  --font-size-fixed-18: 18px;
+  --font-size-20: 20px;
+  --font-size-24: 24px;
+  --font-size-28: 28px;
+  --font-size-32: 32px;
+  --font-size-40: 40px;
+  --font-size-48: 48px;
+  --font-size-52: 52px;
+  --font-size-60: 60px;
+  --line-height-16: 16px;
+  --line-height-20: 20px;
+  --line-height-24: 24px;
+  --line-height-fixed-20: 20px;
+  --line-height-fixed-26: 26px;
+  --line-height-32: 32px;
+  --line-height-40: 40px;
+  --line-height-44: 44px;
+  --line-height-48: 48px;
+  --line-height-60: 60px;
+}.newsrollScope :global(.container_articleCard .text_sectionTitle) {
+  font-size: var(--font-size-18);
+  line-height: 26px;
+}.newsrollScope :global(.container_articleCard .text_articleBody) {
+    color:
+        var(--color-cool-neutral-20);
+    font-size:
+        var(--font-size-16);
+    font-weight:
+        var(--font-weight-500);
+    line-height:
+        var(--line-height-24);
+}.newsrollScope :global(.wrapper_articleReaction) {
+  border: 0;
+  border-radius: 0;
+}.newsrollScope :global(.wrapper_articleMiniReaction) {
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-3);
+}.newsrollScope :global(.wrapper_commentReplies.is_open) {
+    background: var(--color-cool-neutral-98);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+        grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        transform var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        visibility 0ms linear 0ms;
+}.newsrollScope :global(.wrapper_commentReplies.is_open .wrapper_commentRepliesInner) {
+    opacity: 1;
+    transform: translateY(0);
+}.newsrollScope :global(.policy_screen),
+.newsrollScope :global(.container_myScreen),
+.newsrollScope :global(.info_screen),
+.newsrollScope :global(.search_page) {
+    transform: none;
+}.newsrollScope :global(.sheetFrame.policy_screen .sheetFrameSheet),
+.newsrollScope :global(.sheetFrame.container_myScreen .container_mySheet),
+.newsrollScope :global(.sheetFrame.info_screen .sheetFrameSheet) {
+    border-radius: 0;
+    background: var(--color-newsroll-purple-20);
+}.newsrollScope :global(.container_mySettingsPage .container_myCategorySection .text_mySectionTitle),
+.newsrollScope :global(.container_mySettingsPage .container_myBlockedKeywordSection .text_mySectionTitle) {
+    font-size: var(--font-size-fixed-16);
+    line-height: var(--line-height-fixed-20);
+}@media (prefers-reduced-motion: reduce) {
+
+    .newsrollScope :global(.box_newsrollSplashLogo),
+    .newsrollScope :global(.wrapper_articleMiniReaction),
+    .newsrollScope :global(.motion_dockedPop),
+    .newsrollScope :global(.container_homeScreen .homeDockedMotion),
+    .newsrollScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedMotion),
+    .newsrollScope :global(.sheetFrame .allDockedControls),
+    .newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .allDockedControls),
+    .newsrollScope :global(.wrapper_commentReplies),
+    .newsrollScope :global(.wrapper_commentReplies.is_open),
+    .newsrollScope :global(.wrapper_commentRepliesInner) {
+        transition: none;
+        transform: none;
+    }
+}.newsrollScope:global(.dark :is( .common_sheet, .container_homeSheet, .page_panel, .all_panel, .all_latest_panel, .container_infoList, .wrapper_infoInquiry, .container_myKeywordDialog )) {
+    box-shadow:
+        0 -7px 16px color-mix(in srgb, var(--color-newsroll-purple-50) 4%, transparent),
+        0 -12px 19px color-mix(in srgb, var(--color-newsroll-purple-30) 55%, transparent);
+}.newsrollScope:global(.dark .container_homeSheet) {
+    border-radius: var(--radius-20) var(--radius-20) 0 0;
+    background: var(--color-cool-neutral-10);
+}.newsrollScope:global(.dark :is(.container_newsFeed, .all_feed)) {
+    background: var(--color-cool-neutral-10);
+}.newsrollScope:global(.dark .container_newsFeed .container_articleCard) {
+    background: var(--color-cool-neutral-15);
+}.newsrollScope:global(.dark .container_commentComposerFixed),
+.newsrollScope:global(.dark .container_commentComposerFixed) {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-15);
+    border-color: var(--color-newsroll-purple-50);
+}.newsrollScope:global(.dark .wrapper_articleGuide) {
+    background: var(--color-cool-neutral-20);
+}.newsrollScope:global(.dark .wrapper_commentPanel),
+.newsrollScope:global(.dark .container_commentGuide) {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-10);
+}.newsrollScope:global(.dark .wrapper_commentReplies.is_open),
+.newsrollScope:global(.dark .wrapper_commentRepliesInner) {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-20);
+}.newsrollScope:global(.screen input),
+.newsrollScope:global(.screen textarea),
+.newsrollScope:global(.screen select),
+.newsrollScope :global(.text_input input),
+.newsrollScope :global(.text_input[data-mode="dark"] input),
+.newsrollScope :global(.form_commentComposer .text_input input),
+.newsrollScope :global(.textarea),
+.newsrollScope :global(.textarea[data-variant='commentEdit']),
+.newsrollScope :global(.textarea[data-variant='inquiry']),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:focus),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:active),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:valid),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:invalid) {
+    font-size: 16px;
+    line-height: 24px;
+}/*  App-owned state hooks without dedicated visual declarations
+ *//*  --------------------------------------------------------------------------
+ * App Appearance Declarations
+ * --------------------------------------------------------------------------
+ */.newsrollScope :global(.wrapper_newsViewToggle) {
+  border-radius: var(--radius-full);
+  background: var(--color-background-transparent-alternative);
+}.newsrollScope :global(.wrapper_newsCardMeta) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-400);
+  line-height: 13px;
+}.newsrollScope :global(.wrapper_articleGuide) {
+  border-radius: var(--radius-8);
+  background: var(--color-cool-neutral-98);
+}.newsrollScope :global(.wrapper_articleGuide_binary) {
+  border-radius: var(--radius-16);
+}.newsrollScope :global(.wrapper_contentDateGroup strong),
+.newsrollScope :global(.wrapper_detailDateGroup strong) {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_myPageCommentThread) {
+  cursor: pointer;
+}.newsrollScope :global(.container_myProfile strong) {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+}.newsrollScope :global(.container_myKeywordOverlay),
+.newsrollScope :global(.container_dialog) {
+  background: rgba(0, 0, 0, 0.72);
+}.newsrollScope :global(.container_myKeywordDialog) {
+  border-radius: var(--radius-24);
+  background: transparent;
+}.newsrollScope :global(.wrapper_dialogContent) {
+  border-radius: var(--radius-24);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.wrapper_infoInquiry textarea) {
+  resize: none;
+}.newsrollScope :global(.container_homeScreen),
+.newsrollScope :global(.container_home),
+.newsrollScope :global(.wrapper_topShell_style) {
+  --newsroll-main-border-width: 1.5px;
+  background: var(--color-newsroll-purple-20);
+}.newsrollScope :global(.container_homeScreen) {
+  --newsroll-docked-pop-motion-duration: 260ms;
+  --newsroll-docked-pop-motion-easing: ease;
+  --newsroll-common-sheet-top: var(--newsroll-common-sheet-initial-top, 492px);
+  isolation: isolate;
+}.newsrollScope :global(.container_hero),
+.newsrollScope :global(.wrapper_hero) {
+  color: var(--color-common-100);
+}.newsrollScope :global(.wrapper_hero strong) {
+  color: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-500);
+  line-height: 52px;
+  letter-spacing: 0;
+}.newsrollScope :global(.wrapper_articleActions) {
+  color: var(--color-cool-neutral-50);
+}.newsrollScope :global(.container_newsGrid) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.container_newsFeed) {
+  border-radius: 0;
+  background: var(--color-newsroll-purple-20);
+}.newsrollScope :global(.container_articleCard) {
+  border-radius: var(--radius-20);
+  color: var(--app-text);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.container_articleCard :where(h1, h2)) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+}.newsrollScope :global(.container_articleCard time) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_articleCardContent > img) {
+  border-radius: var(--radius-8);
+  object-fit: cover;
+}.newsrollScope :global(.container_articleCard .wrapper_articleSource) {
+  color: var(--color-cool-neutral-40);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_articleReaction > button + button) {
+  border-left: var(--newsroll-divider-thickness) solid var(--newsroll-divider-color);
+}.newsrollScope :global(.wrapper_commentPanel) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.wrapper_articleReaction > button[aria-pressed='true']) {
+  background: var(--color-background-elevated-normal);
+  color: var(--color-cool-neutral-15);
+}.newsrollScope :global(.container_commentComposerFixed) {
+  background: var(--color-background-elevated-normal);
+  --newsroll-enter-up-base-transform: translateX(-50%);
+  transform: translateX(-50%);
+}.newsrollScope :global(.wrapper_commentTabs button) {
+  border: var(--border-1) solid var(--newsroll-divider-color);
+  border-radius: var(--radius-full);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_commentItem > header strong),
+.newsrollScope :global(.wrapper_commentReplyItem header strong) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_commentItem > header time),
+.newsrollScope :global(.wrapper_commentReplyItem time) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_commentItem > p),
+.newsrollScope :global(.wrapper_commentReplyItem p) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.wrapper_commentReplies) {
+  border-radius: var(--radius-8);
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+        grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        transform var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+}.newsrollScope :global(.wrapper_commentRepliesInner) {
+  background: var(--color-cool-neutral-98);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+        padding-block var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease),
+        transform var(--newsroll-docked-pop-motion-duration, 260ms)
+            var(--newsroll-docked-pop-motion-easing, ease);
+}.newsrollScope :global(.policy_sheet),
+.newsrollScope :global(.container_mySheet),
+.newsrollScope :global(.info_sheet) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+}.newsrollScope :global(.wrapper_scrollListDivider_style) {
+  --newsroll-divider-color: var(--color-line-normal-normal);
+}/* From src/app/styles/the layout section
+ *//* --------------------------------------------------------------------------
+ * Common Layout
+ * --------------------------------------------------------------------------
+ * Structural layout primitives only.
+ * Keep visual styling such as color, background, border, radius, and shadow in
+ * the appearance section unless the style belongs to a reusable component.
+ *//* Content metadata: title, date, summary, image, or supporting meta text. *//* Form field stack: label + input/select/textarea + validation message. *//* Between row: left information with right-side action or metadata. */.newsrollScope :global(.wrapper_betweenRow),
+.newsrollScope :global(.wrapper_articleKicker),
+.newsrollScope :global(.wrapper_articleMetaActions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}/* Action group: compact horizontal icon/action button cluster. *//* Horizontal tab/chip scroller. State and button visuals stay in the component section. */.newsrollScope :global(.wrapper_tabScroller),
+.newsrollScope :global(.all_latest_scroller),
+.newsrollScope :global(.all_category_tabs) {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.newsrollScope :global(.wrapper_tabScroller::-webkit-scrollbar),
+.newsrollScope :global(.wrapper_gridList::-webkit-scrollbar),
+.newsrollScope :global(.wrapper_authTabMenu::-webkit-scrollbar),
+.newsrollScope :global(.wrapper_myVoteItem .btn_articleGuideOption[data-variant="binary"][data-result-visible="true"]::before),
+.newsrollScope :global(.wrapper_myRecentScroller::-webkit-scrollbar),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_hero > :not(.wrapper_homeDockedControls)),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_breakingNews),
+.newsrollScope :global(.container_newsGrid::-webkit-scrollbar),
+.newsrollScope :global(.wrapper_newsGridScroll::-webkit-scrollbar),
+.newsrollScope :global(.container_newsFeed::-webkit-scrollbar),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent::-webkit-scrollbar),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent::-webkit-scrollbar),
+.newsrollScope :global(.wrapper_commentTabs::-webkit-scrollbar),
+.newsrollScope :global(.btn_contentAccordionTrigger::-webkit-details-marker),
+.newsrollScope :global(.all_latest_scroller::-webkit-scrollbar),
+.newsrollScope :global(.all_category_tabs::-webkit-scrollbar),
+.newsrollScope :global(.tab_myCategoryMenu::-webkit-scrollbar),
+.newsrollScope :global(.tab_myBlockedKeywordMenu::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrameSheet::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_panelContent::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_feed .all_panel::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_panelContent::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_feed .all_panel::-webkit-scrollbar),
+.newsrollScope :global(.page_panelContent::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .policy_hero),
+.newsrollScope :global(.all_pressHeadline_tabScroller::-webkit-scrollbar),
+.newsrollScope :global(.all_category_tabSticky .all_category_tabs::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail .wrapper_articleCardContent::-webkit-scrollbar),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail .wrapper_articleCardContent::-webkit-scrollbar) {
+  display: none;
+}/* Panel content: vertical content stack inside a sheet/card/panel. */.newsrollScope :global(.wrapper_panelContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  min-height: 0;
+}/* Repeated vertical list with consistent spacing. */.newsrollScope :global(.wrapper_scrollList),
+.newsrollScope :global(.wrapper_detailMain),
+.newsrollScope :global(.wrapper_mySettingsList),
+.newsrollScope :global(.container_infoList .wrapper_separatedItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+}/* Sticky header region. Visual surface is provided by wrapper_stickyHeader_style. */.newsrollScope :global(.wrapper_stickyHeader) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}/* Two-column grid list used by block news layouts. */.newsrollScope :global(.wrapper_gridList) {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-y: auto;
+  scrollbar-width: none;
+}/* Purple top shell layout. Visual color is provided by wrapper_topShell_style. */.newsrollScope :global(.wrapper_topShell),
+.newsrollScope :global(.wrapper_detailBody),
+.newsrollScope :global(.container_homeScreen),
+.newsrollScope :global(.container_home),
+.newsrollScope :global(.wrapper_breakingNews),
+.newsrollScope :global(.wrapper_commentReplyItem) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}/*  --------------------------------------------------------------------------
+ * Component and Screen Layout Selectors
+ * --------------------------------------------------------------------------
+ *//* Component-owned selectors with layout-only declarations. */.newsrollScope :global(.wrapper_newsViewToggle) {
+  padding: var(--spacing-padding-vertical-4);
+}.newsrollScope :global(.container_contentAccordion) {
+  text-align: left;
+}.newsrollScope :global(.btn_newsCardFeature > .wrapper_contentMeta > strong),
+.newsrollScope :global(.btn_newsCardRow > .wrapper_contentMeta > strong),
+.newsrollScope :global(.btn_newsCardList strong) {
+  width: 100%;
+  max-width: 100%;
+  display: -webkit-box;
+  overflow: hidden;
+}.newsrollScope :global(.wrapper_myRecentSelectableItem .btn_newsCardList),
+.newsrollScope :global(.wrapper_detailMetaActions .wrapper_detailDateGroup),
+.newsrollScope :global(.wrapper_myModerationSelectableItem .wrapper_mySettingsHistoryText),
+.newsrollScope :global(.btn_chevronRowContent),
+.newsrollScope :global(.field_check[data-role="chevronRow"]) {
+  min-width: 0;
+  flex: 1 1 auto;
+}.newsrollScope :global(.wrapper_myRecentScroller .btn_newsCardBlock) {
+  width: 156px;
+  flex: 0 0 156px;
+}.newsrollScope :global(.wrapper_myBlockedKeywordTab > .btn_tab),
+.newsrollScope :global(.wrapper_detailMetaActions .wrapper_articleActions),
+.newsrollScope :global(.wrapper_articleMetaActions .wrapper_articleActions) {
+  flex: 0 0 auto;
+}.newsrollScope :global(.wrapper_mySettingsBottomActions > .btn_primary),
+.newsrollScope :global(.wrapper_myVoteItem .btn_articleGuideOption),
+.newsrollScope :global(.btn_searchResult strong),
+.newsrollScope :global(.panel_dropdown[data-size="default"]),
+.newsrollScope :global(.listbox_dropdownSelect),
+.newsrollScope :global(.btn_loginSubmit),
+.newsrollScope :global(.divider_signupAgreementAll),
+.newsrollScope :global(.btn_signupAgreementNext),
+.newsrollScope :global(.btn_signupStepNext),
+.newsrollScope :global(.btn_myRecentDelete),
+.newsrollScope :global(.btn_myModerationRelease),
+.newsrollScope :global(.common_layout) {
+  width: 100%;
+}.newsrollScope :global(.wrapper_commentItem > .chip),
+.newsrollScope :global(.wrapper_commentReplyItem > .chip) {
+  align-self: flex-start;
+  max-width: 100%;
+}.newsrollScope :global(.wrapper_articleGuide) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.wrapper_articleGuideOptions) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-12);
+}.newsrollScope :global(.wrapper_articleGuide_binary) {
+  gap: var(--spacing-gap-vertical-20);
+  padding: var(--spacing-padding-vertical-24) var(--spacing-gap-horizontal-20);
+}.newsrollScope :global(.wrapper_articleGuide_binary .wrapper_articleGuideOptions) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="binary"]) {
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-vertical-8);
+  padding: var(--spacing-padding-vertical-16);
+  text-align: center;
+}.newsrollScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption::before),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="binary"]::before) {
+  inset: auto 0 0;
+  block-size: var(--article-guide-result-size, 0%);
+  inline-size: 100%;
+}.newsrollScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption::before),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
+  inset: 0 auto 0 0;
+}.newsrollScope :global(.wrapper_articleCardContent.wrapper_panelContent) {
+  touch-action: pan-y;
+}/* App screen selectors with layout-only declarations. */.newsrollScope :global(.container_newsrollSplash) {
+  width: 100%;
+  min-height: 100dvh;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.container_authLayout) {
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: 124px var(--spacing-padding-horizontal-16)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.container_authLayout_loginLanding) {
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-vertical-40);
+  padding: var(--spacing-padding-vertical-16);
+}.newsrollScope :global(.wrapper_loginContent) {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.newsrollScope :global(.wrapper_loginLandingContent) {
+  min-height: 0;
+  height: 420px;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-40);
+  text-align: center;
+}.newsrollScope :global(.wrapper_loginEmailContent) {
+  justify-content: flex-start;
+}.newsrollScope :global(.wrapper_signupAgreementContent) {
+  min-height: 0;
+  height: 100%;
+  justify-content: flex-start;
+  gap: var(--spacing-gap-vertical-24);
+}.newsrollScope :global(.wrapper_signupStepContent) {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.newsrollScope :global(.wrapper_signupEmailField),
+.newsrollScope :global(.wrapper_signupVerificationCode) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+}.newsrollScope :global(.wrapper_signupEmailField .text_input[data-mode="dark"]),
+.newsrollScope :global(.wrapper_signupEmailField .text_input),
+.newsrollScope :global(.form_mySettingsDetail) {
+  flex: 1 1 auto;
+}.newsrollScope :global(.wrapper_signupVerificationCodeInput) {
+  min-width: 0;
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  padding: 0;
+}.newsrollScope :global(.wrapper_signupVerificationCodeInput .text_input[data-mode="dark"]),
+.newsrollScope :global(.wrapper_signupVerificationCodeInput .text_input) {
+  padding-right: calc(48px + var(--spacing-padding-horizontal-12));
+}.newsrollScope :global(.wrapper_authField) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+  padding: 0;
+}.newsrollScope :global(.wrapper_authTabMenu) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 0;
+}.newsrollScope :global(.wrapper_loginInputs),
+.newsrollScope :global(.form_login),
+.newsrollScope :global(.form_mySettingsDetail),
+.newsrollScope :global(.wrapper_mySettingsDetailBody) {
+  gap: var(--spacing-gap-vertical-24);
+}.newsrollScope :global(.wrapper_loginPasswordField) {
+  width: 100%;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  padding: 0;
+}.newsrollScope :global(.wrapper_loginPasswordField .text_input[data-end-action="true"] input) {
+  padding-right: calc(40px + var(--spacing-padding-horizontal-12));
+}.newsrollScope :global(.wrapper_loginActions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: 0;
+}.newsrollScope :global(.wrapper_loginSignup) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.wrapper_socialLogin) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: 0;
+}.newsrollScope :global(.wrapper_signupAgreementList) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+}.newsrollScope :global(.wrapper_signupAgreementBody) {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.newsrollScope :global(.wrapper_signupAgreementAll) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+}.newsrollScope :global(.wrapper_authAgreementDetail) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.newsrollScope :global(.wrapper_authAgreementArticle),
+.newsrollScope :global(.wrapper_commentPanel) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: 0;
+}.newsrollScope :global(.wrapper_authAgreementSection) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+  padding: 0;
+}.newsrollScope :global(.wrapper_searchContent) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+}.newsrollScope :global(.wrapper_allTabPanelBody) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+}.newsrollScope :global(.wrapper_contentDateGroup span),
+.newsrollScope :global(.wrapper_detailDateGroup span),
+.newsrollScope :global(.wrapper_articleSourcePublisher),
+.newsrollScope :global(.field_check[data-role="chevronRow"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.wrapper_detailContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-24);
+  flex: 1 1 auto;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_detailHeader) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.wrapper_detailBody h1),
+.newsrollScope :global(.wrapper_detailHeader h1),
+.newsrollScope :global(.btn_searchResult strong),
+.newsrollScope :global(.btn_searchResult span),
+.newsrollScope :global(.text_searchResultSnippet),
+.newsrollScope :global(.text_loginLandingHero),
+.newsrollScope :global(.text_socialLoginTitle),
+.newsrollScope :global(.text_loginTitle),
+.newsrollScope :global(.text_authValidationError),
+.newsrollScope :global(.text_authValidation),
+.newsrollScope :global(.text_searchStatus),
+.newsrollScope :global(.btn_contentListItem h2),
+.newsrollScope :global(.text_mySectionTitle),
+.newsrollScope :global(.text_myTimeTitle),
+.newsrollScope :global(.text_myTimeSectionLabel),
+.newsrollScope :global(.text_myDialogTitle),
+.newsrollScope :global(.text_myKeywordDialogTitle),
+.newsrollScope :global(.text_myBlockedKeywordDescription),
+.newsrollScope :global(.text_infoHeaderTitle),
+.newsrollScope :global(.text_infoBody),
+.newsrollScope :global(.text_infoSubmitStatus),
+.newsrollScope :global(.text_panelHeaderTitle),
+.newsrollScope :global(.wrapper_authAgreementSection h2),
+.newsrollScope :global(.wrapper_authAgreementSection p),
+.newsrollScope :global(.text_authAgreementSource),
+.newsrollScope :global(.text_mySettingsDescription),
+.newsrollScope :global(.text_mySettingsDetailBody),
+.newsrollScope :global(.text_mySettingsHistoryMeta),
+.newsrollScope :global(.text_mySettingsStatus),
+.newsrollScope :global(.wrapper_mySettingsHistoryText p) {
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.container_myScreen),
+.newsrollScope:global(.screen_splash .phone) {
+  min-height: 100dvh;
+}.newsrollScope :global(.container_mySheet) {
+  min-height: calc(100dvh - 145px);
+  padding: 31px var(--spacing-padding-horizontal-16) 24px;
+}.newsrollScope :global(.container_myContent) {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--spacing-gap-vertical-24) var(--spacing-gap-horizontal-8);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myDetailControls) {
+  width: 100%;
+  min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+}.newsrollScope :global(.container_myTimePage),
+.newsrollScope :global(.container_myBookmarkPage),
+.newsrollScope :global(.container_myVotePage),
+.newsrollScope :global(.container_myCommentPage),
+.newsrollScope :global(.container_mySettingsPage),
+.newsrollScope :global(.container_myTimeSection),
+.newsrollScope :global(.container_mySettingsDetailSection),
+.newsrollScope :global(.wrapper_myBookmarkList),
+.newsrollScope :global(.wrapper_myVoteList),
+.newsrollScope :global(.wrapper_myCommentList),
+.newsrollScope :global(.wrapper_myTabbedDetailContent),
+.newsrollScope :global(.wrapper_myTimeRows),
+.newsrollScope :global(.container_myProfile),
+.newsrollScope :global(.container_myRecent),
+.newsrollScope :global(.container_myCategorySection),
+.newsrollScope :global(.container_mySettingsSection) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myVoteItem),
+.newsrollScope :global(.wrapper_myCommentItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myRecentSelectAllControls) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}.newsrollScope :global(.wrapper_myRecentSelectableItem),
+.newsrollScope :global(.wrapper_myModerationSelectableItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.container_myRecentDeleteFixed),
+.newsrollScope :global(.container_myModerationReleaseFixed) {
+  z-index: 50;
+}.newsrollScope :global(.container_myProfile) {
+  min-height: 42px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.container_mySettingsPage > .container_myCategorySection),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_home),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_hero) {
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.wrapper_myProfileGreeting) {
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.container_myKeywordOverlay) {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.container_myKeywordDialog),
+.newsrollScope :global(.wrapper_dialogContent) {
+  width: min(100%, 360px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.container_dialog) {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.form_myKeywordDialog),
+.newsrollScope :global(.wrapper_myKeywordInput) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myRecentScroller) {
+  display: flex;
+  gap: var(--spacing-gap-horizontal-24);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.newsrollScope :global(.container_myBlockedKeywordSection) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myBlockedKeywordChips) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-8);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myBlockedKeywordTab) {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-4);
+}.newsrollScope :global(.wrapper_mySettingsBottomActions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-gap-vertical-16);
+  margin-top: auto;
+  padding: 0;
+}.newsrollScope :global(.wrapper_mySettingsField) {
+  gap: var(--spacing-gap-vertical-8);
+}.newsrollScope :global(.wrapper_mySettingsHistoryItem),
+.newsrollScope :global(.container_infoContent),
+.newsrollScope :global(.container_infoPanel),
+.newsrollScope :global(.container_infoList),
+.newsrollScope :global(.wrapper_infoInquiry),
+.newsrollScope :global(.wrapper_myTabbedDetailContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_mySettingsHistoryHeader) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_myTabbedDetailContent > .wrapper_myBookmarkTabStack) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding-bottom: var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.container_homeScreen) {
+  height: 100dvh;
+  min-height: 100dvh;
+  position: relative;
+  gap: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}.newsrollScope :global(.container_home) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 0;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.container_homeScreen:not(.is_homeSheetDocked) .container_hero) {
+  gap: 0;
+}.newsrollScope :global(.container_homeScreen:not(.is_homeSheetDocked) .wrapper_hero) {
+  padding-top: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.container_homeSheet) {
+  position: absolute;
+  top: var(--newsroll-common-sheet-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  padding: 0;
+  touch-action: pan-y;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_homeSheet) {
+  bottom: var(--spacing-padding-vertical-60);
+}.newsrollScope :global(.container_homeToolbar) {
+  min-height: auto;
+  padding-top: 48px;
+}.newsrollScope :global(.container_hero) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.wrapper_hero) {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}.newsrollScope :global(.wrapper_hero strong) {
+  display: flex;
+  align-items: baseline;
+}.newsrollScope :global(.wrapper_articleMetaActions .article_meta) {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}.newsrollScope :global(.wrapper_homeDockedControls),
+.newsrollScope :global(.wrapper_commentReplyItem footer) {
+  display: flex;
+  align-items: center;
+}.newsrollScope :global(.container_newsGrid) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.wrapper_newsGridScroll) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(156px, 100%), 1fr));
+  align-content: start;
+  gap: 28px var(--spacing-gap-horizontal-16);
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  touch-action: pan-y;
+}.newsrollScope :global(.container_newsGrid_block) {
+  min-height: 0;
+}.newsrollScope :global(.container_newsGrid_block .wrapper_newsGridScroll) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}.newsrollScope :global(.container_newsFeed) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-4);
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  touch-action: pan-y;
+}.newsrollScope :global(.container_articleCard) {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+  overflow: visible;
+}.newsrollScope :global(.wrapper_articleCardContent) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  min-height: 0;
+  touch-action: pan-y;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed) {
+  overflow-y: hidden;
+  padding-bottom: 0;
+  scroll-snap-type: y mandatory;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .container_articleCard),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .container_articleCard) {
+  position: relative;
+  top: 0;
+  flex: 0 0 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail .wrapper_articleCardContent),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail .wrapper_articleCardContent) {
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.newsrollScope :global(.container_articleCard :where(h1, h2)), .newsrollScope :global(.list_detailDefinition dt), .newsrollScope :global(.list_detailDefinition dd) {
+  margin: 0;
+}.newsrollScope :global(.wrapper_articleCardContent > img) {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}.newsrollScope :global(.container_articleCard .wrapper_articleSource) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.wrapper_detailPagination) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.wrapper_articleBody) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+}.newsrollScope :global(.wrapper_articleReaction) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}.newsrollScope :global(.wrapper_articleMiniReaction) {
+  position: fixed;
+  left: 50%;
+  bottom: calc(
+    var(--newsroll-bottom-nav-clearance, var(--spacing-padding-vertical-60)) +
+      var(--spacing-gap-vertical-24)
+  );
+  z-index: 900;
+  width: max-content;
+  max-width: calc(100vw - (var(--spacing-padding-horizontal-16) * 2));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: var(--spacing-padding-vertical-16)
+    var(--spacing-padding-horizontal-24);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, var(--spacing-gap-vertical-16));
+  transition:
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+  will-change: opacity, transform;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_articleMiniReaction.is_visible) {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+  transition:
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}.newsrollScope :global(.container_commentComposerFixed) {
+  position: fixed;
+  bottom: var(--spacing-padding-vertical-60);
+  left: 50%;
+  z-index: 45;
+  width: min(100vw, var(--newsroll-max-width));
+  padding: var(--spacing-padding-vertical-16);
+}.newsrollScope :global(.wrapper_commentSummary) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+}.newsrollScope :global(.container_commentGuide) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+}.newsrollScope :global(.wrapper_commentGuideTabs),
+.newsrollScope :global(.wrapper_commentGuideComments),
+.newsrollScope :global(.ds_stack) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.wrapper_commentTabs) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  scrollbar-width: none;
+}.newsrollScope :global(.wrapper_commentTabs button) {
+  min-width: max-content;
+  min-height: 40px;
+  padding-inline: var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.wrapper_commentList) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding-bottom: var(--newsroll-comment-composer-height, 0px);
+}.newsrollScope :global(.wrapper_commentItem) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+}.newsrollScope :global(.wrapper_commentItem > header),
+.newsrollScope :global(.wrapper_commentReplyItem header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  min-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_commentMeta) {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.wrapper_commentEdit) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_commentItem > footer) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+  justify-content: space-between;
+}.newsrollScope :global(.wrapper_commentItem > footer > span),
+.newsrollScope :global(.wrapper_commentReplyItem footer > span) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.wrapper_commentReplies),
+.newsrollScope :global(.all_breaking_extra) {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+}.newsrollScope :global(.wrapper_commentRepliesInner) {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding-block: 0;
+  padding-inline: var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.container_mySheet),
+.newsrollScope :global(.info_sheet) {
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.container_newsFeed),
+.newsrollScope :global(.container_articleCard) {
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+}/*  --------------------------------------------------------------------------
+ * Component Layout Declarations
+ * --------------------------------------------------------------------------
+ */.newsrollScope :global(.btn_noticeListCardLink) {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-padding-vertical-12)
+    var(--spacing-padding-horizontal-16);
+  text-align: left;
+}.newsrollScope :global(.btn_newsCardRow) {
+  position: relative;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+  text-align: left;
+}.newsrollScope :global(.btn_newsCardList) {
+  position: relative;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  text-align: left;
+}.newsrollScope :global(.btn_newsCardList img) {
+  width: 100%;
+  height: 120px;
+}.newsrollScope :global(.btn_tab) {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: none;
+  min-width: 0;
+  flex: 0 0 auto;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: var(--spacing-padding-horizontal-16);
+  text-align: left;
+  white-space: nowrap;
+}.newsrollScope :global(.chip) {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0 var(--spacing-padding-horizontal-12);
+  white-space: nowrap;
+}.newsrollScope :global(.btn_searchResult) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-gap-vertical-4);
+  padding: 0;
+  text-align: left;
+}.newsrollScope :global(.text_searchResultSnippet) {
+  width: 100%;
+  display: -webkit-box;
+  overflow: hidden;
+}.newsrollScope :global(.btn_settingRow) {
+  width: 100%;
+  flex: 0 0 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+}.newsrollScope :global(.btn_settingRow[data-variant="link"]) {
+  width: 100%;
+  align-self: stretch;
+  padding-inline-end: var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.btn_contentAccordionTrigger) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+}.newsrollScope :global(.btn_newsCardBlock) {
+  padding: 0;
+  text-align: left;
+}.newsrollScope :global(.btn_newsCardBlock strong),
+.newsrollScope :global(.text_lineClamp2),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+  display: -webkit-box;
+  overflow: hidden;
+}.newsrollScope :global(.btn_newsCardBlock .text_createdTime),
+.newsrollScope :global(.mark_authAgreementSearch),
+.newsrollScope:global(.screen_all .text_size_button),
+.newsrollScope :global(.text_detailSummary) {
+  padding: 0;
+}.newsrollScope :global(.btn_newsCardBlock img) {
+  width: 100%;
+  aspect-ratio: 156 / 117;
+}.newsrollScope :global(.img_newsCardFeature) {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  flex: 0 0 auto;
+}.newsrollScope :global(.btn_settingRow),
+.newsrollScope :global(.btn_contentAccordionTrigger),
+.newsrollScope :global(.container_myContent),
+.newsrollScope :global(.container_myTimePage),
+.newsrollScope :global(.container_myBookmarkPage),
+.newsrollScope :global(.container_myVotePage),
+.newsrollScope :global(.container_myCommentPage),
+.newsrollScope :global(.container_infoContent),
+.newsrollScope :global(.container_infoPanel),
+.newsrollScope :global(.container_infoList),
+.newsrollScope :global(.container_myProfile),
+.newsrollScope :global(.container_myRecent),
+.newsrollScope :global(.container_myCategorySection),
+.newsrollScope :global(.container_mySettingsSection),
+.newsrollScope :global(.container_myTimeSection),
+.newsrollScope :global(.wrapper_myRecentScroller),
+.newsrollScope :global(.wrapper_mySettingsList),
+.newsrollScope :global(.wrapper_myBookmarkList),
+.newsrollScope :global(.wrapper_myVoteList),
+.newsrollScope :global(.wrapper_myCommentList),
+.newsrollScope :global(.wrapper_myTabbedDetailContent),
+.newsrollScope :global(.wrapper_myTimeRows),
+.newsrollScope :global(.wrapper_infoInquiry),
+.newsrollScope :global(.btn_myTimeRow),
+.newsrollScope :global(.btn_noticeListItem) {
+  min-width: 0;
+  max-width: 100%;
+}.newsrollScope :global(.divider) {
+  flex: 0 0 auto;
+  display: block;
+}.newsrollScope :global(.divider[data-orientation="horizontal"]) {
+  width: 100%;
+  height: var(--newsroll-divider-thickness);
+}.newsrollScope :global(.divider[data-orientation="vertical"]) {
+  width: var(--newsroll-divider-thickness);
+  min-height: 100%;
+  align-self: stretch;
+}.newsrollScope :global(.btn_iconButton:has(.badge_iconButtonUnread)) {
+  gap: 2px;
+}.newsrollScope :global(.btn_contentAccordionTrigger .text_contentAccordionTitle) {
+  width: fit-content;
+  min-width: auto;
+  max-width: calc(100% - 24px);
+  flex: 0 1 auto;
+}.newsrollScope :global(.btn_primary) {
+  width: 100%;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: var(--spacing-padding-horizontal-24);
+  white-space: nowrap;
+}.newsrollScope :global(.btn_iconButton) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.btn_iconButton[data-variant="plain"]) {
+  width: 24px;
+  height: 24px;
+}.newsrollScope :global(.btn_iconButton[data-variant="articleTool"]) {
+  width: auto;
+  height: auto;
+  line-height: 0;
+}.newsrollScope :global(.btn_iconButton[data-variant="shaped"]) {
+  width: 44px;
+  height: 44px;
+}.newsrollScope :global(.btn_iconButton[data-variant="circle"]) {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  flex: 0 0 32px;
+}.newsrollScope :global(.btn_iconButton[data-tone="primary"]:is( [data-variant="circle"], [data-variant="shaped"] )) {
+  width: 48px;
+  height: 48px;
+}.newsrollScope :global(.btn_iconButton[data-variant="bottomNav"]) {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: var(--spacing-padding-vertical-44);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  touch-action: manipulation;
+}.newsrollScope :global(.field_check) {
+  position: relative;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+  text-align: left;
+}.newsrollScope :global(.field_check[data-variant="withoutText"]) {
+  justify-content: center;
+}.newsrollScope :global(.input_check) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+}.newsrollScope :global(.field_check > span:not(.box_check)),
+.newsrollScope :global(.field_check[data-role="chevronRow"] > span:not(.box_check)) {
+  min-width: 0;
+}.newsrollScope :global(.box_check) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}.newsrollScope :global(.box_check[data-size="md"]) {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}.newsrollScope :global(.box_check[data-size="lg"]),
+.newsrollScope :global(.img_articleGuideBinaryIcon) {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+}.newsrollScope :global(.box_check.is_checked::after) {
+  width: 4px;
+  height: 8px;
+}.newsrollScope :global(.btn_chevronRow) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+}.newsrollScope :global(.btn_chevronRowArrow) {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: visible;
+}.newsrollScope :global(.icon[data-size="20"]),
+.newsrollScope :global(.icon[data-size="12"]) {
+  display: inline-block;
+  flex: 0 0 auto;
+}.newsrollScope :global(.icon[data-size="20"]) {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+}.newsrollScope :global(.icon[data-size="12"]) {
+  width: 12px;
+  height: 12px;
+  flex-basis: 12px;
+}.newsrollScope :global(.icon_image) {
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex: 0 0 22px;
+}.newsrollScope :global(.switch_newsToggle) {
+  width: 44px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  padding: 2px;
+}.newsrollScope :global(.switch_newsToggle::before),
+.newsrollScope :global(.btn_newsViewOption .icon[data-size="20"]),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .homeDockedAlarm .icon_policy),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedAlarm .icon_policy) {
+  width: 20px;
+  height: 20px;
+}.newsrollScope :global(.switch_newsToggle.is_on) {
+  justify-content: flex-end;
+}.newsrollScope :global(.btn_fieldActionButton) {
+  min-height: 40px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: var(--spacing-padding-horizontal-16);
+  white-space: nowrap;
+}.newsrollScope :global(.btn_textAction) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+  white-space: nowrap;
+}.newsrollScope :global(.btn_iconTextButton[data-size="default"]) {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-vertical-8);
+  padding: var(--spacing-padding-vertical-16)
+    var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.btn_iconTextButton[data-size="small"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+  white-space: nowrap;
+}.newsrollScope :global(.btn_pagination) {
+  width: auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: 0;
+  white-space: nowrap;
+}.newsrollScope :global(.wrapper_dropdownSelect) {
+  position: relative;
+  justify-self: start;
+}.newsrollScope :global(.wrapper_dropdownSelect[data-size="small"]) {
+  width: 60px;
+}.newsrollScope :global(.wrapper_dropdownSelect[data-size="default"]) {
+  width: 100%;
+}.newsrollScope :global(.btn_dropdownSelect) {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-4);
+}.newsrollScope :global(.btn_dropdownSelect[data-size="small"]) {
+  height: auto;
+  padding: 0;
+}.newsrollScope :global(.btn_dropdownSelect[data-size="default"]) {
+  min-height: var(--size-52);
+  padding: var(--spacing-padding-vertical-12);
+}.newsrollScope :global(.icon_dropdownArrow) {
+  width: var(--newsroll-chevron-size);
+  height: var(--newsroll-chevron-size);
+  flex: 0 0 var(--newsroll-chevron-size);
+}.newsrollScope :global(.panel_dropdown) {
+  position: absolute;
+  top: calc(100% + var(--spacing-gap-vertical-4));
+  left: 0;
+  z-index: 20;
+  overflow: hidden;
+}.newsrollScope :global(.panel_dropdown[data-align="end"]) {
+  right: 0;
+  left: auto;
+}.newsrollScope :global(.listbox_commentActionMenu) {
+  min-width: 72px;
+}.newsrollScope :global(.btn_dropdownItem) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-padding-horizontal-12);
+  text-align: left;
+  white-space: nowrap;
+}.newsrollScope :global(.btn_commentAction) {
+  position: relative;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+}.newsrollScope :global(.btn_noticeCardLink) {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: var(--spacing-padding-horizontal-16);
+  text-align: left;
+}.newsrollScope :global(.btn_noticeCardLink > .icon_policy) {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}.newsrollScope :global(.text_noticeCardTitle) {
+  min-width: 0;
+  flex: 1;
+  display: -webkit-box;
+  overflow: hidden;
+}.newsrollScope :global(.btn_articleGuideOption) {
+  position: relative;
+  overflow: hidden;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: var(--spacing-padding-vertical-12)
+    var(--spacing-padding-horizontal-16);
+  text-align: left;
+}.newsrollScope :global(.btn_articleGuideOption::before) {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  display: none;
+  inline-size: var(--article-guide-result-size, 0%);
+}.newsrollScope :global(.btn_articleGuideOption[data-result-visible="true"]::before),
+.newsrollScope :global(.text_myVoteQuestion) {
+  display: block;
+}.newsrollScope :global(.text_articleGuideOption),
+.newsrollScope :global(.text_articleGuidePercent),
+.newsrollScope :global(.img_articleGuideBinaryIcon) {
+  position: relative;
+  z-index: 1;
+}.newsrollScope :global(.text_articleGuideOption) {
+  min-width: 0;
+  white-space: nowrap;
+}.newsrollScope :global(.btn_socialLogin) {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.img_socialLoginIcon) {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: block;
+}.newsrollScope :global(.btn_newsCardFeature) {
+  width: min(78vw, 300px);
+  height: 100%;
+  min-height: 0;
+  flex: 0 0 min(78vw, 300px);
+  align-items: flex-start;
+  overflow: hidden;
+  padding-inline: 0;
+  scroll-snap-align: start;
+  text-align: left;
+}.newsrollScope :global(.text_input) {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding-inline: var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.text_input input) {
+  width: 100%;
+  min-width: 0;
+}.newsrollScope :global(.textarea) {
+  display: block;
+  width: 100%;
+  min-height: 128px;
+  padding: var(--spacing-padding-vertical-12);
+}.newsrollScope :global(.field_check[data-role="autoLogin"]) {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+  text-align: left;
+}.newsrollScope :global(.field_check[data-role="agreementAll"]) {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+}.newsrollScope :global(.field_check[data-role="selectAll"]),
+.newsrollScope :global(.btn_myLogout) {
+  align-self: flex-start;
+}.newsrollScope :global(.field_check[data-role="selectionItem"]) {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin-top: var(--spacing-padding-vertical-4);
+}.newsrollScope :global(.icon_myChevron),
+.newsrollScope :global(.icon_contentAccordionChevron) {
+  width: var(--newsroll-chevron-size);
+  height: var(--newsroll-chevron-size);
+  display: block;
+  flex: 0 0 var(--newsroll-chevron-size);
+  padding: 0;
+}.newsrollScope :global(.textarea[data-variant="inquiry"]) {
+  width: 100%;
+  min-height: 196px;
+  padding: var(--spacing-padding-vertical-12);
+}.newsrollScope :global(.textarea[data-variant="commentEdit"]) {
+  width: 100%;
+  min-height: 96px;
+}.newsrollScope :global(.badge_iconButtonUnread) {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+}.newsrollScope :global(.all_breaking_label) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.all_breaking_stack) {
+  display: grid;
+  padding-top: 0;
+  padding-bottom: 0;
+  gap: var(--spacing-gap-vertical-24);
+}.newsrollScope :global(.btn_moreAction) {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  min-height: 48px;
+}.newsrollScope :global(.icon_moreActionChevron) {
+  width: var(--newsroll-chevron-size);
+  height: var(--newsroll-chevron-size);
+  flex: 0 0 var(--newsroll-chevron-size);
+}.newsrollScope :global(.all_panel) {
+  overflow: hidden;
+  padding-right: var(--spacing-padding-horizontal-16);
+  padding-left: var(--spacing-padding-horizontal-16);
+  flex: 0 0 auto;
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.all_latest_panel) {
+  height: var(--newsroll-all-latest-panel-height);
+  min-height: 0;
+  max-height: var(--newsroll-all-latest-panel-height);
+  overflow: hidden;
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4)
+  );
+}.newsrollScope :global(.all_latest_scroller),
+.newsrollScope :global(.all_category_tabs) {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}.newsrollScope :global(.all_latest_scroller) {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-gap-horizontal-24);
+  align-items: stretch;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-y;
+}.newsrollScope :global(.all_category_tabs button) {
+  min-width: var(--spacing-padding-horizontal-60);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: var(--spacing-padding-vertical-32);
+  flex: 0 0 auto;
+  min-height: var(--spacing-padding-vertical-32);
+  padding-inline: var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.all_pressHeadline_logo) {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+}.newsrollScope :global(.all_category_tabs) {
+  gap: var(--spacing-gap-horizontal-8);
+  min-height: var(--spacing-padding-vertical-32);
+  align-items: center;
+}.newsrollScope:global(.screen) {
+  min-height: 100dvh;
+  display: flex;
+  overflow-x: hidden;
+  justify-content: center;
+  align-items: flex-start;
+  padding-inline: 0;
+}.newsrollScope:global(.screen_home),
+.newsrollScope:global(.screen_splash) {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}.newsrollScope :global(.phone) {
+  position: relative;
+  width: min(100%, 768px);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: visible;
+}.newsrollScope :global(.box_newsrollSplashLogo) {
+  width: clamp(112px, 30vw, 154px);
+  height: auto;
+  display: block;
+  aspect-ratio: 90 / 57;
+}.newsrollScope :global(.header) {
+  display: flex;
+  flex-direction: column;
+  min-height: 110px;
+  padding: 0 var(--spacing-padding-horizontal-16);
+  gap: 0;
+}.newsrollScope :global(.text_size_button) {
+  min-width: var(--spacing-padding-horizontal-24);
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-gap-horizontal-4);
+  padding: var(--spacing-padding-vertical-4);
+}.newsrollScope :global(.intro) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.metric) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-4);
+}.newsrollScope :global(.metric_line) {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-gap-horizontal-4);
+}.newsrollScope :global(.breaking_card) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: var(--spacing-padding-horizontal-16);
+  text-align: left;
+}.newsrollScope :global(.breaking_card > span:nth-child(2)) {
+  min-width: 0;
+  flex: 1;
+}.newsrollScope :global(.breaking_icon) {
+  width: var(--spacing-padding-horizontal-40);
+  height: var(--spacing-padding-vertical-40);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}.newsrollScope :global(.feed) {
+  gap: var(--spacing-gap-vertical-4);
+  padding-top: var(--spacing-gap-vertical-20);
+  position: relative;
+  left: calc(var(--spacing-padding-horizontal-16) * -1);
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  width: 100%;
+  display: none;
+}.newsrollScope :global(.article_card) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-32)
+    var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.article_heading) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.category_chip) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: var(--spacing-padding-vertical-32);
+  padding-inline: var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.article_actions) {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.article_media) {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  aspect-ratio: 16 / 9;
+}.newsrollScope :global(.article_media img) {
+  width: 100%;
+  height: 100%;
+}.newsrollScope :global(.article_media span) {
+  position: absolute;
+  right: var(--spacing-padding-horizontal-12);
+  bottom: var(--spacing-padding-vertical-12);
+  padding: var(--spacing-padding-vertical-4) var(--spacing-padding-horizontal-8);
+}.newsrollScope :global(.reaction_summary) {
+  width: fit-content;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: var(--spacing-padding-vertical-16)
+    var(--spacing-padding-horizontal-24);
+}.newsrollScope :global(.reaction_item) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.vote_dot) {
+  width: calc(
+    var(--spacing-padding-horizontal-16) + var(--spacing-padding-horizontal-4)
+  );
+  height: calc(
+    var(--spacing-padding-vertical-16) + var(--spacing-padding-vertical-4)
+  );
+}.newsrollScope :global(.bottom_nav) {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 1000;
+  width: 100vw;
+  height: var(--spacing-padding-vertical-60);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  gap: 0;
+  padding-inline: 0;
+}.newsrollScope :global(.ds_inline_stack) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-gap-horizontal-8);
+  align-items: center;
+}.newsrollScope :global(.tab_group) {
+  display: inline-flex;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.badge),
+.newsrollScope :global(.search_close) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}.newsrollScope :global(.badge_small) {
+  padding: var(--spacing-padding-vertical-4) var(--spacing-padding-horizontal-8);
+}.newsrollScope :global(.badge_medium) {
+  padding: var(--spacing-padding-vertical-4) 10px;
+}.newsrollScope :global(.card) {
+  padding: var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.table_wrap) {
+  overflow-x: auto;
+}.newsrollScope :global(.data_table) {
+  width: 100%;
+  min-width: 640px;
+}.newsrollScope :global(.data_table th),
+.newsrollScope :global(.data_table td) {
+  padding: var(--spacing-padding-vertical-12)
+    var(--spacing-padding-horizontal-16);
+  text-align: left;
+  vertical-align: middle;
+}.newsrollScope :global(.toolbar) {
+  min-height: var(--spacing-padding-vertical-32);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.toolbar_icon) {
+  width: var(--spacing-padding-horizontal-24);
+  height: var(--spacing-padding-vertical-24);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.sr_only) {
+  position: absolute;
+  width: var(--border-1);
+  height: var(--border-1);
+  overflow: hidden;
+  white-space: nowrap;
+}.newsrollScope :global(.search_page) {
+  min-height: 100dvh;
+  padding: 48px var(--spacing-padding-horizontal-16)
+    var(--spacing-padding-vertical-60);
+  padding-right: var(--spacing-padding-horizontal-16);
+  padding-left: var(--spacing-padding-horizontal-16);
+  position: static;
+  left: auto;
+  width: 100%;
+  gap: var(--spacing-gap-vertical-16);
+  padding-top: 48px;
+}.newsrollScope :global(.search_top) {
+  width: 100%;
+  padding: 0 0 var(--spacing-padding-vertical-24);
+  position: sticky;
+  top: var(--spacing-padding-vertical-48);
+  z-index: 2;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-16);
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: var(--spacing-padding-vertical-24);
+}.newsrollScope:global(.screen_login) {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}.newsrollScope:global(.screen_login .phone) {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.form_signupStep) {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.newsrollScope :global(.text_signupVerificationTimer) {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.btn_loginPasswordToggle) {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-padding-horizontal-12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.form_searchComposer) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.list_searchResults) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: 0;
+}.newsrollScope :global(.list_notificationResults),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_breakingHeader) {
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope:global(.screen_all) {
+  padding-inline: 0;
+  justify-content: center;
+  align-items: flex-start;
+}.newsrollScope:global(.screen_all .phone) {
+  overflow: visible;
+  width: min(100%, var(--newsroll-max-width));
+  overflow-x: hidden;
+}.newsrollScope:global(.screen_all .bottom_nav) {
+  z-index: 1000;
+  left: 50%;
+  width: 100vw;
+}.newsrollScope :global(.all_panelContent) {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}.newsrollScope :global(.all_panelContentFlush) {
+  gap: 0;
+}.newsrollScope :global(.all_press_panel .text_sectionTitle),
+.newsrollScope :global(.all_relay_panel .text_sectionTitle) {
+  padding-bottom: var(--spacing-gap-vertical-24);
+}.newsrollScope :global(.all_itemDivider) {
+  width: 100%;
+  height: var(--newsroll-divider-thickness);
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.all_latest_panel .all_panelContent),
+.newsrollScope :global(.all_latest_panel .wrapper_panelContent) {
+  overflow: hidden;
+}.newsrollScope :global(.all_press_panel) {
+  min-height: 765px;
+}.newsrollScope :global(.all_relay_panel) {
+  min-height: 2011px;
+}.newsrollScope :global(.all_latest_scroller.is_dragging) {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}.newsrollScope :global(.btn_detailBack) {
+  width: var(--size-44);
+  height: var(--size-44);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}.newsrollScope :global(.phone),
+.newsrollScope:global(.screen_all .phone) {
+  overflow: hidden;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}.newsrollScope :global(.policy_screen) {
+  min-height: 100dvh;
+  padding-bottom: var(--spacing-padding-vertical-60);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+}.newsrollScope :global(.policy_sheet) {
+  min-height: calc(100dvh - 442px);
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.policy_age_tabs) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: 0 0 auto;
+  min-height: var(--spacing-padding-vertical-32);
+  padding-bottom: var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.policy_listContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}.newsrollScope :global(.policy_listSection) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  min-width: 0;
+}.newsrollScope :global(.policy_items) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding-top: 0;
+}.newsrollScope :global(.btn_contentListItem) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}.newsrollScope :global(.btn_contentListItem + .btn_contentListItem),
+.newsrollScope :global(.all_breakingHeader .btn_contentAction[data-tone="dark"]),
+.newsrollScope :global(.headerTop > .toolbar),
+.newsrollScope :global(.policy_items),
+.newsrollScope :global(.container_myRecent),
+.newsrollScope :global(.wrapper_myRecentScroller) {
+  padding-top: 0;
+}.newsrollScope :global(.list_detailDefinition) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.list_detailDefinition div) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.text_myCommentCreatedDate) {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.divider_mySection),
+.newsrollScope :global(.divider_listItem) {
+  margin: 0;
+  padding: 0;
+  height: var(--border-1);
+}.newsrollScope :global(.my_summary_icon) {
+  width: 24px;
+  height: 24px;
+  display: block;
+  position: relative;
+}.newsrollScope :global(.my_summary_bookmark::before) {
+  position: absolute;
+  inset: 3px 6px 2px;
+}.newsrollScope :global(.my_summary_bookmark::after) {
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  bottom: 2px;
+  height: 9px;
+}.newsrollScope :global(.my_summary_vote::before) {
+  position: absolute;
+  inset: 5px 5px 3px;
+}.newsrollScope :global(.my_summary_vote::after) {
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  width: 11px;
+  height: 11px;
+}.newsrollScope :global(.my_summary_comment::before) {
+  position: absolute;
+  inset: 4px 3px 6px;
+}.newsrollScope :global(.my_summary_comment::after) {
+  position: absolute;
+  left: 7px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+}.newsrollScope :global(.tab_myCategoryMenu) {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-gap-horizontal-8);
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.newsrollScope :global(.tab_myCategoryMenu button),
+.newsrollScope :global(.tab_myBlockedKeywordMenu .btn_tab) {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.tab_myBlockedKeywordMenu) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.btn_myTimeRow) {
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+}.newsrollScope :global(.info_screen) {
+  min-height: 100dvh;
+  padding-bottom: var(--spacing-padding-vertical-60);
+}.newsrollScope :global(.info_sheet) {
+  min-height: calc(100dvh - 145px);
+  padding: var(--spacing-padding-vertical-32)
+    var(--spacing-padding-horizontal-16)
+    calc(
+      var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+    );
+}.newsrollScope :global(.info_screen .tab_myCategoryMenu),
+.newsrollScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
+.newsrollScope :global(.container_myVotePage > .tab_myCategoryMenu),
+.newsrollScope :global(.container_myCommentPage > .tab_myCategoryMenu),
+.newsrollScope :global(.wrapper_myTabbedDetailContent > .tab_myCategoryMenu) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-height: calc(var(--size-52) + var(--spacing-padding-vertical-24));
+  padding-top: 0;
+  padding-bottom: var(--spacing-padding-vertical-24);
+  overflow-y: visible;
+}.newsrollScope :global(.divider_infoSection),
+.newsrollScope :global(.divider_listItem) {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+}.newsrollScope :global(.btn_noticeListItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.text_contentAccordionBody) {
+  padding-inline-start: var(--spacing-padding-horizontal-24);
+}.newsrollScope :global(.wrapper_contentAccordionBodyMotion) {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--newsroll-docked-pop-motion-duration, 260ms);
+}.newsrollScope :global(.container_contentAccordion[data-state="open"] .wrapper_contentAccordionBodyMotion) {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    grid-template-rows var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    opacity var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    transform var(--newsroll-docked-pop-motion-duration, 260ms)
+      var(--newsroll-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}.newsrollScope :global(.wrapper_contentAccordionBodyInner) {
+  min-height: 0;
+  overflow: hidden;
+}.newsrollScope :global(.headerTop .toolbar) {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.headerTop .text_size_button) {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.headerTop .toolbar [aria-label="메뉴"]) {
+  position: relative;
+}.newsrollScope :global(.headerTop .toolbar [aria-label="메뉴"]::before) {
+  position: absolute;
+  top: 7px;
+  left: -6px;
+  width: 5px;
+  height: 5px;
+}.newsrollScope :global(.common_layout),
+.newsrollScope :global(.common_top),
+.newsrollScope :global(.common_sheet) {
+  min-width: 0;
+}.newsrollScope :global(.sheetFrame) {
+  height: 100dvh;
+  min-height: 100dvh;
+  position: relative;
+  gap: 0;
+  overflow: hidden;
+}.newsrollScope :global(.sheetFrameTop) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 0;
+}.newsrollScope :global(.sheetFrameSheet) {
+  position: absolute;
+  top: var(--newsroll-common-sheet-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .sheetFrameSheet) {
+  bottom: var(--newsroll-bottom-nav-clearance);
+}.newsrollScope :global(.headerTop) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.all_breakingHeader) {
+  width: 100%;
+}.newsrollScope :global(.all_breakingBody) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.all_breakingHeader .all_breaking_stack) {
+  gap: var(--spacing-gap-vertical-4);
+  padding-top: 0;
+}.newsrollScope :global(.all_breaking_extraInner) {
+  display: grid;
+  min-height: 0;
+  gap: var(--spacing-gap-vertical-4);
+  overflow: hidden;
+}.newsrollScope :global(.all_breakingBody[data-expanded="true"] .all_breaking_extra),
+.newsrollScope :global(.wrapper_commentReplies.is_open) {
+  grid-template-rows: 1fr;
+}.newsrollScope :global(.all_breakingHeader .btn_moreAction),
+.newsrollScope :global(.all_press_panel .btn_moreAction) {
+  min-height: 48px;
+}.newsrollScope :global(.all_sheetFrameSheet) {
+  overflow-y: hidden;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_feed .all_panel),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_feed .all_panel) {
+  position: relative;
+  top: 0;
+  flex: 0 0 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scroll-margin-top: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_panelContent) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_feed .all_latest_panel),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_feed .all_latest_panel) {
+  align-self: stretch;
+  flex: 0 0 auto;
+  height: var(--newsroll-all-latest-panel-height);
+  max-height: var(--newsroll-all-latest-panel-height);
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_latest_scroller) {
+  touch-action: pan-x;
+}.newsrollScope :global(.icon_moreAction) {
+  width: var(--newsroll-chevron-size);
+  height: var(--newsroll-chevron-size);
+  flex: 0 0 var(--newsroll-chevron-size);
+}.newsrollScope :global(.article_meta) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  margin: 0;
+}.newsrollScope :global(.sheetFrame .allDockedControls),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_breaking_label),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .all_breakingBody) {
+  display: none;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .allDockedControls) {
+  width: 100%;
+  max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  display: flex;
+  justify-content: flex-end;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .panelHeaderRow) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .allDockedControls.is_detailOpen),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .allDockedControls.is_detailOpen) {
+  justify-content: space-between;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .homeDockedAlarm),
+.newsrollScope :global(.container_homeScreen .container_hero .homeDockedAlarm),
+.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedAlarm) {
+  display: inline-flex;
+}.newsrollScope :global(.btn_newsViewOption) {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.bottom_nav),
+.newsrollScope:global(.screen_all .bottom_nav) {
+  left: 50%;
+  width: 100vw;
+  height: var(--spacing-padding-vertical-60);
+  gap: 0;
+  padding-inline: 0;
+}.newsrollScope :global(.emptyFrameCard) {
+  flex: 1 1 auto;
+  min-height: 100%;
+}.newsrollScope :global(.homeStateCard) {
+  flex: 1 1 auto;
+  min-height: 0;
+}.newsrollScope :global(.homeStateContent) {
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  text-align: center;
+}.newsrollScope :global(.divider_articleSource) {
+  width: var(--newsroll-divider-thickness);
+  min-height: var(--spacing-gap-vertical-12);
+  height: var(--spacing-gap-vertical-12);
+  align-self: center;
+}.newsrollScope :global(.img_articlePublisherLogo) {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex: 0 0 auto;
+}.newsrollScope :global(.divider_detailActions) {
+  width: 100%;
+  flex: 0 0 auto;
+}.newsrollScope :global(.form_commentComposer) {
+  position: relative;
+  display: flex;
+  align-items: center;
+}.newsrollScope :global(.form_commentComposer .btn_commentSubmit) {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-padding-horizontal-12);
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.newsrollScope :global(.divider_commentItem) {
+  display: block;
+  width: 100%;
+}.newsrollScope :global(.listbox_commentAction) {
+  min-width: 48px;
+}.newsrollScope :global(.search_top .toolbar_icon) {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}.newsrollScope:global(.screen_home .phone) {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}.newsrollScope:global(.screen),
+.newsrollScope:global(.screen_all) {
+  width: 100%;
+  max-width: none;
+  padding-right: 0;
+  padding-left: 0;
+}.newsrollScope :global(.info_screen),
+.newsrollScope :global(.info_sheet) {
+  display: flex;
+  flex-direction: column;
+}.newsrollScope:global(.screen_panel),
+.newsrollScope:global(.screen_panel .phone) {
+  height: 100dvh;
+  min-height: 0;
+  max-height: 100dvh;
+  overflow: hidden;
+}.newsrollScope :global(.page_feed) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}.newsrollScope :global(.page_panel) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  overflow: hidden;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.page_panelContent) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .page_panelContent),
+.newsrollScope :global(.policy_screen .page_panelContent) {
+  overflow-y: auto;
+}.newsrollScope :global(.all_tabSticky) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-height: calc(var(--size-52) + var(--spacing-padding-vertical-24));
+  padding-top: 0;
+  padding-bottom: var(--spacing-padding-vertical-24);
+  overflow-y: visible;
+}.newsrollScope :global(.all_pressHeadline_tabScroller) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.newsrollScope :global(.all_category_tabSticky .all_category_tabs) {
+  width: 100%;
+  min-height: var(--spacing-padding-vertical-32);
+  overflow-x: auto;
+  overflow-y: hidden;
+}.newsrollScope :global(.all_category_tabSticky) {
+  min-height: calc(
+    var(--spacing-padding-vertical-32) + var(--spacing-padding-vertical-24)
+  );
+}.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+  min-width: auto;
+  height: var(--size-52);
+  min-height: var(--size-52);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_logo) {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}.newsrollScope :global(.all_category_tabs button),
+.newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+  min-width: 0;
+  min-height: 40px;
+  padding-inline: var(--spacing-padding-horizontal-16);
+}.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(1)) {
+  z-index: 30;
+}.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(2)) {
+  z-index: 29;
+}.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(3)) {
+  z-index: 28;
+}.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(4)) {
+  z-index: 27;
+}.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(5)) {
+  z-index: 26;
+}.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(n + 6)) {
+  z-index: 25;
+}.newsrollScope :global(.img_newsCardThumbnail) {
+  width: auto;
+  height: 80px;
+  aspect-ratio: 4 / 3;
+}.newsrollScope :global(.all_breaking_label .icon[data-size="20"]),
+.newsrollScope :global(.all_breaking_label .icon_policy) {
+  width: var(--spacing-padding-horizontal-24);
+  height: var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.form_commentComposer .text_input) {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--spacing-padding-horizontal-12);
+}.newsrollScope :global(.form_commentComposer .text_input input) {
+  width: 100%;
+  min-width: 0;
+  padding-right: calc(
+    var(--spacing-padding-horizontal-12) + var(--spacing-gap-horizontal-12)
+  );
+}.newsrollScope :global(.toolbar_icon:has(.badge_iconButtonUnread)) {
+  width: auto;
+  min-width: calc(5px + 2px + var(--spacing-padding-horizontal-24));
+}.newsrollScope :global(.container_authLayout .btn_authBack) {
+  position: absolute;
+  top: var(--spacing-padding-vertical-48);
+  left: var(--spacing-padding-horizontal-16);
+  z-index: 2;
+}.newsrollScope :global(.form_login),
+.newsrollScope :global(.wrapper_loginInputs) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}.newsrollScope :global(.container_mySettingsPage.is_mySettingsNestedDetail),
+.newsrollScope :global(.container_mySettingsPage.is_mySettingsAccountEdit) {
+  flex: 1 1 auto;
+  min-height: 100%;
+}.newsrollScope :global(.container_myProfile button:not(.btn_iconButton)) {
+  min-width: 119px;
+  min-height: 42px;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.newsrollScope :global(.wrapper_myActivity),
+.newsrollScope :global(.divider_mySection),
+.newsrollScope :global(.divider_listItem),
+.newsrollScope :global(.tab_myCategoryMenu),
+.newsrollScope :global(.container_myBlockedKeywordSection),
+.newsrollScope :global(.btn_myTimeRow) {
+  width: 100%;
+  flex: 0 0 auto;
+}.newsrollScope :global(.form_mySettingsDetail),
+.newsrollScope :global(.wrapper_mySettingsDetailBody),
+.newsrollScope :global(.wrapper_mySettingsField) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.sheetFrame.container_authAgreementScreen.is_newsrollSheetDocked .sheetFrameSheet) {
+  bottom: 0;
+}.newsrollScope :global(.container_newsFeed.all_feed) {
+  flex: 1 1 auto;
+  height: 100%;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed.all_feed),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed.all_feed) {
+  align-content: flex-start;
+  justify-content: flex-start;
+  overflow-y: hidden;
+  padding-bottom: 0;
+  scroll-padding-top: 0;
+  scroll-snap-type: y mandatory;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail) {
+  height: 100%;
+  overflow-y: hidden;
+  padding-bottom: 0;
+}.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail .container_articleCard),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .container_newsFeed_detail .container_articleCard) {
+  flex: 0 0 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}.newsrollScope :global(.container_homeScreen .homeDockedMotion) {
+  width: 100%;
+  max-height: 0;
+  min-height: 0;
+  overflow: visible;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_homeDockedControls),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .dockedControls.is_detailOpen),
+.newsrollScope :global(.sheetFrame.is_newsrollSheetDocked .dockedControls.is_detailOpen) {
+  width: 100%;
+  min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  justify-content: space-between;
+}.newsrollScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedMotion) {
+  max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+}.newsrollScope :global(.container_newsFeed.is_emptyState) {
+  padding-bottom: 0;
+}.newsrollScope :global(.wrapper_commentReplies.is_open .wrapper_commentRepliesInner) {
+  padding-block: var(--spacing-padding-vertical-24);
+}.newsrollScope :global(.policy_screen),
+.newsrollScope :global(.container_myScreen),
+.newsrollScope :global(.info_screen),
+.newsrollScope :global(.search_page) {
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+}.newsrollScope :global(.container_myScreen),
+.newsrollScope :global(.info_screen),
+.newsrollScope :global(.search_page) {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-gap-vertical-40);
+}.newsrollScope :global(.container_homeScreen),
+.newsrollScope :global(.container_home),
+.newsrollScope :global(.container_homeSheet),
+.newsrollScope :global(.policy_screen),
+.newsrollScope :global(.container_myScreen),
+.newsrollScope :global(.info_screen),
+.newsrollScope :global(.search_page),
+.newsrollScope :global(.container_newsGrid),
+.newsrollScope :global(.container_newsFeed),
+.newsrollScope :global(.container_articleCard),
+.newsrollScope :global(.all_panel),
+.newsrollScope :global(.policy_sheet),
+.newsrollScope :global(.container_mySheet),
+.newsrollScope :global(.info_sheet) {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}.newsrollScope :global(.sheetFrame.policy_screen),
+.newsrollScope :global(.sheetFrame.container_myScreen),
+.newsrollScope :global(.sheetFrame.info_screen) {
+  display: block;
+  align-content: normal;
+  gap: 0;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  padding-bottom: 0;
+  overflow: hidden;
+}.newsrollScope :global(.sheetFrame.policy_screen .sheetFrameSheet),
+.newsrollScope :global(.sheetFrame.container_myScreen .container_mySheet),
+.newsrollScope :global(.sheetFrame.info_screen .sheetFrameSheet) {
+  bottom: var(--newsroll-bottom-nav-clearance);
+  display: flex;
+  flex-direction: column;
+  height: calc(
+    100dvh - var(--newsroll-common-sheet-top) -
+      var(--newsroll-bottom-nav-clearance)
+  );
+  min-height: 0;
+  max-height: calc(
+    100dvh - var(--newsroll-common-sheet-top) -
+      var(--newsroll-bottom-nav-clearance)
+  );
+  padding: 0;
+  overflow: hidden;
+}.newsrollScope :global(.common_layout.is_newsrollSheetHandoffLocked .wrapper_articleCardContent),
+.newsrollScope :global(.common_layout.is_newsrollSheetHandoffLocked .all_panelContent),
+.newsrollScope :global(.common_layout.is_newsrollSheetHandoffLocked .page_panelContent) {
+  overflow-y: hidden;
+}@media (max-width: 430px) {
+  .newsrollScope :global(.header) {
+    padding-top: var(--spacing-padding-vertical-24);
+  }
+  .newsrollScope :global(.bottom_nav) {
+    padding-inline: 0;
+  }
+}.newsrollScope :global(.wrapper_contentMeta),
+.newsrollScope :global(.wrapper_fieldStack) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+}.newsrollScope :global(.wrapper_socialLoginGroup),
+.newsrollScope :global(.wrapper_socialLoginOptions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}.newsrollScope :global(.wrapper_contentTagGroup),
+.newsrollScope :global(.wrapper_detailTagGroup) {
+  display: flex;
+  flex-wrap: wrap;
+}.newsrollScope :global(.wrapper_contentDateGroup),
+.newsrollScope :global(.wrapper_detailDateGroup) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-top: 0;
+}.newsrollScope :global(.wrapper_actionGroup),
+.newsrollScope :global(.wrapper_articleActions) {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-8);
+}.newsrollScope :global(.container_articleCard .text_articleBody) {
+  margin: 0;
+  white-space: pre-line;
+  text-align: justify;
+}/* From src/app/styles/the component section
+ *//* Component visuals for elements whose layout is owned by the layout section. *//* Created-time, dropdown, and notice-list component visuals. */.newsrollScope :global(.btn_noticeListCardLink) {
+  border-radius: var(--radius-20);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_createdTime) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}/* End created-time, dropdown, and notice-list component visuals. *//* Core reusable component visuals. */.newsrollScope :global(.btn_newsCardRow),
+.newsrollScope :global(.btn_newsCardList) {
+  border: 0;
+  background: transparent;
+}.newsrollScope :global(.img_newsCardThumbnail),
+.newsrollScope :global(.btn_newsCardList img) {
+  border-radius: var(--radius-8);
+  object-fit: cover;
+}.newsrollScope :global(.btn_tab) {
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-label-neutral);
+  background: transparent;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+  cursor: pointer;
+}.newsrollScope :global(.btn_tab[aria-selected="true"]),
+.newsrollScope :global(.btn_tab[data-state="active"]),
+.newsrollScope :global(.btn_tab[data-state="selected"]) {
+  color: var(--color-common-100);
+  background: var(--color-common-0);
+  border-color: var(--color-common-0);
+}.newsrollScope :global(.btn_tab:disabled),
+.newsrollScope :global(.btn_tab[aria-disabled="true"]),
+.newsrollScope :global(.btn_primary:disabled),
+.newsrollScope :global(.btn_primary[aria-disabled="true"]),
+.newsrollScope :global(.btn_fieldActionButton[data-tone="white"]:disabled) {
+  cursor: default;
+  color: var(--color-label-disable);
+  background: var(--color-interaction-disable);
+  border-color: var(--color-line-normal-neutral);
+}.newsrollScope :global(.chip) {
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-cool-neutral-96);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+  cursor: default;
+}.newsrollScope :global(.btn_searchResult) {
+  border: 0;
+  color: var(--color-common-100);
+  background: transparent;
+}.newsrollScope :global(.btn_searchResult strong) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.btn_searchResult span),
+.newsrollScope :global(.text_searchResultSnippet) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_searchResultSnippet) {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}.newsrollScope :global(.btn_settingRow) {
+  color: var(--app-text);
+  background: transparent;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_mySettingLabel) {
+  color: inherit;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_contentAccordionTitle) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.btn_contentAccordionTrigger) {
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  list-style: none;
+}.newsrollScope :global(.btn_contentAccordionTrigger::marker) {
+  content: "";
+}.newsrollScope :global(.btn_newsCardBlock) {
+  color: inherit;
+  background: transparent;
+}.newsrollScope :global(.btn_newsCardBlock strong),
+.newsrollScope :global(.btn_newsCardList strong),
+.newsrollScope :global(.btn_newsCardFeature > .wrapper_contentMeta > strong),
+.newsrollScope :global(.btn_newsCardRow > .wrapper_contentMeta > strong),
+.newsrollScope :global(.btn_contentListItem .wrapper_contentMeta :where(h1, h2)),
+.newsrollScope :global(.wrapper_contentMeta > :where(h1, h2)) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}.newsrollScope :global(.btn_newsCardBlock .text_createdTime) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_newsCardBlock img) {
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: var(--shadow-1);
+}.newsrollScope :global(.img_newsCardFeature) {
+  border-radius: 10px;
+  object-fit: cover;
+}.newsrollScope :global(.divider) {
+    background: var(--newsroll-divider-color);
+    pointer-events: none;
+}.newsrollScope :global(.btn_contentAccordionTrigger .text_contentAccordionTitle) {
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}/* End core reusable component visuals. *//* Button: PrimaryButton */.newsrollScope :global(.btn_primary) {
+  border: 0;
+  border-radius: var(--radius-8);
+  color: var(--color-common-0);
+  background: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+  appearance: none;
+  cursor: pointer;
+  text-decoration: none;
+}.newsrollScope :global(.btn_primary_danger) {
+  color: var(--color-common-100);
+  background: var(--color-red-50);
+}.newsrollScope :global(.btn_primary_neutral) {
+  color: var(--color-common-0);
+  background: var(--color-cool-neutral-90);
+}.newsrollScope :global(.btn_primary_danger:active),
+.newsrollScope :global(.btn_primary_danger[aria-pressed="true"]) {
+  color: var(--color-common-100);
+  background: var(--color-red-40);
+}/* Button: PrimaryButtonGroup *//* Button: IconButton */.newsrollScope :global(.btn_iconButton),
+.newsrollScope :global(.btn_chevronRowArrow) {
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}.newsrollScope :global(.btn_iconButton[data-variant="shaped"]) {
+  border-radius: var(--radius-full);
+}.newsrollScope :global(.btn_iconButton[data-variant="circle"]) {
+  border: var(--border-1) solid var(--newsroll-divider-color);
+  border-radius: var(--radius-full);
+  color: var(--app-text);
+  background: var(--app-surface);
+}.newsrollScope :global(.btn_iconButton[data-tone="primary"]:is([data-variant="circle"], [data-variant="shaped"])) {
+  border: var(--border-1) solid var(--color-newsroll-purple-50);
+  color: var(--color-common-0);
+  background: var(--color-newsroll-purple-50);
+}.newsrollScope :global(.btn_iconButton[data-tone="neutral"]:is([data-variant="circle"], [data-variant="shaped"])) {
+  border-color: var(--newsroll-divider-color);
+  color: var(--app-text);
+  background: var(--app-surface);
+}.newsrollScope :global(.btn_iconButton[data-tone="danger"]:is([data-variant="circle"], [data-variant="shaped"])) {
+  border-color: var(--color-red-50);
+  color: var(--color-red-50);
+  background: var(--app-surface);
+}.newsrollScope :global(.btn_iconButton[data-tone="translucent"]:is([data-variant="circle"], [data-variant="shaped"])),
+.newsrollScope :global(.noticeCardLink_notificationRead) {
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+}.newsrollScope :global(.btn_iconButton[data-variant="bottomNav"]) {
+  color: var(--app-text);
+  pointer-events: auto;
+}.newsrollScope :global(.btn_iconButton[data-variant="bottomNav"][aria-current="page"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="comment"] .icon[data-size="20"]) {
+  color: var(--color-newsroll-purple-50);
+}/* Input: CheckInput */.newsrollScope :global(.field_check) {
+  border: 0;
+  color: var(--color-common-100);
+  background: transparent;
+  cursor: pointer;
+}.newsrollScope :global(.input_check) {
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}.newsrollScope :global(.field_check:has(.input_check:focus-visible)) {
+  outline: var(--border-2) solid currentColor;
+  outline-offset: var(--spacing-gap-vertical-4);
+}.newsrollScope :global(.field_check:has(.input_check:disabled)),
+.newsrollScope :global(.btn_chevronRow[data-row-type="checkbox"]) {
+  cursor: default;
+}.newsrollScope :global(.field_check[data-size='md'] > span:not(.box_check)) {
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.field_check[data-size='lg'] > span:not(.box_check)) {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.box_check) {
+  border: var(--border-1) solid var(--color-common-100);
+  border-radius: var(--radius-full);
+  color: var(--color-newsroll-purple-20);
+  background: transparent;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-16);
+}.newsrollScope :global(.box_check[data-size='md']) {
+  font-size: var(--font-size-10);
+  line-height: var(--line-height-16);
+}.newsrollScope :global(.box_check[data-size='lg']) {
+  font-size: var(--font-size-12);
+}.newsrollScope :global(.box_check.is_checked),
+.newsrollScope :global(.noticeCardLink_notificationUnread) {
+  background: var(--color-common-100);
+}.newsrollScope :global(.box_check.is_checked::after) {
+  content: "";
+  border: solid currentColor;
+  border-width: 0 var(--border-2) var(--border-2) 0;
+  transform: rotate(45deg) translateY(-1px);
+}/* Button: ChevronRowButton */.newsrollScope :global(.btn_chevronRow) {
+  border: 0;
+  color: inherit;
+  background: transparent;
+}.newsrollScope :global(.btn_chevronRow[data-row-type="default"]),
+.newsrollScope :global(.field_check[data-role='chevronRow']) {
+  cursor: pointer;
+}.newsrollScope :global(.field_check[data-role='chevronRow']:has(.input_check:focus-visible)) {
+  outline: var(--border-2) solid var(--color-newsroll-purple-50);
+  outline-offset: 2px;
+}.newsrollScope :global(.field_check[data-role='chevronRow'] > span:not(.box_check)) {
+  color: inherit;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_chevronRowArrow:disabled),
+.newsrollScope :global(.field_check[data-role='chevronRow']:has(.input_check:disabled)) {
+  cursor: default;
+  opacity: 0.5;
+}/* Icon: shared mask sizes */.newsrollScope :global(.icon[data-size="20"]),
+.newsrollScope :global(.icon[data-size="12"]) {
+  background: currentColor;
+  -webkit-mask: var(--icon-url, var(--icon-outline-url))
+    center / contain no-repeat;
+  mask: var(--icon-url, var(--icon-outline-url)) center /
+    contain no-repeat;
+}.newsrollScope :global(.icon_image),
+.newsrollScope :global(.img_socialLoginIcon) {
+  object-fit: contain;
+}/* Button: ToggleButton */.newsrollScope :global(.btn_newViewToggleOption) {
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+}.newsrollScope :global(.switch_newsToggle) {
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-95);
+}.newsrollScope :global(.switch_newsToggle::before) {
+  content: "";
+  border-radius: var(--radius-full);
+  background: var(--color-common-100);
+  box-shadow: 0 1px 2px var(--color-alpha-shadow4);
+}.newsrollScope :global(.switch_newsToggle.is_on) {
+  background: var(--color-status-positive);
+}/* Button: FieldActionButton */.newsrollScope :global(.btn_fieldActionButton) {
+  border: 0;
+  border-radius: var(--radius-8);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-common-100);
+  cursor: pointer;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_fieldActionButton[data-tone="purple"]) {
+  border: 0;
+  color: var(--color-cool-neutral-15);
+  background: var(--color-common-100);
+}.newsrollScope :global(.btn_fieldActionButton[data-tone="white"]) {
+  border: var(--border-1) solid var(--color-newsroll-purple-50);
+  color: var(--color-newsroll-purple-50);
+  background: var(--color-common-100);
+}.newsrollScope :global(.btn_fieldActionButton[data-tone="purple"]:disabled) {
+  color: var(--color-newsroll-purple-40);
+  background: var(--color-newsroll-purple-30);
+  cursor: default;
+}/* Button: TextButton */.newsrollScope :global(.btn_textAction),
+.newsrollScope :global(.btn_pagination) {
+  border: 0;
+  color: var(--app-text);
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_textAction:active),
+.newsrollScope :global(.btn_textAction[aria-pressed="true"]) {
+  color: var(--app-text);
+  background: transparent;
+}.newsrollScope :global(.btn_textAction[data-tone="danger"]),
+.newsrollScope :global(.btn_textAction[data-tone="danger"]:active),
+.newsrollScope :global(.btn_textAction[data-tone="danger"][aria-pressed="true"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="like"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="like"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="like"] strong),
+.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="like"]),
+.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="like"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_articleGuideOption[data-binary-tone="no"] .text_articleGuidePercent),
+.newsrollScope :global(.wrapper_articleCardContent .btn_iconTextButton[data-tone="like"]),
+.newsrollScope :global(.wrapper_articleCardContent .btn_iconTextButton[data-tone="like"] .icon[data-size="20"]) {
+  color: var(--color-red-50);
+}/* Button: IconTextButton */.newsrollScope :global(.btn_iconTextButton) {
+  border: 0;
+  cursor: pointer;
+}.newsrollScope :global(.btn_iconTextButton[data-size="default"]) {
+  color: var(--app-text);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_iconTextButton[data-size="default"] strong) {
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_iconTextButton[data-size="small"]) {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_iconTextButton[data-tone="dislike"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="dislike"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="dislike"] strong),
+.newsrollScope :global(.btn_iconTextButton[data-tone="bookmark"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="dislike"]),
+.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="dislike"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_articleGuideOption[data-binary-tone="yes"] .text_articleGuidePercent),
+.newsrollScope :global(.wrapper_articleCardContent .btn_iconTextButton[data-tone="dislike"]),
+.newsrollScope :global(.wrapper_articleCardContent .btn_iconTextButton[data-tone="dislike"] .icon[data-size="20"]) {
+  color: var(--color-blue-50);
+}.newsrollScope :global(.btn_iconTextButton[data-tone="neutral"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="neutral"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_iconTextButton[data-tone="neutral"] strong),
+.newsrollScope :global(.btn_commentAction),
+.newsrollScope :global(.wrapper_articleCardContent .btn_iconTextButton[data-tone="neutral"]),
+.newsrollScope :global(.wrapper_articleCardContent .btn_iconTextButton[data-tone="neutral"] .icon[data-size="20"]) {
+  color: var(--color-cool-neutral-50);
+}.newsrollScope :global(.btn_iconTextButton[data-tone="vote"] .icon[data-size="20"]) {
+  color: var(--color-red-orange-50);
+}.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="like"][aria-pressed="true"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="dislike"][aria-pressed="true"] .icon[data-size="20"]),
+.newsrollScope :global(.btn_iconTextButton[data-size="small"][data-tone="neutral"][aria-pressed="true"] .icon[data-size="20"]) {
+  --icon-url: var(--icon-fill-url);
+}/* Button: ContentActionButton */.newsrollScope :global(.btn_contentAction) {
+  width: 100%;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-inline: var(--spacing-padding-horizontal-16);
+  border: var(--border-1) solid var(--app-border);
+  border-radius: var(--radius-8);
+  color: var(--app-text-muted);
+  background: var(--app-surface);
+  cursor: pointer;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+  text-decoration: none;
+  white-space: nowrap;
+}.newsrollScope :global(.btn_contentAction[data-tone="dark"]),
+.newsrollScope :global(.text_input[data-mode="dark"]) {
+  color: var(--color-common-100);
+  background: transparent;
+  border-color: var(--color-common-100);
+}/* Button: PaginationButton */.newsrollScope :global(.btn_pagination:disabled) {
+  color: var(--color-label-assistive);
+  cursor: default;
+}.newsrollScope :global(.btn_pagination .icon_arrow) {
+  transform-origin: center;
+}.newsrollScope :global(.btn_pagination[data-direction="previous"] .icon_arrow) {
+  transform: rotate(180deg);
+}/* Button: SelectButton and ActionMenu */.newsrollScope :global(.btn_dropdownSelect) {
+  border-radius: var(--radius-8);
+  color: var(--app-text);
+  background: var(--app-surface);
+}.newsrollScope :global(.btn_dropdownSelect[data-size="small"]) {
+  border: 0;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_dropdownSelect[data-size="default"]) {
+  border: var(--border-1) solid var(--color-line-normal-neutral);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.icon_dropdownArrow) {
+  border: solid currentColor;
+  border-width: 0 var(--border-1) var(--border-1) 0;
+  transform: rotate(45deg) translateY(-2px);
+  transition: var(--newsroll-chevron-transition);
+}.newsrollScope :global(.btn_dropdownSelect[aria-expanded="true"] .icon_dropdownArrow) {
+  transform: rotate(225deg) translate(-1px, -1px);
+}.newsrollScope :global(.panel_dropdown) {
+  border: var(--border-1) solid var(--app-border);
+  border-radius: var(--radius-8);
+  background: var(--app-surface);
+}.newsrollScope :global(.btn_dropdownItem) {
+  color: var(--app-text);
+  background: var(--app-surface);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_dropdownItem:hover),
+.newsrollScope :global(.btn_dropdownItem[aria-selected="true"]) {
+  color: var(--color-common-100);
+  background: var(--color-blue-50);
+}/* Button: NoticeCardLink */.newsrollScope :global(.btn_noticeCardLink) {
+  border-radius: var(--radius-20);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-50);
+  animation: none;
+  transform: none;
+  transition: none;
+}.newsrollScope :global(.btn_noticeCardLink > *) {
+  animation: none;
+  transform: none;
+  transition: none;
+}.newsrollScope :global(.noticeCardLink_notificationRead .text_noticeCardTitle),
+.newsrollScope :global(.container_authLayout .btn_textAction),
+.newsrollScope :global(.container_authLayout .btn_textAction:active),
+.newsrollScope :global(.container_authLayout .btn_textAction[aria-pressed="true"]) {
+  color: var(--color-common-100);
+}.newsrollScope :global(.text_noticeCardTitle) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}.newsrollScope :global(.noticeCardLink_breaking) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-50);
+}.newsrollScope :global(.noticeCardLink_notificationUnread) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-common-100);
+}.newsrollScope :global(.noticeCardLink_notificationRead) {
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+}.newsrollScope :global(.noticeCardLink_notificationRead .text_noticeCardTitle) {
+  color: var(--color-common-100);
+}.newsrollScope :global(.noticeCardSkeleton) {
+  min-height: 48px;
+  background: var(--color-newsroll-purple-30);
+  color: transparent;
+  pointer-events: none;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
+}/* Component: ArticleGuide poll card */.newsrollScope :global(.btn_articleGuideOption) {
+  border: var(--border-1) solid transparent;
+  border-radius: var(--radius-8);
+  color: var(--app-text-muted);
+  background: var(--app-control-surface);
+  cursor: pointer;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.btn_articleGuideOption[aria-pressed="true"]) {
+  color: var(--app-text);
+  border-color: var(--app-border);
+}.newsrollScope :global(.btn_articleGuideOption[aria-pressed="true"] .text_articleGuideOption) {
+  font-weight: var(--font-weight-700);
+}.newsrollScope :global(.btn_articleGuideOption::before) {
+  content: "";
+  border-radius: inherit;
+}.newsrollScope :global(.btn_articleGuideOption[data-result-visible="true"]::before) {
+  background: var(--color-newsroll-purple-99);
+}.newsrollScope :global(.btn_articleGuideOption[data-binary-tone="yes"]::before),
+.newsrollScope :global(.wrapper_myVoteItem .btn_articleGuideOption[data-variant="binary"][data-result-visible="true"][data-binary-tone="yes"]) {
+  background: var(--color-blue-80);
+}.newsrollScope :global(.btn_articleGuideOption[data-binary-tone="no"]::before),
+.newsrollScope :global(.wrapper_myVoteItem .btn_articleGuideOption[data-variant="binary"][data-result-visible="true"][data-binary-tone="no"]) {
+  background: var(--color-red-80);
+}.newsrollScope :global(.img_articleGuideBinaryIcon) {
+  background: transparent;
+  -webkit-mask: none;
+  mask: none;
+  object-fit: contain;
+}.newsrollScope :global(.text_articleGuideOption),
+.newsrollScope :global(.wrapper_articleGuide_binary .text_articleGuidePercent),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="binary"] .text_articleGuidePercent) {
+  font-size: var(--font-size-15);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.text_articleGuidePercent) {
+  color: var(--color-newsroll-purple-50);
+  font-size: var(--font-size-15);
+  font-style: normal;
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}/* Button: SocialLoginButton */.newsrollScope :global(.btn_socialLogin) {
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+}.newsrollScope :global(.btn_socialLogin:focus-visible) {
+  outline: var(--border-2) solid var(--color-common-100);
+  outline-offset: var(--spacing-gap-horizontal-4);
+}/* Component focus states *//* --------------------------------------------------------------------------
+ * News Content Components
+ * --------------------------------------------------------------------------
+ * Component-owned sizing, typography, clipping, and interaction details for
+ * reusable news content buttons/cards. Generic layout primitives stay in
+ * the layout section.
+ */.newsrollScope :global(.btn_newsCardList .text_newsCardTitleLarge) {
+  font-size: var(--font-size-18);
+}/* All-news panel sizing: keeps the latest-news panel within the common sheet. *//* Article body typography: keep article copy at the requested 16px baseline. *//*  --------------------------------------------------------------------------
+ * Component Form Controls
+ * -------------------------------------------------------------------------- *//* Form control visual states. */.newsrollScope :global(.text_input) {
+  border: var(--border-1) solid var(--app-input-border);
+  border-radius: var(--radius-8);
+  cursor: text;
+  color: var(--app-input-text);
+  background: var(--app-input-surface);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_input input) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
+  line-height: 24px;
+}.newsrollScope :global(.text_input input::placeholder),
+.newsrollScope :global(.textarea::placeholder),
+.newsrollScope :global(.textarea[data-variant='inquiry']::placeholder) {
+  color: var(--color-label-assistive);
+}.newsrollScope :global(.text_input input[type="search"]::-webkit-search-cancel-button),
+.newsrollScope :global(.text_input input[type="search"]::-webkit-search-decoration) {
+  appearance: none;
+  -webkit-appearance: none;
+}.newsrollScope :global(.text_input[data-state="error"]),
+.newsrollScope :global(.textarea[data-state="error"]) {
+  border-color: var(--color-accent-foreground-red);
+}.newsrollScope :global(.text_input[data-state="complete"]) {
+  border-color: var(--color-accent-foreground-green);
+}.newsrollScope :global(.text_input:has(input:disabled)),
+.newsrollScope :global(.textarea:disabled) {
+  cursor: default;
+  color: var(--color-label-disable);
+  background: var(--color-interaction-disable);
+}.newsrollScope :global(.text_input[data-state="view"]),
+.newsrollScope :global(.text_input:has(input:read-only)),
+.newsrollScope :global(.textarea:read-only),
+.newsrollScope :global(.textarea[data-state="view"]) {
+  cursor: default;
+  background: var(--color-fill-alternative);
+}.newsrollScope :global(.textarea) {
+  resize: vertical;
+  outline: 0;
+  border: var(--border-1) solid var(--app-input-border);
+  border-radius: var(--radius-8);
+  cursor: text;
+  color: var(--app-input-text);
+  background: var(--app-input-surface);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.text_input[data-mode="dark"] input::placeholder),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input::placeholder) {
+  color: var(--color-neutral-80);
+  opacity: 1;
+  -webkit-text-fill-color: var(--color-neutral-80);
+}.newsrollScope :global(.text_input[data-mode="dark"]:focus-within) {
+  border-color: var(--color-common-100);
+}.newsrollScope :global(.field_check[data-role='autoLogin']) {
+  color: var(--color-common-100);
+  background: transparent;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.field_check[data-role='agreementAll']) {
+  border: 0;
+  color: var(--color-common-100);
+  background: transparent;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.mark_authAgreementSearch) {
+  border-radius: var(--radius-4);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-newsroll-purple-90);
+}.newsrollScope :global(.field_check[data-role='selectAll']) {
+  color: var(--app-text);
+}.newsrollScope :global(.field_check[data-role='selectAll'] .box_check),
+.newsrollScope :global(.field_check[data-role='selectionItem'] .box_check) {
+  border-color: var(--color-line-normal-normal);
+  color: var(--color-common-100);
+}.newsrollScope :global(.field_check[data-role='selectAll'] .box_check.is_checked),
+.newsrollScope :global(.field_check[data-role='selectionItem'] .box_check.is_checked) {
+  border-color: var(--color-newsroll-purple-50);
+  background: var(--color-newsroll-purple-50);
+}.newsrollScope :global(.icon_myChevron) {
+  border-top: var(--border-1) solid currentColor;
+  border-right: var(--border-1) solid currentColor;
+  transform: rotate(45deg);
+}.newsrollScope :global(.icon_contentAccordionChevron) {
+  border: solid currentColor;
+  border-width: 0 var(--border-1) var(--border-1) 0;
+  transform: translateX(-2px) rotate(45deg);
+  transition: var(--newsroll-chevron-transition);
+}.newsrollScope :global(.textarea[data-variant='commentEdit']) {
+    resize: vertical;
+}.newsrollScope :global(.badge_iconButtonUnread) {
+    border-radius: var(--radius-full);
+    background: var(--color-orange-50);
+}/*  Dynamic common component class selectors *//* Form control visual states. */.newsrollScope :global(.icon_alarm) {
+  --icon-outline-url: url("/icons/icon_alarm_outline.svg");
+  --icon-fill-url: url("/icons/icon_alarm_active.svg");
+}.newsrollScope :global(.icon_bookmark) {
+  --icon-outline-url: url("/icons/icon_bookmark_line.svg");
+  --icon-fill-url: url("/icons/icon_bookmark_active.svg");
+  color: var(--color-cool-neutral-50);
+}.newsrollScope :global(.icon_arrow) {
+  --icon-outline-url: url("/icons/icon_arrow.svg");
+  --icon-fill-url: url("/icons/icon_arrow.svg");
+}.newsrollScope :global(.icon_chat) {
+  --icon-outline-url: url("/icons/icon_chat_bubble_active.svg");
+  --icon-fill-url: url("/icons/icon_chat_bubble_active.svg");
+}.newsrollScope :global(.icon_chevron) {
+  --icon-outline-url: url("/icons/icon_chevron.svg");
+  --icon-fill-url: url("/icons/icon_chevron.svg");
+}.newsrollScope :global(.icon_close) {
+  --icon-outline-url: url("/icons/icon_close.svg");
+  --icon-fill-url: url("/icons/icon_close.svg");
+}.newsrollScope :global(.icon_detail) {
+  --icon-outline-url: url("/icons/icon_detail.svg");
+  --icon-fill-url: url("/icons/icon_detail.svg");
+}.newsrollScope :global(.icon_dots) {
+  --icon-outline-url: url("/icons/icon_notgood.svg");
+  --icon-fill-url: url("/icons/icon_notgood_active.svg");
+}.newsrollScope :global(.icon_earth),
+.newsrollScope :global(.icon_allNews) {
+  --icon-outline-url: url("/icons/icon_all_news.svg");
+  --icon-fill-url: url("/icons/icon_all_news_active.svg");
+}.newsrollScope :global(.icon_fourSquare) {
+  --icon-outline-url: url("/icons/icon_four_square_outline.svg");
+  --icon-fill-url: url("/icons/icon_four_square_active.svg");
+}.newsrollScope :global(.icon_eye) {
+  --icon-outline-url: url("/icons/icon_eye.svg");
+  --icon-fill-url: url("/icons/icon_eye.svg");
+}.newsrollScope :global(.icon_home) {
+  --icon-outline-url: url("/icons/icon_home.svg");
+  --icon-fill-url: url("/icons/icon_home_active.svg");
+}.newsrollScope :global(.icon_list) {
+  --icon-outline-url: url("/icons/icon_list_bulleted_outline.svg");
+  --icon-fill-url: url("/icons/icon_list_bulleted_active.svg");
+}.newsrollScope :global(.icon_loudspeaker),
+.newsrollScope :global(.icon_policy) {
+  --icon-outline-url: url("/icons/icon_policy.svg");
+  --icon-fill-url: url("/icons/icon_policy_active.svg");
+}.newsrollScope :global(.icon_plus) {
+  --icon-outline-url: url("/icons/icon_plus.svg");
+  --icon-fill-url: url("/icons/icon_plus.svg");
+}.newsrollScope :global(.icon_question),
+.newsrollScope :global(.icon_information) {
+  --icon-outline-url: url("/icons/icon_information.svg");
+  --icon-fill-url: url("/icons/icon_information_active.svg");
+}.newsrollScope :global(.icon_vote) {
+  --icon-outline-url: url("/icons/icon_vote.svg");
+  --icon-fill-url: url("/icons/icon_vote_active.svg");
+}.newsrollScope :global(.icon_search) {
+  --icon-outline-url: url("/icons/icon_search_outline.svg");
+  --icon-fill-url: url("/icons/icon_search_active.svg");
+}.newsrollScope :global(.icon_setting) {
+  --icon-outline-url: url("/icons/icon_setting.svg");
+  --icon-fill-url: url("/icons/icon_setting_active.svg");
+}.newsrollScope :global(.icon_share) {
+  --icon-outline-url: url("/icons/icon_share_nodes_outline.svg");
+  --icon-fill-url: url("/icons/icon_share_nodes_active.svg");
+  color: var(--color-cool-neutral-50);
+}.newsrollScope :global(.icon_sizeIncrease) {
+  --icon-outline-url: url("/icons/icon_sizeIncrease.svg");
+  --icon-fill-url: url("/icons/icon_sizeIncrease.svg");
+}.newsrollScope :global(.icon_submit) {
+  --icon-outline-url: url("/icons/icon_submit.svg");
+  --icon-fill-url: url("/icons/icon_submit.svg");
+}.newsrollScope :global(.icon_thumbDown) {
+  --icon-outline-url: url("/icons/icon_bad.svg");
+  --icon-fill-url: url("/icons/icon_notgood_active.svg");
+}.newsrollScope :global(.icon_thumbUp) {
+  --icon-outline-url: url("/icons/icon_good.svg");
+  --icon-fill-url: url("/icons/icon_good_active.svg");
+}.newsrollScope :global(.icon_user),
+.newsrollScope :global(.icon_myPage) {
+  --icon-outline-url: url("/icons/icon_my_page.svg");
+  --icon-fill-url: url("/icons/icon_my_page_active.svg");
+}/*  --------------------------------------------------------------------------
+ * Component Visual Declarations
+ * --------------------------------------------------------------------------  */.newsrollScope :global(.container_contentAccordion[data-state="open"] .icon_contentAccordionChevron) {
+  transform: translateX(-2px) rotate(225deg);
+}.newsrollScope :global(.container_authLayout .wrapper_authTabMenu .btn_tab) {
+  border: var(--border-1) solid var(--newsroll-divider-color);
+  color: var(--color-common-100);
+  background: transparent;
+}.newsrollScope :global(.container_authLayout .wrapper_authTabMenu .btn_tab[data-state="active"]),
+.newsrollScope :global(.container_authLayout .wrapper_authTabMenu .btn_tab[data-state="selected"]) {
+  color: var(--color-common-0);
+  border-color: var(--color-common-100);
+  background: var(--color-common-100);
+  font-weight: var(--font-weight-700);
+}.newsrollScope :global(.wrapper_myPageRecentBlock .btn_newsCardBlock strong) {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.newsrollScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="binary"]) {
+  border: 0;
+  border-radius: var(--radius-16);
+  background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.wrapper_articleGuide_binary .text_articleGuideOption),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="binary"] .text_articleGuideOption) {
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.newsrollScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption::before),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
+  border-radius: var(--radius-8) 0 0 var(--radius-8);
+  background: var(--color-cool-neutral-96);
+}.newsrollScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption[aria-pressed="true"]::before),
+.newsrollScope :global(.btn_articleGuideOption[data-variant="stacked"][aria-pressed="true"]::before) {
+  background: var(--color-newsroll-purple-80);
+}.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input) {
+  color: var(--color-common-100);
+  caret-color: var(--color-common-100);
+  -webkit-text-fill-color: var(--color-common-100);
+}.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:focus),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:active),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:valid),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:invalid) {
+  color: var(--color-common-100);
+  caret-color: var(--color-common-100);
+  -webkit-text-fill-color: var(--color-common-100);
+  text-shadow: 0 0 0 var(--color-common-100);
+}.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:focus::placeholder),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:active::placeholder),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:valid::placeholder),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:invalid::placeholder) {
+  color: var(--color-neutral-80);
+  opacity: 1;
+  -webkit-text-fill-color: var(--color-neutral-80);
+  text-shadow: none;
+}.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input::selection) {
+  color: var(--color-common-0);
+  background: var(--color-common-100);
+  -webkit-text-fill-color: var(--color-common-0);
+}.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:-webkit-autofill),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:-webkit-autofill:hover),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"] input:-webkit-autofill:focus) {
+  caret-color: var(--color-common-100);
+  -webkit-text-fill-color: var(--color-common-100);
+  box-shadow: 0 0 0 1000px var(--color-newsroll-purple-20) inset;
+  transition: background-color 9999s ease-out;
+}.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"][data-state="error"]),
+.newsrollScope :global(.container_authLayout .text_input[data-mode="dark"][data-state="error"]:focus-within) {
+  border-color: var(--color-status-negative);
+}.newsrollScope :global(.skeleton) {
+  display: block;
+  flex: 0 0 auto;
+  min-width: 0;
+  border-radius: var(--radius-8);
+  background: var(--color-cool-neutral-98);
+  color: transparent;
+  pointer-events: none;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
+}.newsrollScope :global(.skeleton[data-shape="text"]) {
+  height: 14px;
+  border-radius: var(--radius-full);
+}.newsrollScope :global(.skeleton[data-shape="title"]) {
+  height: 20px;
+  border-radius: var(--radius-4);
+}.newsrollScope :global(.skeleton[data-shape="chip"]) {
+  width: 52px;
+  height: 32px;
+  border-radius: var(--radius-full);
+}.newsrollScope :global(.skeleton[data-shape="media"]) {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+}.newsrollScope :global(.skeleton.img_newsCardBlock) {
+  aspect-ratio: 156 / 117;
+}.newsrollScope :global(.skeleton.img_newsCardFeature) {
+  min-height: 120px;
+}.newsrollScope :global(.skeleton[data-shape="thumbnail"]) {
+  width: auto;
+  height: 80px;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+}.newsrollScope :global(.skeleton[data-shape="circle"]) {
+  border-radius: 50%;
+}.newsrollScope :global(.skeleton[data-width="full"]) {
+  width: 100%;
+}.newsrollScope :global(.skeleton[data-width="lg"]) {
+  width: 86%;
+}.newsrollScope :global(.skeleton[data-width="md"]) {
+  width: 68%;
+}.newsrollScope :global(.skeleton[data-width="sm"]) {
+  width: 44%;
+}.newsrollScope :global(.skeleton[data-width="xs"]) {
+  width: 28%;
+}@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}@media (prefers-reduced-motion: reduce) {
+  .newsrollScope :global(.skeleton) {
+    animation: none;
+  }
+}

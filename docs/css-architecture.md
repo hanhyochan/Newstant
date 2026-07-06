@@ -1,8 +1,17 @@
 # CSS Architecture
 
-This project intentionally separates CSS by property responsibility, not by class name ownership alone. The same class name may appear in more than one CSS file when each file owns a different kind of property.
+This project now keeps only true globals in the app root and loads NewsRoll UI styling through a scoped CSS Module.
 
 ## File Responsibilities
+
+### `tokens.css`
+Global design tokens only.
+
+Use for:
+- CSS custom properties under `:root`
+- color, typography, radius, spacing, and motion tokens shared by reset and modules
+
+Do not use for component selectors, page selectors, or layout rules.
 
 ### `reset.css`
 Global reset and browser normalization only.
@@ -15,81 +24,59 @@ Use for:
 
 Do not use for component, page, theme, or layout rules.
 
-### `common-layout.css`
-Structural layout rules.
-
-Use for:
-- `display`
-- `position`
-- `inset`, `top`, `right`, `bottom`, `left`
-- `width`, `height`, `min-*`, `max-*`
-- `padding`, `margin`, `gap`
-- `flex`, `grid`
-- `overflow`
-- `z-index`
-- scroll containment and layout-only selectors
-
-Do not use for color, background, shadow, border color, theme, or visual state styling.
-
-### `appearance.css`
-Visual appearance and theme rules.
-
-Use for:
-- `color`
-- `background`
-- `border-color`
-- `box-shadow`
-- `opacity`
-- theme tokens
-- dark mode overrides
-- visual state that does not change layout
-
-Do not use for spacing, flex/grid layout, width, height, or positioning.
-
-### `components.css`
-Reusable component visual contracts.
-
-Use for:
-- button base styles
-- input and textarea base styles
-- chips, cards, toggles, dropdowns
-- component state selectors
-- reusable component-level visual conventions
-
-Component classes may still have layout-related companion rules in `common-layout.css` when the rule controls structure rather than visual identity.
-
 ### `utilities.css`
-Single-purpose utilities with the `u_` prefix.
+Single-purpose global utilities with the `u_` prefix.
 
 Use for narrow, reusable one-purpose helpers only. Do not add broad component-like utility classes here.
 
-## Same Class Across Files
+### `newsroll.module.css`
+Scoped NewsRoll UI rules loaded by `NewsHomeScreen`.
 
-A class can appear in multiple CSS files when the properties are separated by responsibility.
+The file uses a local `newsrollScope` class on the route shell and keeps existing rendered class names inside `:global(...)` selectors. This is an intentional transition step: it moves app UI CSS out of root global imports while preserving the current DOM and visual output.
+
+Inside this module, keep the old responsibility boundaries as sections:
+- appearance/theme section: color, background, border color, shadow, opacity, dark mode, visual state
+- layout section: display, position, dimensions, spacing, flex/grid, overflow, z-index, scroll containment
+- component section: reusable button, input, chip, card, toggle, dropdown, skeleton, and component state contracts
+
+## Same Class Across Sections
+
+The same rendered class can still appear in more than one section when each section owns a different kind of property.
 
 Example:
-- `common-layout.css` owns layout for `.btn_primary`.
-- `appearance.css` owns color/theme for `.btn_primary`.
-- `components.css` owns reusable button visual contract for `.btn_primary`.
+- layout section owns layout for `.btn_primary`
+- appearance section owns color/theme for `.btn_primary`
+- component section owns reusable button visual contract for `.btn_primary`
 
-This is allowed. It should not be collapsed into one file unless the project intentionally changes its CSS architecture.
+This is allowed. Do not collapse unrelated responsibilities only because the rendered class name is the same.
+
+## CSS Module Migration Rule
+
+Current stage:
+- root layout imports only `tokens.css`, `reset.css`, and `utilities.css`
+- NewsRoll UI CSS is scoped by `newsroll.module.css`
+- existing rendered class names are preserved to avoid UI drift
+
+Next stage:
+- convert stable design-system components from global rendered class strings to local `styles.foo` imports one component at a time
+- after a component is converted, remove the matching `:global(...)` rules from `newsroll.module.css` only when visual/e2e coverage confirms no drift
 
 ## Override Rules
 
-Overrides must make their purpose clear from the selector context.
+Overrides must make their purpose clear from selector context.
 
 Prefer:
-- component base style in `components.css`
-- page/layout adjustment in `common-layout.css`
-- visual theme adjustment in `appearance.css`
+- component base style in the component section or component-owned module
+- page/layout adjustment in the layout section or page-owned module
+- visual theme adjustment in the appearance section or theme-owned module
 
 Avoid:
 - temporary migration comments
 - unexplained one-off overrides
 - mixing unrelated selectors into one group only because they share one property
-- adding color rules to layout files
-- adding layout rules to appearance files
+- adding color rules to layout sections
+- adding layout rules to appearance sections
 
 ## Refactoring Rule
 
-CSS refactoring must preserve the rendered UI. Do not change values, selector specificity, or grouping when the visual result could change, unless the task explicitly includes a design change.
+CSS refactoring must preserve the rendered UI. Do not change values, selector specificity, grouping, DOM structure, or interaction behavior unless the task explicitly includes a design change.
