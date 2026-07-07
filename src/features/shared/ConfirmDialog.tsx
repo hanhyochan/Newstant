@@ -3,6 +3,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { getNewsrollPortalRoot } from "@/features/shared/newsroll-portal-root";
+
 import { PrimaryButton, PrimaryButtonGroup } from "@/design-system/components";
 
 type ConfirmDialogProps = {
@@ -64,6 +66,6 @@ export function ConfirmDialog({
         </PrimaryButtonGroup>
       </div>
     </div>,
-    document.body,
+    getNewsrollPortalRoot() ?? document.body,
   );
 }

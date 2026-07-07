@@ -3,6 +3,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { getNewsrollPortalRoot } from "@/features/shared/newsroll-portal-root";
+
 export function ClientPortal({ children }: { children: ReactNode }) {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -14,5 +16,5 @@ export function ClientPortal({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return createPortal(children, document.body);
+  return createPortal(children, getNewsrollPortalRoot() ?? document.body);
 }

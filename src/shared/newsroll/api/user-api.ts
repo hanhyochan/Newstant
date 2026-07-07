@@ -82,6 +82,9 @@ export const userApi = {
       updatedAt: timestamp,
     });
   },
+  deleteUser(userId: string) {
+    return apiClient.delete(`/users/${userId}`);
+  },
   updateUser(userId: string, input: UpdateUserInput) {
     const nextInput = {
       ...input,

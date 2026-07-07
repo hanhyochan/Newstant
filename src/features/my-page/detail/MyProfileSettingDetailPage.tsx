@@ -37,6 +37,7 @@ import {
   BottomFixedActionBar,
   bottomFixedActionBarExitDurationMs,
 } from "@/features/shared/BottomFixedActionBar";
+import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 
 export type MyProfileSettingItemId =
@@ -594,10 +595,12 @@ function ModerationHistory({
 }
 
 function AccountEditForm({
+  onDeleteAccount,
   onSubmit,
   user,
   users,
 }: {
+  onDeleteAccount: () => Promise<void>;
   onSubmit: (input: UpdateUserInput) => Promise<void>;
   user: User | null;
   users: User[];
@@ -620,7 +623,8 @@ function AccountEditForm({
     verificationCode,
     confirmVerificationCode: markVerificationConfirmed,
   } = useVerificationCodeFlow(180, { resetOnExpire: false });
-  const [status, setStatus] = useState<"error" | "saving" | "saved" | null>(null);
+  const [status, setStatus] = useState<"deleting" | "error" | "saving" | "saved" | null>(null);
+  const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
   const nicknameValidation = useZodFieldValidation(signupNicknameSchema, nickname);
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
   const verificationCodeValidation = useZodFieldValidation(
@@ -655,6 +659,21 @@ function AccountEditForm({
     resetVerificationCode();
     setStatus(null);
   }, [user]);
+  function cancelDeleteAccount() {
+    if (status === "deleting") {
+      return;
+    }
+
+    setIsDeleteAccountDialogOpen(false);
+  }
+
+  function confirmDeleteAccount() {
+    setStatus("deleting");
+    onDeleteAccount().catch(() => {
+      setStatus("error");
+      setIsDeleteAccountDialogOpen(false);
+    });
+  }
 
 
 
@@ -750,7 +769,8 @@ function AccountEditForm({
   }
 
   return (
-    <form
+    <Fragment>
+      <form
       className="form_mySettingsDetail"
       onSubmit={(event) => {
         event.preventDefault();
@@ -943,7 +963,7 @@ function AccountEditForm({
       <div className="wrapper_mySettingsBottomActions">
         <PrimaryButtonGroup>
         <PrimaryButton
-          disabled={status === "saving" || !isProfileReady}
+          disabled={status === "saving" || status === "deleting" || !isProfileReady}
           type="submit"
 
         >
@@ -951,6 +971,8 @@ function AccountEditForm({
         </PrimaryButton>
       </PrimaryButtonGroup>
         <TextButton
+          disabled={status === "deleting"}
+          onClick={() => setIsDeleteAccountDialogOpen(true)}
           tone="danger"
           type="button"
         >
@@ -958,6 +980,15 @@ function AccountEditForm({
         </TextButton>
       </div>
     </form>
+    {isDeleteAccountDialogOpen ? (
+      <ConfirmDialog
+        confirmLabel="회원탈퇴"
+        message="회원탈퇴하시겠습니까? 현재 계정 정보가 삭제되고 로그인 화면으로 이동합니다."
+        onCancel={cancelDeleteAccount}
+        onConfirm={confirmDeleteAccount}
+      />
+    ) : null}
+    </Fragment>
   );
 }
 
@@ -1144,6 +1175,7 @@ export function MyProfileSettingDetailPage({
   inquiries,
   isLeaving,
   itemId,
+  onDeleteAccount,
   onDeleteContentAction,
   onPasswordSubmit,
   onUserSubmit,
@@ -1154,6 +1186,7 @@ export function MyProfileSettingDetailPage({
   inquiries: Inquiry[];
   isLeaving: boolean;
   itemId: MyProfileSettingItemId;
+  onDeleteAccount: () => Promise<void>;
   onDeleteContentAction: (actionId: string) => Promise<void>;
   onPasswordSubmit: (currentPassword: string, nextPassword: string) => Promise<void>;
   onUserSubmit: (input: UpdateUserInput) => Promise<void>;
@@ -1192,7 +1225,12 @@ export function MyProfileSettingDetailPage({
       ) : null}
       {shouldShowDivider ? <Divider className="divider_mySection" /> : null}
       {itemId === "accountEdit" ? (
-        <AccountEditForm onSubmit={onUserSubmit} user={user} users={users} />
+        <AccountEditForm
+          onDeleteAccount={onDeleteAccount}
+          onSubmit={onUserSubmit}
+          user={user}
+          users={users}
+        />
       ) : itemId === "passwordReset" ? (
         <PasswordResetForm onSubmit={onPasswordSubmit} />
       ) : itemId === "marketingConsent" ? (

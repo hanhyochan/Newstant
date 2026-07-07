@@ -66,3 +66,58 @@ test("opens search and notification overlays", async ({ page }) => {
   await toolbarButtons.nth(1).click();
   await expect(page.locator(".list_notificationResults")).toBeVisible();
 });
+
+
+test("logs out from my page", async ({ page }) => {
+  await openAuthenticatedHome(page);
+
+  await page.locator(".bottom_nav button").nth(3).click();
+  await expect(page.locator(".container_myScreen")).toBeVisible();
+
+  await page.locator(".btn_myLogout").click();
+  await expect(page.locator(".container_dialog")).toBeVisible();
+
+  await page.locator(".container_dialog .btn_primary").last().click();
+  await expect(page.locator(".container_authLayout")).toBeVisible();
+  await expect.poll(() =>
+    page.evaluate(() => window.localStorage.getItem("newsroll.currentUser")),
+  ).toBeNull();
+});
+test("withdraws account from my page", async ({ page }) => {
+  let didDeleteUser = false;
+
+  await page.route(/\/users\/user-kongkong$/, async (route) => {
+    if (route.request().method() === "DELETE") {
+      didDeleteUser = true;
+      await route.fulfill({
+        body: "{}",
+        contentType: "application/json",
+        status: 200,
+      });
+      return;
+    }
+
+    await route.fallback();
+  });
+
+  await openAuthenticatedHome(page);
+
+  await page.locator(".bottom_nav button").nth(3).click();
+  await expect(page.locator(".container_myScreen")).toBeVisible();
+
+  await page.locator(".container_myProfile .btn_iconButton").click();
+  await expect(page.locator(".container_mySettingsPage")).toBeVisible();
+
+  await page.locator(".container_mySettingsPage .btn_settingRow").first().click();
+  await expect(page.locator(".form_mySettingsDetail")).toBeVisible();
+
+  await page.locator(".form_mySettingsDetail .btn_textAction[data-tone='danger']").click();
+  await expect(page.locator(".container_dialog")).toBeVisible();
+
+  await page.locator(".container_dialog .btn_primary").last().click();
+  expect(didDeleteUser).toBe(true);
+  await expect(page.locator(".container_authLayout")).toBeVisible();
+  await expect.poll(() =>
+    page.evaluate(() => window.localStorage.getItem("newsroll.currentUser")),
+  ).toBeNull();
+});

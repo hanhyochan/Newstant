@@ -709,6 +709,13 @@ export function MyPageView({
     );
   };
 
+  const deleteCurrentUserAccount = async () => {
+    await userApi.deleteUser(currentUserId);
+    onLogout();
+  };
+
+
+
   const updateProfilePassword = async (
     currentPassword: string,
     nextPassword: string,
@@ -958,6 +965,7 @@ export function MyPageView({
                 inquiries={myInquiryItems}
                 isLeaving={myDetailExitMotion.isLeaving}
                 itemId={activeProfileSettingItemId}
+                onDeleteAccount={deleteCurrentUserAccount}
                 onDeleteContentAction={deleteContentAction}
                 onPasswordSubmit={updateProfilePassword}
                 onUserSubmit={updateProfileUser}

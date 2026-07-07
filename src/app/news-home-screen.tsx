@@ -870,7 +870,7 @@ export function NewsHomeScreen() {
 
   if (isSplashVisible) {
     return (
-      <main className={`${styles.newsrollScope} screen screen_splash`}>
+      <main className={`${styles.newsrollScope} screen screen_splash`} data-newsroll-portal-root>
         <div className="phone" aria-label="NewsRoll">
           <NewsRollSplashScreen />
         </div>
@@ -885,6 +885,7 @@ export function NewsHomeScreen() {
 
   return (
     <main
+      data-newsroll-portal-root
       className={`${styles.newsrollScope} screen${effectiveView === "home" ? " screen_home" : ""}${
         effectiveView === "all" ? " screen_all" : ""
       }${

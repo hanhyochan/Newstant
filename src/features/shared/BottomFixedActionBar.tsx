@@ -1,6 +1,8 @@
 ﻿import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { getNewsrollPortalRoot } from "@/features/shared/newsroll-portal-root";
+
 type BottomFixedActionBarProps = {
   ariaLabel: string;
   children: ReactNode;
@@ -39,6 +41,6 @@ export function BottomFixedActionBar({
     <div aria-label={ariaLabel} className={classNames} id={id} role="region">
       {children}
     </div>,
-    document.body,
+    getNewsrollPortalRoot() ?? document.body,
   );
 }
