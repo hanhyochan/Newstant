@@ -51,23 +51,24 @@ import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 import { SeparatedList } from "@/features/shared/SeparatedList";
 import { ArticleDetailContent } from "@/features/news/article/HomeReelCard";
-
+import { AllNewsSectionPanel } from "@/features/news/all-news/AllNewsSectionPanel";
 import {
-  AllNewsSectionPanel,
   allNewsDockedScrollSelectors,
   allNewsPresses,
   allNewsRelayCategories,
   allNewsSwipeAxisThresholdPx,
   createAllNewsArticle,
-  filterArticlesByBlockedKeywords,
   getAllNewsPreviewFromArticle,
+  groupAllNewsByValue,
+  type SwipeAxis,
+} from "@/features/news/all-news/all-news-model";
+import {
+  filterArticlesByBlockedKeywords,
   getBreakingNewsItems,
   getHomeArticleFromNews,
-  groupAllNewsByValue,
   homeArticle,
   type HomeArticle,
-  type SwipeAxis,
-} from "@/features/news/NewsViews";
+} from "@/features/news/model";
 
 function hasSelectedValues(values: string[]) {
   return values.length > 0;

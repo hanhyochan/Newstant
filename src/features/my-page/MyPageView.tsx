@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -53,10 +52,7 @@ import {
   useDetailScrollRestore,
   useEnterFromRightExitMotion,
 } from "@/design-system/templates";
-import {
-  getCommentItemFromApi,
-  type CommentId,
-} from "@/features/comments/utils/comment-data";
+import { getCommentItemFromApi } from "@/features/comments/utils/comment-data";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { MySettingRow } from "@/features/my-page/components/MySettingRow";
 import {
@@ -74,10 +70,7 @@ import {
 import { MyCustomNewsSettingsPage } from "@/features/my-page/detail/MyCustomNewsSettingsPage";
 import { MyNewsViewTimePage } from "@/features/my-page/detail/MyNewsViewTimePage";
 import { MyProfileSettingsPage } from "@/features/my-page/detail/MyProfileSettingsPage";
-import {
-  MyProfileSettingDetailPage,
-  type MyProfileSettingItemId,
-} from "@/features/my-page/detail/MyProfileSettingDetailPage";
+import { MyProfileSettingDetailPage } from "@/features/my-page/detail/MyProfileSettingDetailPage";
 import {
   MyRecentDetailPage,
   createMyRecentArticle,
@@ -93,7 +86,6 @@ import {
   getInitialCategorySettings,
   getMyCategoryOptionId,
   getMyCategoryTabItems,
-  getMyPolicyAgeTabs,
   getMyProfileSettingItemId,
   getMySummaryCategoryTabs,
   getNewsCategoryPreferenceIds,
@@ -101,10 +93,8 @@ import {
   getNotificationSettingsFromApi,
   getPolicyBookmarkItem,
   getPressPreferenceIds,
-  hasMultipleMyCommentKinds,
   myBookmarkTabs,
   myCategoryGroups,
-  myCommentTabs,
   myNewsViewTimeSections,
   myNotificationLabels,
   myOrderedProfileSettingSections,
@@ -112,12 +102,11 @@ import {
   myRecentPreviewLimit,
   mySummaryAllTabLabel,
   mySummaryItems,
-  shouldShowMyCategoryTabs,
-  type MyPageDetailView,
   type MySummaryView,
 } from "@/features/my-page/model";
 import { buildMyActivitySummary } from "@/features/my-page/utils/my-activity-summary";
 import { useMyPageNavigation } from "@/features/my-page/hooks/use-my-page-navigation";
+import { useMyPageDynamicTabs } from "@/features/my-page/hooks/use-my-page-dynamic-tabs";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
 
@@ -130,9 +119,7 @@ import {
 import {
   formatNewsDate,
   getHomeArticleFromNews,
-  type ArticleDetailOpenOptions,
   type BlockedKeywordSetting,
-  type HomeArticle,
   type OpenArticleDetail,
   type PolicyItem,
 } from "@/features/news/model";
@@ -173,7 +160,6 @@ export function MyPageView({
     isCustomNewsSettingsOpen,
     isMyArticleDetailOpen,
     isMyNestedDetailOpen,
-    isMyPolicyDetailOpen,
     isNewsViewTimeOpen,
     isProfileSettingsOpen,
     isRecentOpen,
@@ -242,79 +228,28 @@ export function MyPageView({
     useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [blockedKeywordInputValue, setBlockedKeywordInputValue] = useState("");
-  const myPanelContentRef = useRef<HTMLDivElement>(null);  const dynamicCommentCategoryTabs = useMemo(
-    () => myCommentTabs,
-    [],
-  );
-  const dynamicBookmarkNewsCategoryTabs = useMemo(
-    () =>
-      getMySummaryCategoryTabs(
-        myDynamicBookmarkItems.filter(
-          (item): item is MyBookmarkNewsSummaryItem =>
-            item.bookmarkType === "news",
-        ),
-      ),
-    [myDynamicBookmarkItems],
-  );
-  const dynamicBookmarkPolicyAgeTabs = useMemo(
-    () =>
-      getMyPolicyAgeTabs(
-        myDynamicBookmarkItems.filter(
-          (item): item is MyBookmarkPolicySummaryItem =>
-            item.bookmarkType === "policy",
-        ),
-      ),
-    [myDynamicBookmarkItems],
-  );
-  const dynamicRecentCategoryTabs = useMemo(
-    () => getMySummaryCategoryTabs(myDynamicRecentItems),
-    [myDynamicRecentItems],
-  );
-  const dynamicVoteCategoryTabs = useMemo(
-    () => getMySummaryCategoryTabs(myDynamicVoteItems),
-    [myDynamicVoteItems],
-  );
-  const shouldShowBookmarkNewsCategoryTabs = useMemo(
-    () =>
-      myDynamicBookmarkItems.some((item) => item.bookmarkType === "news") &&
-      dynamicBookmarkNewsCategoryTabs.length > 1,
-    [dynamicBookmarkNewsCategoryTabs.length, myDynamicBookmarkItems],
-  );
-  const shouldShowBookmarkPolicyAgeTabs = useMemo(
-    () =>
-      myDynamicBookmarkItems.some((item) => item.bookmarkType === "policy") &&
-      dynamicBookmarkPolicyAgeTabs.length > 1,
-    [dynamicBookmarkPolicyAgeTabs.length, myDynamicBookmarkItems],
-  );
-  const shouldShowRecentCategoryTabs = useMemo(
-    () => shouldShowMyCategoryTabs(myDynamicRecentItems),
-    [myDynamicRecentItems],
-  );
-  const shouldShowVoteCategoryTabs = useMemo(
-    () => shouldShowMyCategoryTabs(myDynamicVoteItems),
-    [myDynamicVoteItems],
-  );
-  const shouldShowCommentKindTabs = useMemo(
-    () => hasMultipleMyCommentKinds(myDynamicCommentItems),
-    [myDynamicCommentItems],
-  );
-  const myActivityCounts = useMemo(
-    () =>
-      Object.fromEntries(
-        mySummaryItems.map((item) => [
-          item.value,
-          item.value === "comment"
-            ? myDynamicCommentItems.length
-            : item.value === "bookmark"
-              ? myBookmarkCount
-              : item.value === "vote"
-                ? myVoteCount
-                : 0,
-        ]),
-      ) as Record<MySummaryView, number>,
-    [myBookmarkCount, myDynamicCommentItems.length, myVoteCount],
-  );
-  const activeSummary: MySummaryView | null = isBookmarkOpen
+  const myPanelContentRef = useRef<HTMLDivElement>(null);
+  const {
+    activityCounts: myActivityCounts,
+    bookmarkNewsCategoryTabs: dynamicBookmarkNewsCategoryTabs,
+    bookmarkPolicyAgeTabs: dynamicBookmarkPolicyAgeTabs,
+    commentCategoryTabs: dynamicCommentCategoryTabs,
+    recentCategoryTabs: dynamicRecentCategoryTabs,
+    showBookmarkNewsCategoryTabs: shouldShowBookmarkNewsCategoryTabs,
+    showBookmarkPolicyAgeTabs: shouldShowBookmarkPolicyAgeTabs,
+    showCommentKindTabs: shouldShowCommentKindTabs,
+    showRecentCategoryTabs: shouldShowRecentCategoryTabs,
+    showVoteCategoryTabs: shouldShowVoteCategoryTabs,
+    voteCategoryTabs: dynamicVoteCategoryTabs,
+  } = useMyPageDynamicTabs({
+    bookmarkCount: myBookmarkCount,
+    bookmarkItems: myDynamicBookmarkItems,
+    commentItems: myDynamicCommentItems,
+    recentItems: myDynamicRecentItems,
+    voteCount: myVoteCount,
+    voteItems: myDynamicVoteItems,
+  });
+  const activeSummary = isBookmarkOpen
     ? "bookmark"
     : isVoteOpen
       ? "vote"

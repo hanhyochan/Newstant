@@ -16,7 +16,7 @@ import {
   homeArticles,
   type HomeArticle,
   type OpenArticleDetail,
-} from "@/features/news/NewsViews";
+} from "@/features/news/model";
 import {
   BottomFixedActionBar,
   bottomFixedActionBarExitDurationMs,

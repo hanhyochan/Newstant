@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import styles from "./styles/newsroll.module.css";
 
@@ -34,7 +28,7 @@ import type {
   BodySearchSelection,
   BodySearchSelectionInput,
 } from "@/features/search/model";
-import { navItems, type Tab } from "@/features/shell/navigation";
+import { navItems } from "@/features/shell/navigation";
 import { getPolicyItemFromWelfarePolicy } from "@/features/policy/model";
 import { ConfirmDialog } from "@/features/shared/ConfirmDialog";
 import { getDataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";

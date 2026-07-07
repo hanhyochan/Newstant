@@ -7,15 +7,11 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
-
 import {
   commentApi,
   newsApi,
   userContentActionApi,
-  type Comment,
   type UserContentAction,
 } from "@/shared/newsroll/api";
 import { currentUserId } from "@/shared/newsroll/auth/current-user";
@@ -48,9 +44,7 @@ import {
   formatCommentDate,
   getCommentAuthor,
   getCommentChoice,
-  getCommentItemFromApi,
   type CommentId,
-  type CommentItem,
   type CommentReactionValue,
 } from "@/features/comments/utils/comment-data";
 import { getVisibleReactionCount } from "@/features/news/article/article-reactions";
@@ -65,46 +59,18 @@ import {
   type GuideKind,
 } from "@/features/news/model";
 import type { CommentReplyItem } from "@/features/news/comments/comment-model";
-type CommentSortOrder = "latest" | "popular";
-type CommentAction = "block" | "delete" | "edit" | "hide" | "report";
-type CommentReportTarget = {
-  targetId: string;
-  targetType: "comment" | "reply";
-  targetUserId: string;
-};
-type CommentScrollTarget = {
-  bottomGap?: number;
-  delayMs?: number;
-  id: string;
-};
-type BodySearchTargetKey = "body" | "category" | "source" | "title";
-const commentPanelOpenHintOffset = 112;
-
-const commentSortOptions: { label: string; value: CommentSortOrder }[] = [
-  { label: "인기순", value: "popular" },
-  { label: "최신순", value: "latest" },
-];
-
-const myCommentActionOptions: { label: string; value: CommentAction }[] = [
-  { label: "수정", value: "edit" },
-  { label: "삭제", value: "delete" },
-];
-
-const otherCommentActionOptions: { label: string; value: CommentAction }[] = [
-  { label: "신고", value: "report" },
-  { label: "차단", value: "block" },
-  { label: "숨김", value: "hide" },
-];
-
-const commentReportReasons = [
-  "스팸/광고",
-  "욕설/비방",
-  "혐오/차별",
-  "개인정보 노출",
-  "허위 정보",
-  "기타",
-];
-
+import { ClientPortal } from "@/features/news/comments/ClientPortal";
+import { useCommentPanelDerivedComments } from "@/features/news/comments/use-comment-panel-derived-comments";
+import {
+  commentReportReasons,
+  commentSortOptions,
+  myCommentActionOptions,
+  otherCommentActionOptions,
+  type CommentAction,
+  type CommentReportTarget,
+  type CommentScrollTarget,
+  type CommentSortOrder,
+} from "@/features/news/comments/comment-panel-model";
 export function CommentReactionPanel({
   guideKind,
   id,
@@ -203,151 +169,27 @@ export function CommentReactionPanel({
 
     setIsComposerVisible(true);
   }, [initialCommentId, initialReplyTargetId]);
-  const deletedCommentIdSet = useMemo(
-    () => new Set(deletedCommentIds),
-    [deletedCommentIds],
-  );
-  const deletedReplyIdSet = useMemo(
-    () => new Set(deletedReplyIds),
-    [deletedReplyIds],
-  );
-  const blockedUserIdSet = useMemo(
-    () =>
-      new Set(
-        contentActions
-          .filter((action) => action.type === "block" && action.targetUserId)
-          .map((action) => action.targetUserId as string),
-      ),
-    [contentActions],
-  );
-  const hiddenCommentIdSet = useMemo(
-    () =>
-      new Set(
-        contentActions
-          .filter(
-            (action) =>
-              action.type === "hide" && action.targetType === "comment",
-          )
-          .map((action) => action.targetId),
-      ),
-    [contentActions],
-  );
-  const hiddenReplyIdSet = useMemo(
-    () =>
-      new Set(
-        contentActions
-          .filter(
-            (action) => action.type === "hide" && action.targetType === "reply",
-          )
-          .map((action) => action.targetId),
-      ),
-    [contentActions],
-  );
-
-  useEffect(() => {
-    let ignore = false;
-
-    userContentActionApi
-      .getActions(currentUserId)
-      .then((actions) => {
-        if (!ignore) {
-          setContentActions(actions);
-        }
-      })
-      .catch(() => undefined);
-
-    return () => {
-      ignore = true;
-    };
-  }, [newsId]);
-  const commentsByParentId = useMemo(() => {
-    const groups: Record<string, Comment[]> = {};
-
-    apiComments.forEach((comment) => {
-      if (!comment.parentId) {
-        return;
-      }
-
-      groups[comment.parentId] = [...(groups[comment.parentId] ?? []), comment];
-    });
-
-    return groups;
-  }, [apiComments]);
-  const allComments = useMemo(
-    () =>
-      apiComments
-        .filter((comment) => !comment.parentId)
-        .map((comment) =>
-          getCommentItemFromApi(
-            comment,
-            guideChoices,
-            pollOptionLabelById,
-            commentsByParentId[comment.id]?.length ?? 0,
-          ),
-        )
-        .map((comment) => {
-          const editedBody = commentEdit.getEditedValue(comment.id);
-
-          return editedBody ? { ...comment, body: editedBody } : comment;
-        })
-        .filter(
-          (comment) =>
-            !deletedCommentIdSet.has(comment.id) &&
-            !hiddenCommentIdSet.has(comment.id) &&
-            !blockedUserIdSet.has(comment.userId),
-        ),
-    [
-      apiComments,
-      blockedUserIdSet,
-      commentEdit.editedValues,
-      commentsByParentId,
-      deletedCommentIdSet,
-      guideChoices,
-      hiddenCommentIdSet,
-      pollOptionLabelById,
-    ],
-  );
-  const getCommentReactionCounts = (comment: { id: string }) => {
-    const counts = commentReactionCounts[comment.id] ?? emptyCommentReactionCounts;
-
-    return {
-      dislikes: counts.dislike,
-      likes: counts.like,
-    };
-  };
-  const getCommentPopularity = (comment: CommentItem) => {
-    const { likes } = getCommentReactionCounts(comment);
-    return likes + comment.replies;
-  };
-  const visibleComments = useMemo(
-    () =>
-      allComments
-        .filter((comment) => (myCommentsOnly ? comment.isMine : true))
-        .filter((comment) =>
-          activeChoice === "all" ? true : comment.choice === activeChoice,
-        )
-        .sort((a, b) => {
-          if (sortOrder === "latest") {
-            return (
-              new Date(b.createdAt ?? 0).getTime() -
-              new Date(a.createdAt ?? 0).getTime()
-            );
-          }
-
-          return (
-            getCommentPopularity(b) - getCommentPopularity(a) ||
-            new Date(b.createdAt ?? 0).getTime() -
-              new Date(a.createdAt ?? 0).getTime()
-          );
-        }),
-    [
-      activeChoice,
-      allComments,
-      commentReactionCounts,
-      myCommentsOnly,
-      sortOrder,
-    ],
-  );
+  const {
+    allComments,
+    blockedUserIdSet,
+    commentsByParentId,
+    deletedReplyIdSet,
+    getCommentReactionCounts,
+    hiddenReplyIdSet,
+    visibleComments,
+  } = useCommentPanelDerivedComments({
+    activeChoice,
+    apiComments,
+    commentEditedValues: commentEdit.editedValues,
+    commentReactionCounts,
+    contentActions,
+    deletedCommentIds,
+    deletedReplyIds,
+    guideChoices,
+    myCommentsOnly,
+    pollOptionLabelById,
+    sortOrder,
+  });
 
   function scrollArticleTo(
     articleScroller: HTMLElement,
@@ -1560,18 +1402,3 @@ export function CommentReactionPanel({
     </>
   );
 }
-
-export function ClientPortal({ children }: { children: ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
-
-  return createPortal(children, document.body);
-}
-

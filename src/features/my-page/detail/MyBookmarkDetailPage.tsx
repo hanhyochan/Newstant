@@ -8,8 +8,10 @@ import {
   getEnterFromRightMotionClassName,
   useSwipeTabNavigation,
 } from "@/design-system/templates";
-import { createAllNewsArticle } from "@/features/news/NewsViews";
-import type { AllNewsArticlePreview } from "@/features/news/all-news/all-news-model";
+import {
+  createAllNewsArticle,
+  type AllNewsArticlePreview,
+} from "@/features/news/all-news/all-news-model";
 import type { OpenArticleDetail, PolicyItem } from "@/features/news/model";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";

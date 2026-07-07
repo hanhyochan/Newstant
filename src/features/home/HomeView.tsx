@@ -28,10 +28,8 @@ import {
 } from "@/design-system/templates";
 
 import { ArticleDetailContent, HomeReelCard } from "@/features/news/article/HomeReelCard";
-import {
-  HomeShell,
-  NewsRollStateCard,
-} from "@/features/news/NewsViews";
+import { HomeShell } from "@/features/news/home/HomeShell";
+import { NewsRollStateCard } from "@/features/news/article/NewsRollStateCard";
 import {
   defaultNewsDateTime,
   filterArticlesByBlockedKeywords,

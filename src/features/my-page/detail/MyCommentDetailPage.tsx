@@ -16,7 +16,6 @@ import {
   getEnterFromRightMotionClassName,
   useSwipeTabNavigation,
 } from "@/design-system/templates";
-import { NewsCreatedTime } from "@/features/news/article/NewsCreatedTime";
 import {
   commentReplyTemplates,
   type CommentReplyItem,
