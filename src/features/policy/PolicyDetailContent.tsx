@@ -6,7 +6,6 @@ import {
   ChipLabel,
   DateTimeText,
   PaginationButton,
-  Icon,
   IconButton,
   Divider,
   PrimaryButton,
@@ -257,9 +256,8 @@ export function PolicyDetailContent({
         <PrimaryButtonGroup>
         <PrimaryButton
           className="btn_detailToggle"
-          leftIcon={<Icon name="plus" />}
         >
-          상세보기
+          알아보기
         </PrimaryButton>
       </PrimaryButtonGroup>
       )}

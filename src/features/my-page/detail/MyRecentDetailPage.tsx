@@ -217,21 +217,23 @@ export function MyRecentDetailPage({
     >
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
       <div
-        className="wrapper_myTabbedDetailContent wrapper_panelContent"
+        className={`wrapper_myTabbedDetailContent wrapper_panelContent${showTabs ? " all_panelContentFlush" : ""}`}
         {...recentTabSwipeHandlers}
       >
         {showTabs ? (
           <>
-            <PillTabMenu
-              ariaLabel="최근 본 뉴스 카테고리"
-              className="tab_myCategoryMenu wrapper_tabScroller"
-              items={tabs.map((category) => ({
-                id: category,
-                label: category,
-              }))}
-              onChange={onCategoryChange}
-              value={activeCategory}
-            />
+            <div className="all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style all_category_tabSticky">
+              <PillTabMenu
+                ariaLabel="최근 본 뉴스 카테고리"
+                className="all_category_tabs wrapper_tabScroller"
+                items={tabs.map((category) => ({
+                  id: category,
+                  label: category,
+                }))}
+                onChange={onCategoryChange}
+                value={activeCategory}
+              />
+            </div>
             <div className="wrapper_myRecentSelectAllControls">
               {selectAllControl}
             </div>

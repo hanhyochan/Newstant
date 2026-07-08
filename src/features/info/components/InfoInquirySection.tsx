@@ -6,7 +6,6 @@ import {
 } from "@/shared/newsroll/api";
 import { currentUserId } from "@/shared/newsroll/auth/current-user";
 import {
-  Icon,
   PrimaryButton,
   PrimaryButtonGroup,
   SelectButton,
@@ -121,7 +120,6 @@ export function InfoInquirySection({ items }: { items: InquiryType[] }) {
       <PrimaryButtonGroup>
         <PrimaryButton
           disabled={inquiryStatus === "sending"}
-          leftIcon={<Icon name="submit" />}
           type="submit"
         >
         {inquiryStatus === "sending" ? "보내는 중" : "문의하기"}

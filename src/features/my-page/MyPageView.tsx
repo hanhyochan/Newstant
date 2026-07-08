@@ -273,6 +273,80 @@ export function MyPageView({
       myPolicyDetail?.title,
     scrollerRef: myPanelContentRef,
   });
+  const resetMyPanelScroll = useCallback(() => {
+    const scrollToTop = () => {
+      myPanelContentRef.current?.scrollTo({ left: 0, top: 0 });
+    };
+
+    scrollToTop();
+    window.requestAnimationFrame(scrollToTop);
+  }, []);
+  const changeActiveRecentCategory = useCallback(
+    (nextCategory: string) => {
+      if (nextCategory === activeRecentCategory) {
+        return;
+      }
+
+      resetMyPanelScroll();
+      setActiveRecentCategory(nextCategory);
+    },
+    [activeRecentCategory, resetMyPanelScroll],
+  );
+  const changeActiveBookmarkType = useCallback(
+    (nextType: MyBookmarkTypeTab) => {
+      if (nextType === activeBookmarkType) {
+        return;
+      }
+
+      resetMyPanelScroll();
+      setActiveBookmarkType(nextType);
+    },
+    [activeBookmarkType, resetMyPanelScroll],
+  );
+  const changeActiveBookmarkNewsCategory = useCallback(
+    (nextCategory: string) => {
+      if (nextCategory === activeBookmarkNewsCategory) {
+        return;
+      }
+
+      resetMyPanelScroll();
+      setActiveBookmarkNewsCategory(nextCategory);
+    },
+    [activeBookmarkNewsCategory, resetMyPanelScroll],
+  );
+  const changeActiveBookmarkPolicyAgeLabel = useCallback(
+    (nextAgeLabel: string) => {
+      if (nextAgeLabel === activeBookmarkPolicyAgeLabel) {
+        return;
+      }
+
+      resetMyPanelScroll();
+      setActiveBookmarkPolicyAgeLabel(nextAgeLabel);
+    },
+    [activeBookmarkPolicyAgeLabel, resetMyPanelScroll],
+  );
+  const changeActiveVoteCategory = useCallback(
+    (nextCategory: string) => {
+      if (nextCategory === activeVoteCategory) {
+        return;
+      }
+
+      resetMyPanelScroll();
+      setActiveVoteCategory(nextCategory);
+    },
+    [activeVoteCategory, resetMyPanelScroll],
+  );
+  const changeActiveCommentCategory = useCallback(
+    (nextCategory: MyCommentKind) => {
+      if (nextCategory === activeCommentCategory) {
+        return;
+      }
+
+      resetMyPanelScroll();
+      setActiveCommentCategory(nextCategory);
+    },
+    [activeCommentCategory, resetMyPanelScroll],
+  );
   const closeMyArticleDetailImmediately = useCallback(() => {
     myArticleDetailScrollRestore.requestRestore();
     setMyArticleDetail(null);
@@ -890,7 +964,7 @@ export function MyPageView({
               activeCategory={activeRecentCategory}
               items={myDynamicRecentItems}
               isLeaving={myDetailExitMotion.isLeaving}
-              onCategoryChange={setActiveRecentCategory}
+              onCategoryChange={changeActiveRecentCategory}
               onDeleteRecentViews={deleteRecentViews}
               onOpenArticle={openMyArticleDetail}
               showTabs={shouldShowRecentCategoryTabs}
@@ -904,11 +978,11 @@ export function MyPageView({
               items={myDynamicBookmarkItems}
               isLeaving={myDetailExitMotion.isLeaving}
               newsCategoryTabs={dynamicBookmarkNewsCategoryTabs}
-              onNewsCategoryChange={setActiveBookmarkNewsCategory}
+              onNewsCategoryChange={changeActiveBookmarkNewsCategory}
               onOpenArticle={openMyArticleDetail}
               onOpenPolicy={openMyPolicyDetail}
-              onPolicyAgeChange={setActiveBookmarkPolicyAgeLabel}
-              onTypeChange={setActiveBookmarkType}
+              onPolicyAgeChange={changeActiveBookmarkPolicyAgeLabel}
+              onTypeChange={changeActiveBookmarkType}
               policyAgeTabs={dynamicBookmarkPolicyAgeTabs}
               showNewsCategoryTabs={shouldShowBookmarkNewsCategoryTabs}
               showPolicyAgeTabs={shouldShowBookmarkPolicyAgeTabs}
@@ -918,7 +992,7 @@ export function MyPageView({
               activeCategory={activeVoteCategory}
               items={myDynamicVoteItems}
               isLeaving={myDetailExitMotion.isLeaving}
-              onCategoryChange={setActiveVoteCategory}
+              onCategoryChange={changeActiveVoteCategory}
               onOpenArticle={openMyArticleDetail}
               showTabs={shouldShowVoteCategoryTabs}
               tabs={dynamicVoteCategoryTabs}
@@ -928,7 +1002,7 @@ export function MyPageView({
               activeCategory={activeCommentCategory}
               items={myDynamicCommentItems}
               isLeaving={myDetailExitMotion.isLeaving}
-              onCategoryChange={setActiveCommentCategory}
+              onCategoryChange={changeActiveCommentCategory}
               onOpenArticle={openMyArticleDetail}
               showTabs={shouldShowCommentKindTabs}
               tabs={dynamicCommentCategoryTabs}

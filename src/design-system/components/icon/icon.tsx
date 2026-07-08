@@ -29,7 +29,7 @@ export type IconName =
   | "user"
   | "vote";
 
-export type IconSize = 12 | 20;
+export type IconSize = 12 | 18 | 20;
 
 export function Icon({
   className,

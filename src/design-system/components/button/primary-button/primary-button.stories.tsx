@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { Icon } from "../../icon/icon";
 import { PrimaryButton } from "./primary-button";
 
 const tones = ["default", "neutral", "danger"] as const;
@@ -36,11 +35,4 @@ export const ToneOptions: Story = {
       ))}
     </div>
   ),
-};
-
-export const WithLeftIcon: Story = {
-  args: {
-    children: "신청하기",
-    leftIcon: <Icon name="submit" />,
-  },
 };

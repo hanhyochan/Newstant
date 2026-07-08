@@ -198,7 +198,21 @@ export function InfoView({
     };
   }, []);
 
+  function resetInfoPanelScroll() {
+    const scrollToTop = () => {
+      infoPanelContentRef.current?.scrollTo({ left: 0, top: 0 });
+    };
+
+    scrollToTop();
+    window.requestAnimationFrame(scrollToTop);
+  }
+
   function handleInfoTabChange(nextTab: InfoTab) {
+    if (nextTab === activeInfoTab) {
+      return;
+    }
+
+    resetInfoPanelScroll();
     setActiveInfoTab(nextTab);
     setNoticeDetailItem(null);
     setNoticeDetailIndex(null);
@@ -283,18 +297,20 @@ export function InfoView({
             }
           />
         ) : (
-          <div className="container_infoContent" {...infoTabSwipeHandlers}>
-            <PillTabMenu
-              ariaLabel="인포메이션 메뉴"
-              className="tab_myCategoryMenu"
-              getPanelId={(id) =>
-                id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
-              }
-              getTabId={(id) => `newsroll_info_tab_${id}`}
-              items={infoTabs}
-              onChange={handleInfoTabChange}
-              value={activeInfoTab}
-            />
+          <div className="container_infoContent all_panelContentFlush" {...infoTabSwipeHandlers}>
+            <div className="all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style all_category_tabSticky">
+              <PillTabMenu
+                ariaLabel="인포메이션 메뉴"
+                className="all_category_tabs wrapper_tabScroller"
+                getPanelId={(id) =>
+                  id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
+                }
+                getTabId={(id) => `newsroll_info_tab_${id}`}
+                items={infoTabs}
+                onChange={handleInfoTabChange}
+                value={activeInfoTab}
+              />
+            </div>
             <div
               aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
               className={`container_infoPanel ${infoTabSwipeMotionClassName}`.trim()}

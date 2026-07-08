@@ -80,7 +80,7 @@ export function PasswordResetPasswordView({
                   autoComplete="new-password"
                   onBlur={nextPasswordValidation.markTouched}
                   onChange={(event) => setNextPassword(event.currentTarget.value)}
-                  placeholder="새 비밀번호 입력"
+                  placeholder="비밀번호"
                   state={nextPasswordValidation.errorMessage ? "error" : "default"}
                   type={isNextPasswordVisible ? "text" : "password"}
                   value={nextPassword}
@@ -117,7 +117,7 @@ export function PasswordResetPasswordView({
                   onChange={(event) =>
                     setNextPasswordConfirm(event.currentTarget.value)
                   }
-                  placeholder="새 비밀번호 다시 입력하기"
+                  placeholder="비밀번호 확인"
                   state={
                     nextPasswordConfirmValidation.errorMessage ? "error" : "default"
                   }

@@ -761,6 +761,7 @@ export function AllNewsView({
             className="all_relay_panel"
             contentProps={{
               "aria-labelledby": `all-news-relay-tab-${activeRelayIndex}`,
+              className: "all_panelContentFlush",
               id: `all-news-relay-panel-${activeRelayIndex}`,
               role: "tabpanel",
             }}

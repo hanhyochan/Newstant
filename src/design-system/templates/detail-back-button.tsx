@@ -18,6 +18,7 @@ export function NewsRollDetailBackButton({
       className={cn("btn_detailBack", className)}
       icon="chevron"
       label={ariaLabel}
+      iconSize={18}
       tone="translucent"
       type={type}
       variant="shaped"

@@ -41,7 +41,10 @@ export function LoginView({
   const [isAutoLogin, setIsAutoLogin] = useState(false);
   const [isEmailLoginVisible, setIsEmailLoginVisible] = useState(false);
   const emailValidation = useZodFieldValidation(authEmailSchema, email);
-  const passwordValidation = useZodFieldValidation(loginPasswordSchema, password);
+  const passwordValidation = useZodFieldValidation(
+    loginPasswordSchema,
+    password,
+  );
   const isLoginReady = emailValidation.isValid && passwordValidation.isValid;
   const loginEmailErrorId = "login-email-error";
   const loginPasswordErrorId = "login-password-error";
@@ -49,117 +52,130 @@ export function LoginView({
   return (
     <AuthLayout
       ariaLabel="로그인"
-      className={!isEmailLoginVisible ? "container_authLayout_loginLanding" : undefined}
+      className={
+        !isEmailLoginVisible ? "container_authLayout_loginLanding" : undefined
+      }
     >
       {!isEmailLoginVisible ? (
         <div className="wrapper_loginContent wrapper_loginLandingContent">
-          <h1 className="text_loginLandingHero">세상을 스크롤하다</h1>
-          <SocialLoginButtons onEmailLoginClick={() => setIsEmailLoginVisible(true)} />
+          <h1 className="text_loginLandingHero">뉴스를 인스턴트처럼!</h1>
+          <SocialLoginButtons
+            onEmailLoginClick={() => setIsEmailLoginVisible(true)}
+          />
         </div>
       ) : (
-      <div className="wrapper_loginContent wrapper_loginEmailContent">
-        <AuthBackButton onClick={() => setIsEmailLoginVisible(false)} />
-        <h1 className="text_loginTitle">세상을 스크롤하다</h1>
+        <div className="wrapper_loginContent wrapper_loginEmailContent">
+          <AuthBackButton onClick={() => setIsEmailLoginVisible(false)} />
+          <h1 className="text_loginTitle">뉴스를 인스턴트처럼!</h1>
 
-        <form
-          className="form_login"
-          onSubmit={(event) => {
-            event.preventDefault();
+          <form
+            className="form_login"
+            onSubmit={(event) => {
+              event.preventDefault();
 
-            if (isLoginReady && !isSubmitting) {
-              onLogin({ email, isAutoLogin, password });
-            }
-          }}
-        >
-          <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
-              <TextInput mode="dark"
-                aria-describedby={emailValidation.errorMessage ? loginEmailErrorId : undefined}
-                aria-invalid={Boolean(emailValidation.errorMessage)}
-                aria-label="이메일 입력"
-                autoComplete="email"
-                autoCapitalize="none"
-                autoCorrect="off"
-                onBlur={emailValidation.markTouched}
-                onChange={(event) => setEmail(event.currentTarget.value)}
-                placeholder="이메일"
-                spellCheck={false}
-                state={emailValidation.errorMessage ? "error" : "default"}
-                type="email"
-                value={email}
-              />
-              <AuthValidationError
-                id={loginEmailErrorId}
-                message={emailValidation.errorMessage}
-              />
-            </div>
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
-              <div className="wrapper_loginPasswordField">
-                <TextInput mode="dark"
+              if (isLoginReady && !isSubmitting) {
+                onLogin({ email, isAutoLogin, password });
+              }
+            }}
+          >
+            <div className="wrapper_loginInputs">
+              <div className="wrapper_authField wrapper_fieldStack u_w100">
+                <TextInput
+                  mode="dark"
                   aria-describedby={
-                    passwordValidation.errorMessage ? loginPasswordErrorId : undefined
+                    emailValidation.errorMessage ? loginEmailErrorId : undefined
                   }
-                  aria-invalid={Boolean(passwordValidation.errorMessage)}
-                  aria-label="비밀번호 입력"
-                  autoComplete="current-password"
-                  onBlur={passwordValidation.markTouched}
-                  onChange={(event) => setPassword(event.currentTarget.value)}
-                  placeholder="비밀번호"
-                  state={passwordValidation.errorMessage ? "error" : "default"}
-                  type={isPasswordVisible ? "text" : "password"}
-                  value={password}
-                  hasEndAction
+                  aria-invalid={Boolean(emailValidation.errorMessage)}
+                  aria-label="이메일 입력"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  onBlur={emailValidation.markTouched}
+                  onChange={(event) => setEmail(event.currentTarget.value)}
+                  placeholder="이메일"
+                  spellCheck={false}
+                  state={emailValidation.errorMessage ? "error" : "default"}
+                  type="email"
+                  value={email}
                 />
-                <IconButton
-                  aria-pressed={isPasswordVisible}
-                  className="btn_loginPasswordToggle"
-                  icon="eye"
-                  iconSize={12}
-                  label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  onClick={() => setIsPasswordVisible((current) => !current)}
+                <AuthValidationError
+                  id={loginEmailErrorId}
+                  message={emailValidation.errorMessage}
                 />
               </div>
+              <div className="wrapper_authField wrapper_fieldStack u_w100">
+                <div className="wrapper_loginPasswordField">
+                  <TextInput
+                    mode="dark"
+                    aria-describedby={
+                      passwordValidation.errorMessage
+                        ? loginPasswordErrorId
+                        : undefined
+                    }
+                    aria-invalid={Boolean(passwordValidation.errorMessage)}
+                    aria-label="비밀번호 입력"
+                    autoComplete="current-password"
+                    onBlur={passwordValidation.markTouched}
+                    onChange={(event) => setPassword(event.currentTarget.value)}
+                    placeholder="비밀번호"
+                    state={
+                      passwordValidation.errorMessage ? "error" : "default"
+                    }
+                    type={isPasswordVisible ? "text" : "password"}
+                    value={password}
+                    hasEndAction
+                  />
+                  <IconButton
+                    aria-pressed={isPasswordVisible}
+                    className="btn_loginPasswordToggle"
+                    icon="eye"
+                    iconSize={12}
+                    label={
+                      isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"
+                    }
+                    onClick={() => setIsPasswordVisible((current) => !current)}
+                  />
+                </div>
+                <AuthValidationError
+                  id={loginPasswordErrorId}
+                  message={passwordValidation.errorMessage}
+                />
+              </div>
+              <PrimaryButtonGroup>
+                <PrimaryButton
+                  className="btn_loginSubmit"
+                  disabled={!isLoginReady || isSubmitting}
+                  type="submit"
+                >
+                  로그인
+                </PrimaryButton>
+              </PrimaryButtonGroup>
               <AuthValidationError
-                id={loginPasswordErrorId}
-                message={passwordValidation.errorMessage}
+                id="login-submit-error"
+                message={loginError}
               />
+              <div className="wrapper_loginActions">
+                <CheckInput
+                  checked={isAutoLogin}
+                  role="autoLogin"
+                  size="md"
+                  label="자동 로그인"
+                  onChange={() => setIsAutoLogin((current) => !current)}
+                />
+                <AuthTextActionButton onClick={onPasswordResetStart}>
+                  비밀번호가 기억나지 않으신가요?
+                </AuthTextActionButton>
+              </div>
             </div>
-            <PrimaryButtonGroup>
-        <PrimaryButton
-              className="btn_loginSubmit"
-              disabled={!isLoginReady || isSubmitting}
 
-
-              type="submit"
-
-            >
-              로그인
-            </PrimaryButton>
-      </PrimaryButtonGroup>
-            <AuthValidationError id="login-submit-error" message={loginError} />
-            <div className="wrapper_loginActions">
-              <CheckInput
-                checked={isAutoLogin}
-                role="autoLogin"
-                size="md"
-                label="자동 로그인"
-                onChange={() => setIsAutoLogin((current) => !current)}
-              />
-              <AuthTextActionButton onClick={onPasswordResetStart}>
-                비밀번호가 기억나지 않으신가요?
+            <div className="wrapper_loginSignup">
+              <AuthTextActionButton onClick={onSignup}>
+                회원가입
               </AuthTextActionButton>
             </div>
-          </div>
-
-          <div className="wrapper_loginSignup">
-            <AuthTextActionButton onClick={onSignup}>
-              회원가입
-            </AuthTextActionButton>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
       )}
     </AuthLayout>
   );
 }
-

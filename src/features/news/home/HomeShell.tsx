@@ -153,9 +153,11 @@ export function HomeShell({
   onOpenNotifications,
   onOpenSearch,
   onToggleTextSize,
+  sheetUndockSignal,
 }: HomeHeaderControls & {
   children: ReactNode;
   onPanelChange?: () => void;
+  sheetUndockSignal?: number;
 }) {
   const screenRef = useRef<HTMLElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -249,6 +251,7 @@ export function HomeShell({
       sheetClassName="container_homeSheet"
       sheetNestedScrollResetSelector={homeDockedScrollSelectors.contentScroller}
       sheetProps={{ onScrollCapture: handleSheetScroll }}
+      sheetUndockSignal={sheetUndockSignal}
       sheetRef={sheetRef}
       sheetScrollSelector={homeSheetScrollSelector}
       top={

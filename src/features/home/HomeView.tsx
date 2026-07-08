@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState
 } from "react";
 
@@ -96,6 +97,13 @@ export function HomeView({
   const [detailOpen, setDetailOpen] = useState(
     bodySearchSelection?.kind === "news",
   );
+  const [forceDockedDetail, setForceDockedDetail] = useState(
+    bodySearchSelection?.kind === "news",
+  );
+  const [homeSheetUndockSignal, setHomeSheetUndockSignal] = useState(0);
+  const shouldResetHomeSheetOnDetailCloseRef = useRef(
+    bodySearchSelection?.kind === "news",
+  );
   const [selectedDetailArticle, setSelectedDetailArticle] =
     useState<HomeArticle | null>(
       bodySearchSelection?.kind === "news" ? bodySearchSelection.article : null,
@@ -111,15 +119,27 @@ export function HomeView({
   const [isPreferenceLoading, setIsPreferenceLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
   const closeHomeDetailImmediately = useCallback(() => {
+    const shouldResetHomeSheet = shouldResetHomeSheetOnDetailCloseRef.current;
     setDetailOpen(false);
+    setForceDockedDetail(false);
+    if (shouldResetHomeSheet) {
+      setHomeSheetUndockSignal((current) => current + 1);
+    }
+    shouldResetHomeSheetOnDetailCloseRef.current = false;
   }, []);
   const homeDetailExitMotion = useEnterFromRightExitMotion({
     isOpen: detailOpen,
     onClose: closeHomeDetailImmediately,
   });
 
-  function openHomeDetail(article: HomeArticle) {
+  function openHomeDetail(
+    article: HomeArticle,
+    options: { forceDocked?: boolean } = {},
+  ) {
     setOpenCommentPanelKey(null);
+    const shouldForceDock = Boolean(options.forceDocked);
+    setForceDockedDetail(shouldForceDock);
+    shouldResetHomeSheetOnDetailCloseRef.current = shouldForceDock;
     setSelectedDetailArticle(article);
     setDetailOpen(true);
   }
@@ -134,7 +154,7 @@ export function HomeView({
     }
 
     setHomeViewMode("block");
-    openHomeDetail(bodySearchSelection.article);
+    openHomeDetail(bodySearchSelection.article, { forceDocked: true });
   }, [bodySearchSelection]);
 
   useEffect(() => {
@@ -226,15 +246,18 @@ export function HomeView({
     <HomeShell
       breakingItem={latestBreakingItem}
       breakingTitle={breakingTitle}
-      forceDockedDetail={isBodySearchDetail}
+      forceDockedDetail={detailOpen && (forceDockedDetail || isBodySearchDetail)}
       isDetailOpen={detailOpen}
       isTextLarge={isTextLarge}
       mode={homeViewMode}
+      sheetUndockSignal={homeSheetUndockSignal}
       newsCount={visibleArticles.length}
       onCloseDetail={homeDetailExitMotion.closeWithMotion}
-      onOpenBreakingArticle={openHomeDetail}
+      onOpenBreakingArticle={(article) => openHomeDetail(article, { forceDocked: true })}
       onModeChange={(nextMode) => {
         setOpenCommentPanelKey(null);
+        setForceDockedDetail(false);
+        shouldResetHomeSheetOnDetailCloseRef.current = false;
         setDetailOpen(false);
         setHomeViewMode(nextMode);
       }}

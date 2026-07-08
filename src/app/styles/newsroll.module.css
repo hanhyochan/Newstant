@@ -428,6 +428,9 @@
   color: var(--color-cool-neutral-15);
   background: var(--color-background-elevated-normal);
   box-shadow: none;
+}.newsrollScope :global(.all_press_panel .text_sectionTitle),
+.newsrollScope :global(.all_relay_panel .text_sectionTitle) {
+  padding-bottom: var(--spacing-gap-vertical-16);
 }.newsrollScope :global(.all_itemDivider) {
   background: var(--newsroll-divider-color);
 }.newsrollScope :global(.all_latest_panel) {
@@ -440,6 +443,14 @@
     var(--newsroll-all-latest-panel-natural-height),
     var(--newsroll-all-latest-panel-available-height)
   );
+}.newsrollScope :global(.all_latest_scroller .btn_newsCardFeature),
+.newsrollScope :global(.all_latest_scroller .btn_newsCardFeature > .wrapper_contentMeta) {
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.all_latest_scroller .img_newsCardFeature) {
+  aspect-ratio: 5 / 2;
+}.newsrollScope :global(.all_latest_scroller .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+  line-height: 28px;
+  padding-bottom: 0;
 }.newsrollScope :global(.all_latest_scroller) {
   cursor: grab;
   user-select: none;
@@ -456,7 +467,6 @@
   color: var(--color-cool-neutral-15);
   background: var(--color-background-elevated-normal);
 }.newsrollScope :global(.policy_age_tabs),
-.newsrollScope :global(.info_screen .tab_myCategoryMenu),
 .newsrollScope :global(.all_tabSticky),
 .newsrollScope :global(.pageSurface_style),
 .newsrollScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
@@ -467,6 +477,15 @@
 .newsrollScope :global(.wrapper_articleReaction > button[aria-pressed="true"]),
 .newsrollScope :global(.wrapper_stickyHeader_style) {
   background: var(--color-background-elevated-normal);
+}.newsrollScope :global(.wrapper_stickyHeader_style)::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: inherit;
+  pointer-events: none;
 }.newsrollScope :global(.btn_contentListItem) {
   border-bottom: 0;
 }.newsrollScope :global(.btn_contentListItem h2),
@@ -1047,8 +1066,7 @@
 .newsrollScope:global(.dark .all_pressHeadline_tabMenu),
 .newsrollScope:global(.dark .all_pressHeadline_tabScroller),
 .newsrollScope:global(.dark .all_category_tabSticky),
-.newsrollScope:global(.dark .all_category_tabs),
-.newsrollScope:global(.dark .info_screen .tab_myCategoryMenu) {
+.newsrollScope:global(.dark .all_category_tabs) {
     background: var(--color-common-0);
 }.newsrollScope:global(.dark .btn_noticeCardLink),
 .newsrollScope:global(.dark .text_noticeCardTitle),
@@ -1958,6 +1976,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}.newsrollScope :global(.wrapper_myTabbedDetailContent.all_panelContentFlush > .wrapper_myRecentSelectAllControls + .wrapper_allTabPanelBody) {
+  margin-top: var(--spacing-gap-vertical-24);
 }.newsrollScope :global(.wrapper_myRecentSelectableItem),
 .newsrollScope :global(.wrapper_myModerationSelectableItem) {
   width: 100%;
@@ -1969,7 +1989,6 @@
 .newsrollScope :global(.container_myModerationReleaseFixed) {
   z-index: 50;
 }.newsrollScope :global(.container_myProfile) {
-  min-height: 42px;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
@@ -2062,9 +2081,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: var(--spacing-gap-vertical-16);
-  margin-top: auto;
   padding: 0;
 }.newsrollScope :global(.wrapper_mySettingsField) {
   gap: var(--spacing-gap-vertical-8);
@@ -2430,12 +2447,20 @@
   align-items: center;
   justify-content: center;
   max-width: none;
-  min-width: 0;
+  min-width: var(--spacing-padding-horizontal-60);
   flex: 0 0 auto;
   gap: var(--spacing-gap-horizontal-8);
   padding-inline: var(--spacing-padding-horizontal-16);
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-label-neutral);
+  background: transparent;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
   text-align: left;
   white-space: nowrap;
+  cursor: pointer;
 }.newsrollScope :global(.chip) {
   min-height: 32px;
   display: inline-flex;
@@ -2501,7 +2526,7 @@
   aspect-ratio: 156 / 117;
 }.newsrollScope :global(.img_newsCardFeature) {
   width: 100%;
-  height: auto;
+  height: 52%;
   aspect-ratio: 4 / 3;
   flex: 0 0 auto;
 }.newsrollScope :global(.btn_settingRow),
@@ -2646,6 +2671,7 @@
   padding: 0;
   overflow: visible;
 }.newsrollScope :global(.icon[data-size="20"]),
+.newsrollScope :global(.icon[data-size="18"]),
 .newsrollScope :global(.icon[data-size="12"]) {
   display: inline-block;
   flex: 0 0 auto;
@@ -2653,6 +2679,10 @@
   width: 20px;
   height: 20px;
   flex-basis: 20px;
+}.newsrollScope :global(.icon[data-size="18"]) {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
 }.newsrollScope :global(.icon[data-size="12"]) {
   width: 12px;
   height: 12px;
@@ -2741,6 +2771,8 @@
   width: var(--newsroll-chevron-size);
   height: var(--newsroll-chevron-size);
   flex: 0 0 var(--newsroll-chevron-size);
+}.newsrollScope :global(.wrapper_commentAction) {
+  position: relative;
 }.newsrollScope :global(.panel_dropdown) {
   position: absolute;
   top: calc(100% + var(--spacing-gap-vertical-4));
@@ -3252,7 +3284,7 @@
   gap: 0;
 }.newsrollScope :global(.all_press_panel .text_sectionTitle),
 .newsrollScope :global(.all_relay_panel .text_sectionTitle) {
-  padding-bottom: var(--spacing-gap-vertical-24);
+  padding-bottom: var(--spacing-gap-vertical-16);
 }.newsrollScope :global(.all_itemDivider) {
   width: 100%;
   height: var(--newsroll-divider-thickness);
@@ -3269,13 +3301,15 @@
 }.newsrollScope :global(.all_latest_scroller.is_dragging) {
   scroll-behavior: auto;
   scroll-snap-type: none;
-}.newsrollScope :global(.btn_detailBack) {
+}.newsrollScope :global(.btn_iconButton.btn_detailBack) {
   width: var(--size-44);
   height: var(--size-44);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   flex: 0 0 auto;
+  padding-right: 4px;
 }.newsrollScope :global(.phone),
 .newsrollScope:global(.screen_all .phone) {
   overflow: hidden;
@@ -3441,8 +3475,7 @@
     calc(
       var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
     );
-}.newsrollScope :global(.info_screen .tab_myCategoryMenu),
-.newsrollScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
+}.newsrollScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
 .newsrollScope :global(.container_myVotePage > .tab_myCategoryMenu),
 .newsrollScope :global(.container_myCommentPage > .tab_myCategoryMenu),
 .newsrollScope :global(.wrapper_myTabbedDetailContent > .tab_myCategoryMenu) {
@@ -3813,7 +3846,7 @@
   flex: 0 0 24px;
 }.newsrollScope :global(.all_category_tabs button),
 .newsrollScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
-  min-width: 0;
+  min-width: var(--spacing-padding-horizontal-60);
   min-height: 40px;
   padding-inline: var(--spacing-padding-horizontal-16);
 }.newsrollScope:global(.dark .all_feed > .all_panel:nth-child(1)) {
@@ -3888,6 +3921,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   margin: 0;
   padding: 0;
 }.newsrollScope :global(.sheetFrame.container_authAgreementScreen.is_newsrollSheetDocked .sheetFrameSheet) {
@@ -4009,7 +4043,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-gap-vertical-8);
+  gap: var(--spacing-gap-vertical-24);
 }.newsrollScope :global(.wrapper_socialLoginGroup),
 .newsrollScope :global(.wrapper_socialLoginOptions) {
   width: 100%;
@@ -4059,15 +4093,6 @@
 .newsrollScope :global(.btn_newsCardList img) {
   border-radius: var(--radius-8);
   object-fit: cover;
-}.newsrollScope :global(.btn_tab) {
-  border: 0;
-  border-radius: var(--radius-full);
-  color: var(--color-label-neutral);
-  background: transparent;
-  font-size: var(--font-size-15);
-  font-weight: var(--font-weight-500);
-  line-height: var(--line-height-20);
-  cursor: pointer;
 }.newsrollScope :global(.btn_tab[aria-selected="true"]),
 .newsrollScope :global(.btn_tab[data-state="active"]),
 .newsrollScope :global(.btn_tab[data-state="selected"]) {
@@ -4185,12 +4210,24 @@
   background: var(--color-red-50);
 }.newsrollScope :global(.btn_primary_neutral) {
   color: var(--color-common-0);
-  background: var(--color-cool-neutral-90);
+  background: var(--color-cool-neutral-95);
 }.newsrollScope :global(.btn_primary_danger:active),
 .newsrollScope :global(.btn_primary_danger[aria-pressed="true"]) {
   color: var(--color-common-100);
   background: var(--color-red-40);
-}/* Button: PrimaryButtonGroup *//* Button: IconButton */.newsrollScope :global(.btn_iconButton),
+}/* Button: PrimaryButtonGroup */.newsrollScope :global(.wrapper_primaryButtonGroup) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.wrapper_primaryButtonGroup_twoColumns) {
+  flex-direction: row;
+  gap: var(--spacing-gap-horizontal-16);
+}.newsrollScope :global(.wrapper_primaryButtonGroup > .btn_primary) {
+  flex: 1 1 0;
+  min-width: 0;
+}/* Button: IconButton */.newsrollScope :global(.btn_iconButton),
 .newsrollScope :global(.btn_chevronRowArrow) {
   border: 0;
   color: inherit;
@@ -4289,6 +4326,7 @@
   cursor: default;
   opacity: 0.5;
 }/* Icon: shared mask sizes */.newsrollScope :global(.icon[data-size="20"]),
+.newsrollScope :global(.icon[data-size="18"]),
 .newsrollScope :global(.icon[data-size="12"]) {
   background: currentColor;
   -webkit-mask: var(--icon-url, var(--icon-outline-url))
@@ -4560,7 +4598,9 @@
  * Component-owned sizing, typography, clipping, and interaction details for
  * reusable news content buttons/cards. Generic layout primitives stay in
  * the layout section.
- */.newsrollScope :global(.btn_newsCardList .text_newsCardTitleLarge) {
+ */.newsrollScope :global(.btn_newsCardList.wrapper_contentMeta) {
+  gap: var(--spacing-gap-vertical-16);
+}.newsrollScope :global(.btn_newsCardList .text_newsCardTitleLarge) {
   font-size: var(--font-size-18);
 }/* All-news panel sizing: keeps the latest-news panel within the common sheet. *//* Article body typography: keep article copy at the requested 16px baseline. *//*  --------------------------------------------------------------------------
  * Component Form Controls

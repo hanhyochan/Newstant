@@ -792,6 +792,7 @@ function AccountEditForm({
           .catch(() => setStatus("error"));
       }}
     >
+      <div className="wrapper_contentMeta u_w100">
       <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
         <span className="text_infoFieldLabel">닉네임</span>
         <div className="wrapper_signupEmailField">
@@ -898,6 +899,7 @@ function AccountEditForm({
             {emailCheckMessage}
           </p>
         ) : null}
+      </div>
       </div>
       {isVerificationSent ? (
         <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
@@ -1015,6 +1017,7 @@ function SettingsPasswordField({
           aria-label={label}
           autoComplete={autoComplete}
           onChange={(event) => onChange(event.target.value)}
+          placeholder={label}
           type={isVisible ? "text" : "password"}
           value={value}
           hasEndAction

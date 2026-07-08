@@ -71,6 +71,10 @@ import {
   type CommentScrollTarget,
   type CommentSortOrder,
 } from "@/features/news/comments/comment-panel-model";
+
+type PendingCommentDeleteTarget =
+  | { commentId: CommentId; type: "comment" }
+  | { reply: CommentReplyItem; type: "reply" };
 export function CommentReactionPanel({
   guideKind,
   id,
@@ -142,6 +146,9 @@ export function CommentReactionPanel({
   const [isReportReasonOpen, setIsReportReasonOpen] = useState(false);
   const [isReportSubmitting, setIsReportSubmitting] = useState(false);
   const [moderationConfirmMessage, setModerationConfirmMessage] = useState("");
+  const [pendingDeleteTarget, setPendingDeleteTarget] =
+    useState<PendingCommentDeleteTarget | null>(null);
+  const [isDeleteSubmitting, setIsDeleteSubmitting] = useState(false);
   const commentEdit = useInlineTextEdit<CommentId>();
   const replyEdit = useInlineTextEdit<string>();
   const initialCommentScrollKeyRef = useRef<string | null>(null);
@@ -877,32 +884,143 @@ export function CommentReactionPanel({
       });
   }
 
+  function getDeleteTargetCommentIds(target: PendingCommentDeleteTarget) {
+    if (target.type === "reply") {
+      return [target.reply.id];
+    }
+
+    return [
+      ...apiComments
+        .filter((comment) => comment.parentId === target.commentId)
+        .map((comment) => comment.id),
+      target.commentId,
+    ];
+  }
+
+  async function deleteServerComment(commentId: string) {
+    try {
+      await commentApi.deleteComment(commentId);
+      return;
+    } catch (error) {
+      const latestComments = newsId
+        ? await commentApi.getCommentsByNewsId(newsId)
+        : await commentApi.getComments();
+
+      if (latestComments.some((comment) => comment.id === commentId)) {
+        throw error;
+      }
+    }
+  }
+
+  async function deleteCommentRecords(commentIds: string[]) {
+    const commentIdSet = new Set(commentIds);
+    const targetReactions = (await commentApi.getCommentReactions()).filter(
+      (reaction) => commentIdSet.has(reaction.commentId),
+    );
+
+    await Promise.all(
+      targetReactions.map((reaction) =>
+        commentApi.removeCommentReaction(reaction.id),
+      ),
+    );
+
+    for (const commentId of commentIds) {
+      await deleteServerComment(commentId);
+    }
+  }
+
+  function removeLocalCommentRecords(commentIds: string[]) {
+    const commentIdSet = new Set(commentIds);
+
+    setApiComments((currentComments) =>
+      currentComments.filter((comment) => !commentIdSet.has(comment.id)),
+    );
+    setCommentReactions((currentReactions) => {
+      const nextReactions = { ...currentReactions };
+
+      commentIds.forEach((commentId) => {
+        delete nextReactions[commentId];
+      });
+
+      return nextReactions;
+    });
+    setCommentReactionCounts((currentCounts) => {
+      const nextCounts = { ...currentCounts };
+
+      commentIds.forEach((commentId) => {
+        delete nextCounts[commentId];
+      });
+
+      return nextCounts;
+    });
+  }
+
+  function applyDeletedCommentTarget(
+    target: PendingCommentDeleteTarget,
+    commentIds: string[],
+  ) {
+    removeLocalCommentRecords(commentIds);
+
+    if (target.type === "reply") {
+      setDeletedReplyIds((currentIds) =>
+        currentIds.includes(target.reply.id)
+          ? currentIds
+          : [...currentIds, target.reply.id],
+      );
+      replyEdit.clearEdit(target.reply.id);
+      return;
+    }
+
+    const replyIds = commentIds.filter((commentId) => commentId !== target.commentId);
+
+    setDeletedCommentIds((currentIds) =>
+      currentIds.includes(target.commentId)
+        ? currentIds
+        : [...currentIds, target.commentId],
+    );
+    setDeletedReplyIds((currentIds) =>
+      Array.from(new Set([...currentIds, ...replyIds])),
+    );
+    setExpandedReplyId((currentId) =>
+      currentId === target.commentId ? null : currentId,
+    );
+    if (replyTargetCommentId === target.commentId) {
+      resetComposer();
+    }
+    commentEdit.clearEdit(target.commentId);
+    replyIds.forEach((replyId) => replyEdit.clearEdit(replyId));
+  }
+
+  async function confirmDeleteTarget() {
+    if (!pendingDeleteTarget || isDeleteSubmitting) {
+      return;
+    }
+
+    const target = pendingDeleteTarget;
+    const commentIds = getDeleteTargetCommentIds(target);
+
+    setIsDeleteSubmitting(true);
+    setPendingDeleteTarget(null);
+    applyDeletedCommentTarget(target, commentIds);
+
+    try {
+      await deleteCommentRecords(commentIds);
+      await reloadComments();
+    } catch {
+      setModerationConfirmMessage("\uB313\uAE00 \uC0AD\uC81C\uB97C \uC11C\uBC84\uC5D0 \uBC18\uC601\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.");
+    } finally {
+      setIsDeleteSubmitting(false);
+    }
+  }
   function handleCommentAction(commentId: CommentId, action: CommentAction) {
     setOpenCommentActionId(null);
     setOpenReplyActionId(null);
 
     if (action === "delete") {
-      void commentApi.deleteComment(commentId).then(reloadComments);
-      setDeletedCommentIds((currentIds) =>
-        currentIds.includes(commentId)
-          ? currentIds
-          : [...currentIds, commentId],
-      );
-      setExpandedReplyId((currentId) =>
-        currentId === commentId ? null : currentId,
-      );
-      if (replyTargetCommentId === commentId) {
-        resetComposer();
-      }
-      commentEdit.clearEdit(commentId);
-      setCommentReactions((currentReactions) => {
-        const { [commentId]: _deletedReaction, ...nextReactions } =
-          currentReactions;
-
-        return nextReactions;
-      });
+      setPendingDeleteTarget({ commentId, type: "comment" });
       return;
     }
+
 
     if (action === "edit") {
       startEditComment(commentId);
@@ -947,13 +1065,10 @@ export function CommentReactionPanel({
     setOpenReplyActionId(null);
 
     if (action === "delete") {
-      void commentApi.deleteComment(reply.id).then(reloadComments);
-      setDeletedReplyIds((currentIds) =>
-        currentIds.includes(reply.id) ? currentIds : [...currentIds, reply.id],
-      );
-      replyEdit.clearEdit(reply.id);
+      setPendingDeleteTarget({ reply, type: "reply" });
       return;
     }
+
 
     if (action === "edit") {
       startEditReply(reply, replyEdit.getEditedValue(reply.id) ?? reply.body);
@@ -1357,6 +1472,19 @@ export function CommentReactionPanel({
             </div>
           </div>
         </ClientPortal>
+      ) : null}
+      {pendingDeleteTarget ? (
+        <ConfirmDialog
+          cancelLabel="취소"
+          confirmLabel={isDeleteSubmitting ? "삭제 중" : "확인"}
+          message="댓글을 삭제하시겠습니까?"
+          onCancel={() => {
+            if (!isDeleteSubmitting) {
+              setPendingDeleteTarget(null);
+            }
+          }}
+          onConfirm={confirmDeleteTarget}
+        />
       ) : null}
       {moderationConfirmMessage ? (
         <ConfirmDialog
