@@ -29,7 +29,7 @@ export function NewsBlockCardButton({
   return (
     <button
       aria-pressed={ariaPressed}
-      className="btn_newsCardBlock wrapper_contentMeta"
+      className="btn_newsCardBlock wrapper_contentMeta u_gap8"
       onClick={onClick}
       type="button"
     >

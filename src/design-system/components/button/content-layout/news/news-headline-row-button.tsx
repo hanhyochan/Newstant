@@ -23,7 +23,7 @@ export function NewsHeadlineRowButton({
       onClick={onClick}
       type="button"
     >
-      <span className="wrapper_contentMeta u_flex1">
+      <span className="wrapper_contentMeta u_flex1 u_gap8">
         <strong>{item.title}</strong>
         <NewsCardMeta />
       </span>

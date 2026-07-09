@@ -7,7 +7,7 @@ function AllNewsPanelContent({
   className,
   ...props
 }: AllNewsPanelContentProps) {
-  const classNames = ["all_panelContent", "wrapper_panelContent", "u_minH0", className]
+  const classNames = ["all_panelContent", "wrapper_panelContent", "u_minH0", "u_gap24", className]
     .filter(Boolean)
     .join(" ");
 

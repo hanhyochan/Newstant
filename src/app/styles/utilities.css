@@ -21,16 +21,16 @@
   width: 100%;
 }
 
-.u_gapV24 {
+.u_gap24 {
   gap: var(--spacing-gap-vertical-24);
 }
 
-.u_gapV16 {
+.u_gap16 {
   gap: var(--spacing-gap-vertical-16);
 }
 
-.u_gapH8 {
-  gap: var(--spacing-gap-horizontal-8);
+.u_gap8 {
+  gap: var(--spacing-gap-vertical-8);
 }
 
 .u_flexWrap {

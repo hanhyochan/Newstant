@@ -29,7 +29,7 @@ export function InfoNoticeSection({
           items={noticeSkeletonItems}
           renderItem={() => (
             <div aria-hidden="true" className="btn_noticeListItem">
-              <div className="wrapper_contentMeta">
+              <div className="wrapper_contentMeta u_gap8">
                 <Skeleton shape="title" width="lg" />
                 <Skeleton shape="text" width="full" />
                 <Skeleton shape="text" width="sm" />
@@ -48,7 +48,7 @@ export function InfoNoticeSection({
               className="btn_noticeListItem"
               onClick={() => onNoticeSelect(notice, index)}
             >
-              <div className="wrapper_contentMeta">
+              <div className="wrapper_contentMeta u_gap8">
                 <span className="text_infoItemTitle">{notice.title}</span>
                 <p className="text_infoBody text_lineClamp2">
                   {notice.summary}

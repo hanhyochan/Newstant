@@ -21,7 +21,7 @@ export function NewsListCardButton({
   return (
     <button
       aria-label={`릴레이 뉴스 기사: ${item.title}`}
-      className="btn_newsCardList wrapper_contentMeta"
+      className="btn_newsCardList wrapper_contentMeta u_gap8"
       onClick={onClick}
       type="button"
     >

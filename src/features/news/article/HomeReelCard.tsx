@@ -373,12 +373,12 @@ export function HomeReelCard({
   const articleContent = (
     <div
       aria-labelledby={articleTitleId}
-      className="wrapper_articleCardContent wrapper_panelContent u_minH0"
+      className="wrapper_articleCardContent wrapper_panelContent u_minH0 u_gap24"
       id={articleContentId}
       role="region"
       tabIndex={0}
     >
-      <div className="wrapper_contentMeta">
+      <div className="wrapper_contentMeta u_gap16">
         <div
           className="wrapper_articleKicker wrapper_betweenRow"
         >

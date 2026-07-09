@@ -443,9 +443,6 @@
     var(--newsroll-all-latest-panel-natural-height),
     var(--newsroll-all-latest-panel-available-height)
   );
-}.newsrollScope :global(.all_latest_scroller .btn_newsCardFeature),
-.newsrollScope :global(.all_latest_scroller .btn_newsCardFeature > .wrapper_contentMeta) {
-  gap: var(--spacing-gap-vertical-16);
 }.newsrollScope :global(.all_latest_scroller .img_newsCardFeature) {
   aspect-ratio: 5 / 2;
 }.newsrollScope :global(.all_latest_scroller .btn_newsCardFeature > .wrapper_contentMeta > strong) {
@@ -1565,7 +1562,6 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-gap-vertical-24);
   min-height: 0;
 }/* Repeated vertical list with consistent spacing. */.newsrollScope :global(.wrapper_scrollList),
 .newsrollScope :global(.wrapper_detailMain),
@@ -2436,7 +2432,6 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-gap-vertical-16);
   text-align: left;
 }.newsrollScope :global(.btn_newsCardList img) {
   width: 100%;
@@ -4043,7 +4038,6 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-gap-vertical-24);
 }.newsrollScope :global(.wrapper_socialLoginGroup),
 .newsrollScope :global(.wrapper_socialLoginOptions) {
   width: 100%;
@@ -4598,9 +4592,7 @@
  * Component-owned sizing, typography, clipping, and interaction details for
  * reusable news content buttons/cards. Generic layout primitives stay in
  * the layout section.
- */.newsrollScope :global(.btn_newsCardList.wrapper_contentMeta) {
-  gap: var(--spacing-gap-vertical-16);
-}.newsrollScope :global(.btn_newsCardList .text_newsCardTitleLarge) {
+ */.newsrollScope :global(.btn_newsCardList .text_newsCardTitleLarge) {
   font-size: var(--font-size-18);
 }/* All-news panel sizing: keeps the latest-news panel within the common sheet. *//* Article body typography: keep article copy at the requested 16px baseline. *//*  --------------------------------------------------------------------------
  * Component Form Controls

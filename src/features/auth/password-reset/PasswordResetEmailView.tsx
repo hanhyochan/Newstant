@@ -58,7 +58,7 @@ export function PasswordResetEmailView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
+            <div className="wrapper_authField wrapper_fieldStack u_w100 u_gap8">
               <div className="wrapper_signupEmailField">
                 <TextInput mode="dark"
                   aria-describedby={[
@@ -107,7 +107,7 @@ export function PasswordResetEmailView({
               ) : null}
             </div>
             {isVerificationSent ? (
-              <div className="wrapper_authField wrapper_fieldStack u_w100">
+              <div className="wrapper_authField wrapper_fieldStack u_w100 u_gap8">
                 <div className="wrapper_signupVerificationCode">
                   <div className="wrapper_signupVerificationCodeInput">
                     <TextInput mode="dark"

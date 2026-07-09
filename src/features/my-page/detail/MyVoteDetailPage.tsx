@@ -71,7 +71,7 @@ export function MyVoteDetailPage({
     >
       <h2 className="text_mySectionTitle">투표</h2>
       <div
-        className="wrapper_myTabbedDetailContent wrapper_panelContent"
+        className="wrapper_myTabbedDetailContent wrapper_panelContent u_gap24"
         {...voteTabSwipeHandlers}
       >
       {showTabs ? (

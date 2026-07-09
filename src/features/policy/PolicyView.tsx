@@ -72,8 +72,8 @@ function PolicyListItem({
       onClick={onSelect}
       selected={isSelected}
     >
-      <div className="wrapper_contentMeta wrapper_panelContent">
-        <div className="wrapper_contentMeta">
+      <div className="wrapper_contentMeta wrapper_panelContent u_gap24">
+        <div className="wrapper_contentMeta u_gap8">
           <h2>{item.title}</h2>
           <p className="text_infoBody text_lineClamp2">{item.summary}</p>
           <div className="wrapper_contentDateGroup">
@@ -83,7 +83,7 @@ function PolicyListItem({
             </span>
           </div>
         </div>
-        <div className="wrapper_contentTagGroup u_gapH8">
+        <div className="wrapper_contentTagGroup u_gap8">
           {item.tags.map((tag) => (
             <ChipLabel key={`${item.title}-${tag}`}>
               {tag}

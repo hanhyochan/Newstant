@@ -217,7 +217,7 @@ export function MyRecentDetailPage({
     >
       <h2 className="text_mySectionTitle">최근 본 뉴스</h2>
       <div
-        className={`wrapper_myTabbedDetailContent wrapper_panelContent${showTabs ? " all_panelContentFlush" : ""}`}
+        className={`wrapper_myTabbedDetailContent wrapper_panelContent u_gap24${showTabs ? " all_panelContentFlush" : ""}`}
         {...recentTabSwipeHandlers}
       >
         {showTabs ? (
@@ -244,7 +244,7 @@ export function MyRecentDetailPage({
           </div>
         )}
         <div
-          className={`wrapper_allTabPanelBody wrapper_panelContent ${recentTabSwipeMotionClassName}`.trim()}
+          className={`wrapper_allTabPanelBody wrapper_panelContent u_gap24 ${recentTabSwipeMotionClassName}`.trim()}
         >
           {visibleRecentItems.length === 0 ? (
             <DataUnavailableMessage target="최근 본 뉴스" />

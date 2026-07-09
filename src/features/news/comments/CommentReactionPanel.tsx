@@ -1436,7 +1436,7 @@ export function CommentReactionPanel({
               onClick={(event) => event.stopPropagation()}
             >
               <h3 className="text_myDialogTitle">신고 사유 선택</h3>
-              <label className="wrapper_contentMeta wrapper_fieldStack u_w100">
+              <label className="wrapper_contentMeta wrapper_fieldStack u_w100 u_gap8">
                 <span className="text_infoFieldLabel">신고 경위</span>
                 <SelectButton
                   ariaLabel="신고 경위"

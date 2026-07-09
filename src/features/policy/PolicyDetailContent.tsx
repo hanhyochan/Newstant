@@ -126,7 +126,7 @@ export function PolicyDetailContent({
     >
       <div className="wrapper_detailMain">
       <div className="wrapper_detailHeader">
-        <div className="wrapper_contentMeta">
+        <div className="wrapper_contentMeta u_gap8">
           <h1>
               <SearchHighlightText
                 query={searchTargetKey === "title" ? searchQuery : ""}
@@ -172,7 +172,7 @@ export function PolicyDetailContent({
           </div>
         </div>
 
-        <div className="wrapper_detailTagGroup u_gapH8">
+        <div className="wrapper_detailTagGroup u_gap8">
           {item.tags.map((tag) => (
             <ChipLabel key={`${item.title}-${tag}`}>
               <SearchHighlightText

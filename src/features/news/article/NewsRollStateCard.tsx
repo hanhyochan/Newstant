@@ -10,7 +10,7 @@ export function NewsRollStateCard({
   return (
     <article className="container_articleCard wrapper_panelSurface_style homeStateCard">
       <div
-        className="wrapper_articleCardContent wrapper_panelContent u_minH0 homeStateContent"
+        className="wrapper_articleCardContent wrapper_panelContent u_minH0 homeStateContent u_gap24"
         role={role}
         tabIndex={0}
       >

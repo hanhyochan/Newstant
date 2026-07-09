@@ -53,7 +53,7 @@ export function SignupPasswordView({
           }}
         >
           <div className="wrapper_loginInputs">
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
+            <div className="wrapper_authField wrapper_fieldStack u_w100 u_gap8">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={
@@ -84,7 +84,7 @@ export function SignupPasswordView({
                 message={passwordValidation.errorMessage}
               />
             </div>
-            <div className="wrapper_authField wrapper_fieldStack u_w100">
+            <div className="wrapper_authField wrapper_fieldStack u_w100 u_gap8">
               <div className="wrapper_loginPasswordField">
                 <TextInput mode="dark"
                   aria-describedby={

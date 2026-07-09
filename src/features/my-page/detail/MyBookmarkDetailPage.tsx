@@ -126,7 +126,7 @@ export function MyBookmarkDetailPage({
     >
       <h2 className="text_mySectionTitle">북마크</h2>
       <div
-        className="wrapper_myTabbedDetailContent wrapper_panelContent"
+        className="wrapper_myTabbedDetailContent wrapper_panelContent u_gap24"
         {...bookmarkTypeSwipeHandlers}
       >
         <div className="wrapper_myBookmarkTabStack wrapper_stickyHeader wrapper_stickyHeader_style">
@@ -189,14 +189,14 @@ export function MyBookmarkDetailPage({
                     className="btn_contentListItem"
                     onClick={() => onOpenPolicy(item.policy)}
                   >
-                    <div className="wrapper_contentTagGroup u_gapH8">
+                    <div className="wrapper_contentTagGroup u_gap8">
                       {item.tags.map((tag) => (
                         <ChipLabel key={`${item.title}-${tag}`}>
                           {tag}
                         </ChipLabel>
                       ))}
                     </div>
-                    <div className="wrapper_contentMeta">
+                    <div className="wrapper_contentMeta u_gap8">
                       <h2>{item.title}</h2>
                       <p className="text_infoBody text_lineClamp2">
                         {item.summary}

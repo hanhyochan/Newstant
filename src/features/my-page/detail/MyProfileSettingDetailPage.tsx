@@ -219,7 +219,7 @@ function InquiryDetailContent({
     <div className="wrapper_detailContent">
       <div className="wrapper_detailMain">
       <div className="wrapper_detailHeader">
-        <div className="wrapper_contentMeta">
+        <div className="wrapper_contentMeta u_gap8">
           <div className="wrapper_detailBody">
             <h1>{inquiry.title}</h1>
           </div>
@@ -314,7 +314,7 @@ function InquiryHistory({
             className="btn_contentListItem"
             onClick={() => onSelectInquiry(inquiry.id)}
           >
-            <div className="wrapper_contentMeta">
+            <div className="wrapper_contentMeta u_gap8">
               <h2>{inquiry.title}</h2>
               <div className="wrapper_contentDateGroup">
                 <span>
@@ -549,7 +549,7 @@ function ModerationHistory({
                         size="md"
                       />
                     ) : null}
-                    <div className="wrapper_mySettingsHistoryText wrapper_contentMeta">
+                    <div className="wrapper_mySettingsHistoryText wrapper_contentMeta u_gap8">
                       <DateTimeText
                         className="text_mySettingsHistoryMeta"
                         dateTime={action.createdAt}
@@ -792,8 +792,8 @@ function AccountEditForm({
           .catch(() => setStatus("error"));
       }}
     >
-      <div className="wrapper_contentMeta u_w100">
-      <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
+      <div className="wrapper_contentMeta u_w100 u_gap8">
+      <div className="wrapper_mySettingsField wrapper_fieldStack u_w100 u_gap8">
         <span className="text_infoFieldLabel">닉네임</span>
         <div className="wrapper_signupEmailField">
           <TextInput
@@ -849,7 +849,7 @@ function AccountEditForm({
           </p>
         ) : null}
       </div>
-      <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
+      <div className="wrapper_mySettingsField wrapper_fieldStack u_w100 u_gap8">
         <span className="text_infoFieldLabel">이메일</span>
         <div className="wrapper_signupEmailField">
           <TextInput
@@ -902,7 +902,7 @@ function AccountEditForm({
       </div>
       </div>
       {isVerificationSent ? (
-        <div className="wrapper_mySettingsField wrapper_fieldStack u_w100">
+        <div className="wrapper_mySettingsField wrapper_fieldStack u_w100 u_gap8">
           <span className="text_infoFieldLabel">인증번호</span>
           <div className="wrapper_signupVerificationCode">
             <div className="wrapper_signupVerificationCodeInput">
@@ -1010,7 +1010,7 @@ function SettingsPasswordField({
   value: string;
 }) {
   return (
-    <label className="wrapper_mySettingsField wrapper_fieldStack u_w100">
+    <label className="wrapper_mySettingsField wrapper_fieldStack u_w100 u_gap8">
       <span className="text_infoFieldLabel">{label}</span>
       <div className="wrapper_loginPasswordField">
         <TextInput

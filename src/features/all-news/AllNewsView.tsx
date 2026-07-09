@@ -712,7 +712,7 @@ export function AllNewsView({
               />
             </div>
             <div
-              className={`wrapper_allTabPanelBody wrapper_panelContent ${pressSwipeMotionClassName}`.trim()}
+              className={`wrapper_allTabPanelBody wrapper_panelContent u_gap24 ${pressSwipeMotionClassName}`.trim()}
               {...pressSwipeHandlers}
             >
               {isAllNewsLoading ? (
@@ -788,7 +788,7 @@ export function AllNewsView({
               />
             </div>
             <div
-              className={`wrapper_allTabPanelBody wrapper_panelContent ${relaySwipeMotionClassName}`.trim()}
+              className={`wrapper_allTabPanelBody wrapper_panelContent u_gap24 ${relaySwipeMotionClassName}`.trim()}
               {...relaySwipeHandlers}
             >
               {isAllNewsLoading ? (
