@@ -1,5 +1,11 @@
-﻿const apiBaseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
+const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+const isLocalhostApi =
+  configuredApiBaseUrl !== undefined &&
+  /^https?:\/\/(localhost|127\.0\.0\.1)(?::|\/|$)/.test(configuredApiBaseUrl);
+const apiBaseUrl =
+  configuredApiBaseUrl && !(process.env.NODE_ENV === "production" && isLocalhostApi)
+    ? configuredApiBaseUrl
+    : "/api/mock";
 
 export function getApiBaseUrl() {
   return apiBaseUrl.replace(/\/$/, "");
