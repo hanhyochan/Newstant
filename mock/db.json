@@ -13763,6 +13763,12 @@
       "newsId": "news-071",
       "title": "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
       "createdAt": "2026-06-25T04:12:28.291Z"
+    },
+    {
+      "id": "poll-fb0c347c-da66-4439-b6cb-ba72eb389d0b",
+      "newsId": "news-030",
+      "title": "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?",
+      "createdAt": "2026-07-09T05:25:28.816Z"
     }
   ],
   "pollOptions": [
@@ -13961,6 +13967,24 @@
     {
       "id": "poll-option-3473c615-83c3-43b2-9363-a6e74faaf2cc",
       "pollId": "poll-7c8a64c4-8d31-491f-8659-d35a39edb2a3",
+      "label": "정책 지원을 먼저 확대해야 한다.",
+      "order": 3
+    },
+    {
+      "id": "poll-option-5211af98-dc42-4dd1-93b7-da2cab546bdd",
+      "pollId": "poll-fb0c347c-da66-4439-b6cb-ba72eb389d0b",
+      "label": "어쩌구 저쩌구해서 어케 해야한다.",
+      "order": 1
+    },
+    {
+      "id": "poll-option-5eb8bc62-2514-484e-b395-54a1cd75ac82",
+      "pollId": "poll-fb0c347c-da66-4439-b6cb-ba72eb389d0b",
+      "label": "상황을 더 지켜본 뒤 판단해야 한다.",
+      "order": 2
+    },
+    {
+      "id": "poll-option-ddc1b386-67c7-4894-9b19-308bb1c95fff",
+      "pollId": "poll-fb0c347c-da66-4439-b6cb-ba72eb389d0b",
       "label": "정책 지원을 먼저 확대해야 한다.",
       "order": 3
     }
@@ -20295,8 +20319,8 @@
       "parentId": null,
       "pollOptionId": null,
       "content": "지역마다 상황이 달라서 같은 기준을 적용하기는 어려울 것 같아요. (030)",
-      "likeCount": 4,
-      "dislikeCount": 4,
+      "likeCount": 0,
+      "dislikeCount": 1,
       "replyCount": 2,
       "createdAt": "2026-06-18T11:29:00.000Z",
       "updatedAt": "2026-06-18T11:29:00.000Z"
@@ -81177,7 +81201,7 @@
       "newsViewTime": true,
       "policyUpdates": true,
       "darkMode": false,
-      "updatedAt": "2026-06-30T13:18:10.188Z"
+      "updatedAt": "2026-07-09T04:36:36.364Z"
     }
   ],
   "userPreferences": [
@@ -81994,6 +82018,30 @@
       "targetType": null,
       "targetId": null,
       "createdAt": "2026-07-06T12:28:55.119Z",
+      "isRead": false,
+      "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-07-09-09_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "09:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-07-09T04:01:41.320Z",
+      "isRead": false,
+      "readAt": null
+    },
+    {
+      "id": "notification-newsViewTime-user-5da62014-46f6-453f-8e3c-47bb64bdc700-2026-07-09-12_00",
+      "userId": "user-5da62014-46f6-453f-8e3c-47bb64bdc700",
+      "type": "newsViewTime",
+      "title": "뉴스 보기 타임 알림",
+      "body": "12:00 뉴스 보기 시간입니다",
+      "targetType": null,
+      "targetId": null,
+      "createdAt": "2026-07-09T04:01:41.320Z",
       "isRead": false,
       "readAt": null
     }

@@ -1800,6 +1800,21 @@
   display: flex;
   justify-content: center;
   padding: 0;
+}.newsrollScope :global(.btn_authGuestBypass) {
+  position: absolute;
+  right: var(--spacing-padding-horizontal-16);
+  bottom: var(--spacing-padding-vertical-16);
+  border: 0;
+  color: var(--color-cool-neutral-50);
+  background: transparent;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+  padding: 0;
+  cursor: pointer;
+}.newsrollScope :global(.btn_authGuestBypass:focus-visible) {
+  outline: 2px solid var(--color-cool-neutral-50);
+  outline-offset: 4px;
 }.newsrollScope :global(.wrapper_socialLogin) {
   width: 100%;
   min-width: 0;

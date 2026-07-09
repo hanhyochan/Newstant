@@ -43,8 +43,11 @@ import {
   clearCurrentUserSession,
   currentUserId,
   getStoredCurrentUserSession,
+  guestCurrentUser,
+  isGuestCurrentUser,
   setCurrentUserSession,
 } from "@/shared/newsroll/auth/current-user";
+import { clearGuestStorage } from "@/shared/newsroll/guest-storage";
 
 const AllNewsView = dynamic<any>(
   () => import("@/features/all-news/AllNewsView").then((module) => module.AllNewsView),
@@ -196,6 +199,7 @@ function ActiveView({
   onToggleBlockedKeyword,
   onCloseSearch,
   onLogin,
+  onGuestEnter,
   onLogout,
   onCheckPasswordResetEmail,
   onPasswordResetEmailNext,
@@ -238,6 +242,7 @@ function ActiveView({
     isAutoLogin: boolean;
     password: string;
   }) => Promise<void>;
+  onGuestEnter: () => Promise<void>;
   onLogout: () => void;
   onCheckPasswordResetEmail: (email: string) => Promise<boolean>;
   onPasswordResetEmailNext: (email: string) => void;
@@ -265,6 +270,7 @@ function ActiveView({
       <LoginView
         isSubmitting={isAuthSubmitting}
         loginError={authError}
+        onGuestEnter={onGuestEnter}
         onLogin={onLogin}
         onPasswordResetStart={onPasswordResetStart}
         onSignup={onSignupStart}
@@ -637,8 +643,33 @@ export function NewsHomeScreen() {
     }
   }
 
+  async function enterGuestMode() {
+    setAuthError("");
+    setIsAuthSubmitting(true);
+    setCurrentUserSession(guestCurrentUser, { remember: true });
+    setIsAuthenticated(true);
+    setIsSplashVisible(true);
+
+    try {
+      await loadInitialContentData(guestCurrentUser.id).catch(() => undefined);
+      setActiveView("home");
+    } finally {
+      setIsSplashVisible(false);
+      setIsAuthSubmitting(false);
+    }
+  }
+
   function logout() {
+    const shouldResetGuest = isGuestCurrentUser();
+
     clearCurrentUserSession();
+
+    if (shouldResetGuest) {
+      clearGuestStorage();
+      window.location.reload();
+      return;
+    }
+
     setIsAuthenticated(false);
     setIsSplashVisible(false);
     setAuthError("");
@@ -929,6 +960,7 @@ export function NewsHomeScreen() {
           onDeleteBlockedKeyword={deleteBlockedKeyword}
           onToggleBlockedKeyword={toggleBlockedKeyword}
           onCloseSearch={() => setActiveView(searchBackView)}
+          onGuestEnter={enterGuestMode}
           onLogin={loginWithEmail}
           onLogout={logout}
           onOpenBreakingNews={openBreakingNewsView}

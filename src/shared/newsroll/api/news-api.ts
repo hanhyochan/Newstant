@@ -1,5 +1,6 @@
 import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
+import { guestStorageApi } from "../guest-storage";
 import { createSessionResourceCache } from "./cache";
 import { apiClient } from "./http-client";
 import type {
@@ -57,6 +58,10 @@ export const newsApi = {
   },
   getNewsDetail,
   async getNewsReaction(newsId: string, userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getNewsReaction(newsId);
+    }
+
     const reactions = await apiClient.get<ArticleReaction[]>("/articleReactions", {
       newsId,
       userId,
@@ -64,12 +69,25 @@ export const newsApi = {
 
     return reactions[0] ?? null;
   },
-  getNewsReactions(newsId: string) {
+  async getNewsReactions(newsId: string) {
+    if (guestStorageApi.isGuestUserId(currentUserId)) {
+      const [reactions, guestReactions] = await Promise.all([
+        apiClient.get<ArticleReaction[]>("/articleReactions", { newsId }).catch(() => []),
+        guestStorageApi.getNewsReactions(newsId),
+      ]);
+
+      return [...reactions, ...guestReactions];
+    }
+
     return apiClient.get<ArticleReaction[]>("/articleReactions", {
       newsId,
     });
   },
   addNewsReaction(input: AddArticleReactionInput) {
+    if (guestStorageApi.isGuestUserId(input.userId)) {
+      return guestStorageApi.addNewsReaction(input);
+    }
+
     return apiClient.post<ArticleReaction, ArticleReaction>("/articleReactions", {
       id: createMockId("article-reaction"),
       newsId: input.newsId,
@@ -79,15 +97,27 @@ export const newsApi = {
     });
   },
   updateNewsReaction(reactionId: string, type: ArticleReactionType) {
+    if (reactionId.startsWith("guest-")) {
+      return guestStorageApi.updateNewsReaction(reactionId, type);
+    }
+
     return apiClient.patch<ArticleReaction, Pick<ArticleReaction, "type">>(
       `/articleReactions/${reactionId}`,
       { type },
     );
   },
   removeNewsReaction(reactionId: string) {
+    if (reactionId.startsWith("guest-")) {
+      return guestStorageApi.removeNewsReaction(reactionId);
+    }
+
     return apiClient.delete(`/articleReactions/${reactionId}`);
   },
   getRecentNewsViews(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getRecentNewsViews();
+    }
+
     return apiClient.get<RecentNewsView[]>("/recentNewsViews", {
       userId,
       _sort: "viewedAt",
@@ -95,6 +125,10 @@ export const newsApi = {
     });
   },
   async addRecentNewsView(input: AddRecentNewsViewInput) {
+    if (guestStorageApi.isGuestUserId(input.userId)) {
+      return guestStorageApi.addRecentNewsView(input);
+    }
+
     const existingViews = await apiClient.get<RecentNewsView[]>("/recentNewsViews", {
       newsId: input.newsId,
       userId: input.userId,
@@ -117,6 +151,10 @@ export const newsApi = {
     });
   },
   deleteRecentNewsView(viewId: string) {
+    if (viewId.startsWith("guest-")) {
+      return guestStorageApi.deleteRecentNewsView(viewId);
+    }
+
     return apiClient.delete(`/recentNewsViews/${viewId}`);
   },
 };

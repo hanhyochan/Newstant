@@ -3,6 +3,7 @@
 const currentUserStorageKey = "newsroll.currentUser";
 const hamsterResetLogoutKey = "newsroll.hamsterResetLogout.20260625.initialStateReset";
 const hamsterResetUserId = "user-5da62014-46f6-453f-8e3c-47bb64bdc700";
+export const guestUserId = "guest-user";
 
 export type CurrentUser = {
   id: string;
@@ -14,6 +15,12 @@ export const fallbackCurrentUser: CurrentUser = {
   id: mockCurrentUserId,
   isAuthenticated: true,
   nickname: "\uCF69\uCF69\uC774",
+};
+
+export const guestCurrentUser: CurrentUser = {
+  id: guestUserId,
+  isAuthenticated: true,
+  nickname: "\uAC8C\uC2A4\uD2B8",
 };
 
 const mockUserDisplayNames: Record<string, string> = {
@@ -78,6 +85,14 @@ export function getCurrentUserSnapshot() {
 
 export function hasCurrentUserSession() {
   return currentUser.id !== fallbackCurrentUser.id;
+}
+
+export function isGuestUserId(userId?: string | null) {
+  return userId === guestUserId;
+}
+
+export function isGuestCurrentUser() {
+  return isGuestUserId(currentUser.id);
 }
 
 export function hydrateCurrentUserSession() {

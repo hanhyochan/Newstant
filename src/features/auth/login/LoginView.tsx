@@ -22,6 +22,7 @@ export function LoginView({
   isSubmitting = false,
   loginError,
   onLogin,
+  onGuestEnter,
   onPasswordResetStart,
   onSignup,
 }: {
@@ -32,6 +33,7 @@ export function LoginView({
     isAutoLogin: boolean;
     password: string;
   }) => Promise<void> | void;
+  onGuestEnter: () => Promise<void> | void;
   onPasswordResetStart: () => void;
   onSignup: () => void;
 }) {
@@ -176,6 +178,13 @@ export function LoginView({
           </form>
         </div>
       )}
+      <button
+        className="btn_authGuestBypass"
+        onClick={onGuestEnter}
+        type="button"
+      >
+        우회하기
+      </button>
     </AuthLayout>
   );
 }

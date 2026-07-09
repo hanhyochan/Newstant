@@ -1,5 +1,6 @@
 ﻿import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
+import { guestStorageApi } from "../guest-storage";
 import { apiClient } from "./http-client";
 import type {
   AppNotification,
@@ -85,6 +86,10 @@ function getConfiguredNewsViewTimes(
 
 export const notificationApi = {
   async getNotificationSettings(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getNotificationSettings();
+    }
+
     const settings = await apiClient.get<NotificationSettings[]>(
       "/notificationSettings",
       { userId },
@@ -93,6 +98,10 @@ export const notificationApi = {
     return settings[0] ?? null;
   },
   createNotificationSettings(input: CreateNotificationSettingsInput) {
+    if (guestStorageApi.isGuestUserId(input.userId)) {
+      return guestStorageApi.createNotificationSettings(input);
+    }
+
     return apiClient.post<NotificationSettings, NotificationSettings>(
       "/notificationSettings",
       {
@@ -112,6 +121,10 @@ export const notificationApi = {
     settingsId: string,
     input: UpdateNotificationSettingsInput,
   ) {
+    if (settingsId.startsWith("guest-")) {
+      return guestStorageApi.updateNotificationSettings(settingsId, input);
+    }
+
     return apiClient.patch<
       NotificationSettings,
       UpdateNotificationSettingsInput & Pick<NotificationSettings, "updatedAt">
@@ -121,6 +134,10 @@ export const notificationApi = {
     });
   },
   getNotifications(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getNotifications();
+    }
+
     return apiClient.get<AppNotification[]>("/notifications", {
       _sort: "createdAt",
       _order: "desc",
@@ -128,6 +145,10 @@ export const notificationApi = {
     });
   },
   markNotificationAsRead(notificationId: string) {
+    if (notificationId.startsWith("guest-")) {
+      return guestStorageApi.markNotificationAsRead(notificationId);
+    }
+
     return apiClient.patch<
       AppNotification,
       Pick<AppNotification, "isRead" | "readAt">
@@ -148,17 +169,29 @@ export const notificationApi = {
     );
   },
   async markAllNotificationsAsRead(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.markAllNotificationsAsRead();
+    }
+
     const notifications = await this.getNotifications(userId);
 
     return this.markNotificationsAsRead(notifications);
   },
   createNotification(input: NotificationInput) {
+    if (guestStorageApi.isGuestUserId(input.userId)) {
+      return guestStorageApi.createNotification(input);
+    }
+
     return apiClient.post<AppNotification, AppNotification>(
       "/notifications",
       createNotificationPayload(input),
     );
   },
   async syncNotifications(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.syncNotifications();
+    }
+
     const settings = await this.getNotificationSettings(userId);
 
     if (!settings) {

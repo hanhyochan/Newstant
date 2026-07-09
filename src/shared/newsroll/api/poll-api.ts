@@ -1,5 +1,6 @@
 ﻿import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
+import { guestStorageApi } from "../guest-storage";
 import { apiClient } from "./http-client";
 import type {
   CreatePollInput,
@@ -20,10 +21,23 @@ export const pollApi = {
       _order: "asc",
     });
   },
-  getPollVotes() {
+  async getPollVotes() {
+    if (guestStorageApi.isGuestUserId(currentUserId)) {
+      const [votes, guestVotes] = await Promise.all([
+        apiClient.get<PollVote[]>("/pollVotes").catch(() => []),
+        guestStorageApi.getPollVotes(),
+      ]);
+
+      return [...votes, ...guestVotes];
+    }
+
     return apiClient.get<PollVote[]>("/pollVotes");
   },
   getPollVotesByUserId(userId: string) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getPollVotesByUserId();
+    }
+
     return apiClient.get<PollVote[]>("/pollVotes", {
       userId,
       _sort: "createdAt",
@@ -70,13 +84,28 @@ export const pollApi = {
         _sort: "order",
         _order: "asc",
       }),
-      apiClient.get<PollVote[]>("/pollVotes", {
-        pollId: poll.id,
-      }),
-      apiClient.get<PollVote[]>("/pollVotes", {
-        pollId: poll.id,
-        userId,
-      }),
+      guestStorageApi.isGuestUserId(userId)
+        ? Promise.all([
+            apiClient
+              .get<PollVote[]>("/pollVotes", {
+                pollId: poll.id,
+              })
+              .catch(() => []),
+            guestStorageApi
+              .getPollVotes()
+              .then((items) => items.filter((item) => item.pollId === poll.id)),
+          ]).then(([items, guestItems]) => [...items, ...guestItems])
+        : apiClient.get<PollVote[]>("/pollVotes", {
+            pollId: poll.id,
+          }),
+      guestStorageApi.isGuestUserId(userId)
+        ? guestStorageApi
+            .getPollVotesByUserId()
+            .then((items) => items.filter((item) => item.pollId === poll.id))
+        : apiClient.get<PollVote[]>("/pollVotes", {
+            pollId: poll.id,
+            userId,
+          }),
     ]);
 
     return {
@@ -87,6 +116,10 @@ export const pollApi = {
     };
   },
   submitPollVote(input: SubmitPollVoteInput) {
+    if (guestStorageApi.isGuestUserId(input.userId)) {
+      return guestStorageApi.submitPollVote(input);
+    }
+
     return apiClient.post<PollVote, PollVote>("/pollVotes", {
       id: createMockId("poll-vote"),
       pollId: input.pollId,
@@ -96,6 +129,10 @@ export const pollApi = {
     });
   },
   updatePollVote(voteId: string, pollOptionId: string) {
+    if (voteId.startsWith("guest-")) {
+      return guestStorageApi.updatePollVote(voteId, pollOptionId);
+    }
+
     return apiClient.patch<PollVote, Pick<PollVote, "pollOptionId" | "createdAt">>(
       `/pollVotes/${voteId}`,
       {
@@ -105,6 +142,10 @@ export const pollApi = {
     );
   },
   removePollVote(voteId: string) {
+    if (voteId.startsWith("guest-")) {
+      return guestStorageApi.removePollVote(voteId);
+    }
+
     return apiClient.delete(`/pollVotes/${voteId}`);
   },
 };

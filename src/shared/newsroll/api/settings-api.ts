@@ -1,5 +1,6 @@
 ﻿import { currentUserId } from "../auth/current-user";
 import { createMockId, createTimestamp } from "./api-utils";
+import { guestStorageApi } from "../guest-storage";
 import { apiClient } from "./http-client";
 import type {
   BlockedKeywordPreference,
@@ -11,6 +12,10 @@ import type {
 
 export const settingsApi = {
   async getUserNewsViewTimes(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getUserNewsViewTimes();
+    }
+
     const settings = await apiClient.get<UserNewsViewTime[]>("/userNewsViewTimes", {
       userId,
     });
@@ -21,6 +26,10 @@ export const settingsApi = {
     settingsId: string,
     input: UpdateUserNewsViewTimeInput,
   ) {
+    if (settingsId.startsWith("guest-")) {
+      return guestStorageApi.updateUserNewsViewTimes(settingsId, input);
+    }
+
     return apiClient.patch<
       UserNewsViewTime,
       UpdateUserNewsViewTimeInput & Pick<UserNewsViewTime, "updatedAt">
@@ -30,6 +39,10 @@ export const settingsApi = {
     });
   },
   createUserNewsViewTimes(userId: string, times: string[]) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.createUserNewsViewTimes(userId, times);
+    }
+
     return apiClient.post<UserNewsViewTime, UserNewsViewTime>("/userNewsViewTimes", {
       id: createMockId("view-time"),
       userId,
@@ -38,6 +51,10 @@ export const settingsApi = {
     });
   },
   getBlockedKeywords(userId = currentUserId) {
+    if (guestStorageApi.isGuestUserId(userId)) {
+      return guestStorageApi.getBlockedKeywords();
+    }
+
     return apiClient.get<BlockedKeywordPreference[]>("/blockedKeywordSettings", {
       userId,
       _sort: "createdAt",
@@ -45,6 +62,10 @@ export const settingsApi = {
     });
   },
   createBlockedKeyword(input: CreateBlockedKeywordPreferenceInput) {
+    if (guestStorageApi.isGuestUserId(input.userId)) {
+      return guestStorageApi.createBlockedKeyword(input);
+    }
+
     const now = createTimestamp();
 
     return apiClient.post<BlockedKeywordPreference, BlockedKeywordPreference>(
@@ -63,6 +84,10 @@ export const settingsApi = {
     keywordId: string,
     input: UpdateBlockedKeywordPreferenceInput,
   ) {
+    if (keywordId.startsWith("guest-")) {
+      return guestStorageApi.updateBlockedKeyword(keywordId, input);
+    }
+
     return apiClient.patch<
       BlockedKeywordPreference,
       UpdateBlockedKeywordPreferenceInput & Pick<BlockedKeywordPreference, "updatedAt">
@@ -72,6 +97,10 @@ export const settingsApi = {
     });
   },
   deleteBlockedKeyword(keywordId: string) {
+    if (keywordId.startsWith("guest-")) {
+      return guestStorageApi.deleteBlockedKeyword(keywordId);
+    }
+
     return apiClient.delete(`/blockedKeywordSettings/${keywordId}`);
   },
 };
