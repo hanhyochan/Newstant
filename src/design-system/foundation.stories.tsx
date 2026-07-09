@@ -1,4 +1,4 @@
-﻿import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useEffect, useMemo, useState } from "react";
 
 const meta: Meta = {
@@ -252,7 +252,7 @@ function TypographyStyleRow({
           whiteSpace: "pre-line",
         }}
       >
-        {"뉴스를 읽는 새로운 흐름\nNewsRoll typography sample"}
+        {"뉴스를 읽는 새로운 흐름\nNewstant typography sample"}
       </p>
     </article>
   );
@@ -454,7 +454,7 @@ function groupColorTokens(tokens: Token[]) {
       "pink",
     ]),
     brand: orderGroups(brand, [
-      "newsroll-purple",
+      "brand-purple",
       "artskorealab-yellow",
       "artskorealab-cyan",
       "artskorealab-purple",
@@ -500,7 +500,7 @@ function getColorGroupName(tokenName: string) {
     "artskorealab-yellow",
     "artskorealab-cyan",
     "artskorealab-purple",
-    "newsroll-purple",
+    "brand-purple",
     "virtualdream-red",
   ];
   const matchedGroup = knownGroups.find((group) =>
@@ -516,7 +516,7 @@ function getColorGroupName(tokenName: string) {
 
 function getColorGroupCategory(groupName: string) {
   const brandGroups = [
-    "newsroll-purple",
+    "brand-purple",
     "artskorealab-yellow",
     "artskorealab-cyan",
     "artskorealab-purple",

@@ -2,14 +2,14 @@
 
 import { useEffect, useState, type ButtonHTMLAttributes } from "react";
 
-import { notificationApi } from "@/shared/newsroll/api";
+import { notificationApi } from "@/shared/newstant/api";
 import {
   getCurrentUserSnapshot,
   hydrateCurrentUserSession,
-} from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/auth/current-user";
 import { IconButton } from "@/design-system/components";
 
-const notificationsUpdatedEventName = "newsroll:notifications-updated";
+const notificationsUpdatedEventName = "app:notifications-updated";
 const notificationPollingIntervalMs = 5000;
 
 type IdleCallbackHandle = number;

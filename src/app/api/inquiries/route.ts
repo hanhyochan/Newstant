@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { buildApiUrl } from "@/shared/newsroll/api-config";
+import { buildApiUrl } from "@/shared/newstant/api-config";
 
 const inquirySchema = z.object({
   content: z.string().trim().min(1),
@@ -91,9 +91,9 @@ async function sendInquiryEmail(input: InquiryRequest, replyEmail: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: process.env.INQUIRY_FROM_EMAIL ?? "NewsRoll <onboarding@resend.dev>",
+      from: process.env.INQUIRY_FROM_EMAIL ?? "Newstant <onboarding@resend.dev>",
       to,
-      subject: `[NewsRoll 문의] ${input.title}`,
+      subject: `[Newstant 문의] ${input.title}`,
       text: [
         `userId: ${input.userId}`,
         `typeId: ${input.typeId}`,

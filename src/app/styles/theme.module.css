@@ -1,0 +1,500 @@
+.appScope:global(.dark) {
+    --color-background-elevated-normal: var(--color-cool-neutral-10);
+    --color-background-elevated-alternative: var(--color-cool-neutral-15);
+    --color-fill-normal: var(--color-cool-neutral-22);
+    --color-fill-alternative: var(--color-cool-neutral-20);
+    --color-fill-strong: var(--color-cool-neutral-30);
+    --color-label-alternative: var(--color-cool-neutral-100);
+    --color-label-assistive: var(--color-cool-neutral-100);
+    --color-label-neutral: var(--color-cool-neutral-100);
+    --color-label-normal: var(--color-cool-neutral-100);
+    --color-line-normal-alternative: var(--color-cool-neutral-30);
+    --color-line-normal-neutral: var(--color-cool-neutral-40);
+    --color-line-normal-normal: var(--color-cool-neutral-40);
+    --color-line-normal-strong: var(--color-cool-neutral-50);
+    --color-line-solid-alternative: var(--color-cool-neutral-30);
+    --color-line-solid-neutral: var(--color-cool-neutral-40);
+    --color-line-solid-normal: var(--color-cool-neutral-40);
+    --color-line-solid-strong: var(--color-cool-neutral-60);
+    --app-divider-color: var(--color-cool-neutral-30);
+}.appScope:global(.dark),
+.appScope:global(.dark) {
+    --app-surface: var(--color-cool-neutral-15);
+    --app-surface-muted: var(--color-cool-neutral-20);
+    --app-text: var(--color-common-100);
+    --app-text-muted: var(--color-cool-neutral-100);
+    --app-border: var(--color-cool-neutral-30);
+    --app-control-surface: var(--color-cool-neutral-30);
+    --app-input-surface: var(--color-cool-neutral-15);
+    --app-input-text: var(--color-cool-neutral-100);
+    --app-input-border: var(--color-brand-purple-50);
+}.appScope:global(.dark .page_panel) {
+    border-radius: var(--radius-20);
+    background: var(--color-cool-neutral-15);
+}.appScope:global(.dark .bottom_nav),
+.appScope:global(.dark.screen_all .bottom_nav) {
+    border-top-color: var(--color-cool-neutral-30);
+}.appScope:global(.dark [role='tab']:not(.btn_newsViewOption)),
+.appScope:global(.dark .tab_myCategoryMenu button),
+.appScope:global(.dark .all_category_tabs button),
+.appScope:global(.dark .all_pressHeadline_tabScroller .all_pressHeadline_tabButton),
+.appScope:global(.dark .btn_tab:not(.btn_newsViewOption)) {
+    color: var(--color-common-100);
+    background: transparent;
+    border-color: var(--app-divider-color);
+}.appScope:global(.dark [role='tab'][aria-selected='true']:not(.btn_newsViewOption)),
+.appScope:global(.dark .tab_myCategoryMenu button[data-state='active']),
+.appScope:global(.dark .tab_myCategoryMenu button[data-state='selected']),
+.appScope:global(.dark .all_category_tabs button[aria-selected='true']),
+.appScope:global(.dark .all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']),
+.appScope:global(.dark .btn_tab[aria-selected='true']:not(.btn_newsViewOption)),
+.appScope:global(.dark .btn_tab[data-state='active']:not(.btn_newsViewOption)),
+.appScope:global(.dark .btn_tab[data-state='selected']:not(.btn_newsViewOption)) {
+    color: var(--color-cool-neutral-15);
+    background: var(--color-common-100);
+    border-color: var(--color-common-100);
+}.appScope:global(.dark .all_tabSticky),
+.appScope:global(.dark .all_pressHeadline_tabMenu),
+.appScope:global(.dark .all_pressHeadline_tabScroller),
+.appScope:global(.dark .all_category_tabSticky),
+.appScope:global(.dark .all_category_tabs) {
+    background: var(--color-common-0);
+}.appScope:global(.dark .btn_noticeCardLink),
+.appScope:global(.dark .text_noticeCardTitle),
+.appScope:global(.dark .text_noticeListCardTitle),
+.appScope:global(.dark .btn_noticeListCardLink),
+.appScope:global(.dark .btn_primary),
+.appScope:global(.dark .btn_primary :where(span, strong)),
+.appScope:global(.dark .btn_primary .icon[data-size="20"]) {
+    color: var(--color-common-0);
+}/* Purple top shell surface used by the common top frame. *//* Neutral visual tone for article/profile action clusters. *//* Elevated surface for sticky tab/header areas. *//* Elevated rounded panel surface for card-like screen sections. *//* Divider color hook for repeated list surfaces. *//* Generic elevated page surface. *//* Purple page/screen shell surface. *//* White sheet surface tone used by page sheets. *//* Elevated sticky tab region surface. *//* App-owned appearance selectors. *//* Component-adjacent app appearance states. */.appScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='dislike'] .icon[data-size="20"]),
+.appScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='bookmark'] .icon[data-size="20"]),
+.appScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='dislike']),
+.appScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='dislike'] .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='dislike'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='dislike'][aria-pressed='true'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='bookmark'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='bookmark'][aria-pressed='true'] > .icon[data-size="20"]) {
+    color: var(--color-blue-50);
+}.appScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='neutral'] .icon[data-size="20"]),
+.appScope :global(.form_commentComposer .text_input input::placeholder),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='neutral'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='neutral'][aria-pressed='true'] > .icon[data-size="20"]),
+.appScope :global(.wrapper_articleActions.wrapper_actionGroup) {
+    color: var(--color-cool-neutral-50);
+}.appScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='vote'] .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='vote'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='vote'][aria-pressed='true'] > .icon[data-size="20"]) {
+    color: var(--color-red-orange-50);
+}.appScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='comment'] .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='comment'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='comment'][aria-pressed='true'] > .icon[data-size="20"]) {
+    color: var(--color-brand-purple-50);
+}.appScope:global(.dark .chip) {
+    color: var(--color-common-100);
+    background: var(--color-cool-neutral-40);
+    border-color: var(--color-cool-neutral-40);
+}.appScope :global(.text_articleGuide) {
+  color: var(--app-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-16);
+  font-style: normal;
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+  letter-spacing: 0;
+}.appScope :global(.text_articleGuideTotal strong) {
+  font-weight: var(--font-weight-400);
+}.appScope :global(.form_commentComposer .text_input) {
+    border: var(--app-main-border-width, 1.5px) solid var(--color-brand-purple-50);
+    border-radius: var(--radius-8);
+    color: var(--color-cool-neutral-15);
+    background: var(--color-background-elevated-normal);
+    cursor: text;
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}.appScope :global(.form_commentComposer .text_input input) {
+    border: 0;
+    outline: 0;
+    color: var(--color-cool-neutral-15);
+    background: transparent;
+    font-size: 16px;
+    line-height: 24px;
+}.appScope:global(.dark .wrapper_commentReplyItem),
+.appScope:global(.dark .wrapper_commentReplyItem :where(p, strong, time)) {
+    color: var(--color-cool-neutral-100);
+}.appScope :global(.btn_detailBack .icon_chevron) {
+  transform: rotate(180deg);
+}.appScope:global(.dark .noticeCardLink_notificationUnread) {
+    color: var(--color-cool-neutral-15);
+    background: var(--color-common-100);
+}.appScope:global(.dark .noticeCardLink_notificationRead) {
+    color: var(--color-common-100);
+    background: var(--color-background-transparent-alternative);
+}/* Remaining app-owned appearance selectors. *//* Layout selector appearance states. */.appScope :global(.btn_iconButton[data-variant="bottomNav"][aria-current="page"] .icon[data-size="20"]),
+.appScope :global(.btn_newsViewOption[aria-selected="true"] .icon[data-size="20"]),
+.appScope :global(.wrapper_articleReaction > button[aria-pressed="true"] .icon[data-size="20"]),
+.appScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"][aria-pressed="true"] .icon[data-size="20"]),
+.appScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"][aria-pressed='true'] .icon[data-size="20"]),
+.appScope :global(.wrapper_articleReaction > button[aria-pressed='true'] .icon[data-size="20"]) {
+  --icon-url: var(--icon-fill-url);
+}.appScope :global(.wrapper_articleGuide_binary .text_articleGuide) {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-24);
+}.appScope :global(.btn_primary:focus-visible),
+.appScope :global(.btn_iconButton:focus-visible),
+.appScope :global(.btn_articleGuideOption:focus-visible),
+.appScope :global(.btn_fieldActionButton:focus-visible),
+.appScope :global(.btn_commentSubmit:focus-visible),
+.appScope :global(.btn_contentAction:focus-visible),
+.appScope :global(.btn_textAction:focus-visible),
+.appScope :global(.form_commentComposer .text_input:focus-within),
+.appScope :global(.text_size_button:focus-visible),
+.appScope :global(.toolbar_icon:focus-visible),
+.appScope :global(.btn_tab:focus-visible),
+.appScope :global(.text_input:focus-within),
+.appScope :global(.wrapper_articleCardContent:focus-visible),
+.appScope :global(.wrapper_myPageCommentThread:focus-visible),
+.appScope :global(.textarea:focus-visible),
+.appScope :global(.chip:focus-visible) {
+  outline: var(--border-2) solid var(--color-accent-foreground-blue);
+  outline-offset: var(--spacing-gap-vertical-4);
+}.appScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"]) {
+  color: inherit;
+  line-height: 0;
+}.appScope :global(.container_authLayout .btn_loginSubmit:disabled),
+.appScope :global(.container_authLayout .btn_signupAgreementNext:disabled),
+.appScope :global(.container_authLayout .btn_signupStepNext:disabled) {
+  color: var(--color-brand-purple-40);
+  background: var(--color-brand-purple-30);
+  border-color: var(--color-brand-purple-30);
+}.appScope :global(.wrapper_authAgreementSection p),
+.appScope :global(.text_authAgreementSource) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.appScope :global(.container_myProfile button:not(.btn_iconButton)) {
+  border: var(--border-1) solid var(--color-line-normal-normal);
+  border-radius: var(--radius-8);
+  color: var(--color-label-neutral);
+  background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.appScope :global(.text_mySettingsDetailBody),
+.appScope :global(.wrapper_mySettingsHistoryText p) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+}.appScope :global(.motion_dockedPop.is_motionVisible),
+.appScope :global(.is_motionVisible .motion_dockedPop),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .motion_dockedPop),
+.appScope :global(.sheetFrame.is_sheetDocked .motion_dockedPop) {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition:
+        opacity var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        transform var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        visibility 0ms linear 0ms;
+}.appScope:global(.text_large .container_hero .text_greeting),
+.appScope:global(.text_large .container_hero .wrapper_hero) {
+  --font-size-10: 10px;
+  --font-size-11: 11px;
+  --font-size-12: 12px;
+  --font-size-13: 13px;
+  --font-size-14: 14px;
+  --font-size-15: 15px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
+  --font-size-fixed-16: 16px;
+  --font-size-fixed-18: 18px;
+  --font-size-20: 20px;
+  --font-size-24: 24px;
+  --font-size-28: 28px;
+  --font-size-32: 32px;
+  --font-size-40: 40px;
+  --font-size-48: 48px;
+  --font-size-52: 52px;
+  --font-size-60: 60px;
+  --line-height-16: 16px;
+  --line-height-20: 20px;
+  --line-height-24: 24px;
+  --line-height-fixed-20: 20px;
+  --line-height-fixed-26: 26px;
+  --line-height-32: 32px;
+  --line-height-40: 40px;
+  --line-height-44: 44px;
+  --line-height-48: 48px;
+  --line-height-60: 60px;
+}.appScope :global(.container_articleCard .text_sectionTitle) {
+  font-size: var(--font-size-18);
+  line-height: 26px;
+}.appScope :global(.container_articleCard .text_articleBody) {
+    color:
+        var(--color-cool-neutral-20);
+    font-size:
+        var(--font-size-16);
+    font-weight:
+        var(--font-weight-500);
+    line-height:
+        var(--line-height-24);
+}.appScope :global(.wrapper_articleReaction) {
+  border: 0;
+  border-radius: 0;
+}.appScope :global(.wrapper_articleMiniReaction) {
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-3);
+}.appScope :global(.wrapper_commentReplies.is_open) {
+    background: var(--color-cool-neutral-98);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+        grid-template-rows var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        opacity var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        transform var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        visibility 0ms linear 0ms;
+}.appScope :global(.wrapper_commentReplies.is_open .wrapper_commentRepliesInner) {
+    opacity: 1;
+    transform: translateY(0);
+}.appScope :global(.policy_screen),
+.appScope :global(.container_myScreen),
+.appScope :global(.info_screen),
+.appScope :global(.search_page) {
+    transform: none;
+}.appScope :global(.sheetFrame.policy_screen .sheetFrameSheet),
+.appScope :global(.sheetFrame.container_myScreen .container_mySheet),
+.appScope :global(.sheetFrame.info_screen .sheetFrameSheet) {
+    border-radius: 0;
+    background: var(--color-brand-purple-20);
+}.appScope :global(.container_mySettingsPage .container_myCategorySection .text_mySectionTitle),
+.appScope :global(.container_mySettingsPage .container_myBlockedKeywordSection .text_mySectionTitle) {
+    font-size: var(--font-size-fixed-16);
+    line-height: var(--line-height-fixed-20);
+}@media (prefers-reduced-motion: reduce) {
+
+    .appScope :global(.box_splashLogo),
+    .appScope :global(.wrapper_articleMiniReaction),
+    .appScope :global(.motion_dockedPop),
+    .appScope :global(.container_homeScreen .homeDockedMotion),
+    .appScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedMotion),
+    .appScope :global(.sheetFrame .allDockedControls),
+    .appScope :global(.sheetFrame.is_sheetDocked .allDockedControls),
+    .appScope :global(.wrapper_commentReplies),
+    .appScope :global(.wrapper_commentReplies.is_open),
+    .appScope :global(.wrapper_commentRepliesInner) {
+        transition: none;
+        transform: none;
+    }
+}.appScope:global(.dark :is( .common_sheet, .container_homeSheet, .page_panel, .all_panel, .all_latest_panel, .container_infoList, .wrapper_infoInquiry, .container_myKeywordDialog )) {
+    box-shadow:
+        0 -7px 16px color-mix(in srgb, var(--color-brand-purple-50) 4%, transparent),
+        0 -12px 19px color-mix(in srgb, var(--color-brand-purple-30) 55%, transparent);
+}.appScope:global(.dark .container_homeSheet) {
+    border-radius: var(--radius-20) var(--radius-20) 0 0;
+    background: var(--color-cool-neutral-10);
+}.appScope:global(.dark :is(.container_newsFeed, .all_feed)) {
+    background: var(--color-cool-neutral-10);
+}.appScope:global(.dark .container_newsFeed .container_articleCard) {
+    background: var(--color-cool-neutral-15);
+}.appScope:global(.dark .container_commentComposerFixed),
+.appScope:global(.dark .container_commentComposerFixed) {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-15);
+    border-color: var(--color-brand-purple-50);
+}.appScope:global(.dark .wrapper_articleGuide) {
+    background: var(--color-cool-neutral-20);
+}.appScope:global(.dark .wrapper_commentPanel),
+.appScope:global(.dark .container_commentGuide) {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-10);
+}.appScope:global(.dark .wrapper_commentReplies.is_open),
+.appScope:global(.dark .wrapper_commentRepliesInner) {
+    color: var(--color-cool-neutral-100);
+    background: var(--color-cool-neutral-20);
+}.appScope:global(.screen input),
+.appScope:global(.screen textarea),
+.appScope:global(.screen select),
+.appScope :global(.text_input input),
+.appScope :global(.text_input[data-mode="dark"] input),
+.appScope :global(.form_commentComposer .text_input input),
+.appScope :global(.textarea),
+.appScope :global(.textarea[data-variant='commentEdit']),
+.appScope :global(.textarea[data-variant='inquiry']),
+.appScope :global(.container_authLayout .text_input[data-mode="dark"] input),
+.appScope :global(.container_authLayout .text_input[data-mode="dark"] input:focus),
+.appScope :global(.container_authLayout .text_input[data-mode="dark"] input:active),
+.appScope :global(.container_authLayout .text_input[data-mode="dark"] input:valid),
+.appScope :global(.container_authLayout .text_input[data-mode="dark"] input:invalid) {
+    font-size: 16px;
+    line-height: 24px;
+}/*  App-owned state hooks without dedicated visual declarations
+ *//*  --------------------------------------------------------------------------
+ * App Appearance Declarations
+ * --------------------------------------------------------------------------
+ */.appScope :global(.wrapper_newsViewToggle) {
+  border-radius: var(--radius-full);
+  background: var(--color-background-transparent-alternative);
+}.appScope :global(.wrapper_newsCardMeta) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-400);
+  line-height: 13px;
+}.appScope :global(.wrapper_articleGuide) {
+  border-radius: var(--radius-8);
+  background: var(--color-cool-neutral-98);
+}.appScope :global(.wrapper_articleGuide_binary) {
+  border-radius: var(--radius-16);
+}.appScope :global(.wrapper_contentDateGroup strong),
+.appScope :global(.wrapper_detailDateGroup strong) {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: var(--line-height-20);
+}.appScope :global(.wrapper_myPageCommentThread) {
+  cursor: pointer;
+}.appScope :global(.container_myProfile strong) {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+}.appScope :global(.container_myKeywordOverlay),
+.appScope :global(.container_dialog) {
+  background: rgba(0, 0, 0, 0.72);
+}.appScope :global(.container_myKeywordDialog) {
+  border-radius: var(--radius-24);
+  background: transparent;
+}.appScope :global(.wrapper_dialogContent) {
+  border-radius: var(--radius-24);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.wrapper_infoInquiry textarea) {
+  resize: none;
+}.appScope :global(.container_homeScreen),
+.appScope :global(.container_home),
+.appScope :global(.wrapper_topShell_style) {
+  --app-main-border-width: 1.5px;
+  background: var(--color-brand-purple-20);
+}.appScope :global(.container_homeScreen) {
+  --sheet-docked-pop-motion-duration: 260ms;
+  --sheet-docked-pop-motion-easing: ease;
+  --sheet-common-top: var(--sheet-common-initial-top, 492px);
+  isolation: isolate;
+}.appScope :global(.container_hero),
+.appScope :global(.wrapper_hero) {
+  color: var(--color-common-100);
+}.appScope :global(.wrapper_hero strong) {
+  color: var(--color-brand-purple-50);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-500);
+  line-height: 52px;
+  letter-spacing: 0;
+}.appScope :global(.wrapper_articleActions) {
+  color: var(--color-cool-neutral-50);
+}.appScope :global(.container_newsGrid) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.container_newsFeed) {
+  border-radius: 0;
+  background: var(--color-brand-purple-20);
+}.appScope :global(.container_articleCard) {
+  border-radius: var(--radius-20);
+  color: var(--app-text);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.container_articleCard :where(h1, h2)) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+}.appScope :global(.container_articleCard time) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.wrapper_articleCardContent > img) {
+  border-radius: var(--radius-8);
+  object-fit: cover;
+}.appScope :global(.container_articleCard .wrapper_articleSource) {
+  color: var(--color-cool-neutral-40);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.wrapper_articleReaction > button + button) {
+  border-left: var(--app-divider-thickness) solid var(--app-divider-color);
+}.appScope :global(.wrapper_commentPanel) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.wrapper_articleReaction > button[aria-pressed='true']) {
+  background: var(--color-background-elevated-normal);
+  color: var(--color-cool-neutral-15);
+}.appScope :global(.container_commentComposerFixed) {
+  background: var(--color-background-elevated-normal);
+  --motion-enter-up-base-transform: translateX(-50%);
+  transform: translateX(-50%);
+}.appScope :global(.wrapper_commentTabs button) {
+  border: var(--border-1) solid var(--app-divider-color);
+  border-radius: var(--radius-full);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.appScope :global(.wrapper_commentItem > header strong),
+.appScope :global(.wrapper_commentReplyItem header strong) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-20);
+}.appScope :global(.wrapper_commentItem > header time),
+.appScope :global(.wrapper_commentReplyItem time) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.wrapper_commentItem > p),
+.appScope :global(.wrapper_commentReplyItem p) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.appScope :global(.wrapper_commentReplies) {
+  border-radius: var(--radius-8);
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+        grid-template-rows var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        opacity var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        transform var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        visibility 0ms linear var(--sheet-docked-pop-motion-duration, 260ms);
+}.appScope :global(.wrapper_commentRepliesInner) {
+  background: var(--color-cool-neutral-98);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+        padding-block var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        opacity var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        transform var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease);
+}.appScope :global(.policy_sheet),
+.appScope :global(.container_mySheet),
+.appScope :global(.info_sheet) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+}.appScope :global(.wrapper_scrollListDivider_style) {
+  --app-divider-color: var(--color-line-normal-normal);
+}

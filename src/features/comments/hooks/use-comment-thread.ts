@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 
 import {
   commentApi,
   pollApi,
   type Comment,
   type CommentReaction,
-} from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
 import {
   emptyCommentReactionCounts,
   type CommentId,

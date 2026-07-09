@@ -1,7 +1,7 @@
-import { isAuthView } from "@/features/auth/auth-flow";
+﻿import { isAuthView } from "@/features/auth/auth-flow";
 import type { BlockedKeywordSetting } from "@/features/news/model";
 import type { Tab } from "@/features/shell/navigation";
-import type { BlockedKeywordPreference } from "@/shared/newsroll/api";
+import type { BlockedKeywordPreference } from "@/shared/newstant/api";
 
 export type View =
   | Tab

@@ -6,15 +6,15 @@ import {
   PillTabMenu,
 } from "@/design-system/components";
 import {
-  NewsRollCommonLayout,
-  NewsRollDetailBackButton,
-  NewsRollDockedControls,
-  NewsRollHeaderTop,
-  NewsRollPagePanel,
-  newsrollPagePanelContentSelector as pagePanelContentSelector,
-  newsrollPagePanelDockedGap as pagePanelDockedGap,
-  newsrollPagePanelInitialGap as pagePanelInitialGap,
-  newsrollPagePanelInitialTop as pagePanelInitialTop,
+  CommonLayout,
+  DetailBackButton,
+  DockedControls,
+  HeaderTop,
+  PagePanel,
+  pagePanelContentSelector as pagePanelContentSelector,
+  pagePanelDockedGap as pagePanelDockedGap,
+  pagePanelInitialGap as pagePanelInitialGap,
+  pagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
   useEnterFromRightExitMotion,
   useSwipeTabNavigation,
@@ -24,8 +24,8 @@ import {
   type Faq,
   type InquiryType,
   type Notice,
-} from "@/shared/newsroll/api";
-import { fixedDockedPanelProps } from "@/shared/newsroll/my-info-panel-behavior";
+} from "@/shared/newstant/api";
+import { fixedDockedPanelProps } from "@/shared/newstant/my-info-panel-behavior";
 import {
   InfoFaqSection,
 } from "@/features/info/components/InfoFaqSection";
@@ -37,7 +37,7 @@ import {
   type InfoNoticeItem,
 } from "@/features/info/components/InfoNoticeSection";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
-import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { DockedAlarmButton, NewsToolbar } from "@/features/shell/app-toolbar";
 
 type InfoTab = "notice" | "faq" | "inquiry";
 
@@ -235,7 +235,7 @@ export function InfoView({
   const closeNoticeDetail = noticeDetailExitMotion.closeWithMotion;
 
   return (
-    <NewsRollCommonLayout
+    <CommonLayout
       aria-label="인포메이션"
       className="sheetFrame info_screen"
       dockedGap={pagePanelDockedGap}
@@ -245,19 +245,19 @@ export function InfoView({
       sheetClassName="sheetFrameSheet container_homeSheet info_sheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
-        <NewsRollHeaderTop>
+        <HeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
             onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
-          <NewsRollDockedControls
+          <DockedControls
             className="motion_dockedPop allDockedControls panelHeaderRow"
             isDetailOpen={isNoticeDetailOpen}
           >
             {isNoticeDetailOpen ? (
-              <NewsRollDetailBackButton
+              <DetailBackButton
                 ariaLabel="공지사항 목록으로 돌아가기"
                 onClick={closeNoticeDetail}
               />
@@ -269,11 +269,11 @@ export function InfoView({
               isPressed={false}
               onClick={onOpenBreakingNews}
             />
-          </NewsRollDockedControls>
-        </NewsRollHeaderTop>
+          </DockedControls>
+        </HeaderTop>
       }
     >
-      <NewsRollPagePanel
+      <PagePanel
         ariaLabel="인포메이션 콘텐츠 영역"
         contentRef={infoPanelContentRef}
       >
@@ -303,18 +303,18 @@ export function InfoView({
                 ariaLabel="인포메이션 메뉴"
                 className="all_category_tabs wrapper_tabScroller"
                 getPanelId={(id) =>
-                  id === activeInfoTab ? `newsroll_info_panel_${id}` : undefined
+                  id === activeInfoTab ? `info_panel_${id}` : undefined
                 }
-                getTabId={(id) => `newsroll_info_tab_${id}`}
+                getTabId={(id) => `info_tab_${id}`}
                 items={infoTabs}
                 onChange={handleInfoTabChange}
                 value={activeInfoTab}
               />
             </div>
             <div
-              aria-labelledby={`newsroll_info_tab_${activeInfoTab}`}
-              className={`container_infoPanel ${infoTabSwipeMotionClassName}`.trim()}
-              id={`newsroll_info_panel_${activeInfoTab}`}
+              aria-labelledby={`info_tab_${activeInfoTab}`}
+              className={`wrapper_allTabPanelBody container_infoPanel ${infoTabSwipeMotionClassName}`.trim()}
+              id={`info_panel_${activeInfoTab}`}
               role="tabpanel"
             >
               {activeInfoTab === "notice" ? (
@@ -330,8 +330,8 @@ export function InfoView({
             </div>
           </div>
         )}
-      </NewsRollPagePanel>
-    </NewsRollCommonLayout>
+      </PagePanel>
+    </CommonLayout>
   );
 }
 

@@ -17,18 +17,18 @@ import {
   scrollSearchHighlightTargetIntoView,
 } from "@/design-system/components";
 import {
-  NewsRollCommonLayout,
-  NewsRollDetailBackButton,
-  NewsRollDockedControls,
-  NewsRollHeaderTop,
-  NewsRollPagePanel,
-  newsrollPagePanelContentSelector as pagePanelContentSelector,
-  newsrollPagePanelDockedGap as pagePanelDockedGap,
-  newsrollPagePanelInitialGap as pagePanelInitialGap,
-  newsrollPagePanelInitialTop as pagePanelInitialTop,
+  CommonLayout,
+  DetailBackButton,
+  DockedControls,
+  HeaderTop,
+  PagePanel,
+  pagePanelContentSelector as pagePanelContentSelector,
+  pagePanelDockedGap as pagePanelDockedGap,
+  pagePanelInitialGap as pagePanelInitialGap,
+  pagePanelInitialTop as pagePanelInitialTop,
 } from "@/design-system/templates";
-import { fixedDockedPanelProps } from "@/shared/newsroll/my-info-panel-behavior";
-import { NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { fixedDockedPanelProps } from "@/shared/newstant/my-info-panel-behavior";
+import { NewsToolbar } from "@/features/shell/app-toolbar";
 import {
   createSignupAgreementSearchResults,
   getAgreementSearchRootId,
@@ -79,7 +79,7 @@ function SignupAgreementDetailView({
   }, [agreementId, searchTarget]);
 
   return (
-    <NewsRollCommonLayout
+    <CommonLayout
       aria-label={agreement.title}
       className="sheetFrame container_authAgreementScreen"
       dockedGap={pagePanelDockedGap}
@@ -89,7 +89,7 @@ function SignupAgreementDetailView({
       sheetClassName="sheetFrameSheet container_homeSheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
-        <NewsRollHeaderTop>
+        <HeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
             onOpenNotifications={onOpenBreakingNews}
@@ -97,19 +97,19 @@ function SignupAgreementDetailView({
             showNotifications={false}
             onToggleTextSize={onToggleTextSize}
           />
-          <NewsRollDockedControls
+          <DockedControls
             className="motion_dockedPop allDockedControls panelHeaderRow"
             isDetailOpen
           >
-            <NewsRollDetailBackButton
+            <DetailBackButton
               ariaLabel="회원가입 동의로 돌아가기"
               onClick={onBack}
             />
-          </NewsRollDockedControls>
-        </NewsRollHeaderTop>
+          </DockedControls>
+        </HeaderTop>
       }
     >
-      <NewsRollPagePanel ariaLabel={`${agreement.title} 본문 영역`}>
+      <PagePanel ariaLabel={`${agreement.title} 본문 영역`}>
         <div className="wrapper_authAgreementDetail">
           <h1 className="text_loginTitle">
             <SearchHighlightText
@@ -184,8 +184,8 @@ function SignupAgreementDetailView({
             </p>
           </div>
         </div>
-      </NewsRollPagePanel>
-    </NewsRollCommonLayout>
+      </PagePanel>
+    </CommonLayout>
   );
 }
 

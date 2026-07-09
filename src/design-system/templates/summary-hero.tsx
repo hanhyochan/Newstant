@@ -1,8 +1,8 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { NewsRollTopFrame } from "./top-frame";
+import { TopFrame } from "./top-frame";
 
-type NewsRollSummaryHeroProps = {
+type SummaryHeroProps = {
   ariaLabel: string;
   caption: string;
   className?: string;
@@ -12,15 +12,15 @@ type NewsRollSummaryHeroProps = {
   unit: string;
 };
 
-type NewsRollSummaryHeroTopProps = {
+type SummaryHeroTopProps = {
   controls?: ReactNode;
   footer?: ReactNode;
-  hero: NewsRollSummaryHeroProps;
+  hero: SummaryHeroProps;
   toolbar: ReactNode;
   toolbarClassName?: string;
 };
 
-export function NewsRollSummaryHero({
+export function SummaryHero({
   ariaLabel,
   caption,
   className,
@@ -28,21 +28,21 @@ export function NewsRollSummaryHero({
   count,
   greeting,
   unit,
-}: NewsRollSummaryHeroProps) {
+}: SummaryHeroProps) {
   return (
     <section className={`container_hero${className ? ` ${className}` : ""}`} aria-label={ariaLabel}>
-      <NewsRollHeroTitle>{greeting}</NewsRollHeroTitle>
-      <NewsRollHeroSummary caption={caption} count={count} unit={unit} />
+      <HeroTitle>{greeting}</HeroTitle>
+      <HeroSummary caption={caption} count={count} unit={unit} />
       {controls}
     </section>
   );
 }
 
-export function NewsRollHeroTitle({ children }: { children: ReactNode }) {
+export function HeroTitle({ children }: { children: ReactNode }) {
   return <p className="text_greeting">{children}</p>;
 }
 
-export function NewsRollHeroSummary({
+export function HeroSummary({
   caption,
   count,
   unit,
@@ -62,19 +62,19 @@ export function NewsRollHeroSummary({
   );
 }
 
-export function NewsRollSummaryHeroTop({
+export function SummaryHeroTop({
   controls,
   footer,
   hero,
   toolbar,
   toolbarClassName,
-}: NewsRollSummaryHeroTopProps) {
+}: SummaryHeroTopProps) {
   return (
-    <NewsRollTopFrame
+    <TopFrame
       footer={footer}
       headerClassName={toolbarClassName}
       headerControls={controls}
-      hero={<NewsRollSummaryHero {...hero} />}
+      hero={<SummaryHero {...hero} />}
       toolbar={toolbar}
     />
   );

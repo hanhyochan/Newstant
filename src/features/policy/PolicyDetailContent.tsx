@@ -32,7 +32,7 @@ export type PolicyDetailContentItem = {
   updatedAt: string;
 };
 
-function resetNewsRollViewport() {
+function resetAppViewport() {
   if (typeof window === "undefined") {
     return;
   }
@@ -99,7 +99,7 @@ export function PolicyDetailContent({
   });
 
   useLayoutEffect(() => {
-    resetNewsRollViewport();
+    resetAppViewport();
   }, []);
 
   useEffect(() => {

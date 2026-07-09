@@ -1,0 +1,55 @@
+.appScope :global(.policy_screen) {
+  min-height: 100dvh;
+  padding-bottom: var(--spacing-padding-vertical-60);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+}.appScope :global(.policy_sheet) {
+  min-height: calc(100dvh - 442px);
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.policy_age_tabs) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: 0 0 auto;
+  min-height: var(--spacing-padding-vertical-32);
+  padding-bottom: var(--spacing-padding-vertical-24);
+}.appScope :global(.policy_listContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}.appScope :global(.policy_listSection) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  min-width: 0;
+}.appScope :global(.policy_items) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding-top: 0;
+}.appScope :global(.btn_contentListItem) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}.appScope :global(.btn_contentListItem + .btn_contentListItem),
+.appScope :global(.all_breakingHeader .btn_contentAction[data-tone="dark"]),
+.appScope :global(.headerTop > .toolbar),
+.appScope :global(.policy_items),
+.appScope :global(.container_myRecent),
+.appScope :global(.wrapper_myRecentScroller) {
+  padding-top: 0;
+}

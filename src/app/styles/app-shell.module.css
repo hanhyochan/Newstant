@@ -1,0 +1,784 @@
+/* From src/app/styles/the appearance section
+ *//* --------------------------------------------------------------------------
+ * Foundation Tokens
+ * --------------------------------------------------------------------------
+ * Kept first because all later managed CSS files use
+ * these tokens, reset rules, and icon masks.
+ */.appScope :global(.all_breaking_label),
+.appScope :global(.text_infoHeaderTitle),
+.appScope :global(.text_panelHeaderTitle) {
+            color: var(--color-common-100);
+            font-size: var(--font-size-18);
+            font-weight: var(--font-weight-500);
+            line-height: var(--line-height-24);
+        }.appScope :global(.btn_moreAction) {
+  border-radius: var(--radius-8);
+            color: var(--color-cool-neutral-15);
+            background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+        }.appScope :global(.icon_moreActionChevron) {
+            border: solid currentColor;
+            border-width: 0 var(--border-1) var(--border-1) 0;
+            transform: rotate(45deg) translateY(-2px);
+            transition: var(--app-chevron-transition);
+        }.appScope :global(.all_panel) {
+  border-radius: var(--radius-20);
+            color: var(--color-cool-neutral-15);
+            background: var(--color-background-elevated-normal);
+  box-shadow: var(--app-shadow-card);
+        }.appScope :global(.text_sectionTitle),
+.appScope :global(.list_detailDefinition dt),
+.appScope :global(.text_mySectionTitle),
+.appScope :global(.text_myTimeSectionLabel),
+.appScope :global(.text_infoFieldLabel) {
+            color: var(--app-text);
+            font-size: var(--font-size-fixed-16);
+            font-weight: var(--font-weight-600);
+            line-height: var(--line-height-fixed-20);
+        }.appScope :global(.text_sectionTitle strong) {
+            font-weight: inherit;
+        }.appScope :global(.all_category_tabs button),
+.appScope :global(.category_chip) {
+            border: 0;
+            border-radius: var(--radius-full);
+            color: var(--color-cool-neutral-15);
+            background: var(--color-neutral-95);
+            font-size: var(--font-size-14);
+            font-weight: var(--font-weight-500);
+            line-height: var(--line-height-20);
+        }.appScope :global(.all_pressHeadline_logo),
+.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_logo) {
+            border-radius: var(--radius-full);
+            background: var(--color-cool-neutral-96);
+        }.appScope :global(.all_press_panel .btn_moreAction) {
+  transform: none;
+  border: var(--border-1) solid var(--color-cool-neutral-96);
+  color: var(--color-cool-neutral-50);
+  background: var(--color-common-100);
+        }.appScope :global(.all_category_tabs button) {
+  border: var(--border-1) solid var(--color-neutral-95);
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+        }/* typography: display */.appScope :global(.type-display_1) {
+        font-size: var(--font-size-60);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-90);
+    }.appScope :global(.type-display_2) {
+        font-size: var(--font-size-48);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-72);
+    }.appScope :global(.type-display_3) {
+        font-size: var(--font-size-40);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-60);
+    }/* typography: headline */.appScope :global(.type-headline_1) {
+        font-size: var(--font-size-32);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-48);
+    }.appScope :global(.type-headline_2) {
+        font-size: var(--font-size-28);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-44);
+    }.appScope :global(.type-headline_3),
+.appScope :global(.metric_line span) {
+        font-size: var(--font-size-24);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-40);
+    }/* typography: title */.appScope :global(.type-title_1) {
+        font-size: var(--font-size-20);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-40);
+    }.appScope :global(.type-title_2) {
+        font-size: var(--font-size-18);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-32);
+    }/* typography: body */.appScope :global(.type-body_1) {
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-24);
+    }.appScope :global(.type-body_2) {
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-400);
+        line-height: var(--line-height-24);
+    }/* typography: label */.appScope :global(.type-label_1) {
+        font-size: var(--font-size-14);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-24);
+    }/* typography: caption */.appScope :global(.type-caption_1) {
+        font-size: var(--font-size-12);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }.appScope :global(.type-caption_2) {
+        font-size: var(--font-size-11);
+        font-weight: var(--font-weight-500);
+        line-height: var(--line-height-20);
+    }.appScope :global(.type-caption_3) {
+        font-size: var(--font-size-10);
+        font-weight: var(--font-weight-500);
+            line-height: var(--line-height-24);
+    }.appScope:global(.screen) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-brand-purple-20);
+  --font-size-13: 13px;
+    --app-max-width: 430px;
+}.appScope :global(.phone),
+.appScope:global(.screen_splash),
+.appScope:global(.screen_splash .phone),
+.appScope :global(.search_top),
+.appScope:global(.screen_login),
+.appScope:global(.screen_login .phone),
+.appScope:global(.screen),
+.appScope:global(.screen_all .phone),
+.appScope :global(.header),
+.appScope :global(.policy_screen),
+.appScope :global(.container_myScreen),
+.appScope :global(.info_screen),
+.appScope :global(.search_page),
+.appScope :global(.container_splash) {
+  background: var(--color-brand-purple-20);
+}.appScope :global(.box_splashLogo) {
+  animation: splashBounce 1.15s cubic-bezier(0.34, 1.56, 0.64, 1)
+    infinite;
+  filter: drop-shadow(0 18px 18px rgb(78 39 132 / 18%));
+  transform-origin: center bottom;
+  will-change: transform;
+}@keyframes splashBounce {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+  }
+
+  18% {
+    transform: translateY(0) scaleX(1.06) scaleY(0.94);
+  }
+
+  46% {
+    transform: translateY(-28px) scaleX(0.96) scaleY(1.05);
+  }
+
+  64% {
+    transform: translateY(0) scaleX(1.04) scaleY(0.96);
+  }
+
+  78% {
+    transform: translateY(-8px) scaleX(0.99) scaleY(1.02);
+  }
+}.appScope :global(.text_size_button) {
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
+  appearance: none;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--color-common-100);
+}.appScope :global(.text_size_button strong) {
+  font-size: var(--font-size-20);
+  line-height: var(--line-height-40);
+}.appScope :global(.toolbar_icon),
+.appScope :global(.header),
+.appScope :global(.search_close),
+.appScope :global(.text_loginTitle),
+.appScope :global(.headerTop .toolbar),
+.appScope:global(.dark .btn_iconTextButton[data-size='default'] strong),
+.appScope:global(.dark .btn_articleGuideOption[data-variant='binary'] .text_articleGuideOption),
+.appScope:global(.dark .btn_articleGuideOption[data-variant='stacked'] .text_articleGuideOption),
+.appScope:global(.dark .noticeCardLink_notificationRead .text_noticeCardTitle),
+.appScope :global(.container_authLayout .btn_loginPasswordToggle),
+.appScope:global(.dark .wrapper_articleActions .btn_iconButton[data-variant="articleTool"] > :is(.icon_share, .icon_bookmark)),
+.appScope:global(.dark .container_articleCard .text_articleBody),
+.appScope:global(.dark .container_articleCard .wrapper_articleSource),
+.appScope:global(.dark .container_articleCard .text_articlePublisherName),
+.appScope:global(.dark .container_articleCard .text_articleReporter),
+.appScope :global(.container_myScreen) {
+  color: var(--color-common-100);
+}.appScope :global(.greeting) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-18);
+  line-height: var(--line-height-32);
+}.appScope :global(.greeting strong) {
+  font-weight: var(--font-weight-700);
+}.appScope :global(.metric) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-24);
+  line-height: var(--line-height-40);
+}.appScope :global(.metric_line strong) {
+  color: var(--color-brand-purple-50);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-60);
+}.appScope :global(.breaking_card) {
+  border-radius: var(--radius-20);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-brand-purple-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.appScope :global(.breaking_icon) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: var(--color-common-0);
+}.appScope :global(.feed),
+.appScope :global(.info_sheet) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.article_card) {
+  border-radius: var(--radius-20);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-2);
+}.appScope :global(.category_society) {
+  color: var(--color-common-100);
+  background: var(--color-orange-50);
+}.appScope :global(.category_culture) {
+  color: var(--color-common-100);
+  background: var(--color-red-orange-40);
+}.appScope :global(.category_tech) {
+  color: var(--color-common-100);
+  background: var(--color-red-orange-30);
+}.appScope :global(.article_title) {
+  color: inherit;
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+}.appScope :global(.article_date) {
+  color: var(--color-label-alternative);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+}.appScope :global(.article_actions) {
+  color: var(--color-label-assistive);
+}.appScope :global(.article_media) {
+  border-radius: var(--radius-8);
+  background: var(--color-fill-normal);
+}.appScope :global(.article_media img) {
+  object-fit: cover;
+}.appScope :global(.article_media span) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-20);
+}.appScope :global(.reaction_summary) {
+  border-radius: var(--radius-full);
+  background: var(--color-background-elevated-normal);
+  box-shadow: var(--shadow-2);
+}.appScope :global(.reaction_item) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+  font-weight: var(--font-weight-500);
+}.appScope :global(.reaction_like) {
+  color: var(--color-red-40);
+}.appScope :global(.reaction_dislike) {
+  color: var(--color-blue-40);
+}.appScope :global(.vote_dot) {
+  border: var(--border-1) solid var(--color-line-normal-normal);
+  border-radius: var(--radius-full);
+}.appScope :global(.bottom_nav) {
+  transform: translateX(-50%);
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
+  background: var(--color-background-elevated-normal);
+  pointer-events: auto;
+}.appScope :global(.badge) {
+  color: var(--color-common-100);
+  background: var(--color-brand-purple-50);
+}.appScope :global(.badge_small) {
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-16);
+}.appScope :global(.badge_medium) {
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+}.appScope :global(.badge_outline) {
+  border: var(--border-1) solid var(--color-brand-purple-50);
+  color: var(--color-brand-purple-50);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.badge_gray_line_outline) {
+  border: var(--border-1) solid var(--color-line-normal-neutral);
+  color: var(--color-label-normal);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.badge_square),
+.appScope :global(.card_square),
+.appScope :global(.table_wrap_square) {
+  border-radius: 0;
+}.appScope :global(.badge_rounded),
+.appScope :global(.card_rounded),
+.appScope :global(.table_wrap_rounded) {
+  border-radius: var(--radius-8);
+}.appScope :global(.badge_full),
+.appScope :global(.card_full),
+.appScope :global(.table_wrap_full) {
+  border-radius: var(--radius-full);
+}.appScope :global(.card) {
+  box-shadow: var(--shadow-1);
+}.appScope :global(.card_filled),
+.appScope :global(.table_wrap_filled) {
+  border: 0;
+  background: var(--color-fill-normal);
+}.appScope :global(.card_outline),
+.appScope :global(.table_wrap_outline) {
+  border: var(--border-1) solid var(--color-brand-purple-50);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.card_gray_line_outline),
+.appScope :global(.table_wrap_gray_line_outline) {
+  border: var(--border-1) solid var(--color-line-normal-neutral);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.data_table th),
+.appScope :global(.data_table td) {
+  border-bottom: var(--border-1) solid var(--color-line-normal-alternative);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-20);
+}.appScope :global(.data_table th) {
+  font-weight: var(--font-weight-500);
+}.appScope :global(.toolbar_icon) {
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-common-100);
+}.appScope :global(.category_chip) {
+  color: var(--color-cool-neutral-15);
+  background: var(--color-neutral-95);
+  border: 0;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}@media (max-width: 430px) {
+
+  .appScope :global(.metric_line strong) {
+    font-size: var(--font-size-40);
+    line-height: var(--line-height-60);
+  }
+
+  .appScope :global(.metric),
+  .appScope :global(.metric_line span) {
+    font-size: var(--font-size-24);
+    line-height: var(--line-height-40);
+  }
+}.appScope :global(.sr_only) {
+  clip: rect(0, 0, 0, 0);
+}.appScope :global(.search_page),
+.appScope :global(.policy_screen),
+.appScope :global(.info_screen),
+.appScope :global(.container_authLayout) {
+  color: var(--color-common-100);
+  background: var(--color-brand-purple-20);
+}.appScope :global(.text_loginLandingHero) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-28);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-40);
+  word-break: keep-all;
+}.appScope :global(.text_socialLoginTitle) {
+  color: var(--color-cool-neutral-80);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.text_loginTitle) {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_authValidationError) {
+  color: var(--color-status-negative);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.text_authValidation) {
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.text_authValidation[data-state="success"]) {
+  color: var(--color-status-positive);
+}.appScope :global(.text_authValidation[data-state="error"]) {
+  color: var(--color-status-negative);
+}.appScope :global(.text_signupVerificationTimer) {
+  color: var(--color-status-cautionary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-20);
+  transform: translateY(-50%);
+}.appScope :global(.btn_loginPasswordToggle) {
+  border: 0;
+  color: var(--color-common-100);
+  background: transparent;
+  transform: translateY(-50%);
+}.appScope :global(.btn_mySettingsPasswordToggle),
+.appScope:global(.dark .btn_articleGuideOption[data-variant='stacked'][aria-pressed='true'] .text_articleGuideOption),
+.appScope:global(.dark .btn_articleGuideOption[data-variant='stacked'][aria-pressed='true'] .text_articleGuidePercent),
+.appScope:global(.dark .btn_articleGuideOption[data-variant='binary'][aria-pressed='true'] .text_articleGuideOption),
+.appScope:global(.dark .noticeCardLink_notificationUnread .text_noticeCardTitle) {
+  color: var(--color-cool-neutral-15);
+}.appScope :global(.divider_signupAgreementAll) {
+  background: var(--color-line-normal-neutral);
+  border-color: var(--color-line-normal-neutral);
+}.appScope :global(.text_searchStatus) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope:global(.screen_all .bottom_nav) {
+  transform: translateX(-50%);
+  pointer-events: auto;
+}.appScope :global(.all_panel),
+.appScope :global(.page_panel) {
+  border-radius: var(--radius-20);
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+  box-shadow: none;
+}.appScope :global(.all_press_panel .text_sectionTitle),
+.appScope :global(.all_relay_panel .text_sectionTitle) {
+  padding-bottom: var(--spacing-gap-vertical-16);
+}.appScope :global(.all_itemDivider) {
+  background: var(--app-divider-color);
+}.appScope :global(.all_latest_panel) {
+  --all-latest-panel-natural-height: 540px;
+  --all-latest-panel-available-height: calc(
+    100dvh - var(--sheet-common-stop-top, 168px) -
+      var(--shell-bottom-nav-clearance)
+  );
+  --all-latest-panel-height: min(
+    var(--all-latest-panel-natural-height),
+    var(--all-latest-panel-available-height)
+  );
+}.appScope :global(.all_latest_scroller .img_newsCardFeature) {
+  aspect-ratio: 5 / 2;
+}.appScope :global(.all_latest_scroller .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+  line-height: 28px;
+  padding-bottom: 0;
+}.appScope :global(.all_latest_scroller) {
+  cursor: grab;
+  user-select: none;
+}.appScope :global(.all_latest_scroller.is_dragging) {
+  cursor: grabbing;
+}.appScope :global(.btn_detailBack) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: var(--color-background-transparent-alternative);
+}.appScope :global(.policy_sheet),
+.appScope :global(.info_sheet),
+.appScope :global(.container_mySheet) {
+  border-radius: var(--radius-20) var(--radius-20) 0 0;
+  color: var(--color-cool-neutral-15);
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.policy_age_tabs),
+.appScope :global(.all_tabSticky),
+.appScope :global(.pageSurface_style),
+.appScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
+.appScope :global(.container_myVotePage > .tab_myCategoryMenu),
+.appScope :global(.container_myCommentPage > .tab_myCategoryMenu),
+.appScope :global(.wrapper_myTabbedDetailContent > .tab_myCategoryMenu),
+.appScope :global(.wrapper_myTabbedDetailContent > .wrapper_myBookmarkTabStack),
+.appScope :global(.wrapper_articleReaction > button[aria-pressed="true"]),
+.appScope :global(.wrapper_stickyHeader_style) {
+  background: var(--color-background-elevated-normal);
+}.appScope :global(.wrapper_stickyHeader_style)::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: inherit;
+  pointer-events: none;
+}.appScope :global(.btn_contentListItem) {
+  border-bottom: 0;
+}.appScope :global(.btn_contentListItem h2),
+.appScope :global(.wrapper_detailBody h1),
+.appScope :global(.wrapper_detailHeader h1) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+  letter-spacing: 0;
+}.appScope :global(.text_detailSummary),
+.appScope :global(.list_detailDefinition dd),
+.appScope :global(.wrapper_myProfileGreeting > span) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.appScope :global(.list_detailDefinition div) {
+  border: 0;
+}.appScope :global(.text_myVoteQuestion),
+.appScope :global(.wrapper_authAgreementSection h2),
+.appScope :global(.wrapper_mySettingsHistoryText strong) {
+  color: var(--color-cool-neutral-15);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_myCommentCreatedDate) {
+  color: var(--color-cool-neutral-50);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.appScope :global(.my_summary_bookmark::before) {
+  content: "";
+  border: 2px solid var(--color-blue-50);
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+}.appScope :global(.my_summary_bookmark::after) {
+  content: "";
+  border-right: 2px solid var(--color-blue-50);
+  border-bottom: 2px solid var(--color-blue-50);
+  border-left: 2px solid var(--color-blue-50);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 65%, 0 100%);
+}.appScope :global(.my_summary_vote::before) {
+  content: "";
+  border: 2px solid var(--color-orange-50);
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}.appScope :global(.my_summary_vote::after) {
+  content: "";
+  border: 2px solid var(--color-orange-50);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}.appScope :global(.my_summary_comment::before) {
+  content: "";
+  border: 2px solid var(--color-brand-purple-50);
+  border-radius: var(--radius-full);
+}.appScope :global(.my_summary_comment::after) {
+  content: "";
+  border-left: 2px solid var(--color-brand-purple-50);
+  border-bottom: 2px solid var(--color-brand-purple-50);
+  transform: skewX(-22deg);
+}.appScope :global(.text_myTimeTitle),
+.appScope :global(.text_myDialogTitle),
+.appScope :global(.text_myKeywordDialogTitle),
+.appScope :global(.text_sectionTitle),
+.appScope :global(.text_mySectionTitle) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: 26px;
+}.appScope :global(.tab_myCategoryMenu button),
+.appScope :global(.tab_myBlockedKeywordMenu .btn_tab) {
+  border: var(--border-1) solid var(--app-divider-color);
+  border-radius: var(--radius-full);
+  color: var(--app-text);
+  background: transparent;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.appScope :global(.tab_myCategoryMenu button[data-state="active"]),
+.appScope :global(.tab_myCategoryMenu button[data-state="selected"]),
+.appScope :global(.all_category_tabs button[aria-selected='true']),
+.appScope :global(.policy_age_tabs button[aria-selected='true']),
+.appScope :global(.all_category_tabs button[data-state='active']),
+.appScope :global(.policy_age_tabs button[data-state='active']),
+.appScope :global(.all_category_tabs button[data-state='selected']),
+.appScope :global(.policy_age_tabs button[data-state='selected']),
+.appScope :global(.tab_myBlockedKeywordMenu .btn_tab[data-state="active"]),
+.appScope :global(.tab_myBlockedKeywordMenu .btn_tab[data-state="selected"]),
+.appScope :global(.wrapper_commentTabs button[aria-selected='true']) {
+  color: var(--color-common-100);
+  border-color: var(--color-common-0);
+  background: var(--color-common-0);
+  font-weight: var(--font-weight-700);
+}.appScope :global(.tab_myCategoryMenu button[data-state="default"]),
+.appScope :global(.tab_myBlockedKeywordMenu .btn_tab[data-state="default"]) {
+  color: var(--app-text);
+  border-color: var(--app-divider-color);
+  background: transparent;
+}.appScope :global(.text_myBlockedKeywordDescription),
+.appScope :global(.text_infoSubmitStatus) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-20);
+}.appScope :global(.text_mySettingsStatus.is_error),
+.appScope :global(.text_infoSubmitStatus.is_error),
+.appScope:global(.dark .btn_iconTextButton[data-size='default'][data-tone='like'] .icon[data-size="20"]),
+.appScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='like']),
+.appScope:global(.dark .btn_iconTextButton[data-size='small'][data-tone='like'] .icon[data-size="20"]),
+.appScope:global(.dark .btn_textAction[data-tone='danger']),
+.appScope:global(.dark .btn_textAction[data-tone='danger']:active),
+.appScope:global(.dark .btn_textAction[data-tone='danger'][aria-pressed='true']),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='like'] > .icon[data-size="20"]),
+.appScope:global(.dark .wrapper_articleReaction .btn_iconTextButton[data-size='default'][data-tone='like'][aria-pressed='true'] > .icon[data-size="20"]) {
+  color: var(--color-red-50);
+}.appScope :global(.btn_myTimeRow) {
+  color: var(--app-text);
+  background: transparent;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_infoHeaderTitle) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.appScope :global(.btn_noticeListItem),
+.appScope :global(.container_contentAccordion) {
+  border: 0;
+  background: transparent;
+}.appScope :global(.text_infoMeta) {
+  color: var(--color-label-alternative);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+}.appScope :global(.text_infoItemTitle) {
+  color: var(--app-text);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_infoBody) {
+  color: var(--color-label-neutral);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_lineClamp2),
+.appScope :global(.sheetFrame.is_sheetDocked .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}.appScope :global(.headerTop .text_size_button) {
+  line-height: 0;
+}.appScope :global(.headerTop .toolbar [aria-label="메뉴"]::before) {
+  content: "";
+  border-radius: var(--radius-full);
+  background: var(--color-orange-50);
+}.appScope :global(.sheetFrame) {
+  --sheet-common-top: var(--sheet-common-initial-top, 492px);
+  --sheet-common-stop-top: 168px;
+  --shell-bottom-nav-clearance: var(--spacing-padding-vertical-60);
+  --app-main-border-width: 1.5px;
+  isolation: isolate;
+  background: var(--color-brand-purple-20);
+}.appScope :global(.sheetFrameSheet),
+.appScope :global(.container_homeSheet) {
+  border-radius: 0;
+  background: var(--color-brand-purple-20);
+  will-change: top;
+}.appScope :global(.all_breaking_extra) {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(calc(var(--spacing-gap-vertical-8) * -1));
+  transition:
+    grid-template-rows var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    opacity var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    transform var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--sheet-docked-pop-motion-duration, 260ms);
+}.appScope :global(.all_breakingBody[data-expanded="true"] .all_breaking_extra) {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    grid-template-rows var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    opacity var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    transform var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}.appScope :global(.all_breakingHeader .icon_moreAction) {
+  filter: brightness(0) invert(1);
+  transform: rotate(90deg);
+  transition: var(--app-chevron-transition);
+}.appScope :global(.icon_moreAction) {
+  transform: rotate(90deg);
+  transition: var(--app-chevron-transition);
+}.appScope :global(.all_press_panel .icon_moreAction) {
+  opacity: 0.55;
+}.appScope :global(.all_pressHeadline_tabScroller button[aria-selected="true"] .all_pressHeadline_logo),
+.appScope :global(.all_pressHeadline_tabScroller button[aria-selected='true'] .all_pressHeadline_logo),
+.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true'] .all_pressHeadline_logo) {
+  background: var(--color-common-100);
+}.appScope :global(.all_pressHeadline_tabScroller button:not([aria-selected="true"]) .all_pressHeadline_logo),
+.appScope :global(.all_pressHeadline_tabScroller button:not([aria-selected='true']) .all_pressHeadline_logo) {
+  background: var(--color-cool-neutral-96);
+}.appScope :global(.text_greeting) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_heroUnit) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-32);
+}.appScope :global(.text_heroCaption) {
+  color: var(--color-common-100);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-32);
+}.appScope :global(.motion_dockedPop) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(16px);
+  transition: none;
+  will-change: opacity, transform;
+}.appScope :global(.sheetFrame .allDockedControls),
+.appScope :global(.container_homeScreen .homeDockedMotion) {
+  transition: none;
+}.appScope :global(.sheetFrame.is_sheetDocked .allDockedControls),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedMotion) {
+    transition:
+        max-height var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        opacity var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        transform var(--sheet-docked-pop-motion-duration, 260ms)
+            var(--sheet-docked-pop-motion-easing, ease),
+        visibility 0ms linear 0ms;
+}.appScope :global(.homeDockedAlarm) {
+  border-color: var(--color-brand-purple-50);
+  color: var(--color-common-0);
+  background: var(--color-brand-purple-50);
+}.appScope :global(.btn_newsViewOption) {
+  border-radius: var(--radius-full);
+  color: var(--color-common-100);
+  background: transparent;
+}.appScope :global(.btn_newsViewOption[aria-selected="true"]) {
+  color: var(--color-common-0);
+  background: var(--color-common-100);
+}.appScope :global(.all_breaking_label) {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-24);
+}.appScope :global(.text_sectionTitle) {
+  font-size: var(--font-size-fixed-16);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-fixed-20);
+}.appScope :global(.bottom_nav),
+.appScope:global(.screen_all .bottom_nav) {
+  border-top: var(--border-1) solid var(--color-cool-neutral-96);
+  transform: translateX(-50%);
+}.appScope:global(.text_large) {
+  --font-size-10: 12px;
+  --font-size-11: 13.2px;
+  --font-size-12: 14.4px;
+  --font-size-13: 15.6px;
+  --font-size-14: 16.8px;
+  --font-size-15: 18px;
+  --font-size-16: 19.2px;
+  --font-size-18: 21.6px;
+  --font-size-fixed-16: 19.2px;
+  --font-size-fixed-18: 21.6px;
+  --font-size-20: 24px;
+  --font-size-24: 28.8px;
+  --font-size-28: 33.6px;
+  --font-size-32: 38.4px;
+  --font-size-40: 48px;
+  --font-size-48: 57.6px;
+  --font-size-52: 62.4px;
+  --font-size-60: 72px;
+  --line-height-16: 19.2px;
+  --line-height-20: 24px;
+  --line-height-24: 28.8px;
+  --line-height-fixed-20: 24px;
+  --line-height-fixed-26: 31.2px;
+  --line-height-32: 38.4px;
+  --line-height-40: 48px;
+  --line-height-44: 52.8px;
+  --line-height-48: 57.6px;
+  --line-height-60: 72px;
+}.appScope :global(.img_articlePublisherLogo) {
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}

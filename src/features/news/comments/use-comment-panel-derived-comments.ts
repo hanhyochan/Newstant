@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 
-import type { Comment, UserContentAction } from "@/shared/newsroll/api";
+import type { Comment, UserContentAction } from "@/shared/newstant/api";
 import {
   emptyCommentReactionCounts,
   getCommentItemFromApi,

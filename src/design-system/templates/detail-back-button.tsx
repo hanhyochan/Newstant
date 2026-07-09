@@ -3,16 +3,16 @@ import type { ButtonHTMLAttributes } from "react";
 import { IconButton } from "../components/button/icon-button";
 import { cn } from "@/design-system/utils/cn";
 
-type NewsRollDetailBackButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "aria-label" | "children"> & {
+type DetailBackButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "aria-label" | "children"> & {
   ariaLabel: string;
 };
 
-export function NewsRollDetailBackButton({
+export function DetailBackButton({
   ariaLabel,
   className,
   type = "button",
   ...props
-}: NewsRollDetailBackButtonProps) {
+}: DetailBackButtonProps) {
   return (
     <IconButton
       className={cn("btn_detailBack", className)}

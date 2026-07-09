@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Bookmark,
   Comment,
   CommentReaction,
@@ -7,7 +7,7 @@ import type {
   PollOption,
   PollVote,
   RecentNewsView,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   emptyCommentReactionCounts,
   type CommentId,

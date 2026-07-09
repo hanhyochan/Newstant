@@ -1,17 +1,17 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { NewsRollTopFrame } from "./top-frame";
+import { TopFrame } from "./top-frame";
 
-type NewsRollHeaderTopProps = {
+type HeaderTopProps = {
   children: ReactNode;
   className?: string;
 };
 
-export function NewsRollHeaderTop({
+export function HeaderTop({
   children,
   className,
-}: NewsRollHeaderTopProps) {
+}: HeaderTopProps) {
   return (
-    <NewsRollTopFrame headerBody={children} headerClassName={className} />
+    <TopFrame headerBody={children} headerClassName={className} />
   );
 }

@@ -4,7 +4,7 @@ import { NewsFeatureCardButton } from "./news-feature-card-button";
 
 const item = {
   category: "헤드라인",
-  image: "/images/news-apartment.png",
+  image: "/images/Gemini_Generated_Image_le942ile942ile94.webp",
   title: "서울시, 장기전세주택 공급 확대 방안 발표",
 };
 

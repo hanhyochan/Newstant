@@ -1,12 +1,12 @@
-import {
+﻿import {
   useEffect,
   useMemo,
   useState,
 } from "react";
 
 import { ArticleVoteOptionButton } from "@/design-system/components";
-import { newsApi, pollApi } from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
+import { newsApi, pollApi } from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
 import {
   binaryGuideOptions,
   guideOptions,

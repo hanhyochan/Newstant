@@ -1,10 +1,10 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 import {
   authEmailSchema,
   verificationCodeSchema,
-} from "@/shared/newsroll/auth-validation";
-import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+} from "@/shared/newstant/auth-validation";
+import { useZodFieldValidation } from "@/shared/newstant/use-zod-field-validation";
 import { useVerificationCodeFlow } from "@/features/shared/hooks/use-verification-code-flow";
 
 type UseEmailVerificationStepOptions = {

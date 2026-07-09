@@ -22,7 +22,7 @@ export function NewsFeatureCardButton({
   return (
     <button
       aria-label={`${item.category ?? "뉴스"} 기사: ${item.title}`}
-      className="btn_newsCardFeature wrapper_contentMeta u_gap8"
+      className="btn_newsCardFeature wrapper_contentMeta u_gap16 u_justifyCenter"
       onClick={onClick}
       type="button"
     >

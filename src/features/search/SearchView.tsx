@@ -7,7 +7,7 @@ import {
   welfareApi,
   type NewsListItem,
   type WelfarePolicy,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   Icon,
   SearchHighlightText,
@@ -18,7 +18,7 @@ import {
   SkeletonList,
   TextInput,
 } from "@/design-system/components";
-import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
+import { PurpleOverlayPage } from "@/design-system/templates";
 import {
   getBodySearchResults,
   normalizeSearchKeyword,
@@ -103,7 +103,7 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
   }, []);
 
   return (
-    <NewsRollPurpleOverlayPage
+    <PurpleOverlayPage
       ariaLabel="검색"
       closeLabel="검색 닫기"
       onClose={onClose}
@@ -179,6 +179,6 @@ export function SearchView<Article extends SearchArticle, Policy extends SearchP
             <p className="text_searchStatus">검색 결과가 없습니다.</p>
           )
         ) : null}
-    </NewsRollPurpleOverlayPage>
+    </PurpleOverlayPage>
   );
 }

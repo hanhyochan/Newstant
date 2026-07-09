@@ -1,0 +1,95 @@
+.appScope :global(.list_detailDefinition) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.list_detailDefinition div) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.text_myCommentCreatedDate) {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.divider_mySection),
+.appScope :global(.divider_listItem) {
+  margin: 0;
+  padding: 0;
+  height: var(--border-1);
+}.appScope :global(.my_summary_icon) {
+  width: 24px;
+  height: 24px;
+  display: block;
+  position: relative;
+}.appScope :global(.my_summary_bookmark::before) {
+  position: absolute;
+  inset: 3px 6px 2px;
+}.appScope :global(.my_summary_bookmark::after) {
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  bottom: 2px;
+  height: 9px;
+}.appScope :global(.my_summary_vote::before) {
+  position: absolute;
+  inset: 5px 5px 3px;
+}.appScope :global(.my_summary_vote::after) {
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  width: 11px;
+  height: 11px;
+}.appScope :global(.my_summary_comment::before) {
+  position: absolute;
+  inset: 4px 3px 6px;
+}.appScope :global(.my_summary_comment::after) {
+  position: absolute;
+  left: 7px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+}.appScope :global(.tab_myCategoryMenu) {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-gap-horizontal-8);
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.appScope :global(.tab_myCategoryMenu button),
+.appScope :global(.tab_myBlockedKeywordMenu .btn_tab) {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.appScope :global(.tab_myBlockedKeywordMenu) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.btn_myTimeRow) {
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+}

@@ -1,4 +1,4 @@
-import type { WelfarePolicy } from "@/shared/newsroll/api";
+﻿import type { WelfarePolicy } from "@/shared/newstant/api";
 
 type SortOrder = "popular" | "latest";
 

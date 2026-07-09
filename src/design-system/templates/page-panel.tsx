@@ -1,16 +1,16 @@
-﻿import type { ReactNode, Ref } from "react";
+import type { ReactNode, Ref } from "react";
 
-type NewsRollPagePanelProps = {
+type PagePanelProps = {
   ariaLabel: string;
   children: ReactNode;
   contentRef?: Ref<HTMLDivElement>;
 };
 
-export function NewsRollPagePanel({
+export function PagePanel({
   ariaLabel,
   children,
   contentRef,
-}: NewsRollPagePanelProps) {
+}: PagePanelProps) {
   return (
     <section className="container_newsFeed page_feed" aria-label={ariaLabel}>
       <article className="container_articleCard page_panel">

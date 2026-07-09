@@ -1,0 +1,59 @@
+.appScope :global(.list_notificationResults),
+.appScope :global(.sheetFrame.is_sheetDocked .all_breakingHeader) {
+  gap: var(--spacing-gap-vertical-16);
+}.appScope:global(.screen_all) {
+  padding-inline: 0;
+  justify-content: center;
+  align-items: flex-start;
+}.appScope:global(.screen_all .phone) {
+  overflow: visible;
+  width: min(100%, var(--app-max-width));
+  overflow-x: hidden;
+}.appScope:global(.screen_all .bottom_nav) {
+  z-index: 1000;
+  left: 50%;
+  width: 100vw;
+}.appScope :global(.all_panelContent) {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}.appScope :global(.all_panelContentFlush) {
+  gap: 0;
+}.appScope :global(.all_press_panel .text_sectionTitle),
+.appScope :global(.all_relay_panel .text_sectionTitle) {
+  padding-bottom: var(--spacing-gap-vertical-16);
+}.appScope :global(.all_itemDivider) {
+  width: 100%;
+  height: var(--app-divider-thickness);
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.all_latest_panel .all_panelContent),
+.appScope :global(.all_latest_panel .wrapper_panelContent) {
+  overflow: hidden;
+}.appScope :global(.all_press_panel) {
+  min-height: 765px;
+}.appScope :global(.all_relay_panel) {
+  min-height: 2011px;
+}.appScope :global(.all_latest_scroller.is_dragging) {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}.appScope :global(.btn_iconButton.btn_detailBack) {
+  width: var(--size-44);
+  height: var(--size-44);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  padding-right: 4px;
+}.appScope :global(.phone),
+.appScope:global(.screen_all .phone) {
+  overflow: hidden;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}

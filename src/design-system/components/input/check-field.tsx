@@ -18,6 +18,7 @@ type BaseCheckInputProps = Omit<
 
 type CheckInputWithTextProps = BaseCheckInputProps & {
   checked?: boolean;
+  className?: string;
   label: ReactNode;
   role?: CheckRole;
   size?: CheckSize;
@@ -27,6 +28,7 @@ type CheckInputWithTextProps = BaseCheckInputProps & {
 type CheckInputWithoutTextProps = BaseCheckInputProps & {
   ariaLabel: string;
   checked?: boolean;
+  className?: string;
   label?: never;
   role?: CheckRole;
   size?: CheckSize;
@@ -54,7 +56,7 @@ export function CheckInput(props: CheckInputProps) {
 
   return (
     <label
-      className="field_check"
+      className={["field_check", props.className].filter(Boolean).join(" ")}
       data-role={role}
       data-size={size}
       data-variant={variant}
@@ -80,6 +82,7 @@ export function CheckInput(props: CheckInputProps) {
 function getWithTextInputProps(props: CheckInputWithTextProps) {
   const {
     checked: _checked,
+    className: _className,
     id: _id,
     label: _label,
     role: _role,
@@ -95,6 +98,7 @@ function getWithoutTextInputProps(props: CheckInputWithoutTextProps) {
   const {
     ariaLabel: _ariaLabel,
     checked: _checked,
+    className: _className,
     id: _id,
     role: _role,
     size: _size,

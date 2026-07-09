@@ -7,8 +7,8 @@ import {
   useState,
 } from "react";
 
-import { welfareApi } from "@/shared/newsroll/api";
-import { getCurrentUserSnapshot } from "@/shared/newsroll/auth/current-user";
+import { welfareApi } from "@/shared/newstant/api";
+import { getCurrentUserSnapshot } from "@/shared/newstant/auth/current-user";
 import {
   ChipLabel,
   ContentSummaryButton,
@@ -17,15 +17,15 @@ import {
   PillTabMenu
 } from "@/design-system/components";
 import {
-  NewsRollCommonLayout,
-  NewsRollDetailBackButton,
-  NewsRollDockedControls,
-  NewsRollPagePanel,
-  NewsRollSummaryHeroTop,
-  newsrollPagePanelContentSelector as pagePanelContentSelector,
-  newsrollPagePanelDockedGap as pagePanelDockedGap,
-  newsrollPagePanelInitialGap as pagePanelInitialGap,
-  newsrollPagePanelInitialTop as pagePanelInitialTop,
+  CommonLayout,
+  DetailBackButton,
+  DockedControls,
+  PagePanel,
+  SummaryHeroTop,
+  pagePanelContentSelector as pagePanelContentSelector,
+  pagePanelDockedGap as pagePanelDockedGap,
+  pagePanelInitialGap as pagePanelInitialGap,
+  pagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
   useEnterFromRightExitMotion,
   useSwipeTabNavigation,
@@ -33,7 +33,7 @@ import {
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { SeparatedList } from "@/features/shared/SeparatedList";
-import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { DockedAlarmButton, NewsToolbar } from "@/features/shell/app-toolbar";
 import type { BodySearchSelection } from "@/features/search/model";
 import {
   formatHeroCount,
@@ -268,7 +268,7 @@ export function PolicyView({
   }, [isPolicySortOpen]);
 
   return (
-    <NewsRollCommonLayout
+    <CommonLayout
       aria-label="국가정책"
       className="sheetFrame policy_screen"
       dockedGap={pagePanelDockedGap}
@@ -280,14 +280,14 @@ export function PolicyView({
       sheetClassName="sheetFrameSheet container_homeSheet policy_sheet"
       sheetScrollSelector={pagePanelContentSelector}
       top={
-        <NewsRollSummaryHeroTop
+        <SummaryHeroTop
           controls={
-            <NewsRollDockedControls
+            <DockedControls
               className="motion_dockedPop allDockedControls panelHeaderRow"
               isDetailOpen={isPolicyDetailOpen}
             >
               {isPolicyDetailOpen ? (
-                <NewsRollDetailBackButton
+                <DetailBackButton
                   ariaLabel="국가정책 목록으로 돌아가기"
                   onClick={closePolicyDetail}
                 />
@@ -298,7 +298,7 @@ export function PolicyView({
                 isPressed={false}
                 onClick={onOpenBreakingNews}
               />
-            </NewsRollDockedControls>
+            </DockedControls>
           }
           toolbar={
             <NewsToolbar
@@ -319,7 +319,7 @@ export function PolicyView({
         />
       }
     >
-      <NewsRollPagePanel
+      <PagePanel
         ariaLabel="국가정책 콘텐츠 영역"
         contentRef={policyPanelContentRef}
         key={detailItem ? `policy-detail-${detailItem.id}` : "policy-list"}
@@ -399,7 +399,7 @@ export function PolicyView({
             </div>
           </div>
         )}
-      </NewsRollPagePanel>
-    </NewsRollCommonLayout>
+      </PagePanel>
+    </CommonLayout>
   );
 }

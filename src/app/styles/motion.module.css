@@ -1,0 +1,184 @@
+/* --------------------------------------------------------------------------
+ * Motion
+ * --------------------------------------------------------------------------
+ * Motion classes and keyframes are retained here so the
+ * motion system stays available without changing behavior.
+ */.appScope :global(.motion_enterUp) {
+    animation: enterUpKeyframes var(--sheet-docked-pop-motion-duration, 260ms)
+        var(--sheet-docked-pop-motion-easing, ease) both;
+    }.appScope :global(.motion_exitDown) {
+    pointer-events: none;
+    animation: exitDownKeyframes var(--sheet-docked-pop-motion-duration, 260ms)
+        var(--sheet-docked-pop-motion-easing, ease) both;
+    }.appScope :global(.motion_enterFromRight) {
+    animation: enterFromRightKeyframes var(--sheet-docked-pop-motion-duration, 260ms)
+        var(--sheet-docked-pop-motion-easing, ease) both;
+    will-change: opacity, transform;
+    }.appScope :global(.motion_enterFromRight.is_motionLeaving) {
+        pointer-events: none;
+        animation-name: exitToRightKeyframes;
+    }.appScope :global(.motion_tabSwipeFromRight),
+    .appScope :global(.motion_tabSwipeFromLeft) {
+        animation-duration: var(--sheet-docked-pop-motion-duration, 260ms);
+        animation-fill-mode: both;
+        animation-timing-function: var(--sheet-docked-pop-motion-easing, ease);
+        will-change: opacity, transform;
+    }.appScope :global(.motion_tabSwipeFromRight) {
+        --tab-swipe-offset: 24px;
+    }.appScope :global(.motion_tabSwipeFromLeft) {
+        --tab-swipe-offset: -24px;
+    }.appScope :global(.motion_tabSwipeFromRight.is_motionCycleA),
+    .appScope :global(.motion_tabSwipeFromLeft.is_motionCycleA) {
+        animation-name: tabSwipeEnterAKeyframes;
+    }.appScope :global(.motion_tabSwipeFromRight.is_motionCycleB),
+    .appScope :global(.motion_tabSwipeFromLeft.is_motionCycleB) {
+        animation-name: tabSwipeEnterBKeyframes;
+    }@keyframes enterUpKeyframes {
+        from {
+            opacity: 0;
+            transform: var(--motion-enter-up-base-transform, translateX(0)) translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: var(--motion-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+    }@keyframes exitDownKeyframes {
+        from {
+            opacity: 1;
+            transform: var(--motion-enter-up-base-transform, translateX(0)) translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: var(--motion-enter-up-base-transform, translateX(0)) translateY(16px);
+        }
+    }@keyframes enterFromRightKeyframes {
+        from {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }@keyframes exitToRightKeyframes {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+    }@keyframes tabSwipeEnterAKeyframes {
+        from {
+            opacity: 0;
+            transform: translateX(var(--tab-swipe-offset, 24px));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }@keyframes tabSwipeEnterBKeyframes {
+        from {
+            opacity: 0;
+            transform: translateX(var(--tab-swipe-offset, 24px));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }/* --------------------------------------------------------------------------
+ * Screen Overrides
+ * --------------------------------------------------------------------------
+ * These remain before common-layout/components so the
+ * new managed files can still provide the final shared overrides.
+ */.appScope :global(.form_commentComposer .btn_commentSubmit) {
+    color: var(--color-brand-purple-50);
+    background: transparent;
+    transform: translateY(-50%);
+}.appScope :global(.text_commentTotal),
+.appScope :global(.text_articleGuideTotal),
+.appScope :global(.text_mySettingsDescription),
+.appScope :global(.text_mySettingsDetailBody),
+.appScope :global(.text_mySettingsHistoryMeta),
+.appScope :global(.text_mySettingsStatus),
+.appScope :global(.wrapper_mySettingsHistoryText p),
+.appScope :global(.wrapper_contentDateGroup),
+.appScope :global(.wrapper_detailDateGroup),
+.appScope :global(.wrapper_commentGuideTabs h3) {
+    color: var(--color-cool-neutral-40);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-400);
+    line-height: var(--line-height-20);
+}.appScope :global(.divider_commentItem) {
+    border-top: var(--border-1) solid var(--color-cool-neutral-96);
+}.appScope :global(.text_commentEmpty),
+.appScope :global(.wrapper_commentItem > footer),
+.appScope :global(.wrapper_commentReplyItem footer) {
+    color: var(--color-cool-neutral-50);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}.appScope :global(.btn_moreAction[aria-expanded='true'] .icon_moreActionChevron) {
+    transform: rotate(225deg) translate(-1px, -1px);
+}.appScope :global(.btn_moreAction[aria-expanded='true'] .icon_moreAction) {
+    transform: rotate(270deg);
+}.appScope :global(.all_category_tabs button:not([aria-selected='true'])),
+.appScope :global(.policy_age_tabs button:not([aria-selected='true'])) {
+    color: var(--color-cool-neutral-15);
+    border: var(--border-1) solid var(--color-cool-neutral-96);
+    background: transparent;
+    font-weight: var(--font-weight-400);
+}.appScope :global(.btn_contentListItem),
+.appScope :global(.page_feed) {
+    background: transparent;
+}.appScope :global(.all_panel),
+.appScope :global(.wrapper_panelSurface_style) {
+    border-radius: var(--radius-20);
+    color: var(--color-cool-neutral-15);
+    background: var(--color-background-elevated-normal);
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+    border: var(--border-1) solid transparent;
+    border-radius: var(--radius-full);
+    color: inherit;
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+    cursor: pointer;
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']) {
+    border: 0;
+    color: var(--color-common-100);
+    background: var(--color-common-0);
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
+    border-color: var(--color-cool-neutral-96);
+    color: var(--color-cool-neutral-15);
+    background: var(--color-background-elevated-normal);
+}.appScope :global(.text_confirmDialogMessage) {
+    font-size: var(--font-size-16);
+}.appScope :global(.text_contentAccordionBody) {
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}.appScope :global(.all_category_tabs button),
+.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}.appScope :global(.all_category_tabs button:not([aria-selected='true'])),
+.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
+    border: var(--border-1) solid var(--app-divider-color);
+    background: transparent;
+}@media (prefers-reduced-motion: reduce) {
+    .appScope :global(.motion_enterUp),
+    .appScope :global(.motion_enterFromRight),
+    .appScope :global(.motion_tabSwipeFromLeft),
+    .appScope :global(.motion_tabSwipeFromRight) {
+        animation: none;
+    }
+}

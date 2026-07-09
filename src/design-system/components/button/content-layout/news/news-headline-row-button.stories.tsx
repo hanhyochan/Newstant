@@ -10,7 +10,7 @@ const meta: Meta<typeof NewsHeadlineRowButton> = {
   },
   args: {
     item: {
-      image: "/images/news-apartment.png",
+      image: "/images/Gemini_Generated_Image_nil3rwnil3rwnil3.webp",
       title: "정부, 생활밀착형 정책 뉴스 브리핑 진행",
     },
   },
@@ -26,7 +26,7 @@ export const Playground: Story = {
       <NewsHeadlineRowButton
         item={
           args.item ?? {
-            image: "/images/news-apartment.png",
+            image: "/images/Gemini_Generated_Image_qy1qu1qy1qu1qy1q.webp",
             title: "정부, 생활밀착형 정책 뉴스 브리핑 진행",
           }
         }
@@ -41,7 +41,7 @@ export const List: Story = {
     <div className="ds_stack" style={{ width: 420 }}>
       {["정책 뉴스", "오늘의 헤드라인", "지역 이슈"].map((title) => (
         <NewsHeadlineRowButton
-          item={{ image: "/images/news-apartment.png", title }}
+          item={{ image: "/images/Gemini_Generated_Image_7j3t0x7j3t0x7j3t.webp", title }}
           key={title}
           onClick={() => undefined}
         />

@@ -5,24 +5,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   notificationApi,
   type AppNotification,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   getCurrentUserSnapshot,
   hydrateCurrentUserSession,
-} from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/auth/current-user";
 import {
   NoticeCardLink,
   NoticeCardSkeleton,
   SkeletonList,
 } from "@/design-system/components";
-import { NewsRollPurpleOverlayPage } from "@/design-system/templates";
+import { PurpleOverlayPage } from "@/design-system/templates";
 
 type NotificationViewProps = {
   onClose: () => void;
   onSelectNotification: (notification: AppNotification) => void;
 };
 
-const notificationsUpdatedEventName = "newsroll:notifications-updated";
+const notificationsUpdatedEventName = "app:notifications-updated";
 const notificationPollingIntervalMs = 5000;
 
 function sortNotificationsByLatest(notifications: AppNotification[]) {
@@ -124,7 +124,7 @@ export function NotificationView({
   }
 
   return (
-    <NewsRollPurpleOverlayPage
+    <PurpleOverlayPage
       ariaLabel="알림"
       closeLabel="알림 닫기"
       onClose={closeNotifications}
@@ -157,6 +157,6 @@ export function NotificationView({
       ) : (
         <p className="text_searchStatus">도착한 알림이 없습니다.</p>
       )}
-    </NewsRollPurpleOverlayPage>
+    </PurpleOverlayPage>
   );
 }

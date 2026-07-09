@@ -13,8 +13,8 @@ import {
   newsApi,
   userContentActionApi,
   type UserContentAction,
-} from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
 import {
   ActionMenu,
   ChipLabel,
@@ -30,12 +30,12 @@ import {
   useActionMenuDismiss,
 } from "@/design-system/components";
 import {
-  newsrollArticleCardSelector,
-  newsrollArticleContentScrollerSelector,
-  newsrollCommentScrollDelayMs as commentScrollDelayMs,
-  newsrollCommentScrollRootSelectors,
-  newsrollDetailRevealDelayMs as nextArticleRevealDelayMs,
-  newsrollNewsFeedSelector,
+  articleCardSelector,
+  articleContentScrollerSelector,
+  commentScrollDelayMs as commentScrollDelayMs,
+  commentScrollRootSelectors,
+  detailRevealDelayMs as nextArticleRevealDelayMs,
+  newsFeedSelector,
   useInlineTextEdit,
 } from "@/design-system/templates";
 import { useCommentThread } from "@/features/comments/hooks/use-comment-thread";
@@ -162,7 +162,7 @@ export function CommentReactionPanel({
       ? `${newsId ?? ""}:${initialCommentTargetId}`
       : null;
   const commentListStyle = {
-    "--newsroll-comment-composer-height": isComposerVisible
+    "--comment-composer-height": isComposerVisible
       ? `${composerHeight}px`
       : "0px",
   } as CSSProperties;
@@ -226,7 +226,7 @@ export function CommentReactionPanel({
       return null;
     }
 
-    const candidates = newsrollCommentScrollRootSelectors.map((selector) =>
+    const candidates = commentScrollRootSelectors.map((selector) =>
       panel.closest(selector),
     );
 
@@ -293,9 +293,9 @@ export function CommentReactionPanel({
       return;
     }
 
-    const scrollRoot = panel.closest(newsrollArticleContentScrollerSelector);
-    const card = scrollRoot?.closest(newsrollArticleCardSelector);
-    const feedScroller = card?.closest(newsrollNewsFeedSelector);
+    const scrollRoot = panel.closest(articleContentScrollerSelector);
+    const card = scrollRoot?.closest(articleCardSelector);
+    const feedScroller = card?.closest(newsFeedSelector);
     const updateComposerVisibility = () => {
       if (!(scrollRoot instanceof HTMLElement)) {
         setIsComposerVisible(false);
@@ -533,7 +533,7 @@ export function CommentReactionPanel({
 
     if (!replyComposerHistoryRef.current) {
       window.history.pushState(
-        { newsrollReplyComposer: true },
+        { replyComposer: true },
         "",
         window.location.href,
       );

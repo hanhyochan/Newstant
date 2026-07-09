@@ -11,7 +11,7 @@ const meta: Meta<typeof NewsListCardButton> = {
   args: {
     featured: false,
     item: {
-      image: "/images/news-apartment.png",
+      image: "/images/Gemini_Generated_Image_2vvqys2vvqys2vvq.webp",
       title: "맞춤 뉴스 리스트 카드 제목입니다",
     },
   },
@@ -30,7 +30,7 @@ export const Playground: Story = {
       featured={args.featured}
       item={
         args.item ?? {
-          image: "/images/news-apartment.png",
+          image: "/images/Gemini_Generated_Image_96baaj96baaj96ba.webp",
           title: "맞춤 뉴스 리스트 카드 제목입니다",
         }
       }
@@ -43,12 +43,12 @@ export const FeaturedOptions: Story = {
   render: () => (
     <div className="ds_stack" style={{ width: 360 }}>
       <NewsListCardButton
-        item={{ image: "/images/news-apartment.png", title: "일반 리스트 카드" }}
+        item={{ image: "/images/Gemini_Generated_Image_f51g65f51g65f51g.webp", title: "일반 리스트 카드" }}
         onClick={() => undefined}
       />
       <NewsListCardButton
         featured
-        item={{ image: "/images/news-apartment.png", title: "강조 리스트 카드" }}
+        item={{ image: "/images/Gemini_Generated_Image_le942ile942ile94.webp", title: "강조 리스트 카드" }}
         onClick={() => undefined}
       />
     </div>

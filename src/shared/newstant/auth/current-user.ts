@@ -1,7 +1,7 @@
 ﻿import { mockCurrentUserId } from "../mock-current-user";
 
-const currentUserStorageKey = "newsroll.currentUser";
-const hamsterResetLogoutKey = "newsroll.hamsterResetLogout.20260625.initialStateReset";
+const currentUserStorageKey = "newstant.currentUser";
+const hamsterResetLogoutKey = "newstant.hamsterResetLogout.20260625.initialStateReset";
 const hamsterResetUserId = "user-5da62014-46f6-453f-8e3c-47bb64bdc700";
 export const guestUserId = "guest-user";
 

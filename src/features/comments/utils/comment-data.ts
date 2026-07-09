@@ -1,8 +1,8 @@
-import type { Comment } from "@/shared/newsroll/api";
+﻿import type { Comment } from "@/shared/newstant/api";
 import {
   currentUserId,
   getCurrentUserDisplayName,
-} from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/auth/current-user";
 
 export type CommentId = string;
 export type CommentReactionValue = "like" | "dislike";

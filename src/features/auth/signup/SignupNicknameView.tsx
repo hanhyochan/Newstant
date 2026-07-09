@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 
 import { PrimaryButton, PrimaryButtonGroup, TextInput } from "@/design-system/components";
-import { signupNicknameSchema } from "@/shared/newsroll/auth-validation";
-import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+import { signupNicknameSchema } from "@/shared/newstant/auth-validation";
+import { useZodFieldValidation } from "@/shared/newstant/use-zod-field-validation";
 import { reservedSignupNicknames } from "@/features/auth/signup-profile-model";
 import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
 import { AuthLayout } from "@/features/auth/components/AuthLayout";

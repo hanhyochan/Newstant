@@ -1,4 +1,4 @@
-export type SignupAgreementKey = "age" | "terms" | "privacy" | "marketing";
+﻿export type SignupAgreementKey = "age" | "terms" | "privacy" | "marketing";
 
 export const signupAgreementItems: Array<{
   id: SignupAgreementKey;
@@ -45,7 +45,7 @@ export const signupAgreementDetails: Record<
       {
         heading: "확인 사항",
         body: [
-          "NewsRoll은 별도의 법정대리인 동의 절차를 제공하기 전까지 만 14세 이상 이용자를 대상으로 회원가입을 진행합니다.",
+          "Newstant은 별도의 법정대리인 동의 절차를 제공하기 전까지 만 14세 이상 이용자를 대상으로 회원가입을 진행합니다.",
           "만 14세 미만 아동의 개인정보를 수집·이용하려면 법정대리인에게 필요한 사항을 알리고 동의를 받아야 합니다.",
           "가입자는 본인이 만 14세 이상임을 확인하며, 사실과 다른 정보로 가입한 경우 서비스 이용이 제한될 수 있습니다.",
         ],
@@ -59,7 +59,7 @@ export const signupAgreementDetails: Record<
       {
         heading: "목적",
         body: [
-          "이 약관은 NewsRoll이 제공하는 뉴스 탐색, 맞춤 추천, 댓글, 투표, 알림 등 서비스의 이용 조건과 절차를 정합니다.",
+          "이 약관은 Newstant이 제공하는 뉴스 탐색, 맞춤 추천, 댓글, 투표, 알림 등 서비스의 이용 조건과 절차를 정합니다.",
           "회원은 이 약관에 동의한 뒤 서비스를 이용할 수 있으며, 서비스 이용 과정에서 관련 법령과 운영 정책을 준수해야 합니다.",
         ],
       },
@@ -73,7 +73,7 @@ export const signupAgreementDetails: Record<
       {
         heading: "서비스 변경",
         body: [
-          "NewsRoll은 서비스 안정성, 운영상 필요, 법령 변경 등에 따라 기능의 일부를 변경하거나 중단할 수 있습니다.",
+          "Newstant은 서비스 안정성, 운영상 필요, 법령 변경 등에 따라 기능의 일부를 변경하거나 중단할 수 있습니다.",
           "중요한 변경 사항은 서비스 화면 또는 공지사항을 통해 안내합니다.",
         ],
       },
@@ -112,7 +112,7 @@ export const signupAgreementDetails: Record<
       {
         heading: "수신 목적 및 내용",
         body: [
-          "NewsRoll은 이벤트, 서비스 업데이트, 맞춤 혜택, 프로모션 안내 등 광고성 정보를 이메일 또는 카카오톡 등으로 전송할 수 있습니다.",
+          "Newstant은 이벤트, 서비스 업데이트, 맞춤 혜택, 프로모션 안내 등 광고성 정보를 이메일 또는 카카오톡 등으로 전송할 수 있습니다.",
           "광고성 정보는 이용자의 명시적 동의가 있는 경우에만 전송하며, 서비스 이용에 필수적인 고지와는 구분됩니다.",
         ],
       },

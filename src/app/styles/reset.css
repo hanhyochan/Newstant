@@ -12,7 +12,7 @@ html {
   min-height: 100%;
   font-size: var(--font-size-16);
   -webkit-text-size-adjust: 100%;
-  background: var(--color-newsroll-purple-20);
+  background: var(--color-brand-purple-20);
 }
 
 body {

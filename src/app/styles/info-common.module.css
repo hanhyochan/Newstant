@@ -1,0 +1,236 @@
+.appScope :global(.info_screen) {
+  min-height: 100dvh;
+  padding-bottom: var(--spacing-padding-vertical-60);
+}.appScope :global(.info_sheet) {
+  min-height: calc(100dvh - 145px);
+  padding: var(--spacing-padding-vertical-32)
+    var(--spacing-padding-horizontal-16)
+    calc(
+      var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+    );
+}.appScope :global(.container_myBookmarkPage > .tab_myCategoryMenu),
+.appScope :global(.container_myVotePage > .tab_myCategoryMenu),
+.appScope :global(.container_myCommentPage > .tab_myCategoryMenu),
+.appScope :global(.wrapper_myTabbedDetailContent > .tab_myCategoryMenu) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-height: calc(var(--size-52) + var(--spacing-padding-vertical-24));
+  padding-top: 0;
+  padding-bottom: var(--spacing-padding-vertical-24);
+  overflow-y: visible;
+}.appScope :global(.divider_infoSection),
+.appScope :global(.divider_listItem) {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+}.appScope :global(.btn_noticeListItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.text_contentAccordionBody) {
+  padding-inline-start: var(--spacing-padding-horizontal-24);
+}.appScope :global(.wrapper_contentAccordionBodyMotion) {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    opacity var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    transform var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--sheet-docked-pop-motion-duration, 260ms);
+}.appScope :global(.container_contentAccordion[data-state="open"] .wrapper_contentAccordionBodyMotion) {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    grid-template-rows var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    opacity var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    transform var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}.appScope :global(.wrapper_contentAccordionBodyInner) {
+  min-height: 0;
+  overflow: hidden;
+}.appScope :global(.headerTop .toolbar) {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-8);
+}.appScope :global(.headerTop .text_size_button) {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.appScope :global(.headerTop .toolbar [aria-label="메뉴"]) {
+  position: relative;
+}.appScope :global(.headerTop .toolbar [aria-label="메뉴"]::before) {
+  position: absolute;
+  top: 7px;
+  left: -6px;
+  width: 5px;
+  height: 5px;
+}.appScope :global(.common_layout),
+.appScope :global(.common_top),
+.appScope :global(.common_sheet) {
+  min-width: 0;
+}.appScope :global(.sheetFrame) {
+  height: 100dvh;
+  min-height: 100dvh;
+  position: relative;
+  gap: 0;
+  overflow: hidden;
+}.appScope :global(.sheetFrameTop) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 0;
+}.appScope :global(.sheetFrameSheet) {
+  position: absolute;
+  top: var(--sheet-common-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.appScope :global(.sheetFrame.is_sheetDocked .sheetFrameSheet) {
+  bottom: var(--shell-bottom-nav-clearance);
+}.appScope :global(.headerTop) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.all_breakingHeader) {
+  width: 100%;
+}.appScope :global(.all_breakingBody) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.all_breakingHeader .all_breaking_stack) {
+  gap: var(--spacing-gap-vertical-4);
+  padding-top: 0;
+}.appScope :global(.all_breaking_extraInner) {
+  display: grid;
+  min-height: 0;
+  gap: var(--spacing-gap-vertical-4);
+  overflow: hidden;
+}.appScope :global(.all_breakingBody[data-expanded="true"] .all_breaking_extra),
+.appScope :global(.wrapper_commentReplies.is_open) {
+  grid-template-rows: 1fr;
+}.appScope :global(.all_breakingHeader .btn_moreAction),
+.appScope :global(.all_press_panel .btn_moreAction) {
+  min-height: 48px;
+}.appScope :global(.all_sheetFrameSheet) {
+  overflow-y: hidden;
+}.appScope :global(.sheetFrame.is_sheetDocked .all_feed .all_panel),
+.appScope :global(.sheetFrame.is_sheetDocked .all_feed .all_panel) {
+  position: relative;
+  top: 0;
+  flex: 0 0 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scroll-margin-top: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.appScope :global(.sheetFrame.is_sheetDocked .all_panelContent) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.appScope :global(.sheetFrame.is_sheetDocked .all_feed .all_latest_panel),
+.appScope :global(.sheetFrame.is_sheetDocked .all_feed .all_latest_panel) {
+  align-self: stretch;
+  flex: 0 0 auto;
+  height: var(--all-latest-panel-height);
+  max-height: var(--all-latest-panel-height);
+}.appScope :global(.sheetFrame.is_sheetDocked .all_latest_scroller) {
+  touch-action: pan-x;
+}.appScope :global(.icon_moreAction) {
+  width: var(--app-chevron-size);
+  height: var(--app-chevron-size);
+  flex: 0 0 var(--app-chevron-size);
+}.appScope :global(.article_meta) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  margin: 0;
+}.appScope :global(.sheetFrame .allDockedControls),
+.appScope :global(.sheetFrame.is_sheetDocked .all_breaking_label),
+.appScope :global(.sheetFrame.is_sheetDocked .all_breakingBody) {
+  display: none;
+}.appScope :global(.sheetFrame.is_sheetDocked .allDockedControls) {
+  width: 100%;
+  max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  display: flex;
+  justify-content: flex-end;
+}.appScope :global(.sheetFrame.is_sheetDocked .panelHeaderRow) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}.appScope :global(.sheetFrame.is_sheetDocked .allDockedControls.is_detailOpen),
+.appScope :global(.sheetFrame.is_sheetDocked .allDockedControls.is_detailOpen) {
+  justify-content: space-between;
+}.appScope :global(.sheetFrame.is_sheetDocked .homeDockedAlarm),
+.appScope :global(.container_homeScreen .container_hero .homeDockedAlarm),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedAlarm) {
+  display: inline-flex;
+}.appScope :global(.btn_newsViewOption) {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.appScope :global(.bottom_nav),
+.appScope:global(.screen_all .bottom_nav) {
+  left: 50%;
+  width: 100vw;
+  height: var(--spacing-padding-vertical-60);
+  gap: 0;
+  padding-inline: 0;
+}

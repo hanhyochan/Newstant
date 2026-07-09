@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { IconButton } from "../components/button/icon-button";
 
-type NewsRollArticleDetailPanelProps = {
+type ArticleDetailPanelProps = {
   ariaLabel: string;
   backLabel?: string;
   children: ReactNode;
@@ -11,14 +11,14 @@ type NewsRollArticleDetailPanelProps = {
   onBack?: () => void;
 };
 
-export function NewsRollArticleDetailPanel({
+export function ArticleDetailPanel({
   ariaLabel,
   backLabel,
   children,
   className,
   labelledBy,
   onBack,
-}: NewsRollArticleDetailPanelProps) {
+}: ArticleDetailPanelProps) {
   const articleClassName = `container_articleCard${className ? ` ${className}` : ""}`;
 
   return (

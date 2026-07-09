@@ -1,12 +1,12 @@
-﻿export { NewsRollCommonLayout } from "./common-layout";
-export { NewsRollArticleDetailPanel } from "./article-detail-panel";
-export { NewsRollDockedControls } from "./docked-controls";
-export { NewsRollDetailBackButton } from "./detail-back-button";
-export { NewsRollHeaderTop } from "./header-top";
-export { NewsRollPagePanel } from "./page-panel";
-export { NewsRollPurpleOverlayPage } from "./purple-overlay-page";
-export { NewsRollSummaryHero, NewsRollSummaryHeroTop } from "./summary-hero";
-export { NewsRollTopFrame } from "./top-frame";
+export { CommonLayout } from "./common-layout";
+export { ArticleDetailPanel } from "./article-detail-panel";
+export { DockedControls } from "./docked-controls";
+export { DetailBackButton } from "./detail-back-button";
+export { HeaderTop } from "./header-top";
+export { PagePanel } from "./page-panel";
+export { PurpleOverlayPage } from "./purple-overlay-page";
+export { SummaryHero, SummaryHeroTop } from "./summary-hero";
+export { TopFrame } from "./top-frame";
 export {
   getEnterFromRightMotionClassName,
   hasActiveEnterFromRightMotion,
@@ -14,22 +14,22 @@ export {
   useEnterFromRightExitMotion,
 } from "./motion/enter-from-right";
 export {
-  newsrollArticleCardSelector,
-  newsrollArticleContentScrollerSelector,
-  newsrollCommentScrollDelayMs,
-  newsrollCommentScrollRootSelectors,
-  newsrollDetailExitMotionEventName,
-  newsrollDetailRevealDelayMs,
-  newsrollHomeDockedScrollSelectors,
-  newsrollHomeSheetDockedGap,
-  newsrollHomeSheetInitialGap,
-  newsrollHomeSheetScrollSelector,
-  newsrollNewsFeedDetailSelector,
-  newsrollNewsFeedSelector,
-  newsrollPagePanelContentSelector,
-  newsrollPagePanelDockedGap,
-  newsrollPagePanelInitialGap,
-  newsrollPagePanelInitialTop,
+  articleCardSelector,
+  articleContentScrollerSelector,
+  commentScrollDelayMs,
+  commentScrollRootSelectors,
+  detailExitMotionEventName,
+  detailRevealDelayMs,
+  homeDockedScrollSelectors,
+  homeSheetDockedGap,
+  homeSheetInitialGap,
+  homeSheetScrollSelector,
+  newsFeedDetailSelector,
+  newsFeedSelector,
+  pagePanelContentSelector,
+  pagePanelDockedGap,
+  pagePanelInitialGap,
+  pagePanelInitialTop,
 } from "./scroll/constants";
 export {
   useDetailScrollRestore,

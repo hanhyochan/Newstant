@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 
 import {
   newsApi,
   type ArticleReactionType,
-} from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
 
 export type ArticleReaction = ArticleReactionType | null;
 export type ArticleReactionCounts = Record<ArticleReactionType, number>;

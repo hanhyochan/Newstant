@@ -126,13 +126,13 @@ export function MyBookmarkDetailPage({
     >
       <h2 className="text_mySectionTitle">북마크</h2>
       <div
-        className="wrapper_myTabbedDetailContent wrapper_panelContent u_gap24"
+        className="wrapper_myTabbedDetailContent wrapper_panelContent u_gap24 all_panelContentFlush"
         {...bookmarkTypeSwipeHandlers}
       >
-        <div className="wrapper_myBookmarkTabStack wrapper_stickyHeader wrapper_stickyHeader_style">
+        <div className="all_tabSticky wrapper_myBookmarkTabStack wrapper_stickyHeader wrapper_stickyHeader_style all_category_tabSticky">
           <PillTabMenu
             ariaLabel="북마크 유형"
-            className="tab_myCategoryMenu wrapper_tabScroller"
+            className="all_category_tabs wrapper_tabScroller"
             items={bookmarkTypeTabs}
             onChange={onTypeChange}
             value={activeType}
@@ -140,7 +140,7 @@ export function MyBookmarkDetailPage({
           {activeType === "news" && showNewsCategoryTabs ? (
             <PillTabMenu
               ariaLabel="북마크 뉴스 카테고리"
-              className="tab_myCategoryMenu wrapper_tabScroller"
+              className="all_category_tabs wrapper_tabScroller"
               items={newsCategoryTabs.map((category) => ({
                 id: category,
                 label: category,
@@ -152,7 +152,7 @@ export function MyBookmarkDetailPage({
           {activeType === "policy" && showPolicyAgeTabs ? (
             <PillTabMenu
               ariaLabel="북마크 국가정책 연령층"
-              className="tab_myCategoryMenu wrapper_tabScroller"
+              className="all_category_tabs wrapper_tabScroller"
               items={policyAgeTabs.map((ageLabel) => ({
                 id: ageLabel,
                 label: ageLabel,
@@ -163,7 +163,7 @@ export function MyBookmarkDetailPage({
           ) : null}
         </div>
         <div
-          className={`wrapper_myBookmarkList wrapper_scrollList ${bookmarkTypeSwipeMotionClassName}`.trim()}
+          className={`wrapper_allTabPanelBody wrapper_myBookmarkList wrapper_scrollList ${bookmarkTypeSwipeMotionClassName}`.trim()}
         >
           {visibleBookmarkItems.length === 0 ? (
             <DataUnavailableMessage target="북마크" />

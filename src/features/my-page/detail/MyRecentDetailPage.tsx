@@ -115,6 +115,7 @@ export function MyRecentDetailPage({
   const selectAllControl = (
     <CheckInput
       checked={isAllSelected}
+      className="u_pb24"
       role="selectAll"
       size="lg"
       disabled={selectableViewIds.length === 0 || isDeleting}

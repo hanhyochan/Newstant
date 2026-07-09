@@ -11,13 +11,13 @@ import {
 import {
   newsApi,
   userApi,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   currentUserId
-} from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/auth/current-user";
 import type {
   UserPreference
-} from "@/shared/newsroll/api/types";
+} from "@/shared/newstant/api/types";
 import {
   NewsBlockCardButton,
   NewsBlockCardSkeleton,
@@ -30,7 +30,7 @@ import {
 
 import { ArticleDetailContent, HomeReelCard } from "@/features/news/article/HomeReelCard";
 import { HomeShell } from "@/features/news/home/HomeShell";
-import { NewsRollStateCard } from "@/features/news/article/NewsRollStateCard";
+import { StateCard } from "@/features/news/article/StateCard";
 import {
   defaultNewsDateTime,
   filterArticlesByBlockedKeywords,
@@ -301,9 +301,9 @@ export function HomeView({
           {isHomeLoading ? (
             <NewsReelCardSkeleton />
           ) : newsError ? (
-            <NewsRollStateCard role="alert">
+            <StateCard role="alert">
               <p className="text_commentEmpty">{newsError}</p>
-            </NewsRollStateCard>
+            </StateCard>
           ) : hasArticles ? (
             visibleArticles.map((article, index) => {
               const commentPanelKey = getCommentPanelKey(article, index);
@@ -322,9 +322,9 @@ export function HomeView({
               );
             })
           ) : (
-            <NewsRollStateCard>
+            <StateCard>
               <p className="text_commentEmpty">표시할 뉴스가 없습니다.</p>
-            </NewsRollStateCard>
+            </StateCard>
           )}
         </section>
       ) : (
@@ -341,9 +341,9 @@ export function HomeView({
                 renderItem={() => <NewsBlockCardSkeleton />}
               />
             ) : newsError ? (
-              <NewsRollStateCard role="alert">
+              <StateCard role="alert">
                 <p className="text_commentEmpty">{newsError}</p>
-              </NewsRollStateCard>
+              </StateCard>
             ) : hasArticles ? (
               visibleArticles.map((article) => (
                 <NewsBlockCardButton
@@ -358,9 +358,9 @@ export function HomeView({
                 />
               ))
             ) : (
-              <NewsRollStateCard>
+              <StateCard>
                 <p className="text_commentEmpty">표시할 뉴스가 없습니다.</p>
-              </NewsRollStateCard>
+              </StateCard>
             )}
           </div>
         </section>

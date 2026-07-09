@@ -11,9 +11,9 @@ import {
   type TouchEvent,
 } from "react";
 
-import { newsApi, userApi } from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
-import type { UserPreference } from "@/shared/newsroll/api/types";
+import { newsApi, userApi } from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
+import type { UserPreference } from "@/shared/newstant/api/types";
 import {
   NoticeCardLink,
   Icon,
@@ -28,16 +28,16 @@ import {
   SkeletonList,
 } from "@/design-system/components";
 import {
-  NewsRollCommonLayout,
-  NewsRollDetailBackButton,
-  NewsRollDockedControls,
-  NewsRollHeaderTop,
-  newsrollHomeDockedScrollSelectors as homeDockedScrollSelectors,
-  newsrollNewsFeedDetailSelector,
-  newsrollDetailRevealDelayMs as nextArticleRevealDelayMs,
-  newsrollPagePanelDockedGap as pagePanelDockedGap,
-  newsrollPagePanelInitialGap as pagePanelInitialGap,
-  newsrollPagePanelInitialTop as pagePanelInitialTop,
+  CommonLayout,
+  DetailBackButton,
+  DockedControls,
+  HeaderTop,
+  homeDockedScrollSelectors as homeDockedScrollSelectors,
+  newsFeedDetailSelector,
+  detailRevealDelayMs as nextArticleRevealDelayMs,
+  pagePanelDockedGap as pagePanelDockedGap,
+  pagePanelInitialGap as pagePanelInitialGap,
+  pagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
   useDockedPanelScroll,
   useEnterFromRightExitMotion,
@@ -46,7 +46,7 @@ import {
 import {
   DockedAlarmButton,
   NewsToolbar,
-} from "@/features/shell/NewsRollToolbar";
+} from "@/features/shell/app-toolbar";
 import { DataUnavailableMessage } from "@/features/shared/DataUnavailableMessage";
 import { MoreActionButton } from "@/features/shared/MoreActionButton";
 import { SeparatedList } from "@/features/shared/SeparatedList";
@@ -134,7 +134,7 @@ export function AllNewsView({
   const dockedPanelScroll = useDockedPanelScroll({
     boundaryDelayMs: nextArticleRevealDelayMs,
     contentScrollerSelector: allNewsDockedScrollSelectors.contentScroller,
-    dockedClassName: "is_newsrollSheetDocked",
+    dockedClassName: "is_sheetDocked",
     immediatePanelSelector: allNewsDockedScrollSelectors.immediatePanel,
     panelSelector: allNewsDockedScrollSelectors.panel,
     rootRef: screenRef,
@@ -521,7 +521,7 @@ export function AllNewsView({
   const closeAllNewsDetail = allNewsDetailExitMotion.closeWithMotion;
 
   return (
-    <NewsRollCommonLayout
+    <CommonLayout
       aria-label="전체 뉴스"
       className={`sheetFrame ${entryMotionClassName}`.trim()}
       dockedGap={pagePanelDockedGap}
@@ -543,22 +543,22 @@ export function AllNewsView({
           : allNewsDockedScrollSelectors.contentScroller
       }
       sheetScrollSelector={
-        isDetailOpen ? newsrollNewsFeedDetailSelector : ".all_feed"
+        isDetailOpen ? newsFeedDetailSelector : ".all_feed"
       }
       top={
-        <NewsRollHeaderTop>
+        <HeaderTop>
           <NewsToolbar
             isTextLarge={isTextLarge}
             onOpenNotifications={onOpenNotifications}
             onOpenSearch={onOpenSearch}
             onToggleTextSize={onToggleTextSize}
           />
-          <NewsRollDockedControls
+          <DockedControls
             className="motion_dockedPop allDockedControls panelHeaderRow"
             isDetailOpen={isDetailOpen}
           >
             {isDetailOpen ? (
-              <NewsRollDetailBackButton
+              <DetailBackButton
                 ariaLabel="전체 뉴스 목록으로 돌아가기"
                 onClick={closeAllNewsDetail}
               />
@@ -570,7 +570,7 @@ export function AllNewsView({
               aria-pressed={false}
               onClick={showBreakingNewsList}
             />
-          </NewsRollDockedControls>
+          </DockedControls>
           <div className="all_breaking_label">
             <Icon name="policy" />
             <span>속보</span>
@@ -607,7 +607,7 @@ export function AllNewsView({
               tone="dark"
             />
           </div>
-        </NewsRollHeaderTop>
+        </HeaderTop>
       }
     >
       {detailArticle ? (
@@ -823,6 +823,6 @@ export function AllNewsView({
           </AllNewsSectionPanel>
         </section>
       )}
-    </NewsRollCommonLayout>
+    </CommonLayout>
   );
 }

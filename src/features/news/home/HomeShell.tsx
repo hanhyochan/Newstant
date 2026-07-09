@@ -10,16 +10,16 @@ import {
 
 import { NoticeCardLink, NewsViewToggle } from "@/design-system/components";
 import {
-  NewsRollCommonLayout,
-  NewsRollDetailBackButton,
-  NewsRollDockedControls,
-  NewsRollSummaryHeroTop,
-  newsrollDetailRevealDelayMs as nextArticleRevealDelayMs,
-  newsrollHomeDockedScrollSelectors as homeDockedScrollSelectors,
-  newsrollHomeSheetDockedGap as homeSheetDockedGap,
-  newsrollHomeSheetInitialGap as homeSheetInitialGap,
-  newsrollHomeSheetScrollSelector as homeSheetScrollSelector,
-  newsrollPagePanelInitialTop as pagePanelInitialTop,
+  CommonLayout,
+  DetailBackButton,
+  DockedControls,
+  SummaryHeroTop,
+  detailRevealDelayMs as nextArticleRevealDelayMs,
+  homeDockedScrollSelectors as homeDockedScrollSelectors,
+  homeSheetDockedGap as homeSheetDockedGap,
+  homeSheetInitialGap as homeSheetInitialGap,
+  homeSheetScrollSelector as homeSheetScrollSelector,
+  pagePanelInitialTop as pagePanelInitialTop,
   useDockedPanelScroll,
 } from "@/design-system/templates";
 import {
@@ -28,8 +28,8 @@ import {
   type HomeArticle,
   type HomeViewMode,
 } from "@/features/news/model";
-import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
-import { getCurrentUserSnapshot } from "@/shared/newsroll/auth/current-user";
+import { DockedAlarmButton, NewsToolbar } from "@/features/shell/app-toolbar";
+import { getCurrentUserSnapshot } from "@/shared/newstant/auth/current-user";
 
 type HomeHeaderControls = {
   breakingItem?: BreakingNewsItem | null;
@@ -71,7 +71,7 @@ function HomeMainHeader({
   const currentUser = getCurrentUserSnapshot();
 
   return (
-      <NewsRollSummaryHeroTop
+      <SummaryHeroTop
         footer={
           <div className="wrapper_breakingNews">
             <NoticeCardLink
@@ -105,12 +105,12 @@ function HomeMainHeader({
           ariaLabel: "홈 요약",
           caption: "새로운 소식이 있습니다.",
           controls: (
-            <NewsRollDockedControls
+            <DockedControls
               className={`motion_dockedPop homeDockedMotion ${dockedControlsMotionClassName}`.trim()}
               isDetailOpen={isDetailOpen}
             >
               {isDetailOpen ? (
-                <NewsRollDetailBackButton
+                <DetailBackButton
                   ariaLabel="블록형 뉴스 목록으로 돌아가기"
                   onClick={onCloseDetail}
                 />
@@ -122,7 +122,7 @@ function HomeMainHeader({
                 aria-pressed={false}
                 onClick={onOpenBreakingNews}
               />
-            </NewsRollDockedControls>
+            </DockedControls>
           ),
           count: formatHeroCount(newsCount),
           greeting: (
@@ -234,7 +234,7 @@ export function HomeShell({
   }, [children, mode]);
 
   return (
-    <NewsRollCommonLayout
+    <CommonLayout
       aria-label="메인 뉴스"
       className="container_homeScreen"
       dockedClassName="is_homeSheetDocked"
@@ -274,6 +274,6 @@ export function HomeShell({
       }
     >
       {children}
-    </NewsRollCommonLayout>
+    </CommonLayout>
   );
 }

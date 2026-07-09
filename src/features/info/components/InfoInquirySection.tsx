@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 import {
   inquiryApi,
   type InquiryType,
-} from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
+} from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
 import {
   PrimaryButton,
   PrimaryButtonGroup,

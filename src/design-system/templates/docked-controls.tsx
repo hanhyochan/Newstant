@@ -2,17 +2,17 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/design-system/utils/cn";
 
-type NewsRollDockedControlsProps = {
+type DockedControlsProps = {
   children: ReactNode;
   className?: string;
   isDetailOpen?: boolean;
 };
 
-export function NewsRollDockedControls({
+export function DockedControls({
   children,
   className,
   isDetailOpen = false,
-}: NewsRollDockedControlsProps) {
+}: DockedControlsProps) {
   return (
     <div
       className={cn(

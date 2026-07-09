@@ -1,0 +1,923 @@
+/* From src/app/styles/the layout section
+ *//* --------------------------------------------------------------------------
+ * Common Layout
+ * --------------------------------------------------------------------------
+ * Structural layout primitives only.
+ * Keep visual styling such as color, background, border, radius, and shadow in
+ * the appearance section unless the style belongs to a reusable component.
+ *//* Content metadata: title, date, summary, image, or supporting meta text. *//* Form field stack: label + input/select/textarea + validation message. *//* Between row: left information with right-side action or metadata. */.appScope :global(.wrapper_betweenRow),
+.appScope :global(.wrapper_articleKicker),
+.appScope :global(.wrapper_articleMetaActions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}/* Action group: compact horizontal icon/action button cluster. *//* Horizontal tab/chip scroller. State and button visuals stay in the component section. */.appScope :global(.wrapper_tabScroller),
+.appScope :global(.all_latest_scroller),
+.appScope :global(.all_category_tabs) {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.appScope :global(.wrapper_tabScroller::-webkit-scrollbar),
+.appScope :global(.wrapper_gridList::-webkit-scrollbar),
+.appScope :global(.wrapper_authTabMenu::-webkit-scrollbar),
+.appScope :global(.wrapper_myVoteItem .btn_articleGuideOption[data-variant="binary"][data-result-visible="true"]::before),
+.appScope :global(.wrapper_myRecentScroller::-webkit-scrollbar),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_hero > :not(.wrapper_homeDockedControls)),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_breakingNews),
+.appScope :global(.container_newsGrid::-webkit-scrollbar),
+.appScope :global(.wrapper_newsGridScroll::-webkit-scrollbar),
+.appScope :global(.container_newsFeed::-webkit-scrollbar),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent::-webkit-scrollbar),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent::-webkit-scrollbar),
+.appScope :global(.wrapper_commentTabs::-webkit-scrollbar),
+.appScope :global(.btn_contentAccordionTrigger::-webkit-details-marker),
+.appScope :global(.all_latest_scroller::-webkit-scrollbar),
+.appScope :global(.all_category_tabs::-webkit-scrollbar),
+.appScope :global(.tab_myCategoryMenu::-webkit-scrollbar),
+.appScope :global(.tab_myBlockedKeywordMenu::-webkit-scrollbar),
+.appScope :global(.sheetFrameSheet::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .all_panelContent::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .all_feed .all_panel::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .all_panelContent::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .all_feed .all_panel::-webkit-scrollbar),
+.appScope :global(.page_panelContent::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .policy_hero),
+.appScope :global(.all_pressHeadline_tabScroller::-webkit-scrollbar),
+.appScope :global(.all_category_tabSticky .all_category_tabs::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail .wrapper_articleCardContent::-webkit-scrollbar),
+.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail .wrapper_articleCardContent::-webkit-scrollbar) {
+  display: none;
+}/* Panel content: vertical content stack inside a sheet/card/panel. */.appScope :global(.wrapper_panelContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}/* Repeated vertical list with consistent spacing. */.appScope :global(.wrapper_scrollList),
+.appScope :global(.wrapper_detailMain),
+.appScope :global(.wrapper_mySettingsList),
+.appScope :global(.container_infoList .wrapper_separatedItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+}/* Sticky header region. Visual surface is provided by wrapper_stickyHeader_style. */.appScope :global(.wrapper_stickyHeader) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}/* Two-column grid list used by block news layouts. */.appScope :global(.wrapper_gridList) {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-y: auto;
+  scrollbar-width: none;
+}/* Purple top shell layout. Visual color is provided by wrapper_topShell_style. */.appScope :global(.wrapper_topShell),
+.appScope :global(.wrapper_detailBody),
+.appScope :global(.container_homeScreen),
+.appScope :global(.container_home),
+.appScope :global(.wrapper_breakingNews),
+.appScope :global(.wrapper_commentReplyItem) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}/*  --------------------------------------------------------------------------
+ * Component and Screen Layout Selectors
+ * --------------------------------------------------------------------------
+ *//* Component-owned selectors with layout-only declarations. */.appScope :global(.wrapper_newsViewToggle) {
+  padding: var(--spacing-padding-vertical-4);
+}.appScope :global(.container_contentAccordion) {
+  text-align: left;
+}.appScope :global(.btn_newsCardFeature > .wrapper_contentMeta > strong),
+.appScope :global(.btn_newsCardRow > .wrapper_contentMeta > strong),
+.appScope :global(.btn_newsCardList strong) {
+  width: 100%;
+  max-width: 100%;
+  display: -webkit-box;
+  overflow: hidden;
+}.appScope :global(.wrapper_myRecentSelectableItem .btn_newsCardList),
+.appScope :global(.wrapper_detailMetaActions .wrapper_detailDateGroup),
+.appScope :global(.wrapper_myModerationSelectableItem .wrapper_mySettingsHistoryText),
+.appScope :global(.btn_chevronRowContent),
+.appScope :global(.field_check[data-role="chevronRow"]) {
+  min-width: 0;
+  flex: 1 1 auto;
+}.appScope :global(.wrapper_myRecentScroller .btn_newsCardBlock) {
+  width: 156px;
+  flex: 0 0 156px;
+}.appScope :global(.wrapper_myBlockedKeywordTab > .btn_tab),
+.appScope :global(.wrapper_detailMetaActions .wrapper_articleActions),
+.appScope :global(.wrapper_articleMetaActions .wrapper_articleActions) {
+  flex: 0 0 auto;
+}.appScope :global(.wrapper_mySettingsBottomActions > .btn_primary),
+.appScope :global(.wrapper_myVoteItem .btn_articleGuideOption),
+.appScope :global(.btn_searchResult strong),
+.appScope :global(.panel_dropdown[data-size="default"]),
+.appScope :global(.listbox_dropdownSelect),
+.appScope :global(.btn_loginSubmit),
+.appScope :global(.divider_signupAgreementAll),
+.appScope :global(.btn_signupAgreementNext),
+.appScope :global(.btn_signupStepNext),
+.appScope :global(.btn_myRecentDelete),
+.appScope :global(.btn_myModerationRelease),
+.appScope :global(.common_layout) {
+  width: 100%;
+}.appScope :global(.wrapper_commentItem > .chip),
+.appScope :global(.wrapper_commentReplyItem > .chip) {
+  align-self: flex-start;
+  max-width: 100%;
+}.appScope :global(.wrapper_articleGuide) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.wrapper_articleGuideOptions) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-12);
+}.appScope :global(.wrapper_articleGuide_binary) {
+  gap: var(--spacing-gap-vertical-20);
+  padding: var(--spacing-padding-vertical-24) var(--spacing-gap-horizontal-20);
+}.appScope :global(.wrapper_articleGuide_binary .wrapper_articleGuideOptions) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-gap-horizontal-16);
+}.appScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption),
+.appScope :global(.btn_articleGuideOption[data-variant="binary"]) {
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-vertical-8);
+  padding: var(--spacing-padding-vertical-16);
+  text-align: center;
+}.appScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption::before),
+.appScope :global(.btn_articleGuideOption[data-variant="binary"]::before) {
+  inset: auto 0 0;
+  block-size: var(--article-guide-result-size, 0%);
+  inline-size: 100%;
+}.appScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption::before),
+.appScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
+  inset: 0 auto 0 0;
+}.appScope :global(.wrapper_articleCardContent.wrapper_panelContent) {
+  touch-action: pan-y;
+}/* App screen selectors with layout-only declarations. */.appScope :global(.container_splash) {
+  width: 100%;
+  min-height: 100dvh;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.container_authLayout) {
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: 124px var(--spacing-padding-horizontal-16)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.container_authLayout_loginLanding) {
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-vertical-40);
+  padding: var(--spacing-padding-vertical-16);
+}.appScope :global(.wrapper_loginContent) {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.appScope :global(.wrapper_loginLandingContent) {
+  min-height: 0;
+  height: 420px;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-40);
+  text-align: center;
+}.appScope :global(.wrapper_loginEmailContent) {
+  justify-content: flex-start;
+}.appScope :global(.wrapper_signupAgreementContent) {
+  min-height: 0;
+  height: 100%;
+  justify-content: flex-start;
+  gap: var(--spacing-gap-vertical-24);
+}.appScope :global(.wrapper_signupStepContent) {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.appScope :global(.wrapper_signupEmailField),
+.appScope :global(.wrapper_signupVerificationCode) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+}.appScope :global(.wrapper_signupEmailField .text_input[data-mode="dark"]),
+.appScope :global(.wrapper_signupEmailField .text_input),
+.appScope :global(.form_mySettingsDetail) {
+  flex: 1 1 auto;
+}.appScope :global(.wrapper_signupVerificationCodeInput) {
+  min-width: 0;
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  padding: 0;
+}.appScope :global(.wrapper_signupVerificationCodeInput .text_input[data-mode="dark"]),
+.appScope :global(.wrapper_signupVerificationCodeInput .text_input) {
+  padding-right: calc(48px + var(--spacing-padding-horizontal-12));
+}.appScope :global(.wrapper_authField) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+  padding: 0;
+}.appScope :global(.wrapper_authTabMenu) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 0;
+}.appScope :global(.wrapper_loginInputs),
+.appScope :global(.form_login),
+.appScope :global(.form_mySettingsDetail),
+.appScope :global(.wrapper_mySettingsDetailBody) {
+  gap: var(--spacing-gap-vertical-24);
+}.appScope :global(.wrapper_loginPasswordField) {
+  width: 100%;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  padding: 0;
+}.appScope :global(.wrapper_loginPasswordField .text_input[data-end-action="true"] input) {
+  padding-right: calc(40px + var(--spacing-padding-horizontal-12));
+}.appScope :global(.wrapper_loginActions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: 0;
+}.appScope :global(.wrapper_loginSignup) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}.appScope :global(.btn_authGuestBypass) {
+  position: absolute;
+  right: var(--spacing-padding-horizontal-16);
+  bottom: var(--spacing-padding-vertical-16);
+  border: 0;
+  color: var(--color-cool-neutral-50);
+  background: transparent;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-20);
+  padding: 0;
+  cursor: pointer;
+}.appScope :global(.btn_authGuestBypass:focus-visible) {
+  outline: 2px solid var(--color-cool-neutral-50);
+  outline-offset: 4px;
+}.appScope :global(.wrapper_socialLogin) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: 0;
+}.appScope :global(.wrapper_signupAgreementList) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+}.appScope :global(.wrapper_signupAgreementBody) {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.appScope :global(.wrapper_signupAgreementAll) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding: 0;
+}.appScope :global(.wrapper_authAgreementDetail) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+  padding: 0;
+}.appScope :global(.wrapper_authAgreementArticle),
+.appScope :global(.wrapper_commentPanel) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: 0;
+}.appScope :global(.wrapper_authAgreementSection) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+  padding: 0;
+}.appScope :global(.wrapper_searchContent) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-40);
+}.appScope :global(.wrapper_allTabPanelBody) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+}.appScope :global(.wrapper_contentDateGroup span),
+.appScope :global(.wrapper_detailDateGroup span),
+.appScope :global(.wrapper_articleSourcePublisher),
+.appScope :global(.field_check[data-role="chevronRow"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+}.appScope :global(.wrapper_detailContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-gap-vertical-24);
+  flex: 1 1 auto;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_detailHeader) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.wrapper_detailBody h1),
+.appScope :global(.wrapper_detailHeader h1),
+.appScope :global(.btn_searchResult strong),
+.appScope :global(.btn_searchResult span),
+.appScope :global(.text_searchResultSnippet),
+.appScope :global(.text_loginLandingHero),
+.appScope :global(.text_socialLoginTitle),
+.appScope :global(.text_loginTitle),
+.appScope :global(.text_authValidationError),
+.appScope :global(.text_authValidation),
+.appScope :global(.text_searchStatus),
+.appScope :global(.btn_contentListItem h2),
+.appScope :global(.text_mySectionTitle),
+.appScope :global(.text_myTimeTitle),
+.appScope :global(.text_myTimeSectionLabel),
+.appScope :global(.text_myDialogTitle),
+.appScope :global(.text_myKeywordDialogTitle),
+.appScope :global(.text_myBlockedKeywordDescription),
+.appScope :global(.text_infoHeaderTitle),
+.appScope :global(.text_infoBody),
+.appScope :global(.text_infoSubmitStatus),
+.appScope :global(.text_panelHeaderTitle),
+.appScope :global(.wrapper_authAgreementSection h2),
+.appScope :global(.wrapper_authAgreementSection p),
+.appScope :global(.text_authAgreementSource),
+.appScope :global(.text_mySettingsDescription),
+.appScope :global(.text_mySettingsDetailBody),
+.appScope :global(.text_mySettingsHistoryMeta),
+.appScope :global(.text_mySettingsStatus),
+.appScope :global(.wrapper_mySettingsHistoryText p) {
+  margin: 0;
+  padding: 0;
+}.appScope :global(.container_myScreen),
+.appScope:global(.screen_splash .phone) {
+  min-height: 100dvh;
+}.appScope :global(.container_mySheet) {
+  min-height: calc(100dvh - 145px);
+  padding: 31px var(--spacing-padding-horizontal-16) 24px;
+}.appScope :global(.container_myContent) {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--spacing-gap-vertical-24) var(--spacing-gap-horizontal-8);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myDetailControls) {
+  width: 100%;
+  min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+}.appScope :global(.container_myTimePage),
+.appScope :global(.container_myBookmarkPage),
+.appScope :global(.container_myVotePage),
+.appScope :global(.container_myCommentPage),
+.appScope :global(.container_mySettingsPage),
+.appScope :global(.container_myTimeSection),
+.appScope :global(.container_mySettingsDetailSection),
+.appScope :global(.wrapper_myBookmarkList),
+.appScope :global(.wrapper_myVoteList),
+.appScope :global(.wrapper_myCommentList),
+.appScope :global(.wrapper_myTabbedDetailContent),
+.appScope :global(.wrapper_myTimeRows),
+.appScope :global(.container_myProfile),
+.appScope :global(.container_myRecent),
+.appScope :global(.container_myCategorySection),
+.appScope :global(.container_mySettingsSection) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myVoteItem),
+.appScope :global(.wrapper_myCommentItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myRecentSelectAllControls) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}.appScope :global(.wrapper_myRecentSelectableItem),
+.appScope :global(.wrapper_myModerationSelectableItem) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-gap-horizontal-8);
+}.appScope :global(.container_myRecentDeleteFixed),
+.appScope :global(.container_myModerationReleaseFixed) {
+  z-index: 50;
+}.appScope :global(.container_myProfile) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}.appScope :global(.container_mySettingsPage > .container_myCategorySection),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_home),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_hero) {
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.wrapper_myProfileGreeting) {
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-gap-horizontal-8);
+}.appScope :global(.container_myKeywordOverlay) {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--spacing-padding-horizontal-16);
+}.appScope :global(.container_myKeywordDialog),
+.appScope :global(.wrapper_dialogContent) {
+  width: min(100%, 360px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.container_dialog) {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.form_myKeywordDialog),
+.appScope :global(.wrapper_myKeywordInput) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myRecentScroller) {
+  display: flex;
+  gap: var(--spacing-gap-horizontal-24);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.appScope :global(.container_myBlockedKeywordSection) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myBlockedKeywordChips) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-8);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myBlockedKeywordTab) {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-4);
+}.appScope :global(.wrapper_mySettingsBottomActions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+}.appScope :global(.wrapper_mySettingsField) {
+  gap: var(--spacing-gap-vertical-8);
+}.appScope :global(.wrapper_mySettingsHistoryItem),
+.appScope :global(.container_infoContent),
+.appScope :global(.container_infoPanel),
+.appScope :global(.container_infoList),
+.appScope :global(.wrapper_infoInquiry),
+.appScope :global(.wrapper_myTabbedDetailContent) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.all_panelContentFlush) {
+  gap: 0;
+}.appScope :global(.wrapper_mySettingsHistoryHeader) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_myTabbedDetailContent > .wrapper_myBookmarkTabStack) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding-bottom: var(--spacing-padding-vertical-24);
+}.appScope :global(.container_homeScreen) {
+  height: 100dvh;
+  min-height: 100dvh;
+  position: relative;
+  gap: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}.appScope :global(.container_home) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 0;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.appScope :global(.container_homeScreen:not(.is_homeSheetDocked) .container_hero) {
+  gap: 0;
+}.appScope :global(.container_homeScreen:not(.is_homeSheetDocked) .wrapper_hero) {
+  padding-top: var(--spacing-gap-vertical-16);
+}.appScope :global(.container_homeSheet) {
+  position: absolute;
+  top: var(--sheet-common-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  padding: 0;
+  touch-action: pan-y;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .container_homeSheet) {
+  bottom: var(--spacing-padding-vertical-60);
+}.appScope :global(.container_homeToolbar) {
+  min-height: auto;
+  padding-top: 48px;
+}.appScope :global(.container_hero) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.wrapper_hero) {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}.appScope :global(.wrapper_hero strong) {
+  display: flex;
+  align-items: baseline;
+}.appScope :global(.wrapper_articleMetaActions .article_meta) {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}.appScope :global(.wrapper_homeDockedControls),
+.appScope :global(.wrapper_commentReplyItem footer) {
+  display: flex;
+  align-items: center;
+}.appScope :global(.container_newsGrid) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16) var(--spacing-padding-vertical-24);
+}.appScope :global(.wrapper_newsGridScroll) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(156px, 100%), 1fr));
+  align-content: start;
+  gap: 28px var(--spacing-gap-horizontal-16);
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  touch-action: pan-y;
+}.appScope :global(.container_newsGrid_block) {
+  min-height: 0;
+}.appScope :global(.container_newsGrid_block .wrapper_newsGridScroll) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}.appScope :global(.container_newsFeed) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-4);
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  touch-action: pan-y;
+}.appScope :global(.container_articleCard) {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+  overflow: visible;
+}.appScope :global(.wrapper_articleCardContent) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  min-height: 0;
+  touch-action: pan-y;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed) {
+  overflow-y: hidden;
+  padding-bottom: 0;
+  scroll-snap-type: y mandatory;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .container_articleCard),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .container_articleCard) {
+  position: relative;
+  top: 0;
+  flex: 0 0 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent),
+.appScope :global(.container_homeScreen.is_homeSheetDocked .container_newsFeed .wrapper_articleCardContent),
+.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail .wrapper_articleCardContent),
+.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail .wrapper_articleCardContent) {
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.appScope :global(.container_articleCard :where(h1, h2)), .appScope :global(.list_detailDefinition dt), .appScope :global(.list_detailDefinition dd) {
+  margin: 0;
+}.appScope :global(.wrapper_articleCardContent > img) {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}.appScope :global(.container_articleCard .wrapper_articleSource) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+}.appScope :global(.wrapper_detailPagination) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+}.appScope :global(.wrapper_articleBody) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-8);
+}.appScope :global(.wrapper_articleReaction) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}.appScope :global(.wrapper_articleMiniReaction) {
+  position: fixed;
+  left: 50%;
+  bottom: calc(
+    var(--shell-bottom-nav-clearance, var(--spacing-padding-vertical-60)) +
+      var(--spacing-gap-vertical-24)
+  );
+  z-index: 900;
+  width: max-content;
+  max-width: calc(100vw - (var(--spacing-padding-horizontal-16) * 2));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-horizontal-16);
+  padding: var(--spacing-padding-vertical-16)
+    var(--spacing-padding-horizontal-24);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, var(--spacing-gap-vertical-16));
+  transition:
+    opacity var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    transform var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    visibility 0ms linear var(--sheet-docked-pop-motion-duration, 260ms);
+  will-change: opacity, transform;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_articleMiniReaction.is_visible) {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+  transition:
+    opacity var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    transform var(--sheet-docked-pop-motion-duration, 260ms)
+      var(--sheet-docked-pop-motion-easing, ease),
+    visibility 0ms linear 0ms;
+}.appScope :global(.container_commentComposerFixed) {
+  position: fixed;
+  bottom: var(--spacing-padding-vertical-60);
+  left: 50%;
+  z-index: 45;
+  width: min(100vw, var(--app-max-width));
+  padding: var(--spacing-padding-vertical-16);
+}.appScope :global(.wrapper_commentSummary) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-24);
+}.appScope :global(.container_commentGuide) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+}.appScope :global(.wrapper_commentGuideTabs),
+.appScope :global(.wrapper_commentGuideComments),
+.appScope :global(.ds_stack) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-16);
+}.appScope :global(.wrapper_commentTabs) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  scrollbar-width: none;
+}.appScope :global(.wrapper_commentTabs button) {
+  min-width: max-content;
+  min-height: 40px;
+  padding-inline: var(--spacing-padding-horizontal-16);
+}.appScope :global(.wrapper_commentList) {
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding-bottom: var(--comment-composer-height, 0px);
+}.appScope :global(.wrapper_commentItem) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  padding: 0;
+}.appScope :global(.wrapper_commentItem > header),
+.appScope :global(.wrapper_commentReplyItem header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-gap-horizontal-16);
+  min-height: var(--line-height-20);
+}.appScope :global(.wrapper_commentMeta) {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+}.appScope :global(.wrapper_commentEdit) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-16);
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_commentItem > footer) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+  justify-content: space-between;
+}.appScope :global(.wrapper_commentItem > footer > span),
+.appScope :global(.wrapper_commentReplyItem footer > span) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-16);
+}.appScope :global(.wrapper_commentReplies),
+.appScope :global(.all_breaking_extra) {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+}.appScope :global(.wrapper_commentRepliesInner) {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding-block: 0;
+  padding-inline: var(--spacing-padding-horizontal-16);
+}.appScope :global(.container_mySheet),
+.appScope :global(.info_sheet) {
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  display: grid;
+  gap: var(--spacing-gap-vertical-24);
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.container_newsFeed),
+.appScope :global(.container_articleCard) {
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+}

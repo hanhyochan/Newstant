@@ -1,4 +1,4 @@
-import { guestUserId, isGuestUserId } from "./auth/current-user";
+﻿import { guestUserId, isGuestUserId } from "./auth/current-user";
 import { createMockId, createTimestamp } from "./api/api-utils";
 import type {
   AddArticleReactionInput,
@@ -33,7 +33,7 @@ import type {
   UserPreference,
 } from "./api/types";
 
-const guestStoragePrefix = "newsroll.guest.";
+const guestStoragePrefix = "newstant.guest.";
 
 type GuestStore = {
   articleReactions: ArticleReaction[];

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   forwardRef,
@@ -10,7 +10,7 @@ import {
 
 import { useDockedSheet } from "./hooks/use-docked-sheet";
 
-type NewsRollCommonLayoutProps = HTMLAttributes<HTMLElement> & {
+type CommonLayoutProps = HTMLAttributes<HTMLElement> & {
   children: ReactNode;
   dockedClassName?: string;
   dockedControlsSelector?: string;
@@ -56,10 +56,10 @@ function mergeRefs<T>(...refs: Array<Ref<T> | undefined>): RefCallback<T> {
   };
 }
 
-export const NewsRollCommonLayout = forwardRef<HTMLElement, NewsRollCommonLayoutProps>(function NewsRollCommonLayout({
+export const CommonLayout = forwardRef<HTMLElement, CommonLayoutProps>(function CommonLayout({
   children,
   className,
-  dockedClassName = "is_newsrollSheetDocked",
+  dockedClassName = "is_sheetDocked",
   dockedControlsSelector,
   dockedGap = 16,
   fixedInitialTop,

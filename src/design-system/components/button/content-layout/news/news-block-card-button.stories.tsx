@@ -12,7 +12,7 @@ const meta: Meta<typeof NewsBlockCardButton> = {
     categoryLabel: "정책",
     dateLabel: "2026년 6월 30일",
     dateTime: "2026-06-30",
-    imageSrc: "/images/news-apartment.png",
+    imageSrc: "/images/Gemini_Generated_Image_7j3t0x7j3t0x7j3t.webp",
     showDate: true,
     title: "청년 주거 지원 정책, 하반기 접수 일정 공개",
   },
@@ -33,7 +33,7 @@ export const Playground: Story = {
       dateLabel={args.dateLabel ?? "2026년 6월 30일"}
       dateTime={args.dateTime}
       imageAlt={args.imageAlt}
-      imageSrc={args.imageSrc ?? "/images/news-apartment.png"}
+      imageSrc={args.imageSrc ?? "/images/Gemini_Generated_Image_2vvqys2vvqys2vvq.webp"}
       onClick={() => undefined}
       showDate={args.showDate}
       title={args.title ?? "청년 주거 지원 정책, 하반기 접수 일정 공개"}
@@ -47,7 +47,7 @@ export const StateOptions: Story = {
       <NewsBlockCardButton
         categoryLabel="정책"
         dateLabel="2026년 6월 30일"
-        imageSrc="/images/news-apartment.png"
+        imageSrc="/images/Gemini_Generated_Image_96baaj96baaj96ba.webp"
         onClick={() => undefined}
         title="기본 뉴스 카드"
       />
@@ -55,7 +55,7 @@ export const StateOptions: Story = {
         ariaPressed
         categoryLabel="복지"
         dateLabel="2026년 6월 30일"
-        imageSrc="/images/news-apartment.png"
+        imageSrc="/images/Gemini_Generated_Image_f51g65f51g65f51g.webp"
         onClick={() => undefined}
         title="선택된 뉴스 카드"
       />

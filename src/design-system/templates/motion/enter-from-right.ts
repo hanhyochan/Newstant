@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
-  newsrollDetailExitMotionEventName,
-  newsrollDetailRevealDelayMs,
+  detailExitMotionEventName,
+  detailRevealDelayMs,
 } from "../scroll/constants";
 
 export function getEnterFromRightMotionClassName(isLeaving = false) {
@@ -16,7 +16,7 @@ export function hasActiveEnterFromRightMotion() {
 }
 
 export function requestEnterFromRightExitMotion() {
-  window.dispatchEvent(new Event(newsrollDetailExitMotionEventName));
+  window.dispatchEvent(new Event(detailExitMotionEventName));
 }
 
 export function useEnterFromRightExitMotion({
@@ -60,7 +60,7 @@ export function useEnterFromRightExitMotion({
       timeoutRef.current = null;
       setIsLeaving(false);
       closeRef.current();
-    }, newsrollDetailRevealDelayMs);
+    }, detailRevealDelayMs);
   }, [isOpen]);
 
   useEffect(() => {
@@ -77,10 +77,10 @@ export function useEnterFromRightExitMotion({
       return;
     }
 
-    window.addEventListener(newsrollDetailExitMotionEventName, closeWithMotion);
+    window.addEventListener(detailExitMotionEventName, closeWithMotion);
 
     return () => {
-      window.removeEventListener(newsrollDetailExitMotionEventName, closeWithMotion);
+      window.removeEventListener(detailExitMotionEventName, closeWithMotion);
     };
   }, [closeWithMotion, isOpen, listenForGlobalExit]);
 

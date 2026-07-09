@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { createPortal } from "react-dom";
 
-import { getNewsrollPortalRoot } from "@/features/shared/newsroll-portal-root";
+import { getAppPortalRoot } from "@/features/shared/app-portal-root";
 
 import {
   IconButton,
@@ -70,7 +70,7 @@ function BlockedKeywordDialog({
         </PrimaryButtonGroup>
       </div>
     </div>,
-    getNewsrollPortalRoot() ?? document.body,
+    getAppPortalRoot() ?? document.body,
   );
 }
 

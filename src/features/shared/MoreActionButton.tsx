@@ -27,7 +27,7 @@ export function MoreActionButton({
     >
       <span>{expanded ? expandedLabel : collapsedLabel}</span>
       {showIcon ? (
-        <Icon className="icon_moreAction" name="chevron" />
+        <Icon className="icon_moreAction" name="chevron" size={12} />
       ) : null}
     </ContentActionButton>
   );

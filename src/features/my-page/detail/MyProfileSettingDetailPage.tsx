@@ -6,13 +6,13 @@ import type {
   User,
   UserContentAction,
   UserContentActionType,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   authEmailSchema,
   signupNicknameSchema,
   verificationCodeSchema,
-} from "@/shared/newsroll/auth-validation";
-import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+} from "@/shared/newstant/auth-validation";
+import { useZodFieldValidation } from "@/shared/newstant/use-zod-field-validation";
 import { useVerificationCodeFlow } from "@/features/shared/hooks/use-verification-code-flow";
 import {
   PaginationButton,
@@ -149,7 +149,7 @@ const documentSections: Partial<Record<MyProfileSettingItemId, string[]>> = {
     "수집 목적은 회원가입, 로그인, 개인화 뉴스 제공, 고객 문의 처리, 부정 이용 방지입니다.",
   ],
   appInfo: [
-    "앱 이름: NewsRoll",
+    "앱 이름: Newstant",
     "현재 버전: 0.1.0",
     "운영 상태: mock API 기반 개발 환경",
   ],
@@ -496,33 +496,35 @@ function ModerationHistory({
 
   return (
     <div
-      className="wrapper_mySettingsDetailBody"
+      className={`wrapper_mySettingsDetailBody${isReport ? "" : " all_panelContentFlush"}`}
       {...moderationTabSwipeHandlers}
     >
       {isReport ? null : (
-        <PillTabMenu
-          ariaLabel="차단 숨김 내역"
-          className="tab_myCategoryMenu wrapper_tabScroller"
-          items={moderationTabs}
-          onChange={setActiveTab}
-          role="tablist"
-          value={activeTab}
-        />
+        <div className="all_tabSticky wrapper_stickyHeader wrapper_stickyHeader_style all_category_tabSticky">
+          <PillTabMenu
+            ariaLabel="차단 숨김 내역"
+            className="all_category_tabs wrapper_tabScroller"
+            items={moderationTabs}
+            onChange={setActiveTab}
+            role="tablist"
+            value={activeTab}
+          />
+        </div>
       )}
-      {isReport ? null : (
-        <CheckInput
-          checked={isAllSelected}
-          role="selectAll"
-          size="lg"
-          disabled={selectableActionIds.length === 0 || isReleasing}
-          label="전체 선택"
-          onChange={toggleAllSelection}
-        />
-      )}
-      {filteredActions.length === 0 ? (
-        <DataUnavailableMessage target={isReport ? "신고 내역" : "차단/숨김 내역"} />
-      ) : (
-        <>
+      <div className="wrapper_allTabPanelBody wrapper_panelContent u_gap24">
+        {isReport ? null : (
+          <CheckInput
+            checked={isAllSelected}
+            role="selectAll"
+            size="lg"
+            disabled={selectableActionIds.length === 0 || isReleasing}
+            label="전체 선택"
+            onChange={toggleAllSelection}
+          />
+        )}
+        {filteredActions.length === 0 ? (
+          <DataUnavailableMessage target={isReport ? "신고 내역" : "차단/숨김 내역"} />
+        ) : (
           <div
             className={`wrapper_mySettingsList wrapper_scrollList ${moderationTabSwipeMotionClassName}`.trim()}
           >
@@ -566,8 +568,8 @@ function ModerationHistory({
               );
             })}
           </div>
-        </>
-      )}
+        )}
+      </div>
       {!isReport && selectedCount > 0 ? (
         <BottomFixedActionBar
           ariaLabel="차단 숨김 선택 해제"

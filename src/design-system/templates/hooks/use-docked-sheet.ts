@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useLayoutEffect,
@@ -92,7 +92,7 @@ export function useDockedSheet({
     }
 
     sheetHandoffLockRef.current = null;
-    rootRef.current?.classList.remove("is_newsrollSheetHandoffLocked");
+    rootRef.current?.classList.remove("is_sheetHandoffLocked");
   };
 
   const setSheetHandoffLock = (direction: number, input: ScrollInput) => {
@@ -108,7 +108,7 @@ export function useDockedSheet({
     }
 
     sheetHandoffLockRef.current = lock;
-    rootRef.current?.classList.add("is_newsrollSheetHandoffLocked");
+    rootRef.current?.classList.add("is_sheetHandoffLocked");
   };
 
   const consumeSheetHandoffLock = (deltaY: number, input: ScrollInput) => {
@@ -137,7 +137,7 @@ export function useDockedSheet({
     const boundedTop = Math.min(initialTop, Math.max(stopTop, nextTop));
 
     sheetTopRef.current = boundedTop;
-    screen?.style.setProperty("--newsroll-common-sheet-top", `${boundedTop}px`);
+    screen?.style.setProperty("--sheet-common-top", `${boundedTop}px`);
     setIsSheetDocked((current) => {
       const nextDocked = boundedTop <= stopTop + SHEET_EDGE_THRESHOLD;
       return current === nextDocked ? current : nextDocked;
@@ -214,8 +214,8 @@ export function useDockedSheet({
     }
 
     sheetBoundsRef.current = { initialTop: measuredInitialTop, stopTop: measuredStopTop };
-    screen.style.setProperty("--newsroll-common-sheet-initial-top", `${measuredInitialTop}px`);
-    screen.style.setProperty("--newsroll-common-sheet-stop-top", `${measuredStopTop}px`);
+    screen.style.setProperty("--sheet-common-initial-top", `${measuredInitialTop}px`);
+    screen.style.setProperty("--sheet-common-stop-top", `${measuredStopTop}px`);
     setSheetTop(nextTop);
     hasMeasuredRef.current = true;
   };

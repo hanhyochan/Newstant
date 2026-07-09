@@ -1,4 +1,4 @@
-import type { NewsListItem } from "@/shared/newsroll/api";
+﻿import type { NewsListItem } from "@/shared/newstant/api";
 import type { CommentId } from "@/features/comments/utils/comment-data";
 
 export type HomeViewMode = "reels" | "block";
@@ -62,7 +62,7 @@ export type PolicyItem = {
   updatedAt: string;
 };
 
-export const articleImage = "/images/news-apartment.png";
+export const articleImage = "/images/Gemini_Generated_Image_7j3t0x7j3t0x7j3t.webp";
 export const defaultNewsDateTime = "2026-12-31T08:30:00";
 export const defaultNewsDateLabel = "2026년 12월 31일 08:30";
 
@@ -198,7 +198,7 @@ export const homeArticles: HomeArticle[] = [
     category: "경제",
     date: "2026년 12월 31일 09:10",
     guideKind: "binary",
-    image: articleImage,
+    image: "/images/Gemini_Generated_Image_2vvqys2vvqys2vvq.webp",
     imageAlt: "도심 아파트 단지 전경",
     title: "대출 규제 이후 서울 외곽 거래량 다시 줄었다",
   },
@@ -206,7 +206,7 @@ export const homeArticles: HomeArticle[] = [
     category: "사회",
     date: "2026년 12월 31일 10:20",
     guideKind: "stacked",
-    image: articleImage,
+    image: "/images/Gemini_Generated_Image_96baaj96baaj96ba.webp",
     imageAlt: "아침 햇살이 비치는 주거 단지",
     title: "청년 월세 지원 확대 논의, 지자체별 신청 조건 달라",
   },
@@ -214,7 +214,7 @@ export const homeArticles: HomeArticle[] = [
     category: "정책",
     date: "2026년 12월 31일 11:35",
     guideKind: "binary",
-    image: articleImage,
+    image: "/images/Gemini_Generated_Image_f51g65f51g65f51g.webp",
     imageAlt: "신축 공동주택 단지",
     title: "주택시장 안정 대책 발표 앞두고 실수요자 관망세",
   },
@@ -222,7 +222,7 @@ export const homeArticles: HomeArticle[] = [
     category: "지역",
     date: "2026년 12월 31일 13:00",
     guideKind: "stacked",
-    image: articleImage,
+    image: "/images/Gemini_Generated_Image_le942ile942ile94.webp",
     imageAlt: "수도권 아파트 단지",
     title: "수도권 남부 교통 호재 지역, 매수 문의만 소폭 증가",
   },
@@ -230,7 +230,7 @@ export const homeArticles: HomeArticle[] = [
     category: "복지",
     date: "2026년 12월 31일 14:25",
     guideKind: "binary",
-    image: articleImage,
+    image: "/images/Gemini_Generated_Image_nil3rwnil3rwnil3.webp",
     imageAlt: "주거지와 상가가 함께 보이는 단지",
     title: "신혼부부 주거비 지원 기준 완화 여부 다음 달 결정",
   },
@@ -238,7 +238,7 @@ export const homeArticles: HomeArticle[] = [
     category: "문화",
     date: "2026년 12월 31일 15:40",
     guideKind: "stacked",
-    image: articleImage,
+    image: "/images/Gemini_Generated_Image_qy1qu1qy1qu1qy1q.webp",
     imageAlt: "도심 주거 단지와 하늘",
     title: "동네 생활권 문화시설 확충, 주민 체감도 조사 시작",
   },

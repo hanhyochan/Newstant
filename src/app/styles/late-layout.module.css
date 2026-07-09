@@ -1,0 +1,186 @@
+.appScope :global(.container_authLayout .btn_authBack) {
+  position: absolute;
+  top: var(--spacing-padding-vertical-48);
+  left: var(--spacing-padding-horizontal-16);
+  z-index: 2;
+}.appScope :global(.form_login),
+.appScope :global(.wrapper_loginInputs) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}.appScope :global(.container_mySettingsPage.is_mySettingsNestedDetail),
+.appScope :global(.container_mySettingsPage.is_mySettingsAccountEdit) {
+  flex: 1 1 auto;
+  min-height: 100%;
+}.appScope :global(.container_myProfile button:not(.btn_iconButton)) {
+  min-width: 119px;
+  min-height: 42px;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.appScope :global(.wrapper_myActivity),
+.appScope :global(.divider_mySection),
+.appScope :global(.divider_listItem),
+.appScope :global(.tab_myCategoryMenu),
+.appScope :global(.container_myBlockedKeywordSection),
+.appScope :global(.btn_myTimeRow) {
+  width: 100%;
+  flex: 0 0 auto;
+}.appScope :global(.form_mySettingsDetail),
+.appScope :global(.wrapper_mySettingsDetailBody),
+.appScope :global(.wrapper_mySettingsField) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.sheetFrame.container_authAgreementScreen.is_sheetDocked .sheetFrameSheet) {
+  bottom: 0;
+}.appScope :global(.container_newsFeed.all_feed) {
+  flex: 1 1 auto;
+  height: 100%;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+}.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed.all_feed),
+.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed.all_feed) {
+  align-content: flex-start;
+  justify-content: flex-start;
+  overflow-y: hidden;
+  padding-bottom: 0;
+  scroll-padding-top: 0;
+  scroll-snap-type: y mandatory;
+}.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail) {
+  height: 100%;
+  overflow-y: hidden;
+  padding-bottom: 0;
+}.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail .container_articleCard),
+.appScope :global(.sheetFrame.is_sheetDocked .container_newsFeed_detail .container_articleCard) {
+  flex: 0 0 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}.appScope :global(.container_homeScreen .homeDockedMotion) {
+  width: 100%;
+  max-height: 0;
+  min-height: 0;
+  overflow: visible;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_homeDockedControls),
+.appScope :global(.sheetFrame.is_sheetDocked .dockedControls.is_detailOpen),
+.appScope :global(.sheetFrame.is_sheetDocked .dockedControls.is_detailOpen) {
+  width: 100%;
+  min-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+  justify-content: space-between;
+}.appScope :global(.container_homeScreen.is_homeSheetDocked .homeDockedMotion) {
+  max-height: calc(var(--size-44) + var(--spacing-padding-vertical-4));
+}.appScope :global(.container_newsFeed.is_emptyState) {
+  padding-bottom: 0;
+}.appScope :global(.wrapper_commentReplies.is_open .wrapper_commentRepliesInner) {
+  padding-block: var(--spacing-padding-vertical-24);
+}.appScope :global(.policy_screen),
+.appScope :global(.container_myScreen),
+.appScope :global(.info_screen),
+.appScope :global(.search_page) {
+  padding-bottom: calc(
+    var(--spacing-padding-vertical-60) + var(--spacing-padding-vertical-24)
+  );
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+}.appScope :global(.container_myScreen),
+.appScope :global(.info_screen),
+.appScope :global(.search_page) {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-gap-vertical-40);
+}.appScope :global(.container_homeScreen),
+.appScope :global(.container_home),
+.appScope :global(.container_homeSheet),
+.appScope :global(.policy_screen),
+.appScope :global(.container_myScreen),
+.appScope :global(.info_screen),
+.appScope :global(.search_page),
+.appScope :global(.container_newsGrid),
+.appScope :global(.container_newsFeed),
+.appScope :global(.container_articleCard),
+.appScope :global(.all_panel),
+.appScope :global(.policy_sheet),
+.appScope :global(.container_mySheet),
+.appScope :global(.info_sheet) {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}.appScope :global(.sheetFrame.policy_screen),
+.appScope :global(.sheetFrame.container_myScreen),
+.appScope :global(.sheetFrame.info_screen) {
+  display: block;
+  align-content: normal;
+  gap: 0;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  padding-bottom: 0;
+  overflow: hidden;
+}.appScope :global(.sheetFrame.policy_screen .sheetFrameSheet),
+.appScope :global(.sheetFrame.container_myScreen .container_mySheet),
+.appScope :global(.sheetFrame.info_screen .sheetFrameSheet) {
+  bottom: var(--shell-bottom-nav-clearance);
+  display: flex;
+  flex-direction: column;
+  height: calc(
+    100dvh - var(--sheet-common-top) -
+      var(--shell-bottom-nav-clearance)
+  );
+  min-height: 0;
+  max-height: calc(
+    100dvh - var(--sheet-common-top) -
+      var(--shell-bottom-nav-clearance)
+  );
+  padding: 0;
+  overflow: hidden;
+}.appScope :global(.common_layout.is_sheetHandoffLocked .wrapper_articleCardContent),
+.appScope :global(.common_layout.is_sheetHandoffLocked .all_panelContent),
+.appScope :global(.common_layout.is_sheetHandoffLocked .page_panelContent) {
+  overflow-y: hidden;
+}@media (max-width: 430px) {
+  .appScope :global(.header) {
+    padding-top: var(--spacing-padding-vertical-24);
+  }
+  .appScope :global(.bottom_nav) {
+    padding-inline: 0;
+  }
+}.appScope :global(.wrapper_contentMeta),
+.appScope :global(.wrapper_fieldStack) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}.appScope :global(.wrapper_socialLoginGroup),
+.appScope :global(.wrapper_socialLoginOptions) {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}.appScope :global(.wrapper_contentTagGroup),
+.appScope :global(.wrapper_detailTagGroup) {
+  display: flex;
+  flex-wrap: wrap;
+}.appScope :global(.wrapper_contentDateGroup),
+.appScope :global(.wrapper_detailDateGroup) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  padding-top: 0;
+}.appScope :global(.wrapper_actionGroup),
+.appScope :global(.wrapper_articleActions) {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-horizontal-8);
+}.appScope :global(.container_articleCard .text_articleBody) {
+  margin: 0;
+  white-space: pre-line;
+  text-align: justify;
+}

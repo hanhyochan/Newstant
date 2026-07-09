@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
 import type { ReactNode } from "react";
 
 import { IconButton } from "../components/button/icon-button";
 
-type NewsRollPurpleOverlayPageProps = {
+type PurpleOverlayPageProps = {
   ariaLabel: string;
   children: ReactNode;
   closeLabel: string;
@@ -12,13 +12,13 @@ type NewsRollPurpleOverlayPageProps = {
   onClose: () => void;
 };
 
-export function NewsRollPurpleOverlayPage({
+export function PurpleOverlayPage({
   ariaLabel,
   children,
   closeLabel,
   contentClassName = "wrapper_searchContent",
   onClose,
-}: NewsRollPurpleOverlayPageProps) {
+}: PurpleOverlayPageProps) {
   return (
     <section className="search_page" aria-label={ariaLabel}>
       <div className="toolbar search_top" aria-label="상단 도구">

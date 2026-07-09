@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/design-system/utils/cn";
 
-type NewsRollTopFrameProps = {
+type TopFrameProps = {
   footer?: ReactNode;
   headerBody?: ReactNode;
   headerClassName?: string;
@@ -11,14 +11,14 @@ type NewsRollTopFrameProps = {
   toolbar?: ReactNode;
 };
 
-export function NewsRollTopFrame({
+export function TopFrame({
   footer,
   headerBody,
   headerClassName,
   headerControls,
   hero,
   toolbar,
-}: NewsRollTopFrameProps) {
+}: TopFrameProps) {
   const hasHeader =
     toolbar !== undefined || headerControls !== undefined || headerBody !== undefined;
 

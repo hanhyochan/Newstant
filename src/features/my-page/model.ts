@@ -1,8 +1,8 @@
-import type {
+﻿import type {
   NotificationSettings,
   UserNewsViewTime,
   UserPreference,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import type { MyCommentKind } from "@/features/my-page/detail/MyCommentDetailPage";
 import type { MyProfileSettingItemId } from "@/features/my-page/detail/MyProfileSettingDetailPage";
 import type { PolicyItem } from "@/features/news/model";
@@ -319,7 +319,7 @@ const myProfileSettingSections = [
     items: ["문의 내역", "신고 내역", "차단/숨김 설정"],
   },
   {
-    title: "NewsRoll",
+    title: "Newstant",
     items: [
       "앱 정보",
       "오픈소스 라이선스",

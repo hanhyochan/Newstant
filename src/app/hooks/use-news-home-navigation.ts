@@ -9,7 +9,7 @@ import {
 import {
   getEnterFromRightMotionClassName,
   hasActiveEnterFromRightMotion,
-  newsrollDetailRevealDelayMs as nextArticleRevealDelayMs,
+  detailRevealDelayMs as nextArticleRevealDelayMs,
   requestEnterFromRightExitMotion,
 } from "@/design-system/templates";
 import { isAuthView } from "@/features/auth/auth-flow";
@@ -20,7 +20,7 @@ import {
   isProtectedView,
   type View,
 } from "@/app/news-home-model";
-import { hydrateCurrentUserSession } from "@/shared/newsroll/auth/current-user";
+import { hydrateCurrentUserSession } from "@/shared/newstant/auth/current-user";
 
 export function useNewsHomeNavigation({
   activeView,

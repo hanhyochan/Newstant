@@ -1,0 +1,187 @@
+.appScope :global(.emptyFrameCard) {
+  flex: 1 1 auto;
+  min-height: 100%;
+}.appScope :global(.homeStateCard) {
+  flex: 1 1 auto;
+  min-height: 0;
+}.appScope :global(.homeStateContent) {
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  text-align: center;
+}.appScope :global(.divider_articleSource) {
+  width: var(--app-divider-thickness);
+  min-height: var(--spacing-gap-vertical-12);
+  height: var(--spacing-gap-vertical-12);
+  align-self: center;
+}.appScope :global(.img_articlePublisherLogo) {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex: 0 0 auto;
+}.appScope :global(.divider_detailActions) {
+  width: 100%;
+  flex: 0 0 auto;
+}.appScope :global(.form_commentComposer) {
+  position: relative;
+  display: flex;
+  align-items: center;
+}.appScope :global(.form_commentComposer .btn_commentSubmit) {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-padding-horizontal-12);
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}.appScope :global(.divider_commentItem) {
+  display: block;
+  width: 100%;
+}.appScope :global(.listbox_commentAction) {
+  min-width: 48px;
+}.appScope :global(.search_top .toolbar_icon) {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}.appScope:global(.screen_home .phone) {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}.appScope:global(.screen),
+.appScope:global(.screen_all) {
+  width: 100%;
+  max-width: none;
+  padding-right: 0;
+  padding-left: 0;
+}.appScope :global(.info_screen),
+.appScope :global(.info_sheet) {
+  display: flex;
+  flex-direction: column;
+}.appScope:global(.screen_panel),
+.appScope:global(.screen_panel .phone) {
+  height: 100dvh;
+  min-height: 0;
+  max-height: 100dvh;
+  overflow: hidden;
+}.appScope :global(.page_feed) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}.appScope :global(.page_panel) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  overflow: hidden;
+  padding: var(--spacing-padding-vertical-24)
+    var(--spacing-padding-horizontal-16);
+}.appScope :global(.page_panelContent) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-vertical-24);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}.appScope :global(.sheetFrame.is_sheetDocked .page_panelContent),
+.appScope :global(.policy_screen .page_panelContent) {
+  overflow-y: auto;
+}.appScope :global(.all_tabSticky) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-height: calc(var(--size-52) + var(--spacing-padding-vertical-24));
+  padding-top: 0;
+  padding-bottom: var(--spacing-padding-vertical-24);
+  overflow-y: visible;
+}.appScope :global(.all_pressHeadline_tabScroller) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-horizontal-8);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}.appScope :global(.all_category_tabSticky .all_category_tabs) {
+  width: 100%;
+  min-height: var(--spacing-padding-vertical-32);
+  overflow-x: auto;
+  overflow-y: hidden;
+}.appScope :global(.all_category_tabSticky) {
+  min-height: calc(
+    var(--spacing-padding-vertical-32) + var(--spacing-padding-vertical-24)
+  );
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+  min-width: auto;
+  height: var(--size-52);
+  min-height: var(--size-52);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-padding-horizontal-16);
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_logo) {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}.appScope :global(.all_category_tabs button),
+.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+  min-width: var(--spacing-padding-horizontal-60);
+  min-height: 40px;
+  padding-inline: var(--spacing-padding-horizontal-16);
+}.appScope:global(.dark .all_feed > .all_panel:nth-child(1)) {
+  z-index: 30;
+}.appScope:global(.dark .all_feed > .all_panel:nth-child(2)) {
+  z-index: 29;
+}.appScope:global(.dark .all_feed > .all_panel:nth-child(3)) {
+  z-index: 28;
+}.appScope:global(.dark .all_feed > .all_panel:nth-child(4)) {
+  z-index: 27;
+}.appScope:global(.dark .all_feed > .all_panel:nth-child(5)) {
+  z-index: 26;
+}.appScope:global(.dark .all_feed > .all_panel:nth-child(n + 6)) {
+  z-index: 25;
+}.appScope :global(.img_newsCardThumbnail) {
+  width: auto;
+  height: 80px;
+  aspect-ratio: 4 / 3;
+}.appScope :global(.all_breaking_label .icon[data-size="20"]),
+.appScope :global(.all_breaking_label .icon_policy) {
+  width: var(--spacing-padding-horizontal-24);
+  height: var(--spacing-padding-vertical-24);
+}.appScope :global(.form_commentComposer .text_input) {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--spacing-padding-horizontal-12);
+}.appScope :global(.form_commentComposer .text_input input) {
+  width: 100%;
+  min-width: 0;
+  padding-right: calc(
+    var(--spacing-padding-horizontal-12) + var(--spacing-gap-horizontal-12)
+  );
+}.appScope :global(.toolbar_icon:has(.badge_iconButtonUnread)) {
+  width: auto;
+  min-width: calc(5px + 2px + var(--spacing-padding-horizontal-24));
+}

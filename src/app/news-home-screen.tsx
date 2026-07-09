@@ -2,7 +2,19 @@
 
 import { useCallback, useLayoutEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import styles from "./styles/newsroll.module.css";
+import appShellStyles from "./styles/app-shell.module.css";
+import allNewsStyles from "./styles/all-news.module.css";
+import authSearchStyles from "./styles/auth-search.module.css";
+import componentLayoutStyles from "./styles/component-layout.module.css";
+import componentStyles from "./styles/components.module.css";
+import infoCommonStyles from "./styles/info-common.module.css";
+import lateLayoutStyles from "./styles/late-layout.module.css";
+import layoutStyles from "./styles/layout.module.css";
+import motionStyles from "./styles/motion.module.css";
+import myPageStyles from "./styles/my-page.module.css";
+import pageContentStyles from "./styles/page-content.module.css";
+import policyStyles from "./styles/policy.module.css";
+import themeStyles from "./styles/theme.module.css";
 
 import { IconButton } from "@/design-system/components";
 import {
@@ -38,7 +50,7 @@ import {
   userApi,
   welfareApi,
   type AppNotification
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   clearCurrentUserSession,
   currentUserId,
@@ -46,8 +58,8 @@ import {
   guestCurrentUser,
   isGuestCurrentUser,
   setCurrentUserSession,
-} from "@/shared/newsroll/auth/current-user";
-import { clearGuestStorage } from "@/shared/newsroll/guest-storage";
+} from "@/shared/newstant/auth/current-user";
+import { clearGuestStorage } from "@/shared/newstant/guest-storage";
 
 const AllNewsView = dynamic<any>(
   () => import("@/features/all-news/AllNewsView").then((module) => module.AllNewsView),
@@ -112,6 +124,22 @@ const PasswordResetEmailView = dynamic<any>(
     ),
   { loading: () => null, ssr: false },
 );
+
+const appScopeClassName = [
+  appShellStyles.appScope,
+  motionStyles.appScope,
+  themeStyles.appScope,
+  layoutStyles.appScope,
+  componentLayoutStyles.appScope,
+  authSearchStyles.appScope,
+  allNewsStyles.appScope,
+  policyStyles.appScope,
+  myPageStyles.appScope,
+  infoCommonStyles.appScope,
+  pageContentStyles.appScope,
+  lateLayoutStyles.appScope,
+  componentStyles.appScope,
+].join(" ");
 const SignupAgreementView = dynamic<any>(
   () =>
     import("@/features/auth/AuthViews").then(
@@ -139,13 +167,13 @@ const SignupPasswordView = dynamic<any>(
   { loading: () => null, ssr: false },
 );
 
-function NewsRollSplashScreen() {
+function SplashScreen() {
   return (
-    <section className="container_newsrollSplash" aria-label="NewsRoll 로딩">
+    <section className="container_splash" aria-label="Newstant 로딩">
       <img
         alt=""
         aria-hidden="true"
-        className="box_newsrollSplashLogo"
+        className="box_splashLogo"
         height={57}
         src="/images/logo.svg"
         width={90}
@@ -154,7 +182,7 @@ function NewsRollSplashScreen() {
   );
 }
 
-function resetNewsRollViewport() {
+function resetAppViewport() {
   if (typeof window === "undefined") {
     return;
   }
@@ -490,7 +518,7 @@ export function NewsHomeScreen() {
   });
 
   useLayoutEffect(() => {
-    resetNewsRollViewport();
+    resetAppViewport();
   }, [activeView, activeViewResetKey]);
 
   const loadRootSettings = useCallback(
@@ -901,9 +929,9 @@ export function NewsHomeScreen() {
 
   if (isSplashVisible) {
     return (
-      <main className={`${styles.newsrollScope} screen screen_splash`} data-newsroll-portal-root>
-        <div className="phone" aria-label="NewsRoll">
-          <NewsRollSplashScreen />
+      <main className={`${appScopeClassName} screen screen_splash`} data-app-portal-root>
+        <div className="phone" aria-label="Newstant">
+          <SplashScreen />
         </div>
       </main>
     );
@@ -916,8 +944,8 @@ export function NewsHomeScreen() {
 
   return (
     <main
-      data-newsroll-portal-root
-      className={`${styles.newsrollScope} screen${effectiveView === "home" ? " screen_home" : ""}${
+      data-app-portal-root
+      className={`${appScopeClassName} screen${effectiveView === "home" ? " screen_home" : ""}${
         effectiveView === "all" ? " screen_all" : ""
       }${
         effectiveView === "login" ||
@@ -939,7 +967,7 @@ export function NewsHomeScreen() {
         isTextLarge ? " text_large" : ""
       }${isDarkMode ? " dark" : ""}`}
     >
-      <div className="phone" aria-label="NewsRoll">
+      <div className="phone" aria-label="Newstant">
         <ActiveView
           allNewsEntryMotionClassName={allNewsEntryMotionClassName}
           authError={authError}

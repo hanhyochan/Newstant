@@ -1,7 +1,7 @@
-import { useEffect, type Dispatch, type SetStateAction } from "react";
+﻿import { useEffect, type Dispatch, type SetStateAction } from "react";
 
 import type { View } from "@/app/news-home-model";
-import { hydrateCurrentUserSession } from "@/shared/newsroll/auth/current-user";
+import { hydrateCurrentUserSession } from "@/shared/newstant/auth/current-user";
 
 type LoadInitialContentData = (
   userId?: string,

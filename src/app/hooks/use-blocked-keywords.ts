@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useState } from "react";
+﻿import { useCallback, useMemo, useState } from "react";
 
 import {
   getBlockedKeywordSettingsFromApi,
   normalizeBlockedKeyword,
 } from "@/app/news-home-model";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
-import { settingsApi } from "@/shared/newsroll/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
+import { settingsApi } from "@/shared/newstant/api";
 import type { BlockedKeywordSetting } from "@/features/news/model";
 
 export function useBlockedKeywords() {

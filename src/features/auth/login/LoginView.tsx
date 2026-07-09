@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 import {
   CheckInput,
@@ -10,8 +10,8 @@ import {
 import {
   authEmailSchema,
   loginPasswordSchema,
-} from "@/shared/newsroll/auth-validation";
-import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+} from "@/shared/newstant/auth-validation";
+import { useZodFieldValidation } from "@/shared/newstant/use-zod-field-validation";
 import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
 import { AuthLayout } from "@/features/auth/components/AuthLayout";
 import { AuthTextActionButton } from "@/features/auth/components/AuthTextActionButton";

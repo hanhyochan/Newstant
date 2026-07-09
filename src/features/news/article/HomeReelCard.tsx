@@ -5,8 +5,8 @@ import {
   useState,
 } from "react";
 
-import { newsApi } from "@/shared/newsroll/api";
-import { currentUserId } from "@/shared/newsroll/auth/current-user";
+import { newsApi } from "@/shared/newstant/api";
+import { currentUserId } from "@/shared/newstant/auth/current-user";
 import {
   ChipLabel,
   ContentActionButton,
@@ -21,9 +21,9 @@ import {
   scrollSearchHighlightTargetIntoView,
 } from "@/design-system/components";
 import {
-  NewsRollArticleDetailPanel,
+  ArticleDetailPanel,
   getEnterFromRightMotionClassName,
-  newsrollCommentScrollDelayMs as commentScrollDelayMs,
+  commentScrollDelayMs as commentScrollDelayMs,
   useDeferredDetailScroll,
   useShareContent,
 } from "@/design-system/templates";
@@ -571,7 +571,7 @@ export function ArticleDetailContent({
   onBack?: () => void;
 }) {
   return (
-    <NewsRollArticleDetailPanel
+    <ArticleDetailPanel
       ariaLabel="기사 상세"
       backLabel={backLabel}
       className={getEnterFromRightMotionClassName(isLeaving)}
@@ -589,7 +589,7 @@ export function ArticleDetailContent({
         initialScrollTarget={initialScrollTarget}
         index="detail"
       />
-    </NewsRollArticleDetailPanel>
+    </ArticleDetailPanel>
   );
 }
 

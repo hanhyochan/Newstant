@@ -22,13 +22,13 @@ import {
   type UpdateUserInput,
   type User,
   type UserContentAction,
-} from "@/shared/newsroll/api";
+} from "@/shared/newstant/api";
 import {
   currentUserId,
   getCurrentUserSnapshot,
   setCurrentUserSession,
-} from "@/shared/newsroll/auth/current-user";
-import { fixedDockedPanelProps } from "@/shared/newsroll/my-info-panel-behavior";
+} from "@/shared/newstant/auth/current-user";
+import { fixedDockedPanelProps } from "@/shared/newstant/my-info-panel-behavior";
 import {
   Divider,
   IconButton,
@@ -38,17 +38,17 @@ import {
   TextButton,
 } from "@/design-system/components";
 import {
-  NewsRollCommonLayout,
-  NewsRollDetailBackButton,
-  NewsRollDockedControls,
-  NewsRollHeaderTop,
-  NewsRollPagePanel,
-  newsrollHomeDockedScrollSelectors as homeDockedScrollSelectors,
-  newsrollNewsFeedDetailSelector,
-  newsrollPagePanelContentSelector as pagePanelContentSelector,
-  newsrollPagePanelDockedGap as pagePanelDockedGap,
-  newsrollPagePanelInitialGap as pagePanelInitialGap,
-  newsrollPagePanelInitialTop as pagePanelInitialTop,
+  CommonLayout,
+  DetailBackButton,
+  DockedControls,
+  HeaderTop,
+  PagePanel,
+  homeDockedScrollSelectors as homeDockedScrollSelectors,
+  newsFeedDetailSelector,
+  pagePanelContentSelector as pagePanelContentSelector,
+  pagePanelDockedGap as pagePanelDockedGap,
+  pagePanelInitialGap as pagePanelInitialGap,
+  pagePanelInitialTop as pagePanelInitialTop,
   useDetailScrollRestore,
   useEnterFromRightExitMotion,
 } from "@/design-system/templates";
@@ -108,7 +108,7 @@ import { buildMyActivitySummary } from "@/features/my-page/utils/my-activity-sum
 import { useMyPageNavigation } from "@/features/my-page/hooks/use-my-page-navigation";
 import { useMyPageDynamicTabs } from "@/features/my-page/hooks/use-my-page-dynamic-tabs";
 import { PolicyDetailContent } from "@/features/policy/PolicyDetailContent";
-import { DockedAlarmButton, NewsToolbar } from "@/features/shell/NewsRollToolbar";
+import { DockedAlarmButton, NewsToolbar } from "@/features/shell/app-toolbar";
 
 import { ArticleDetailContent } from "@/features/news/article/HomeReelCard";
 import { getAllNewsPreviewFromArticle } from "@/features/news/all-news/all-news-model";
@@ -864,7 +864,7 @@ export function MyPageView({
     : myDetailExitMotion.closeWithMotion;
 
   return (
-    <NewsRollCommonLayout
+    <CommonLayout
       aria-label="마이페이지"
       className="sheetFrame container_myScreen"
       dockedGap={pagePanelDockedGap}
@@ -876,22 +876,22 @@ export function MyPageView({
         isMyArticleDetailOpen ? homeDockedScrollSelectors.contentScroller : undefined
       }
       sheetScrollSelector={
-        isMyArticleDetailOpen ? newsrollNewsFeedDetailSelector : pagePanelContentSelector
+        isMyArticleDetailOpen ? newsFeedDetailSelector : pagePanelContentSelector
       }
       top={
         isMyDetailOpen ? (
-          <NewsRollHeaderTop>
+          <HeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
               onOpenNotifications={onOpenNotifications}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
-            <NewsRollDockedControls
+            <DockedControls
               className="motion_dockedPop allDockedControls panelHeaderRow"
               isDetailOpen
             >
-              <NewsRollDetailBackButton
+              <DetailBackButton
                 ariaLabel={detailBackLabel}
                 onClick={handleMyDetailBack}
               />
@@ -899,24 +899,24 @@ export function MyPageView({
                 isPressed={false}
                 onClick={onOpenBreakingNews}
               />
-            </NewsRollDockedControls>
-          </NewsRollHeaderTop>
+            </DockedControls>
+          </HeaderTop>
         ) : (
-          <NewsRollHeaderTop>
+          <HeaderTop>
             <NewsToolbar
               isTextLarge={isTextLarge}
               onOpenNotifications={onOpenNotifications}
               onOpenSearch={onOpenSearch}
               onToggleTextSize={onToggleTextSize}
             />
-            <NewsRollDockedControls className="motion_dockedPop allDockedControls panelHeaderRow">
+            <DockedControls className="motion_dockedPop allDockedControls panelHeaderRow">
               <h1 className="text_panelHeaderTitle">마이페이지</h1>
               <DockedAlarmButton
                 isPressed={false}
                 onClick={onOpenBreakingNews}
               />
-            </NewsRollDockedControls>
-          </NewsRollHeaderTop>
+            </DockedControls>
+          </HeaderTop>
         )
       }
     >
@@ -929,7 +929,7 @@ export function MyPageView({
           isLeaving={myArticleDetailExitMotion.isLeaving}
         />
       ) : myPolicyDetail ? (
-        <NewsRollPagePanel
+        <PagePanel
           ariaLabel="국가정책 상세 콘텐츠 영역"
           contentRef={myPanelContentRef}
           key={`my-policy-detail-${myPolicyDetail.id ?? myPolicyDetail.title}`}
@@ -939,9 +939,9 @@ export function MyPageView({
             isLeaving={myArticleDetailExitMotion.isLeaving}
             item={myPolicyDetail}
           />
-        </NewsRollPagePanel>
+        </PagePanel>
       ) : (
-        <NewsRollPagePanel
+        <PagePanel
           ariaLabel={
             isRecentOpen
               ? "최근 본 뉴스 상세 콘텐츠 영역"
@@ -1200,8 +1200,8 @@ export function MyPageView({
           ) : null}
           </div>
         )}
-      </NewsRollPagePanel>
+      </PagePanel>
       )}
-    </NewsRollCommonLayout>
+    </CommonLayout>
   );
 }

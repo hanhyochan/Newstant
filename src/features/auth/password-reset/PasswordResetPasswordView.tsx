@@ -1,4 +1,4 @@
-import {
+﻿import {
   useMemo,
   useState,
 } from "react";
@@ -12,8 +12,8 @@ import {
 import {
   createSignupPasswordConfirmSchema,
   signupPasswordSchema,
-} from "@/shared/newsroll/auth-validation";
-import { useZodFieldValidation } from "@/shared/newsroll/use-zod-field-validation";
+} from "@/shared/newstant/auth-validation";
+import { useZodFieldValidation } from "@/shared/newstant/use-zod-field-validation";
 import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
 import { AuthLayout } from "@/features/auth/components/AuthLayout";
 import { AuthValidationError } from "@/features/auth/components/AuthValidationError";

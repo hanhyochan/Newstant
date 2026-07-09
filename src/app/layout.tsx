@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./styles/tokens.css";
 import "./styles/reset.css";
@@ -12,8 +12,11 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "NewsRoll",
-  description: "NewsRoll",
+  title: "Newstant",
+  description: "Newstant",
+  icons: {
+    icon: "/images/logo.svg",
+  },
 };
 
 export default function RootLayout({
