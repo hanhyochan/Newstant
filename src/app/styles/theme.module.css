@@ -94,12 +94,13 @@
     color: var(--color-common-100);
     background: var(--color-cool-neutral-40);
     border-color: var(--color-cool-neutral-40);
-}.appScope :global(.text_articleGuide) {
+}.appScope :global(.text_articleGuide),
+.appScope :global(.container_articleCard .text_articleGuide) {
   color: var(--app-text);
   font-family: var(--font-sans);
-  font-size: var(--font-size-16);
+  font-size: 16px;
   font-style: normal;
-  font-weight: var(--font-weight-600);
+  font-weight: var(--font-weight-700);
   line-height: var(--line-height-24);
   letter-spacing: 0;
 }.appScope :global(.text_articleGuideTotal strong) {
@@ -137,10 +138,6 @@
 .appScope :global(.wrapper_articleActions .btn_iconButton[data-variant="articleTool"][aria-pressed='true'] .icon[data-size="20"]),
 .appScope :global(.wrapper_articleReaction > button[aria-pressed='true'] .icon[data-size="20"]) {
   --icon-url: var(--icon-fill-url);
-}.appScope :global(.wrapper_articleGuide_binary .text_articleGuide) {
-  font-size: var(--font-size-16);
-  font-weight: var(--font-weight-700);
-  line-height: var(--line-height-24);
 }.appScope :global(.btn_primary:focus-visible),
 .appScope :global(.btn_iconButton:focus-visible),
 .appScope :global(.btn_articleGuideOption:focus-visible),

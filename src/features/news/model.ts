@@ -174,9 +174,9 @@ export function filterArticlesByBlockedKeywords(
 }
 
 export const guideOptions = [
-  "어쩌구 저쩌구해서 어케 해야한다.",
-  "상황을 더 지켜본 뒤 판단해야 한다.",
-  "정책 지원을 먼저 확대해야 한다.",
+  "긍정적인 영향이 더 클 것으로 본다.",
+  "효과를 판단하려면 더 지켜봐야 한다.",
+  "부작용을 줄일 보완책이 먼저 필요하다.",
 ];
 
 export const binaryGuideOptions = ["그렇다", "아니다"];

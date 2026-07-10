@@ -500,7 +500,6 @@
   mask: none;
   object-fit: contain;
 }.appScope :global(.text_articleGuideOption),
-.appScope :global(.wrapper_articleGuide_binary .text_articleGuidePercent),
 .appScope :global(.btn_articleGuideOption[data-variant="binary"] .text_articleGuidePercent) {
   font-size: var(--font-size-15);
   line-height: var(--line-height-20);
@@ -724,22 +723,18 @@
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-24);
-}.appScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption),
-.appScope :global(.btn_articleGuideOption[data-variant="binary"]) {
+}.appScope :global(.btn_articleGuideOption[data-variant="binary"]) {
   border: 0;
   border-radius: var(--radius-16);
   background: var(--color-background-elevated-normal);
-}.appScope :global(.wrapper_articleGuide_binary .text_articleGuideOption),
-.appScope :global(.btn_articleGuideOption[data-variant="binary"] .text_articleGuideOption) {
+}.appScope :global(.btn_articleGuideOption[data-variant="binary"] .text_articleGuideOption) {
   font-size: var(--font-size-15);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-20);
-}.appScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption::before),
-.appScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
+}.appScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
   border-radius: var(--radius-8) 0 0 var(--radius-8);
   background: var(--color-cool-neutral-96);
-}.appScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption[aria-pressed="true"]::before),
-.appScope :global(.btn_articleGuideOption[data-variant="stacked"][aria-pressed="true"]::before) {
+}.appScope :global(.btn_articleGuideOption[data-variant="stacked"][aria-pressed="true"]::before) {
   background: var(--color-brand-purple-80);
 }.appScope :global(.container_authLayout .text_input[data-mode="dark"] input) {
   color: var(--color-common-100);

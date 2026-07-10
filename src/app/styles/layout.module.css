@@ -150,8 +150,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-gap-horizontal-16);
-}.appScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption),
-.appScope :global(.btn_articleGuideOption[data-variant="binary"]) {
+}.appScope :global(.btn_articleGuideOption[data-variant="binary"]) {
   min-height: 0;
   height: auto;
   display: flex;
@@ -161,13 +160,11 @@
   gap: var(--spacing-gap-vertical-8);
   padding: var(--spacing-padding-vertical-16);
   text-align: center;
-}.appScope :global(.wrapper_articleGuide_binary .btn_articleGuideOption::before),
-.appScope :global(.btn_articleGuideOption[data-variant="binary"]::before) {
+}.appScope :global(.btn_articleGuideOption[data-variant="binary"]::before) {
   inset: auto 0 0;
   block-size: var(--article-guide-result-size, 0%);
   inline-size: 100%;
-}.appScope :global(.wrapper_articleGuide_stacked .btn_articleGuideOption::before),
-.appScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
+}.appScope :global(.btn_articleGuideOption[data-variant="stacked"]::before) {
   inset: 0 auto 0 0;
 }.appScope :global(.wrapper_articleCardContent.wrapper_panelContent) {
   touch-action: pan-y;
@@ -658,7 +655,7 @@
   bottom: var(--spacing-padding-vertical-60);
 }.appScope :global(.container_homeToolbar) {
   min-height: auto;
-  padding-top: 48px;
+  padding-top: 20px;
 }.appScope :global(.container_hero) {
   display: flex;
   flex-direction: column;
@@ -814,7 +811,7 @@
       var(--sheet-docked-pop-motion-easing, ease),
     visibility 0ms linear var(--sheet-docked-pop-motion-duration, 260ms);
   will-change: opacity, transform;
-}.appScope :global(.container_homeScreen.is_homeSheetDocked .wrapper_articleMiniReaction.is_visible) {
+}.appScope :global(.wrapper_articleMiniReaction.is_visible) {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;

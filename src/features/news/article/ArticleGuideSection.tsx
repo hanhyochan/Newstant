@@ -13,8 +13,8 @@ import {
   type GuideKind,
 } from "@/features/news/model";
 
-const articleGuideQuestion =
-  "예시텍스트 어쩌구랑 어쩌구랑 비교했을때 어케하는게 좋을까?";
+const fallbackArticleGuideQuestion =
+  "이 뉴스의 핵심 쟁점에 대해 어떻게 생각하시나요?";
 
 function getVotePercentages(voteCounts: number[]) {
   const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
@@ -58,6 +58,7 @@ export function ArticleGuideSection({
     [kind],
   );
   const [pollDetail, setPollDetail] = useState<Awaited<ReturnType<typeof pollApi.getPoll>>>(null);
+  const question = pollDetail?.title ?? fallbackArticleGuideQuestion;
   const options =
     pollDetail?.options.map((option) => option.label) ?? fallbackOptions;
   const [voteCounts, setVoteCounts] = useState(() => options.map(() => 0));
@@ -170,7 +171,7 @@ export function ArticleGuideSection({
       nextPollDetail = await pollApi.createPoll({
         newsId,
         options: fallbackOptions,
-        title: articleGuideQuestion,
+        title: fallbackArticleGuideQuestion,
       });
       option = nextPollDetail.options[index];
       setPollDetail(nextPollDetail);
@@ -195,12 +196,16 @@ export function ArticleGuideSection({
 
   return (
     <section
-      className={`wrapper_articleGuide wrapper_articleGuide_${kind}`}
+      className={
+        kind === "binary"
+          ? "wrapper_articleGuide wrapper_articleGuide_binary"
+          : "wrapper_articleGuide"
+      }
       id={id}
       aria-label="안내 문구"
     >
       <h2 className="text_articleGuide">
-        {articleGuideQuestion}
+        {question}
       </h2>
       <div className="wrapper_articleGuideOptions">
         {options.map((option, index) => {

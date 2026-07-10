@@ -34,6 +34,7 @@ import {
 import { useArticleReaction } from "@/features/news/article/use-article-reaction";
 import { ArticleGuideSection } from "@/features/news/article/ArticleGuideSection";
 import { NewsCreatedTime } from "@/features/news/article/NewsCreatedTime";
+import { ClientPortal } from "@/features/news/comments/ClientPortal";
 import { CommentReactionPanel } from "@/features/news/comments/CommentReactionPanel";
 import { useBookmarkTarget } from "@/features/shared/use-bookmark-target";
 import {
@@ -257,7 +258,7 @@ export function HomeReelCard({
 
   useEffect(() => {
     if (!framed) {
-      setIsMiniReactionCardVisible(false);
+      setIsMiniReactionCardVisible(true);
       return;
     }
 
@@ -286,11 +287,6 @@ export function HomeReelCard({
   }, [article.id, framed]);
 
   useEffect(() => {
-    if (!framed) {
-      setIsArticleReactionReached(false);
-      return;
-    }
-
     const scroller = document.getElementById(articleContentId);
     const target = articleReactionRef.current;
 
@@ -319,7 +315,12 @@ export function HomeReelCard({
       scrollerNode.removeEventListener("scroll", updateArticleReactionReached);
       window.removeEventListener("resize", updateArticleReactionReached);
     };
-  }, [article.id, articleContentId, framed, isCommentPanelOpen]);
+  }, [
+    article.id,
+    articleContentId,
+    isCommentPanelOpen,
+    isMiniReactionCardVisible,
+  ]);
 
   async function recordArticleActivity() {
     if (!article.id) {
@@ -368,7 +369,7 @@ export function HomeReelCard({
   ]);
 
   const isMiniArticleReactionVisible =
-    framed && isMiniReactionCardVisible && !isArticleReactionReached;
+    isMiniReactionCardVisible && !isArticleReactionReached;
 
   const articleContent = (
     <div
@@ -523,6 +524,16 @@ export function HomeReelCard({
           newsId={article.id}
         />
       ) : null}
+      <ClientPortal>
+        <MiniReactionControls
+          counts={articleReactionCounts}
+          isVisible={isMiniArticleReactionVisible}
+          reaction={reaction}
+          onReactionChange={(nextReaction) => {
+            void toggleArticleReaction(nextReaction);
+          }}
+        />
+      </ClientPortal>
     </div>
   );
 
@@ -537,14 +548,6 @@ export function HomeReelCard({
       ref={cardRef}
     >
       {articleContent}
-      <MiniReactionControls
-        counts={articleReactionCounts}
-        isVisible={isMiniArticleReactionVisible}
-        reaction={reaction}
-        onReactionChange={(nextReaction) => {
-          void toggleArticleReaction(nextReaction);
-        }}
-      />
     </article>
   );
 }
