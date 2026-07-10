@@ -403,7 +403,7 @@
   border-radius: 0;
   background: var(--color-brand-purple-20);
 }.appScope :global(.container_articleCard) {
-  border-radius: var(--radius-20);
+  border-radius: 20px 20px 0 0;
   color: var(--app-text);
   background: var(--color-background-elevated-normal);
 }.appScope :global(.container_articleCard :where(h1, h2)) {
