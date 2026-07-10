@@ -19,13 +19,19 @@ function getCollection(collectionName: string) {
 }
 
 function matchesFilter(item: DbRecord, key: string, value: string) {
-  const itemValue = item[key];
+  const isLikeFilter = key.endsWith("_like");
+  const propertyKey = isLikeFilter ? key.slice(0, -"_like".length) : key;
+  const itemValue = item[propertyKey];
 
   if (Array.isArray(itemValue)) {
-    return itemValue.map(String).includes(value);
+    return itemValue
+      .map(String)
+      .some((entry) => (isLikeFilter ? entry.includes(value) : entry === value));
   }
 
-  return String(itemValue) === value;
+  const stringValue = String(itemValue ?? "");
+
+  return isLikeFilter ? stringValue.includes(value) : stringValue === value;
 }
 
 function compareValues(a: unknown, b: unknown) {
@@ -118,20 +124,21 @@ export async function POST(
   context: { params: { segments?: string[] } },
 ) {
   const { collectionName } = getRouteParts(context);
+  const collection = collectionName ? getCollection(collectionName) : null;
 
-  if (!collectionName || !getCollection(collectionName)) {
+  if (!collectionName || !collection) {
     return NextResponse.json({ message: "Unknown mock collection" }, { status: 404 });
   }
 
   const body = (await request.json()) as DbRecord;
+  const createdItem = {
+    ...body,
+    id: body.id ?? `mock-${Date.now()}`,
+  };
 
-  return NextResponse.json(
-    {
-      id: body.id ?? `mock-${Date.now()}`,
-      ...body,
-    },
-    { status: 201 },
-  );
+  collection.push(createdItem);
+
+  return NextResponse.json(createdItem, { status: 201 });
 }
 
 export async function PATCH(
@@ -146,13 +153,21 @@ export async function PATCH(
   }
 
   const body = (await request.json()) as DbRecord;
-  const current = collection.find((entry) => entry.id === id) ?? { id };
+  const itemIndex = collection.findIndex((entry) => entry.id === id);
 
-  return NextResponse.json({
-    ...current,
+  if (itemIndex < 0) {
+    return NextResponse.json({ message: "Mock resource not found" }, { status: 404 });
+  }
+
+  const updatedItem = {
+    ...collection[itemIndex],
     ...body,
     id,
-  });
+  };
+
+  collection[itemIndex] = updatedItem;
+
+  return NextResponse.json(updatedItem);
 }
 
 export function DELETE(
@@ -160,10 +175,19 @@ export function DELETE(
   context: { params: { segments?: string[] } },
 ) {
   const { collectionName, id } = getRouteParts(context);
+  const collection = collectionName ? getCollection(collectionName) : null;
 
-  if (!collectionName || !id || !getCollection(collectionName)) {
+  if (!collectionName || !id || !collection) {
     return NextResponse.json({ message: "Mock resource not found" }, { status: 404 });
   }
+
+  const itemIndex = collection.findIndex((entry) => entry.id === id);
+
+  if (itemIndex < 0) {
+    return NextResponse.json({ message: "Mock resource not found" }, { status: 404 });
+  }
+
+  collection.splice(itemIndex, 1);
 
   return new NextResponse(null, { status: 204 });
 }

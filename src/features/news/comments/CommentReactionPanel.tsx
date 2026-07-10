@@ -297,6 +297,13 @@ export function CommentReactionPanel({
     const card = scrollRoot?.closest(articleCardSelector);
     const feedScroller = card?.closest(newsFeedSelector);
     const updateComposerVisibility = () => {
+      const composer = document.getElementById(composerId);
+
+      if (composer?.contains(document.activeElement)) {
+        setIsComposerVisible(true);
+        return;
+      }
+
       if (!(scrollRoot instanceof HTMLElement)) {
         setIsComposerVisible(false);
         return;
@@ -332,7 +339,7 @@ export function CommentReactionPanel({
       }
       window.removeEventListener("resize", updateComposerVisibility);
     };
-  }, []);
+  }, [composerId]);
 
   useEffect(() => {
     if (initialCommentTargetId == null || initialCommentScrollKey == null) {
@@ -670,7 +677,11 @@ export function CommentReactionPanel({
         parentId: targetComment.id,
         userId: currentUserId,
       });
-      await recordCommentArticleActivity();
+      setApiComments((currentComments) =>
+        currentComments.some((comment) => comment.id === createdReply.id)
+          ? currentComments
+          : [...currentComments, createdReply],
+      );
 
       setPendingScrollTarget({
         bottomGap: 0,
@@ -678,6 +689,7 @@ export function CommentReactionPanel({
       });
       setExpandedReplyId(targetComment.id);
       resetComposer();
+      await recordCommentArticleActivity();
       await reloadComments();
       return;
     }
@@ -691,13 +703,18 @@ export function CommentReactionPanel({
       pollOptionId: selectedPollOptionId ?? null,
       userId: currentUserId,
     });
-    await recordCommentArticleActivity();
+    setApiComments((currentComments) =>
+      currentComments.some((comment) => comment.id === createdComment.id)
+        ? currentComments
+        : [...currentComments, createdComment],
+    );
 
     setPendingScrollTarget({
       bottomGap: 0,
       id: `${panelId}-comment-${createdComment.id}`,
     });
     resetComposer();
+    await recordCommentArticleActivity();
     await reloadComments();
   }
 
