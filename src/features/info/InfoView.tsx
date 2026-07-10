@@ -60,29 +60,10 @@ const infoTabs: { id: InfoTab; label: string }[] = [
   { id: "faq", label: "FAQ" },
   { id: "inquiry", label: "1:1 문의" },
 ];
+const dummyDateLabel = "0000년 00월 00일";
 
-function formatPolicyDate(value: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-function getNoticeDateLabel(date: string) {
-  if (date.includes("T")) {
-    return formatPolicyDate(date);
-  }
-
-  const [year, month, day] = date.split(".");
-
-  return `${year}년 ${Number(month)}월 ${Number(day)}일`;
+function getNoticeDateLabel(_date: string) {
+  return dummyDateLabel;
 }
 
 function getInfoNoticeItem(notice: Notice): InfoNoticeItem {

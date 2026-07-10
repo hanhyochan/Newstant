@@ -218,18 +218,10 @@ export function hasMultipleMyCommentKinds(items: { commentKind: Exclude<MyCommen
   return getUniqueValues(items.map((item) => item.commentKind)).length > 1;
 }
 
-function formatPolicyBookmarkDate(value: string) {
-  const date = new Date(value);
+const dummyDateLabel = "0000년 00월 00일";
 
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
+function formatPolicyBookmarkDate(_value: string) {
+  return dummyDateLabel;
 }
 
 export function getPolicyBookmarkItem(policy: {
@@ -261,11 +253,11 @@ export function getPolicyBookmarkItem(policy: {
       { label: "지원 기관", value: policy.institution },
       {
         label: "사업 기간",
-        value: `${policy.businessStartDate} ~ ${policy.businessEndDate}`,
+        value: `${dummyDateLabel} ~ ${dummyDateLabel}`,
       },
       {
         label: "신청 기간",
-        value: `${policy.applicationStartDate} ~ ${policy.applicationEndDate}`,
+        value: `${dummyDateLabel} ~ ${dummyDateLabel}`,
       },
       { label: "신청 방법", value: policy.applicationMethod },
       { label: "선발 방식", value: policy.selectionMethod },

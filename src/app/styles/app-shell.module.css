@@ -243,7 +243,7 @@
   color: inherit;
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
-  line-height: 26px;
+  line-height: var(--line-height-fixed-26);
   letter-spacing: 0;
 }.appScope :global(.article_date) {
   color: var(--color-label-alternative);
@@ -444,10 +444,17 @@
     var(--all-latest-panel-available-height)
   );
 }.appScope :global(.all_latest_scroller .img_newsCardFeature) {
-  aspect-ratio: 5 / 2;
+  height: auto;
+  min-height: 0;
+  flex: 1 1 0;
+  aspect-ratio: auto;
 }.appScope :global(.all_latest_scroller .btn_newsCardFeature > .wrapper_contentMeta > strong) {
-  line-height: 28px;
+  display: block;
+  overflow: hidden;
+  line-height: var(--line-height-24);
   padding-bottom: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }.appScope :global(.all_latest_scroller) {
   cursor: grab;
   user-select: none;
@@ -491,7 +498,7 @@
   color: var(--color-cool-neutral-15);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
-  line-height: 26px;
+  line-height: var(--line-height-fixed-26);
   letter-spacing: 0;
 }.appScope :global(.text_detailSummary),
 .appScope :global(.list_detailDefinition dd),
@@ -552,7 +559,7 @@
   color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
-  line-height: 26px;
+  line-height: var(--line-height-fixed-26);
 }.appScope :global(.tab_myCategoryMenu button),
 .appScope :global(.tab_myBlockedKeywordMenu .btn_tab) {
   border: var(--border-1) solid var(--app-divider-color);
@@ -621,20 +628,19 @@
   line-height: var(--line-height-20);
 }.appScope :global(.text_infoItemTitle) {
   color: var(--app-text);
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-16);
   font-weight: var(--font-weight-600);
   line-height: var(--line-height-24);
 }.appScope :global(.text_infoBody) {
   color: var(--color-label-neutral);
-  font-size: var(--font-size-16);
+  font-size: var(--font-size-15);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-24);
-}.appScope :global(.text_lineClamp2),
-.appScope :global(.sheetFrame.is_sheetDocked .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+}.appScope :global(.text_lineClamp2) {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }.appScope :global(.headerTop .text_size_button) {
-  line-height: 0;
+  line-height: var(--line-height-24);
 }.appScope :global(.headerTop .toolbar [aria-label="메뉴"]::before) {
   content: "";
   border-radius: var(--radius-full);
@@ -684,12 +690,9 @@
   transition: var(--app-chevron-transition);
 }.appScope :global(.all_press_panel .icon_moreAction) {
   opacity: 0.55;
-}.appScope :global(.all_pressHeadline_tabScroller button[aria-selected="true"] .all_pressHeadline_logo),
-.appScope :global(.all_pressHeadline_tabScroller button[aria-selected='true'] .all_pressHeadline_logo),
-.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true'] .all_pressHeadline_logo) {
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true'] .all_pressHeadline_logo) {
   background: var(--color-common-100);
-}.appScope :global(.all_pressHeadline_tabScroller button:not([aria-selected="true"]) .all_pressHeadline_logo),
-.appScope :global(.all_pressHeadline_tabScroller button:not([aria-selected='true']) .all_pressHeadline_logo) {
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true']) .all_pressHeadline_logo) {
   background: var(--color-cool-neutral-96);
 }.appScope :global(.text_greeting) {
   color: var(--color-common-100);
@@ -768,16 +771,6 @@
   --font-size-48: 57.6px;
   --font-size-52: 62.4px;
   --font-size-60: 72px;
-  --line-height-16: 19.2px;
-  --line-height-20: 24px;
-  --line-height-24: 28.8px;
-  --line-height-fixed-20: 24px;
-  --line-height-fixed-26: 31.2px;
-  --line-height-32: 38.4px;
-  --line-height-40: 48px;
-  --line-height-44: 52.8px;
-  --line-height-48: 57.6px;
-  --line-height-60: 72px;
 }.appScope :global(.img_articlePublisherLogo) {
   border-radius: var(--radius-full);
   object-fit: cover;

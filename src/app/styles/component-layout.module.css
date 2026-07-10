@@ -95,8 +95,7 @@
   padding: 0;
   text-align: left;
 }.appScope :global(.btn_newsCardBlock strong),
-.appScope :global(.text_lineClamp2),
-.appScope :global(.sheetFrame.is_sheetDocked .btn_newsCardFeature > .wrapper_contentMeta > strong) {
+.appScope :global(.text_lineClamp2) {
   display: -webkit-box;
   overflow: hidden;
 }.appScope :global(.btn_newsCardBlock .text_createdTime),
@@ -541,6 +540,8 @@
   padding-bottom: calc(
     var(--spacing-padding-vertical-24) + var(--spacing-padding-vertical-4)
   );
+}.appScope :global(.all_latest_panel > .all_panelContent) {
+  flex: 1 1 auto;
 }.appScope :global(.all_latest_scroller),
 .appScope :global(.all_category_tabs) {
   display: flex;

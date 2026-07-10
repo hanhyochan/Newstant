@@ -488,18 +488,18 @@
         --font-weight-700: 700;
 
         /* typography: line height */
-        --line-height-16: 16px;
-        --line-height-20: 20px;
-        --line-height-24: 24px;
-        --line-height-fixed-20: 20px;
-        --line-height-fixed-26: 26px;
-        --line-height-32: 32px;
-        --line-height-40: 40px;
-        --line-height-44: 44px;
-        --line-height-48: 48px;
-        --line-height-60: 60px;
-        --line-height-72: 72px;
-        --line-height-90: 90px;
+        --line-height-16: 1.3;
+        --line-height-20: 1.4;
+        --line-height-24: 1.5;
+        --line-height-fixed-20: 1.5;
+        --line-height-fixed-26: 1.4;
+        --line-height-32: 1.8;
+        --line-height-40: 1.7;
+        --line-height-44: 1.6;
+        --line-height-48: 1.5;
+        --line-height-60: 1.5;
+        --line-height-72: 1.5;
+        --line-height-90: 1.5;
   --app-max-width: 768px;
   --app-shadow-card: 3px 3px 4px var(--color-alpha-shadow3);
 }

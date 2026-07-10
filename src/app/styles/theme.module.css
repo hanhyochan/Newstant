@@ -46,13 +46,15 @@
 .appScope:global(.dark .tab_myCategoryMenu button[data-state='active']),
 .appScope:global(.dark .tab_myCategoryMenu button[data-state='selected']),
 .appScope:global(.dark .all_category_tabs button[aria-selected='true']),
-.appScope:global(.dark .all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']),
 .appScope:global(.dark .btn_tab[aria-selected='true']:not(.btn_newsViewOption)),
 .appScope:global(.dark .btn_tab[data-state='active']:not(.btn_newsViewOption)),
 .appScope:global(.dark .btn_tab[data-state='selected']:not(.btn_newsViewOption)) {
     color: var(--color-cool-neutral-15);
     background: var(--color-common-100);
     border-color: var(--color-common-100);
+}.appScope:global(.dark .all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']) {
+    color: var(--color-cool-neutral-15);
+    background: var(--color-common-100);
 }.appScope:global(.dark .all_tabSticky),
 .appScope:global(.dark .all_pressHeadline_tabMenu),
 .appScope:global(.dark .all_pressHeadline_tabScroller),
@@ -119,7 +121,7 @@
     color: var(--color-cool-neutral-15);
     background: transparent;
     font-size: 16px;
-    line-height: 24px;
+    line-height: var(--line-height-24);
 }.appScope:global(.dark .wrapper_commentReplyItem),
 .appScope:global(.dark .wrapper_commentReplyItem :where(p, strong, time)) {
     color: var(--color-cool-neutral-100);
@@ -218,19 +220,9 @@
   --font-size-48: 48px;
   --font-size-52: 52px;
   --font-size-60: 60px;
-  --line-height-16: 16px;
-  --line-height-20: 20px;
-  --line-height-24: 24px;
-  --line-height-fixed-20: 20px;
-  --line-height-fixed-26: 26px;
-  --line-height-32: 32px;
-  --line-height-40: 40px;
-  --line-height-44: 44px;
-  --line-height-48: 48px;
-  --line-height-60: 60px;
 }.appScope :global(.container_articleCard .text_sectionTitle) {
   font-size: var(--font-size-18);
-  line-height: 26px;
+  line-height: var(--line-height-fixed-26);
 }.appScope :global(.container_articleCard .text_articleBody) {
     color:
         var(--color-cool-neutral-20);
@@ -333,7 +325,7 @@
 .appScope :global(.container_authLayout .text_input[data-mode="dark"] input:valid),
 .appScope :global(.container_authLayout .text_input[data-mode="dark"] input:invalid) {
     font-size: 16px;
-    line-height: 24px;
+    line-height: var(--line-height-24);
 }/*  App-owned state hooks without dedicated visual declarations
  *//*  --------------------------------------------------------------------------
  * App Appearance Declarations
@@ -345,7 +337,7 @@
   color: var(--color-cool-neutral-50);
   font-size: var(--font-size-13);
   font-weight: var(--font-weight-400);
-  line-height: 13px;
+  line-height: 1;
 }.appScope :global(.wrapper_articleGuide) {
   border-radius: var(--radius-8);
   background: var(--color-cool-neutral-98);
@@ -362,7 +354,7 @@
 }.appScope :global(.container_myProfile strong) {
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
-  line-height: 26px;
+  line-height: var(--line-height-fixed-26);
 }.appScope :global(.container_myKeywordOverlay),
 .appScope :global(.container_dialog) {
   background: rgba(0, 0, 0, 0.72);
@@ -391,7 +383,7 @@
   color: var(--color-brand-purple-50);
   font-size: var(--font-size-48);
   font-weight: var(--font-weight-500);
-  line-height: 52px;
+  line-height: 1.1;
   letter-spacing: 0;
 }.appScope :global(.wrapper_articleActions) {
   color: var(--color-cool-neutral-50);
@@ -410,7 +402,7 @@
   color: var(--app-text);
   font-size: var(--font-size-18);
   font-weight: var(--font-weight-600);
-  line-height: 26px;
+  line-height: var(--line-height-fixed-26);
   letter-spacing: 0;
 }.appScope :global(.container_articleCard time) {
   color: var(--color-cool-neutral-50);

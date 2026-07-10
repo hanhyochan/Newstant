@@ -9,7 +9,7 @@ const meta: Meta<typeof NewsCardMeta> = {
     layout: "centered",
   },
   args: {
-    date: "2026년 6월 30일 09:30",
+    date: "0000년 00월 00일",
     dateTime: "2026-06-30T09:30:00",
   },
 };

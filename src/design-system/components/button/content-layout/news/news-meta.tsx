@@ -8,7 +8,7 @@ export type NewsCardMetaProps = {
 };
 
 export function NewsCardMeta({
-  date = "2026년 12월 31일 08:30",
+  date = "0000년 00월 00일",
   dateTime = "2026-12-31T08:30:00",
 }: NewsCardMetaProps) {
   return (

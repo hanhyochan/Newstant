@@ -10,7 +10,7 @@ const meta: Meta<typeof SearchResultButton> = {
     layout: "centered",
   },
   args: {
-    meta: "뉴스 · 2026년 6월 30일",
+    meta: "뉴스 · 0000년 00월 00일",
     title: "맞춤 정책 뉴스",
   },
 };
@@ -23,7 +23,7 @@ export const Playground: Story = {
   render: (args) => (
     <div style={{ width: 420 }}>
       <SearchResultButton
-        meta={args.meta ?? "뉴스 · 2026년 6월 30일"}
+        meta={args.meta ?? "뉴스 · 0000년 00월 00일"}
         onClick={() => undefined}
         snippet={args.snippet}
         title={args.title ?? "맞춤 정책 뉴스"}
@@ -36,7 +36,7 @@ export const WithSnippet: Story = {
   render: () => (
     <div style={{ width: 420 }}>
       <SearchResultButton
-        meta="정책 · 2026년 6월 30일"
+        meta="정책 · 0000년 00월 00일"
         onClick={() => undefined}
         snippet={
           <SearchHighlightText query="청년">

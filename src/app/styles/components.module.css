@@ -38,7 +38,7 @@
   border: 0;
   border-radius: var(--radius-full);
   color: var(--color-cool-neutral-15);
-  background: var(--color-cool-neutral-96);
+  background: var(--color-cool-neutral-97);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-20);
@@ -96,9 +96,9 @@
 .appScope :global(.btn_contentListItem .wrapper_contentMeta :where(h1, h2)),
 .appScope :global(.wrapper_contentMeta > :where(h1, h2)) {
   color: var(--app-text);
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-16);
   font-weight: var(--font-weight-600);
-  line-height: 26px;
+  line-height: var(--line-height-24);
   letter-spacing: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -275,7 +275,7 @@
   background: var(--color-common-100);
   box-shadow: 0 1px 2px var(--color-alpha-shadow4);
 }.appScope :global(.switch_newsToggle.is_on) {
-  background: var(--color-status-positive);
+  background: var(--color-brand-purple-50);
 }/* Button: FieldActionButton */.appScope :global(.btn_fieldActionButton) {
   border: 0;
   border-radius: var(--radius-8);
@@ -524,7 +524,8 @@
  * reusable news content buttons/cards. Generic layout primitives stay in
  * the layout section.
  */.appScope :global(.btn_newsCardList .text_newsCardTitleLarge) {
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-24);
 }/* All-news panel sizing: keeps the latest-news panel within the common sheet. *//* Article body typography: keep article copy at the requested 16px baseline. *//*  --------------------------------------------------------------------------
  * Component Form Controls
  * -------------------------------------------------------------------------- *//* Form control visual states. */.appScope :global(.text_input) {
@@ -541,7 +542,7 @@
   background: transparent;
   color: inherit;
   font-size: 16px;
-  line-height: 24px;
+  line-height: var(--line-height-24);
 }.appScope :global(.text_input input::placeholder),
 .appScope :global(.textarea::placeholder),
 .appScope :global(.textarea[data-variant='inquiry']::placeholder) {

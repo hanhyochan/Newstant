@@ -131,6 +131,8 @@ const hiddenDescriptionSettingItemIds = new Set<MyProfileSettingItemId>([
   "passwordReset",
 ]);
 
+const dummyDateLabel = "0000년 00월 00일";
+
 const documentSections: Partial<Record<MyProfileSettingItemId, string[]>> = {
   agreement: [
     "필수 동의 항목은 만 14세 이상 확인, 서비스 이용약관, 개인정보 수집·이용 동의입니다.",
@@ -158,11 +160,11 @@ const documentSections: Partial<Record<MyProfileSettingItemId, string[]>> = {
     "정식 출시 전 패키지 목록과 라이선스 전문을 별도 고지 화면으로 확장할 예정입니다.",
   ],
   privacyPolicyHistory: [
-    "2026.06.18 개인정보 처리방침 초안 등록",
+    `${dummyDateLabel} 개인정보 처리방침 초안 등록`,
     "변경 시 시행일, 변경 사유, 주요 변경 항목을 함께 표시합니다.",
   ],
   termsHistory: [
-    "2026.06.18 서비스 이용약관 초안 등록",
+    `${dummyDateLabel} 서비스 이용약관 초안 등록`,
     "변경 시 시행일, 변경 사유, 주요 변경 항목을 함께 표시합니다.",
   ],
 };
@@ -172,20 +174,8 @@ const moderationTabs = [
   { id: "hide", label: "숨김" },
 ] satisfies { id: UserContentActionType; label: string }[];
 
-function formatDate(value: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hour = String(date.getHours()).padStart(2, "0");
-  const minute = String(date.getMinutes()).padStart(2, "0");
-
-  return `${year}.${month}.${day}. ${hour}:${minute}`;
+function formatDate(_value: string) {
+  return dummyDateLabel;
 }
 
 function SettingDocument({ itemId }: { itemId: MyProfileSettingItemId }) {

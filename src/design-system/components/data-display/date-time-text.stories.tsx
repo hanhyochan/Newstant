@@ -9,7 +9,7 @@ const meta: Meta<typeof DateTimeText> = {
     layout: "centered",
   },
   args: {
-    children: "2026년 6월 30일 09:30",
+    children: "0000년 00월 00일",
     dateTime: "2026-06-30T09:30:00",
   },
 };
@@ -24,7 +24,7 @@ export const InMetaRow: Story = {
   render: () => (
     <p className="wrapper_newsCardMeta">
       <DateTimeText dateTime="2026-06-30T09:30:00">
-        2026년 6월 30일 09:30
+        0000년 00월 00일
       </DateTimeText>
     </p>
   ),

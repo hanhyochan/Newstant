@@ -144,34 +144,30 @@
     color: var(--color-cool-neutral-15);
     background: var(--color-background-elevated-normal);
 }.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
-    border: var(--border-1) solid transparent;
-    border-radius: var(--radius-full);
-    color: inherit;
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-500);
-    line-height: var(--line-height-20);
-    cursor: pointer;
-}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']) {
-    border: 0;
-    color: var(--color-common-100);
-    background: var(--color-common-0);
-}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
-    border-color: var(--color-cool-neutral-96);
-    color: var(--color-cool-neutral-15);
-    background: var(--color-background-elevated-normal);
-}.appScope :global(.text_confirmDialogMessage) {
-    font-size: var(--font-size-16);
-}.appScope :global(.text_contentAccordionBody) {
-    font-size: var(--font-size-16);
-    line-height: var(--line-height-24);
-}.appScope :global(.all_category_tabs button),
-.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+    border: var(--border-1) solid var(--app-divider-color);
     border-radius: var(--radius-full);
     font-size: var(--font-size-15);
     font-weight: var(--font-weight-500);
     line-height: var(--line-height-20);
-}.appScope :global(.all_category_tabs button:not([aria-selected='true'])),
-.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
+    cursor: pointer;
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton[aria-selected='true']) {
+    color: var(--color-common-100);
+    background: var(--color-common-0);
+}.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton:not([aria-selected='true'])) {
+    color: var(--color-cool-neutral-15);
+    background: transparent;
+}.appScope :global(.text_confirmDialogMessage) {
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}.appScope :global(.text_contentAccordionBody) {
+    font-size: var(--font-size-16);
+    line-height: var(--line-height-24);
+}.appScope :global(.all_category_tabs button) {
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-15);
+    font-weight: var(--font-weight-500);
+    line-height: var(--line-height-20);
+}.appScope :global(.all_category_tabs button:not([aria-selected='true'])) {
     border: var(--border-1) solid var(--app-divider-color);
     background: transparent;
 }@media (prefers-reduced-motion: reduce) {

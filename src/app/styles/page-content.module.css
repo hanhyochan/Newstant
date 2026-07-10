@@ -130,7 +130,7 @@
     var(--spacing-padding-vertical-32) + var(--spacing-padding-vertical-24)
   );
 }.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
-  min-width: auto;
+  min-width: var(--spacing-padding-horizontal-60);
   height: var(--size-52);
   min-height: var(--size-52);
   flex: 0 0 auto;
@@ -142,8 +142,7 @@
   width: 24px;
   height: 24px;
   flex: 0 0 24px;
-}.appScope :global(.all_category_tabs button),
-.appScope :global(.all_pressHeadline_tabScroller .all_pressHeadline_tabButton) {
+}.appScope :global(.all_category_tabs button) {
   min-width: var(--spacing-padding-horizontal-60);
   min-height: 40px;
   padding-inline: var(--spacing-padding-horizontal-16);

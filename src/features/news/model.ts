@@ -64,23 +64,10 @@ export type PolicyItem = {
 
 export const articleImage = "/images/Gemini_Generated_Image_7j3t0x7j3t0x7j3t.webp";
 export const defaultNewsDateTime = "2026-12-31T08:30:00";
-export const defaultNewsDateLabel = "2026년 12월 31일 08:30";
+export const defaultNewsDateLabel = "0000년 00월 00일";
 
-export function formatNewsDate(value: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return defaultNewsDateLabel;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    day: "2-digit",
-    hour: "2-digit",
-    hour12: false,
-    minute: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(date);
+export function formatNewsDate(_value: string) {
+  return defaultNewsDateLabel;
 }
 
 export function formatHeroCount(count: number) {
@@ -183,7 +170,7 @@ export const binaryGuideOptions = ["그렇다", "아니다"];
 
 export const homeArticle: HomeArticle = {
   category: "정치",
-  date: "2026년 12월 31일 08:30",
+  date: defaultNewsDateLabel,
   image: articleImage,
   imageAlt: "아파트 단지 전경",
   title: "용인 수지, 강남·분당 가격 동조화로 15억 시대 진입",
@@ -196,7 +183,7 @@ export const homeArticles: HomeArticle[] = [
   },
   {
     category: "경제",
-    date: "2026년 12월 31일 09:10",
+    date: defaultNewsDateLabel,
     guideKind: "binary",
     image: "/images/Gemini_Generated_Image_2vvqys2vvqys2vvq.webp",
     imageAlt: "도심 아파트 단지 전경",
@@ -204,7 +191,7 @@ export const homeArticles: HomeArticle[] = [
   },
   {
     category: "사회",
-    date: "2026년 12월 31일 10:20",
+    date: defaultNewsDateLabel,
     guideKind: "stacked",
     image: "/images/Gemini_Generated_Image_96baaj96baaj96ba.webp",
     imageAlt: "아침 햇살이 비치는 주거 단지",
@@ -212,7 +199,7 @@ export const homeArticles: HomeArticle[] = [
   },
   {
     category: "정책",
-    date: "2026년 12월 31일 11:35",
+    date: defaultNewsDateLabel,
     guideKind: "binary",
     image: "/images/Gemini_Generated_Image_f51g65f51g65f51g.webp",
     imageAlt: "신축 공동주택 단지",
@@ -220,7 +207,7 @@ export const homeArticles: HomeArticle[] = [
   },
   {
     category: "지역",
-    date: "2026년 12월 31일 13:00",
+    date: defaultNewsDateLabel,
     guideKind: "stacked",
     image: "/images/Gemini_Generated_Image_le942ile942ile94.webp",
     imageAlt: "수도권 아파트 단지",
@@ -228,7 +215,7 @@ export const homeArticles: HomeArticle[] = [
   },
   {
     category: "복지",
-    date: "2026년 12월 31일 14:25",
+    date: defaultNewsDateLabel,
     guideKind: "binary",
     image: "/images/Gemini_Generated_Image_nil3rwnil3rwnil3.webp",
     imageAlt: "주거지와 상가가 함께 보이는 단지",
@@ -236,7 +223,7 @@ export const homeArticles: HomeArticle[] = [
   },
   {
     category: "문화",
-    date: "2026년 12월 31일 15:40",
+    date: defaultNewsDateLabel,
     guideKind: "stacked",
     image: "/images/Gemini_Generated_Image_qy1qu1qy1qu1qy1q.webp",
     imageAlt: "도심 주거 단지와 하늘",

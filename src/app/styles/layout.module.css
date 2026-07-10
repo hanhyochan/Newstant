@@ -867,7 +867,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-gap-horizontal-16);
-  min-height: var(--line-height-20);
+  min-height: 20px;
 }.appScope :global(.wrapper_commentMeta) {
   min-width: 0;
   display: inline-flex;
