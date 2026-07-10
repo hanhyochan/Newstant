@@ -3,7 +3,7 @@
 import { useEffect, useRef, type RefObject, type TouchEvent, type WheelEvent } from "react";
 
 type BoundaryDirection = "end" | "start";
-type RoutedScrollResult = false | "handled" | "locked";
+type RoutedScrollResult = false | "handled" | "locked" | "native";
 type AdjacentPanels = {
   nextPanel: HTMLElement | null;
   previousPanel: HTMLElement | null;
@@ -264,7 +264,10 @@ export function useDockedPanelScroll({
     return true;
   };
 
-  const routeDockedPanelScroll = (deltaY: number): RoutedScrollResult => {
+  const routeDockedPanelScroll = (
+    deltaY: number,
+    preferNativeContentScroll = false,
+  ): RoutedScrollResult => {
     const scroller = scrollerRef.current;
     const isDocked = rootRef.current?.classList.contains(dockedClassName) ?? false;
 
@@ -276,6 +279,11 @@ export function useDockedPanelScroll({
     const activePanel = getActivePanel();
 
     if (!activePanel || panels.length === 0) {
+      if (preferNativeContentScroll) {
+        clearBoundary();
+        return "native";
+      }
+
       const maxScroll = getScrollLimit(scroller);
       const nextScrollTop = Math.max(0, Math.min(maxScroll, scroller.scrollTop + deltaY));
 
@@ -312,6 +320,11 @@ export function useDockedPanelScroll({
 
     if (deltaY < 0) {
       if (!isAtStart(activeContentScroller)) {
+        if (preferNativeContentScroll) {
+          clearBoundary();
+          return "native";
+        }
+
         return scrollPanelContent(activePanel, activeContentScroller, deltaY, maxScroll, "start")
           ? "handled"
           : false;
@@ -324,6 +337,11 @@ export function useDockedPanelScroll({
 
     if (deltaY > 0) {
       if (!isAtEnd(activeContentScroller, maxScroll)) {
+        if (preferNativeContentScroll) {
+          clearBoundary();
+          return "native";
+        }
+
         return scrollPanelContent(activePanel, activeContentScroller, deltaY, maxScroll, "end")
           ? "handled"
           : false;
@@ -365,9 +383,15 @@ export function useDockedPanelScroll({
 
     const deltaY = previousY - currentY;
 
-    const routeResult = routeDockedPanelScroll(deltaY);
+    const routeResult = routeDockedPanelScroll(deltaY, true);
+    const target = event.target;
+    const isDockedContentTouch = (
+      rootRef.current?.classList.contains(dockedClassName)
+      && target instanceof Node
+      && (scrollerRef.current?.contains(target) ?? false)
+    );
 
-    if (routeResult) {
+    if (routeResult || isDockedContentTouch) {
       event.stopPropagation();
     }
 

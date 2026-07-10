@@ -760,17 +760,6 @@
   overscroll-behavior: contain none;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-}.appScope :global(.container_homeScreen),
-.appScope :global(.container_homeScreen .container_homeSheet),
-.appScope :global(.container_homeScreen .wrapper_newsGridScroll),
-.appScope :global(.container_homeScreen .container_newsFeed),
-.appScope :global(.container_homeScreen .wrapper_articleCardContent),
-.appScope:global(.screen_all .sheetFrame),
-.appScope:global(.screen_all .container_homeSheet),
-.appScope:global(.screen_all .container_newsFeed),
-.appScope:global(.screen_all .all_panelContent),
-.appScope:global(.screen_all .wrapper_articleCardContent) {
-  touch-action: pan-x pinch-zoom;
 }.appScope :global(.container_articleCard :where(h1, h2)), .appScope :global(.list_detailDefinition dt), .appScope :global(.list_detailDefinition dd) {
   margin: 0;
 }.appScope :global(.wrapper_articleCardContent > img) {
