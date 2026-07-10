@@ -185,10 +185,13 @@ export function PolicyView({
     async function loadPolicies() {
       setPolicyLoadFailed(false);
       const ageGroupId = policyAgeIdByLabel[activeAge] ?? "all";
-      const [nextPolicies, allPolicies] = await Promise.all([
-        welfareApi.getWelfarePolicyList(ageGroupId),
-        welfareApi.getWelfarePolicyList("all"),
-      ]);
+      const allPolicies = await welfareApi.getWelfarePolicyList("all");
+      const nextPolicies =
+        ageGroupId === "all"
+          ? allPolicies
+          : allPolicies.filter((policy) =>
+              policy.ageGroupIds.includes(ageGroupId),
+            );
 
       if (!ignore) {
         setPolicyApiItems(nextPolicies.map(getPolicyItemFromWelfarePolicy));
