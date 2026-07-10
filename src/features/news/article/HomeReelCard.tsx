@@ -44,7 +44,7 @@ import {
 } from "@/features/news/model";
 import type { CommentId } from "@/features/comments/utils/comment-data";
 
-const commentPanelOpenHintOffset = 132;
+const commentPanelOpenHintOffset = 450;
 const articleBody = `최근 국내 부동산 시장이 다시 한번 변곡점에 서고 있다. 상반기 동안 이어졌던 거래 회복 흐름이 둔화되며, 시장 전반에 신중한 분위기가 확산되는 모습이다.
 
 특히 수도권과 일부 광역시를 중심으로 매수 심리가 빠르게 식고 있다. 한국부동산연구원이 발표한 자료에 따르면, 기준금리 유지에도 불구하고 주택담보대출 심사 강화와 보유세 부담이 실수요자와 투자자 모두에게 압박으로 작용하고 있다.
